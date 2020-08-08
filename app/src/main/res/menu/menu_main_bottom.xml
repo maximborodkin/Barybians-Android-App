@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/feedFragment"
+        android:title="@string/feed"
+        android:icon="@drawable/ic_feed_list_white"/>
+
+    <item
+        android:id="@+id/dialogsListFragment"
+        android:title="@string/dialogs"
+        android:icon="@drawable/ic_dialogs_list_white"/>
+
+    <item
+        android:id="@+id/profileFragment"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_user_white"/>
+</menu>

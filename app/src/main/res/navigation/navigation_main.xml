@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation_main"
+    app:startDestination="@id/profileFragment">
+
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="ru.maxim.barybians.ui.fragment.feed.FeedFragment"
+        android:label="FeedFragment" />
+    <fragment
+        android:id="@+id/dialogsListFragment"
+        android:name="ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment"
+        android:label="DialogsListFragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="ru.maxim.barybians.ui.fragment.profile.ProfileFragment"
+        android:label="ProfileFragment" />
+</navigation>

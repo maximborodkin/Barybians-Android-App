@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Barybians</string>
+
+    <string name="feed">Feed</string>
+    <string name="dialogs">Dialogs</string>
+    <string name="profile">Profile</string>
+</resources>
