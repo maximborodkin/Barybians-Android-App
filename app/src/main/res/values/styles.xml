@@ -1,6 +1,6 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--  Global  -->
+<!--  Global  -->
     <style name="TopRoundedShapeAppearanceOverlay" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">18dp</item>
@@ -13,7 +13,7 @@
         <item name="shapeAppearanceOverlay">@style/TopRoundedShapeAppearanceOverlay</item>
     </style>
 
-    <!--  Auth Theme  -->
+<!--  Auth Theme  -->
     <style name="WhiteEditTextLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintEnabled">true</item>
         <item name="errorEnabled">true</item>
@@ -31,13 +31,13 @@
         <item name="android:textColorHighlight">@color/white_transparent_60</item>
         <item name="selectableItemBackground">@color/white</item>
     </style>
-
+    
     <style name="WhiteButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
         <item name="backgroundTint">@color/white</item>
         <item name="android:textColor">@color/light_colorPrimary</item>
     </style>
 
-    <!--  Light Theme  -->
+<!--  Light Theme  -->
     <style name="LightTheme.TopRoundedCard" parent="@style/Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/TopRoundedShapeAppearanceOverlay</item>
     </style>
@@ -71,7 +71,7 @@
         <item name="errorEnabled">true</item>
     </style>
 
-    <!--  Dark Theme  -->
+<!--  Dark Theme  -->
     <style name="DarkTheme.TopRoundedCard" parent="@style/Widget.MaterialComponents.CardView">
         <item name="shapeAppearanceOverlay">@style/TopRoundedShapeAppearanceOverlay</item>
         <item name="cardBackgroundColor">@color/dark_colorPrimary</item>
@@ -108,7 +108,7 @@
 
     <style name="DarkTheme.BottomSheet" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetShape</item>
-        <!--        <item name="android:windowAnimationStyle">@style/Animation.MaterialComponents.BottomSheetDialog</item>-->
+<!--        <item name="android:windowAnimationStyle">@style/Animation.MaterialComponents.BottomSheetDialog</item>-->
     </style>
 
     <style name="DarkTheme.CommentEditText" parent="LightTheme.CommentEditText">

@@ -17,5 +17,7 @@ class FeedFragment : MvpAppCompatFragment(), FeedView {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_feed, container, false)
 
-    override fun showFeed() {}
+    override fun showFeed() {
+
+    }
 }

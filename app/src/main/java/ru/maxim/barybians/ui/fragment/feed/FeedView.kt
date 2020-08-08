@@ -4,5 +4,5 @@ import com.arellomobile.mvp.MvpView
 
 interface FeedView : MvpView {
 
-    fun showFeed()
+    fun showFeed(/*feed: List<Post>*/)
 }

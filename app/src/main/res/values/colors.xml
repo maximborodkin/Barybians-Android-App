@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--  Global  -->
+<!--  Global  -->
     <color name="black">#000000</color>
     <color name="black_transparent_80">#50000000</color>
     <color name="white">#FFFFFF</color>
@@ -8,8 +8,8 @@
     <color name="white_transparent_60">#3CFFFFFF</color>
     <color name="online_circle_color">#32AD37</color>
     <color name="transparent">#00000000</color>
-
-    <!--  Light Theme  -->
+    
+<!--  Light Theme  -->
     <color name="light_colorPrimaryLight">#83B9FF</color>
     <color name="light_colorPrimary">#448AFF</color>
     <color name="light_colorPrimaryDark">#18459C</color>
@@ -20,8 +20,8 @@
     <color name="light_colorSecondaryText">#000000</color>
     <color name="light_recyclerBackgroundColor">#F2F3F7</color>
     <color name="light_colorTertiaryText">#666666</color>
-
-    <!--  Dark Theme  -->
+    
+<!--  Dark Theme  -->
     <color name="dark_colorPrimaryLight">#121212</color>
     <color name="dark_colorPrimary">#1E1E1E</color>
     <color name="dark_colorPrimaryDark">#000000</color>

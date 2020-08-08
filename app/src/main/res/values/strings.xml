@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">Barybians</string>
 
-    <!--  MainActivity  -->
+<!--  MainActivity  -->
     <string name="feed">Feed</string>
     <string name="dialogs">Dialogs</string>
     <string name="profile">Profile</string>
 
-    <!--  PreferenceActivity  -->
+<!--  PreferenceActivity  -->
     <string name="preferences">Preferences</string>
     <string name="general">General</string>
     <string name="theme">Theme</string>
@@ -17,17 +17,17 @@
     <string name="clear_cache">Clear cache</string>
     <string name="logout">Logout</string>
     <!--  Preference keys  -->
-    <string name="version_preference" translatable="false">version</string>
-    <string name="theme_preference" translatable="false">theme</string>
-    <!--  Theme preference values  -->
-    <string name="theme_light" translatable="false">light</string>
-    <string name="theme_dark" translatable="false">dark</string>
-    <string name="token_preference" translatable="false">token</string>
-    <string name="clear_cache_preference" translatable="false">clear_cache</string>
-    <string name="user_id_preference" translatable="false">user_id</string>
-    <string name="user_name_preference" translatable="false">user_name</string>
-    <string name="user_avatar_preference" translatable="false">user_avatar</string>
-    <string name="logout_preference" translatable="false">logout</string>
+        <string name="version_preference" translatable="false">version</string>
+        <string name="theme_preference" translatable="false">theme</string>
+        <!--  Theme preference values  -->
+            <string name="theme_light" translatable="false">light</string>
+            <string name="theme_dark" translatable="false">dark</string>
+        <string name="token_preference" translatable="false">token</string>
+        <string name="clear_cache_preference" translatable="false">clear_cache</string>
+        <string name="user_id_preference" translatable="false">user_id</string>
+        <string name="user_name_preference" translatable="false">user_name</string>
+        <string name="user_avatar_preference" translatable="false">user_avatar</string>
+        <string name="logout_preference" translatable="false">logout</string>
 
     <string name="log_in">Log in</string>
     <string name="login">Login</string>

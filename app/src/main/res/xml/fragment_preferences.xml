@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context=".ui.activity.preferences.PreferencesActivity">
+
+    <PreferenceCategory
+        app:title="@string/general"
+        app:iconSpaceReserved="false">
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/theme"
+        app:iconSpaceReserved="false">
+
+        <ListPreference
+            app:key="@string/theme_preference"
+            app:title="@string/theme"
+            app:defaultValue="@string/theme_light"
+            app:entries="@array/themes_entries"
+            app:entryValues="@array/themes_values"
+            app:iconSpaceReserved="false"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/application"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            app:key="@string/clear_cache_preference"
+            app:title="@string/clear_cache"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            app:key="@string/logout_preference"
+            app:title="@string/logout"
+            app:iconSpaceReserved="false"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/about"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            app:key="@string/version_preference"
+            app:title="@string/build_version"
+            app:iconSpaceReserved="false"
+            tools:summary="1.0.0"/>
+    </PreferenceCategory>
+</PreferenceScreen>
