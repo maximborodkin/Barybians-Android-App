@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">Barybians</string>
 
+<!--  Global  -->
+    <string name="administrator">Administrator</string>
+    <string name="barybian">Barybian</string>
+    <string name="verified">Verified</string>
+    <string name="unverified">Unverified</string>
+
+<!--  MainActivity  -->
     <string name="feed">Feed</string>
     <string name="dialogs">Dialogs</string>
     <string name="profile">Profile</string>
