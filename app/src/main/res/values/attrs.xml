@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ProfileBackgroundView">
+        <attr name="hasBlur" format="boolean" />
+        <attr name="hasDarkForeground" format="boolean"/>
+        <attr name="blurRadius" format="float"/>
+        <attr name="foregroundTransparency" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="AvatarView">
+        <attr name="hasOnlineStatus" format="boolean" />
+        <attr name="isOnline" format="boolean"/>
+    </declare-styleable>
+
+    <attr name="recyclerViewBackground" format="reference" />
+    <attr name="profileHeaderStyle" format="reference" />
+    <attr name="cardBackground" format="color"/>
+    <attr name="accentTextStyle" format="reference" />
+    <attr name="postTitleLayoutStyle" format="reference" />
+    <attr name="postTitleInputStyle" format="reference" />
+    <attr name="postTextLayoutStyle" format="reference" />
+    <attr name="postTextInputStyle" format="reference" />
+    <attr name="textButtonStyle" format="reference" />
+    <attr name="commentInputStyle" format="reference" />
+</resources>
