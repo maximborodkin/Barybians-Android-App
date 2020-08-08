@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--  Global  -->
+    <color name="black">#000000</color>
+    <color name="black_transparent_80">#50000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_transparent_100">#64FFFFFF</color>
+    <color name="white_transparent_60">#3CFFFFFF</color>
+    <color name="online_circle_color">#32AD37</color>
+    <color name="transparent">#00000000</color>
 
-    <color name="colorPrimary">#448AFF</color>
-    <color name="colorPrimaryDark">#18459C</color>
-    <color name="colorAccent">#E91E63</color>
+    <!--  Light Theme  -->
+    <color name="light_colorPrimaryLight">#83B9FF</color>
+    <color name="light_colorPrimary">#448AFF</color>
+    <color name="light_colorPrimaryDark">#18459C</color>
+    <color name="light_colorPrimaryText">#000000</color>
+    <color name="light_colorSecondaryLight">#FF6090</color>
+    <color name="light_colorSecondary">#E91E63</color>
+    <color name="light_colorSecondaryDark">#B0003A</color>
+    <color name="light_colorSecondaryText">#000000</color>
+    <color name="light_recyclerBackgroundColor">#F2F3F7</color>
+    <color name="light_colorTertiaryText">#666666</color>
+
+    <!--  Dark Theme  -->
+    <color name="dark_colorPrimaryLight">#121212</color>
+    <color name="dark_colorPrimary">#1E1E1E</color>
+    <color name="dark_colorPrimaryDark">#000000</color>
+    <color name="dark_colorPrimaryText">#FFFFFF</color>
+    <color name="dark_colorSecondaryLight">#4f5b62</color>
+    <color name="dark_colorSecondary">#6200EE</color>
+    <color name="dark_colorSecondaryDark">#000a12</color>
+    <color name="dark_colorSecondaryText">#FFFFFF</color>
+    <color name="dark_recyclerBackgroundColor">#121212</color>
+    <color name="dark_colorTertiaryText">#666666</color>
+    <color name="grey">#666666</color>
+    <color name="light_grey">#E0E0E0</color>
 </resources>

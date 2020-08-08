@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:layout_marginBottom="8dp"
+    android:background="?cardBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ru.maxim.barybians.ui.view.AvatarView
+            android:id="@+id/itemPostCreatorAvatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="6dp"
+            android:layout_gravity="center_vertical"
+            tools:src="@drawable/avatar"
+            app:hasOnlineStatus="false"/>
+
+        <TextView
+            android:id="@+id/itemPostCreatorLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/new_post"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="12dp"
+            android:textSize="18sp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/itemPostCreatorTitleLayout"
+            android:layout_width="0dp"
+            style="?postTitleLayoutStyle"
+            android:layout_height="wrap_content"
+            app:endIconMode="clear_text"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="12dp"
+            app:errorEnabled="false"
+            android:hint="@string/title">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/itemPostCreatorTitle"
+                android:layout_width="match_parent"
+                android:maxLines="1"
+                style="?attr/postTitleInputStyle"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/itemPostCreatorCameraBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="6dp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_camera_grey"/>
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/itemPostCreatorTextLayout"
+        android:layout_width="match_parent"
+        style="?postTextLayoutStyle"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:endIconMode="clear_text"
+        app:errorEnabled="true"
+        android:layout_marginHorizontal="16dp"
+        android:hint="@string/text">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/itemPostCreatorText"
+            android:layout_width="match_parent"
+            style="?postTextInputStyle"
+            android:lines="3"
+            android:gravity="start|top"
+            android:maxLines="10"
+            android:layout_height="wrap_content" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/itemPostCreatorButtonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/itemPostCreatorCancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/cancel"
+            style="?textButtonStyle"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/itemPostCreatorOkBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/ok"
+            style="?textButtonStyle"/>
+    </LinearLayout>
+</LinearLayout>
