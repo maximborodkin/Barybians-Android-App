@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import ru.maxim.barybians.R
+import ru.maxim.barybians.repository.remote.RetrofitClient
 
 @Entity
 data class User (
@@ -22,7 +23,7 @@ data class User (
     val posts: ArrayList<Post>
 ) {
     fun getAvatarUrl(loadFull: Boolean = false) =
-        if (photo != null) "https://barybians.site/avatars${if (loadFull) null else "/min"}/$photo"
+        if (photo != null) "${RetrofitClient.BASE_URL}/avatars${if (loadFull) null else "/min"}/$photo"
         else null
 
     fun getRole() = when(roleId) {
