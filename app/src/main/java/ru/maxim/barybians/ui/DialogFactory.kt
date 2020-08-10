@@ -1,24 +1,24 @@
 package ru.maxim.barybians.ui
 
-import android.view.View
-import ru.maxim.barybians.R
-import android.widget.EditText
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import ru.maxim.barybians.ui.fragment.profile.OnUserClickListener
-import kotlinx.android.synthetic.main.fragment_post_editor.view.*
-import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
-import ru.maxim.barybians.ui.fragment.profile.CommentsRecyclerAdapter
-import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemUser
 import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_post_editor.view.*
 import kotlinx.android.synthetic.main.fragment_post_menu_bottom_sheet.*
+import ru.maxim.barybians.R
+import ru.maxim.barybians.ui.fragment.profile.CommentsRecyclerAdapter
 import ru.maxim.barybians.ui.fragment.profile.LikedUsersRecyclerAdapter
 import ru.maxim.barybians.ui.fragment.profile.OnImageClickListener
+import ru.maxim.barybians.ui.fragment.profile.OnUserClickListener
 import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemComment
+import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemUser
 import ru.maxim.barybians.utils.HtmlUtils
 
 /**

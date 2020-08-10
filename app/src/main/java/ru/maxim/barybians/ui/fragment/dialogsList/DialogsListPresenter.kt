@@ -8,7 +8,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.model.Dialog
 import ru.maxim.barybians.repository.remote.service.DialogService
-import java.lang.Exception
 
 @InjectViewState
 class DialogsListPresenter : MvpPresenter<DialogsListView>(), CoroutineScope by MainScope() {

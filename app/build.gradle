@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -15,13 +12,23 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-        vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+            resValue "string", "app_name", "@string/app_name_debug"
+        }
         release {
             minifyEnabled false
+            shrinkResources false
+            resValue "string", "app_name", "@string/app_name_release"
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -81,8 +88,12 @@ dependencies {
     implementation 'android.arch.navigation:navigation-ui:1.0.0'
 
     // Network
-    implementation 'com.squareup.okhttp3:okhttp:4.8.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.8.0'
+    implementation ("com.squareup.okhttp3:okhttp") {
+        version {
+            strictly ("[3.12.12]")
+        }
+    }
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.12'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 

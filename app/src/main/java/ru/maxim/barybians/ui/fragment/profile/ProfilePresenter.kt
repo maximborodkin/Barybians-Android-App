@@ -9,7 +9,6 @@ import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.repository.remote.service.CommentService
 import ru.maxim.barybians.repository.remote.service.PostService
 import ru.maxim.barybians.repository.remote.service.UserService
-import java.lang.Exception
 
 @InjectViewState
 class ProfilePresenter : MvpPresenter<ProfileView>(), CoroutineScope by MainScope() {

@@ -2,8 +2,9 @@ package ru.maxim.barybians.repository.remote.service
 
 import com.google.gson.JsonObject
 import retrofit2.Response
-import retrofit2.http.*
-import ru.maxim.barybians.model.User
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
 import ru.maxim.barybians.model.response.AuthResponse
 import ru.maxim.barybians.repository.remote.RetrofitClient
 

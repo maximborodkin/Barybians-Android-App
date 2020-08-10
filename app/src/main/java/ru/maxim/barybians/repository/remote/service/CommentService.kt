@@ -2,7 +2,6 @@ package ru.maxim.barybians.repository.remote.service
 
 import retrofit2.Response
 import retrofit2.http.*
-import ru.maxim.barybians.model.Comment
 import ru.maxim.barybians.model.response.CommentResponse
 import ru.maxim.barybians.repository.remote.RetrofitClient
 

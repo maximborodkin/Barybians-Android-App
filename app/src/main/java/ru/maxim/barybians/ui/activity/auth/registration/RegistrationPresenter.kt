@@ -1,6 +1,5 @@
 package ru.maxim.barybians.ui.activity.auth.registration
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +10,6 @@ import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.repository.remote.service.AuthService
 import java.net.HttpURLConnection
 import java.util.*
-import kotlin.math.log
 
 @InjectViewState
 class RegistrationPresenter : MvpPresenter<RegistrationView>(), CoroutineScope by MainScope() {
@@ -54,8 +52,10 @@ class RegistrationPresenter : MvpPresenter<RegistrationView>(), CoroutineScope b
             } else {
                 when(response.code()) {
                     HttpURLConnection.HTTP_INTERNAL_ERROR -> {
-                        if (response.message() == "Username already exists!") viewState.showRegisteredUsername()
-                        else viewState.showServerError()
+                        when (response.message()){
+                            "Username already exists!" -> viewState.showRegisteredUsername()
+                            else -> viewState.showServerError()
+                        }
                     }
                     HttpURLConnection.HTTP_CLIENT_TIMEOUT -> viewState.showNetworkError()
                     HttpURLConnection.HTTP_GATEWAY_TIMEOUT -> viewState.showNetworkError()

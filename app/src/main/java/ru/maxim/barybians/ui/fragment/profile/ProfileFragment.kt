@@ -26,13 +26,12 @@ import ru.maxim.barybians.ui.fragment.profile.ProfileRecyclerAdapter.*
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.toast
 
-
 class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     ProfileItemsListener {
 
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
-    private var isPersonal = userId == PreferencesManager.userId
+    private var userId: Int? = null
     private val profileItems = ArrayList<ProfileItem>()
     private lateinit var profileRecyclerAdapter: ProfileRecyclerAdapter
 
@@ -47,8 +46,10 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        profilePresenter.loadUser(userId)
-        profileRefreshLayout.setOnRefreshListener { profilePresenter.loadUser(userId) }
+        userId = arguments?.getInt("userId") ?: PreferencesManager.userId
+        profilePresenter.loadUser(userId?:return)
+        profileRefreshLayout.setOnRefreshListener {profilePresenter.loadUser(userId?:return@setOnRefreshListener) }
+
     }
 
     override fun showNoInternet() {
@@ -59,11 +60,11 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
         profileRefreshLayout.isRefreshing = false
 
         profileItems.clear()
-        profileItems.add(ProfileItemHeader(isPersonal, user.getAvatarUrl(),
+        profileItems.add(ProfileItemHeader(userId == PreferencesManager.userId, user.getAvatarUrl(),
             "${user.firstName} ${user.lastName}", user.getRole().iconResource,
             user.getRole().stringResource, user.birthDate, user.status))
 
-        if (isPersonal)
+        if (userId == PreferencesManager.userId)
             profileItems.add(ProfileItemPostCreator(user.getAvatarUrl(), isExpanded = false))
 
         for (post in user.posts) {
@@ -78,8 +79,8 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
                     ItemComment(it.id, it.text, date, author)
                 })
             val date = DateFormatUtils.simplifyDate(post.date*1000, requireContext(), true)
-            profileItems.add(ProfileItemPost(post.id, isPersonal, user.getAvatarUrl(),
-                "${user.firstName} ${user.lastName}", date,
+            profileItems.add(ProfileItemPost(post.id, userId == PreferencesManager.userId,
+                user.getAvatarUrl(), "${user.firstName} ${user.lastName}", date,
                 post.title, post.text, likes, comments))
         }
 
@@ -94,7 +95,6 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     }
 
     override fun onStatusEdited(newStatus: String?) {
-        if (!isPersonal) return
         (profileRecyclerView.findViewHolderForAdapterPosition(0) as? ProfileHeaderViewHolder)?.apply {
             if (!newStatus.isNullOrBlank()) {
                 statusView.text = newStatus
@@ -107,7 +107,6 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     }
 
     override fun onPostCreated(post: Post) {
-        if (!isPersonal) return
         val date = DateFormatUtils.simplifyDate(post.date*1000, requireContext(), true)
         profileItems.add(2,
             ProfileItemPost(
@@ -125,7 +124,6 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     }
 
     override fun onPostUpdated(itemPosition: Int, post: Post) {
-        if (!isPersonal) return
         val date = DateFormatUtils.simplifyDate(post.date*1000, requireContext(), true)
         (profileItems[itemPosition] as? ProfileItemPost)?.let {
             it.title = post.title
@@ -189,7 +187,6 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     }
 
     override fun openPreferences() {
-        if (!isPersonal) return
         startActivity(Intent(context, PreferencesActivity::class.java))
     }
 
@@ -199,7 +196,6 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
         }
         startActivity(profileIntent)
     }
-
     override fun openImage(drawable: Drawable) {
         TODO("Not yet implemented")
     }
@@ -209,27 +205,22 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     }
 
     override fun editStatus(newStatus: String?) {
-        if (!isPersonal) return
         profilePresenter.editStatus(newStatus)
     }
 
     override fun editUserInfo() {
-        if (!isPersonal) return
         TODO("Not yet implemented")
     }
 
     override fun addPost(title: String?, text: String) {
-        if (!isPersonal) return
         profilePresenter.createPost(title, text)
     }
 
     override fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String) {
-        if (!isPersonal) return
         profilePresenter.editPost(itemPosition, postId, newTitle, newText)
     }
 
     override fun deletePost(itemPosition: Int, postId: Int) {
-        if (!isPersonal) return
         profilePresenter.deletePost(itemPosition, postId)
     }
 
@@ -243,14 +234,5 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
 
     override fun editLike(itemPosition: Int, postId: Int, setLike: Boolean) {
         profilePresenter.editLike(itemPosition, postId, setLike)
-    }
-
-    companion object {
-        private var userId: Int = PreferencesManager.userId
-
-        fun newInstance(userId: Int): ProfileFragment {
-            this.userId = if (userId == 0) PreferencesManager.userId else userId
-            return  ProfileFragment()
-        }
     }
 }

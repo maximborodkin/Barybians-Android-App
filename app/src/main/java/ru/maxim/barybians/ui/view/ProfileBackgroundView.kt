@@ -1,6 +1,5 @@
 package ru.maxim.barybians.ui.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.renderscript.Allocation

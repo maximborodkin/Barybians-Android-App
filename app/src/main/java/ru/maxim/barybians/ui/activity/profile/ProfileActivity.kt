@@ -1,7 +1,6 @@
 package ru.maxim.barybians.ui.activity.profile
 
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.activity_profile.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
@@ -15,9 +14,10 @@ class ProfileActivity : BaseActivity() {
         setContentView(R.layout.activity_profile)
         supportActionBar?.hide()
         val userId = intent.getIntExtra("userId", PreferencesManager.userId)
+        val profileFragment = ProfileFragment().apply { arguments = intent.extras }
         supportFragmentManager
             .beginTransaction()
-            .replace(profileFragmentHost.id, ProfileFragment.newInstance(userId), "ProfileFragment")
+            .replace(profileFragmentHost.id, profileFragment, "ProfileFragment#${userId}")
             .commit()
     }
 }

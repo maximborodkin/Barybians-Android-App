@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import ru.maxim.barybians.R
+import ru.maxim.barybians.repository.local.PreferencesManager.context
 
 /**
  * Singleton object for access to SharedPreferences

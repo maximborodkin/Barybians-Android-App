@@ -5,7 +5,8 @@ import android.content.res.Resources
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
-import android.widget.LinearLayout.LayoutParams.*
+import android.widget.LinearLayout.LayoutParams.MATCH_PARENT
+import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import androidx.core.text.HtmlCompat
 import com.bumptech.glide.RequestManager
@@ -29,7 +30,7 @@ class HtmlUtils(private val scope: CoroutineScope,
         onImageClickListener: OnImageClickListener
     ) {
         if (targetTextView.isNull() || targetImageLayout.isNull()) return
-        if (rawHtml.contains("<img") && rawHtml.contains("</img>")) {
+        if (rawHtml.contains("<img")) {
             val regex = Regex("<img.*?src=\"(.*?)\".*?>")
             val matches = regex.findAll(rawHtml)
             val images = ArrayList<Image>()
