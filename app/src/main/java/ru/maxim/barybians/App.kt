@@ -1,16 +1,25 @@
 package ru.maxim.barybians
 
-import android.app.Application
+import android.content.Context
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.ui.DialogFactory
 import ru.maxim.barybians.utils.DateFormatUtils
 
-class App : Application() {
+class App : MultiDexApplication() {
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
 
     override fun onCreate() {
         super.onCreate()
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+
         PreferencesManager.context = applicationContext
         RetrofitClient.context = applicationContext
 
