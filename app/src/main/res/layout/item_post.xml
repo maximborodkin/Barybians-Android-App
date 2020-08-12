@@ -62,7 +62,7 @@
         android:fontFamily="@font/roboto_regular"
         tools:text="Сессия сдана" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/itemPostText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

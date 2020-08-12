@@ -8,6 +8,7 @@ import ru.maxim.barybians.model.response.CommentResponse
 interface ProfileView : MvpView{
 
     fun showNoInternet()
+    fun showLoading()
     fun showUserProfile(user: User)
     fun onUserLoadError()
     fun onStatusEdited(newStatus: String?)
@@ -17,9 +18,9 @@ interface ProfileView : MvpView{
     fun onPostUpdateError()
     fun onPostDeleted(itemPosition: Int)
     fun onPostDeleteError()
-    fun onCommentAdded(itemPosition: Int, commentsCount: Int, comment: CommentResponse)
+    fun onCommentAdded(postPosition: Int, commentsCount: Int, comment: CommentResponse)
     fun onCommentAddError()
-    fun onCommentRemoved()
-    fun onCommentRemoveError()
-    fun onLikeEdited(itemPosition: Int, likedUsers: ArrayList<User>)
+    fun onCommentDeleted(postPosition: Int, commentsCount: Int, commentPosition: Int)
+    fun onCommentDeleteError()
+    fun onLikeEdited(postPosition: Int, likedUsers: ArrayList<User>)
 }

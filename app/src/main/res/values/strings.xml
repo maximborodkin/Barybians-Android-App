@@ -144,4 +144,8 @@
     <string name="bytes">%1$d bytes</string>
     <string name="kbytes">%1$d KBytes</string>
     <string name="mbytes">%1$d MBytes</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="an_error_occurred_while_loading_profile">An error occurred while loading profile</string>
+    <string name="unable_to_create_comment">Unable to create comment</string>
+    <string name="unable_to_delete_comment">Unable to delete comment</string>
 </resources>

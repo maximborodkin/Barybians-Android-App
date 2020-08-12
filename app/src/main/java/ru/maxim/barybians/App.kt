@@ -22,6 +22,7 @@ class App : MultiDexApplication() {
 
         PreferencesManager.context = applicationContext
         RetrofitClient.context = applicationContext
+        DateFormatUtils.context = applicationContext
 
         DateFormatUtils.currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             resources.configuration.locales[0]

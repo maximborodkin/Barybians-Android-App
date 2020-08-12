@@ -17,12 +17,12 @@ import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.ui.fragment.profile.OnImageClickListener
 import java.lang.ref.WeakReference
 
-class HtmlUtils(private val scope: CoroutineScope,
-                private val resources: Resources,
-                private val requestManager: RequestManager
+class HtmlParser(private val scope: CoroutineScope,
+                 private val resources: Resources,
+                 private val requestManager: RequestManager
 ) {
 
-    fun loadPost(
+    fun provideFormattedText(
         rawHtml: String,
         context: WeakReference<Context>,
         targetTextView: WeakReference<TextView>,

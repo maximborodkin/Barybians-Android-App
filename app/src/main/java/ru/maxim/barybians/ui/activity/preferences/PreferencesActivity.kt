@@ -1,9 +1,12 @@
 package ru.maxim.barybians.ui.activity.preferences
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
 import android.widget.Toast
 import androidx.databinding.library.BuildConfig
+import androidx.fragment.app.DialogFragment
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -48,27 +51,13 @@ class PreferencesActivity : BaseActivity() {
 //                    val glide = Glide.get(requireContext().applicationContext)
 //                    glide.clearMemory()
 //                    glide.clearDiskCache()
-//                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show()
-//                    }
 //                }
+                Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show()
                 true
             }
 
             findPreference<Preference>(PreferencesManager.logoutKey)?.setOnPreferenceClickListener {
-
-                MaterialAlertDialogBuilder(requireContext()).apply {
-                    setTitle(getString(R.string.are_you_sure))
-                    setPositiveButton(R.string.yes) { _, _ ->
-                        PreferencesManager.token = null
-                        PreferencesManager.userId = 0
-                        val loginActivityIntent = Intent(context, LoginActivity::class.java)
-                        loginActivityIntent.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(loginActivityIntent)
-                    }
-                    setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
-                }.show()
+                LogoutAlertDialog().show(parentFragmentManager, "LogoutDialogFragment")
                 true
             }
 
@@ -92,7 +81,7 @@ class PreferencesActivity : BaseActivity() {
         private fun getDirSize(dir: File?): Long {
             if (dir == null) return 0
             var size = 0L
-            for (file in dir.listFiles()) {
+            for (file in dir.listFiles()?:return 0) {
                 if (file != null && file.isDirectory) {
                     size += getDirSize(file)
                 } else if (file != null && file.isFile) {
@@ -101,5 +90,21 @@ class PreferencesActivity : BaseActivity() {
             }
             return size
         }
+    }
+
+    class LogoutAlertDialog : DialogFragment() {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?) =
+            MaterialAlertDialogBuilder(requireContext()).apply {
+                setTitle(getString(R.string.are_you_sure))
+                setPositiveButton(R.string.yes) { _, _ ->
+                    PreferencesManager.token = null
+                    PreferencesManager.userId = 0
+                    val loginActivityIntent = Intent(context, LoginActivity::class.java)
+                    loginActivityIntent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(loginActivityIntent)
+                }
+                setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
+            }.create()
     }
 }

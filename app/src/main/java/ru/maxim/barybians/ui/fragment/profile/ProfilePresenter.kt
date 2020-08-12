@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui.fragment.profile
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.CoroutineScope
@@ -94,14 +95,38 @@ class ProfilePresenter : MvpPresenter<ProfileView>(), CoroutineScope by MainScop
         }
         launch {
             try {
+                Log.d("ProfilePresenter", "Start adding comment, postId: ${postId}, postPosition: ${postPosition}, commentsCount: ${commentsCount}, text: ${text}")
                 val comment = commentService.addComment(postId, text)
+                Log.d("ProfilePresenter", "Comment request sended")
                 if (comment.isSuccessful && comment.body() != null) {
+                    Log.d("ProfilePresenter", "Comment request successful, comment.body: ${comment.body()}")
                     viewState.onCommentAdded(postPosition, commentsCount, comment.body()!!)
                 } else {
+                    Log.d("ProfilePresenter", "Comment request failed, comment.code: ${comment.code()}")
                     viewState.onCommentAddError()
                 }
             } catch (e: Exception) {
+                Log.d("ProfilePresenter", "Comment request failed, exception: ${e.localizedMessage}")
                 viewState.onCommentAddError()
+            }
+        }
+    }
+
+    fun deleteComment(postPosition: Int, commentsCount: Int, commentId: Int, commentPosition: Int) {
+        if (!RetrofitClient.isOnline()){
+            viewState.showNoInternet()
+            return
+        }
+        launch {
+            try {
+                val deleteCommentRequest = commentService.deleteComment(commentId)
+                if (deleteCommentRequest.isSuccessful && deleteCommentRequest.body() == "true") {
+                    viewState.onCommentDeleted(postPosition, commentsCount, commentPosition)
+                } else {
+                    viewState.onCommentDeleteError()
+                }
+            } catch (e: Exception) {
+                viewState.onCommentDeleteError()
             }
         }
     }

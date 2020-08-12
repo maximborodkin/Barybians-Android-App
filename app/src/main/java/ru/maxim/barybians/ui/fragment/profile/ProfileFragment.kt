@@ -26,7 +26,9 @@ import ru.maxim.barybians.ui.fragment.profile.ProfileRecyclerAdapter.*
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.toast
 
-class ProfileFragment : MvpAppCompatFragment(), ProfileView,
+class ProfileFragment :
+    MvpAppCompatFragment(),
+    ProfileView,
     ProfileItemsListener {
 
     @InjectPresenter
@@ -35,7 +37,9 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     private val profileItems = ArrayList<ProfileItem>()
     private lateinit var profileRecyclerAdapter: ProfileRecyclerAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -48,21 +52,36 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
         super.onViewCreated(view, savedInstanceState)
         userId = arguments?.getInt("userId") ?: PreferencesManager.userId
         profilePresenter.loadUser(userId?:return)
-        profileRefreshLayout.setOnRefreshListener {profilePresenter.loadUser(userId?:return@setOnRefreshListener) }
-
+        profileRefreshLayout.setOnRefreshListener {
+            profilePresenter.loadUser(userId?:return@setOnRefreshListener)
+        }
     }
 
     override fun showNoInternet() {
-        TODO("Not yet implemented")
+        profileLoader.visibility = View.GONE
+        profileRefreshLayout.isRefreshing = false
+        context?.toast(getString(R.string.no_internet_connection))
+    }
+
+    override fun showLoading() {
+        profileLoader.visibility = View.VISIBLE
     }
 
     override fun showUserProfile(user: User) {
+        profileLoader.visibility = View.GONE
         profileRefreshLayout.isRefreshing = false
 
         profileItems.clear()
-        profileItems.add(ProfileItemHeader(userId == PreferencesManager.userId, user.getAvatarUrl(),
-            "${user.firstName} ${user.lastName}", user.getRole().iconResource,
-            user.getRole().stringResource, user.birthDate, user.status))
+        profileItems.add(
+            ProfileItemHeader(
+                userId == PreferencesManager.userId,
+                user.getAvatarUrl(),
+                "${user.firstName} ${user.lastName}",
+                user.getRole().iconResource,
+                user.getRole().stringResource,
+                user.birthDate,
+                user.status)
+        )
 
         if (userId == PreferencesManager.userId)
             profileItems.add(ProfileItemPostCreator(user.getAvatarUrl(), isExpanded = false))
@@ -73,12 +92,17 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
                     ItemUser(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
                 })
             val comments = ArrayList<ItemComment>()
-            comments.addAll(post.comments.map {
-                    val author = ItemUser(it.author.id, "${it.author.firstName} ${it.author.lastName}", it.author.getAvatarUrl())
-                    val date = DateFormatUtils.simplifyDate(it.date*1000, requireContext(), true)
-                    ItemComment(it.id, it.text, date, author)
+            comments.addAll(post.comments.map { comment ->
+                    val author = ItemUser(
+                        comment.author.id,
+                        "${comment.author.firstName} ${comment.author.lastName}",
+                        comment.author.getAvatarUrl()
+                    )
+                    val date =
+                        DateFormatUtils.getSimplifiedDate(comment.date*1000)
+                    ItemComment(comment.id, comment.text, date, author)
                 })
-            val date = DateFormatUtils.simplifyDate(post.date*1000, requireContext(), true)
+            val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
             profileItems.add(ProfileItemPost(post.id, userId == PreferencesManager.userId,
                 user.getAvatarUrl(), "${user.firstName} ${user.lastName}", date,
                 post.title, post.text, likes, comments))
@@ -91,7 +115,9 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     }
 
     override fun onUserLoadError() {
-        TODO("Not yet implemented")
+        profileLoader.visibility = View.GONE
+        profileRefreshLayout.isRefreshing = false
+        context?.toast(getString(R.string.an_error_occurred_while_loading_profile))
     }
 
     override fun onStatusEdited(newStatus: String?) {
@@ -107,7 +133,7 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     }
 
     override fun onPostCreated(post: Post) {
-        val date = DateFormatUtils.simplifyDate(post.date*1000, requireContext(), true)
+        val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
         profileItems.add(2,
             ProfileItemPost(
                 post.id, true, PreferencesManager.userAvatar, PreferencesManager.userName, date,
@@ -124,7 +150,7 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
     }
 
     override fun onPostUpdated(itemPosition: Int, post: Post) {
-        val date = DateFormatUtils.simplifyDate(post.date*1000, requireContext(), true)
+        val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
         (profileItems[itemPosition] as? ProfileItemPost)?.let {
             it.title = post.title
             it.text = post.text
@@ -146,38 +172,52 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
         context?.toast(getString(R.string.unable_to_delete_post))
     }
 
-    override fun onCommentAdded(itemPosition: Int, commentsCount: Int, comment: CommentResponse) {
-        val date = DateFormatUtils.simplifyDate(comment.date*1000, requireContext(), true)
-        val author = ItemUser(PreferencesManager.userId, PreferencesManager.userName, PreferencesManager.userAvatar)
-        (profileItems[itemPosition] as? ProfileItemPost)?.comments?.add(ItemComment(comment.id, comment.text, date, author))
-        profileRecyclerAdapter.notifyItemChanged(itemPosition)
+    override fun onCommentAdded(postPosition: Int, commentsCount: Int, comment: CommentResponse) {
+        val date = DateFormatUtils.getSimplifiedDate(comment.date*1000)
+        val author = ItemUser(
+            PreferencesManager.userId,
+            PreferencesManager.userName,
+            PreferencesManager.userAvatar
+        )
+        (profileItems[postPosition] as? ProfileItemPost)?.comments?.add(ItemComment(comment.id, comment.text, date, author))
+
+        profileRecyclerAdapter.notifyItemChanged(postPosition)
         profileRecyclerAdapter.currentBottomSheetDialog?.let {
-            it.commentsBottomSheetMessage.text =
-                resources.getQuantityString(R.plurals.comment_plurals, commentsCount + 1, commentsCount + 1)
+            it.commentsBottomSheetMessage?.text = resources.getQuantityString(
+                R.plurals.comment_plurals, commentsCount + 1, commentsCount + 1)
             it.commentsBottomSheetRecyclerView?.adapter?.notifyItemInserted(commentsCount)
-            it.commentsBottomSheetEditor.text = null
+            it.commentsBottomSheetEditor?.text = null
         }
     }
 
     override fun onCommentAddError() {
-        TODO("Not yet implemented")
+        Toast.makeText(context, getString(R.string.unable_to_create_comment), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onCommentRemoved() {
-        TODO("Not yet implemented")
+    override fun onCommentDeleted(postPosition: Int, commentsCount: Int, commentPosition: Int) {
+        (profileItems[postPosition] as? ProfileItemPost)?.comments?.removeAt(commentPosition)
+        profileRecyclerAdapter.notifyItemChanged(postPosition)
+        profileRecyclerAdapter.currentBottomSheetDialog?.let {
+            if (commentsCount > 1){
+                it.commentsBottomSheetMessage?.text = resources.getQuantityString(
+                    R.plurals.comment_plurals, commentsCount - 1, commentsCount - 1)
+            } else it.commentsBottomSheetMessage?.text = getString(R.string.no_comments_yet)
+            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemRemoved(commentPosition)
+        }
     }
 
-    override fun onCommentRemoveError() {
-        TODO("Not yet implemented")
+    override fun onCommentDeleteError() {
+        Toast.makeText(context, getString(R.string.unable_to_delete_comment), Toast.LENGTH_SHORT).show()
     }
 
-    override fun onLikeEdited(itemPosition: Int, likedUsers: ArrayList<User>) {
-        val likesList = (profileItems[itemPosition] as? ProfileItemPost)?.likes
+    override fun onLikeEdited(postPosition: Int, likedUsers: ArrayList<User>) {
+        val likesList = (profileItems[postPosition] as? ProfileItemPost)?.likes
         likesList?.clear()
         likedUsers.forEach {
             likesList?.add(ItemUser(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl()))
         }
-        val postItemViewHolder = profileRecyclerView.findViewHolderForAdapterPosition(itemPosition)
+        val postItemViewHolder =
+            profileRecyclerView.findViewHolderForAdapterPosition(postPosition)
         (postItemViewHolder as? ProfilePostViewHolder)?.invalidateLikes?.invoke()
     }
 
@@ -228,8 +268,8 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView,
         profilePresenter.addComment(postId, itemPosition, commentsCount, text)
     }
 
-    override fun deleteComment(commentId: Int, itemPosition: Int) {
-        TODO("Not yet implemented")
+    override fun deleteComment(postPosition: Int, commentsCount: Int, commentId: Int, commentPosition: Int) {
+        profilePresenter.deleteComment(postPosition, commentsCount, commentId, commentPosition)
     }
 
     override fun editLike(itemPosition: Int, postId: Int, setLike: Boolean) {

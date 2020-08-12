@@ -34,4 +34,5 @@
     <color name="dark_colorTertiaryText">#666666</color>
     <color name="grey">#666666</color>
     <color name="light_grey">#E0E0E0</color>
+    <color name="delete_swipe_background">#FF0000</color>
 </resources>

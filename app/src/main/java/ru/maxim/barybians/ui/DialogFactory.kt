@@ -19,37 +19,42 @@ import ru.maxim.barybians.ui.fragment.profile.OnImageClickListener
 import ru.maxim.barybians.ui.fragment.profile.OnUserClickListener
 import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemComment
 import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemUser
-import ru.maxim.barybians.utils.HtmlUtils
+import ru.maxim.barybians.utils.HtmlParser
 
 /**
  * Singleton class for create dialogs
  */
 object DialogFactory {
 
-    fun createLikesListDialog(context: Context, likes: ArrayList<ItemUser>,
-                              onUserClickListener: OnUserClickListener) =
-    BottomSheetDialog(context).apply {
-        setContentView(R.layout.fragment_likes_bottom_sheet)
-        val likesCount = likes.size
-        if (likesCount == 0) {
-            likesBottomSheetTitle.visibility = View.GONE
-            likesBottomSheetMessage.text = context.getString(R.string.nobody_like_this)
-        } else {
-            likesBottomSheetMessage.visibility = View.GONE
-            likesBottomSheetTitle.text =
-                context.resources.getQuantityString(R.plurals.like_plurals, likesCount, likesCount)
+    fun createLikesListDialog(
+        context: Context,
+        likes: ArrayList<ItemUser>,
+        onUserClickListener: OnUserClickListener
+    ) =
+        BottomSheetDialog(context).apply {
+            setContentView(R.layout.fragment_likes_bottom_sheet)
+            val likesCount = likes.size
+            if (likesCount == 0) {
+                likesBottomSheetTitle.visibility = View.GONE
+                likesBottomSheetMessage.text = context.getString(R.string.nobody_like_this)
+            } else {
+                likesBottomSheetMessage.visibility = View.GONE
+                likesBottomSheetTitle.text =
+                    context.resources.getQuantityString(R.plurals.like_plurals, likesCount, likesCount)
+            }
+            likesBottomSheetRecyclerView.let {
+                it.layoutManager = LinearLayoutManager(context)
+                it.adapter = LikedUsersRecyclerAdapter(likes, onUserClickListener)
+            }
         }
-        likesBottomSheetRecyclerView.let {
-            it.layoutManager = LinearLayoutManager(context)
-            it.adapter = LikedUsersRecyclerAdapter(likes, onUserClickListener)
-        }
-    }
 
-    fun createCommentsListDialog(context: Context, comments: ArrayList<ItemComment>,
+    fun createCommentsListDialog(context: Context,
+                                 comments: ArrayList<ItemComment>,
                                  onUserClickListener: OnUserClickListener,
                                  onImageClickListener: OnImageClickListener,
-                                 htmlUtils: HtmlUtils,
-                                 addCommentCallback: (text: String) -> Unit) =
+                                 htmlParser: HtmlParser,
+                                 addCommentCallback: (text: String) -> Unit,
+                                 deleteCommentCallback: (commentsCount: Int, commentPosition: Int, commentId: Int) -> Unit) =
         BottomSheetDialog(context).apply {
             setContentView(R.layout.fragment_comments_bottom_sheet)
             val commentsCount = comments.size
@@ -64,7 +69,7 @@ object DialogFactory {
             commentsBottomSheetRecyclerView.let {
                 it.layoutManager = LinearLayoutManager(context)
                 it.adapter = CommentsRecyclerAdapter(comments, onUserClickListener,
-                    onImageClickListener, htmlUtils)
+                    onImageClickListener, deleteCommentCallback, htmlParser)
             }
 
             commentsBottomSheetEditor.addTextChangedListener {
@@ -85,7 +90,8 @@ object DialogFactory {
             }
         }
 
-    fun createEditStatusDialog(context: Context, status: String?,
+    fun createEditStatusDialog(context: Context,
+                               status: String?,
                                editCallback: (status: String?) -> Unit) =
         AlertDialog.Builder(context).apply {
             setTitle(context.getString(R.string.edit_status))
@@ -102,7 +108,10 @@ object DialogFactory {
         }.create()
 
 
-    fun createPostMenu(context: Context, title: String?, text: String, deleteCallback: () -> Unit,
+    fun createPostMenu(context: Context,
+                       title: String?,
+                       text: String,
+                       deleteCallback: () -> Unit,
                        editCallback: (title: String?, text: String) -> Unit): BottomSheetDialog =
          BottomSheetDialog(context).apply {
             setContentView(R.layout.fragment_post_menu_bottom_sheet)

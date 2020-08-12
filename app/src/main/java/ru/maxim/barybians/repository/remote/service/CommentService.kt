@@ -11,8 +11,7 @@ interface CommentService {
     @POST("/api/comments")
     suspend fun addComment(@Field("postId") postId: Int,
                            @Field("text") text: String): Response<CommentResponse>
-
-    @FormUrlEncoded
+    
     @DELETE("/api/comments/{commentId}")
     suspend fun deleteComment(@Path("commentId") commentId: Int): Response<String>
 

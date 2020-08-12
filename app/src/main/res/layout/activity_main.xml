@@ -6,15 +6,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.activity.main.MainActivity">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mainFragmentHost"
-        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/navigation_main"
         android:layout_marginBottom="56dp"
-        tools:ignore="FragmentTagUsage" />
+        tools:showIn="@layout/activity_main" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainNavigationBottom"
@@ -22,5 +19,4 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:menu="@menu/menu_main_bottom"/>
-
 </RelativeLayout>

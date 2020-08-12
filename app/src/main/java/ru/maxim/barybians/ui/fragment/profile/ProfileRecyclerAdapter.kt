@@ -31,7 +31,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.DialogFactory
 import ru.maxim.barybians.ui.view.AvatarView
-import ru.maxim.barybians.utils.HtmlUtils
+import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.toast
 import ru.maxim.barybians.utils.weak
 import java.util.*
@@ -40,7 +40,9 @@ import java.util.*
 class ProfileRecyclerAdapter(private val profileItems: ArrayList<ProfileItem>,
                              private val profileItemsListener: ProfileItemsListener,
                              private val lifecycleOwner: LifecycleOwner
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), OnUserClickListener, OnImageClickListener {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+    OnUserClickListener,
+    OnImageClickListener {
 
     private lateinit var recyclerView: RecyclerView
     var currentBottomSheetDialog: BottomSheetDialog? = null
@@ -98,7 +100,8 @@ class ProfileRecyclerAdapter(private val profileItems: ArrayList<ProfileItem>,
             titleView.text = null
             textView.clearFocus()
             textView.text = null
-            val inputMethodManager = itemView.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager =
+                itemView.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(itemView.windowToken, 0)
         }
     }
@@ -110,7 +113,7 @@ class ProfileRecyclerAdapter(private val profileItems: ArrayList<ProfileItem>,
         val menuBtn: AppCompatImageView = view.itemPostMenuBtn
         val dateView: TextView = view.itemPostDate
         val titleView: TextView = view.itemPostTitle
-        val textView: AppCompatTextView = view.itemPostText
+        val textView: TextView = view.itemPostText
         val imagesViewGroup: LinearLayout = view.itemPostImagesHolder
         val likeBtn: AppCompatTextView = view.itemPostLikeBtn
         val commentBtn: AppCompatTextView = view.itemPostCommentBtn
@@ -269,14 +272,9 @@ class ProfileRecyclerAdapter(private val profileItems: ArrayList<ProfileItem>,
                     postViewHolder.titleView.text = post.title
                 }
 
-//                val imageGetter = HtmlImageGetter(lifecycleOwner.lifecycleScope, context.resources,  Glide.with(context), postViewHolder.textView)
-//                val styledText = HtmlCompat.fromHtml(post.text, HtmlCompat.FROM_HTML_MODE_COMPACT, imageGetter, null)
-//                postViewHolder.textView.text = styledText
-//                postViewHolder.textView.movementMethod = LinkMovementMethod.getInstance()
                 postViewHolder.imagesViewGroup.removeAllViews()
-                val htmlUtils = HtmlUtils(lifecycleOwner.lifecycleScope, context.resources, Glide.with(context))
-                htmlUtils.loadPost(post.text, weak(context), weak(postViewHolder.textView), weak(postViewHolder.imagesViewGroup), this)
-
+                val htmlUtils = HtmlParser(lifecycleOwner.lifecycleScope, context.resources, Glide.with(context))
+                htmlUtils.provideFormattedText(post.text, weak(context), weak(postViewHolder.textView), weak(postViewHolder.imagesViewGroup), this)
 
                 with(postViewHolder.likeBtn) {
                     var hasPersonalLike: Boolean
@@ -311,15 +309,19 @@ class ProfileRecyclerAdapter(private val profileItems: ArrayList<ProfileItem>,
                 postViewHolder.commentBtn.text = if (commentsCount == 0) null else commentsCount.toString()
                 postViewHolder.commentBtn.setOnClickListener {
                     val commentsListFragment =
-                        DialogFactory.createCommentsListDialog(context, post.comments, this, this, htmlUtils) { text ->
-                            profileItemsListener.addComment(post.postId, holder.adapterPosition, post.comments.size, text)
-                    }
+                        DialogFactory.createCommentsListDialog(context, post.comments, this, this, htmlUtils,
+                            { text ->
+                                profileItemsListener.addComment(post.postId, position, post.comments.size, text)
+                            },
+                            { commentsCount, commentPosition, commentId ->
+                                profileItemsListener.deleteComment(position, commentsCount, commentId, commentPosition)
+                            })
                     currentBottomSheetDialog = commentsListFragment
                     commentsListFragment.show()
                 }
 
             }
-            else -> throw IllegalStateException("Unknown view type")
+            else -> return
         }
     }
 
@@ -335,7 +337,7 @@ class ProfileRecyclerAdapter(private val profileItems: ArrayList<ProfileItem>,
         fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String)
         fun deletePost(itemPosition: Int, postId: Int)
         fun addComment(postId: Int, itemPosition: Int, commentsCount: Int, text: String)
-        fun deleteComment(commentId: Int, itemPosition: Int)
+        fun deleteComment(postPosition: Int, commentsCount: Int, commentId: Int, commentPosition: Int)
         fun editLike(itemPosition: Int, postId: Int, setLike: Boolean)
     }
 

@@ -39,6 +39,6 @@ class DialogsListRecyclerAdapter(private val dialogs: ArrayList<Dialog>) : Recyc
             else
                 dialog.secondUser.firstName
         holder.messageView.text = "$sender: ${dialog.lastMessage.text}"
-        holder.dateView.text = DateFormatUtils.simplifyDate(dialog.lastMessage.time*1000, context, true)
+        holder.dateView.text = DateFormatUtils.getSimplifiedDate(dialog.lastMessage.time*1000)
     }
 }
