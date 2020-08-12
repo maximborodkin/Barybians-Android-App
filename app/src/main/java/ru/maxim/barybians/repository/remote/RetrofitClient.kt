@@ -8,7 +8,7 @@ import okhttp3.ConnectionSpec
 import okhttp3.OkHttpClient
 import okhttp3.TlsVersion
 import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
+import okhttp3.logging.HttpLoggingInterceptor.Level.BASIC
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.maxim.barybians.repository.local.PreferencesManager
@@ -49,7 +49,7 @@ object RetrofitClient {
                     .build()
                 return@addInterceptor it.proceed(request)
             }
-            .addInterceptor(HttpLoggingInterceptor().apply { level = BODY })
+            .addInterceptor(HttpLoggingInterceptor().apply { level = BASIC })
             .connectionSpecs(connectionSpec)
             .build()
     }

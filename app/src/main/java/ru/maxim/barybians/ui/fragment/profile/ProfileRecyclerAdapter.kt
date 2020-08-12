@@ -170,7 +170,7 @@ class ProfileRecyclerAdapter(private val profileItems: ArrayList<ProfileItem>,
                         return@OnTouchListener if (event.action == MotionEvent.ACTION_DOWN &&
                             event.rawX >= right - compoundDrawables[2].bounds.width()
                         ) {
-                            context.toast(context.getString(header.roleDescription))
+                            context.toast(header.roleDescription)
                             true
                         } else false
                     })
@@ -323,6 +323,11 @@ class ProfileRecyclerAdapter(private val profileItems: ArrayList<ProfileItem>,
             }
             else -> return
         }
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        currentBottomSheetDialog?.dismiss()
     }
 
     interface ProfileItemsListener {

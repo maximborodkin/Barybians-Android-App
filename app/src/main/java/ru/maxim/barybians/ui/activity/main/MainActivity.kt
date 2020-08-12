@@ -13,8 +13,6 @@ import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
-import java.lang.IllegalStateException
-
 
 class MainActivity : BaseActivity() {
 
@@ -25,28 +23,43 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val token = PreferencesManager.token
         val id = PreferencesManager.userId
-        if (token.isNullOrEmpty() || id == 0){
+
+        if (token.isNullOrEmpty() || id == 0) {
             val loginActivityIntent = Intent(this, LoginActivity::class.java)
             loginActivityIntent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
             startActivity(loginActivityIntent)
         } else {
             val userIdBundle = Bundle().apply { putInt("userId", id) }
-            feedFragment = FeedFragment().apply { arguments = userIdBundle }
-            dialogsLisFragment = DialogsListFragment().apply { arguments = userIdBundle }
-            profileFragment = ProfileFragment().apply { arguments = userIdBundle }
 
-            supportFragmentManager
-                .beginTransaction()
-                .add(R.id.mainFragmentHost, feedFragment, "FeedFragmentMain").hide(feedFragment)
-                .add(R.id.mainFragmentHost, dialogsLisFragment, "DialogsListFragmentMain").hide(dialogsLisFragment)
-                .add(R.id.mainFragmentHost, profileFragment, "profileFragmentMain").hide(profileFragment)
-                .commit()
+            if (savedInstanceState == null){
+                feedFragment = FeedFragment().apply { arguments = userIdBundle; retainInstance = true }
+                dialogsLisFragment = DialogsListFragment().apply { arguments = userIdBundle; retainInstance = true }
+                profileFragment = ProfileFragment().apply { arguments = userIdBundle; retainInstance = true }
 
-            if (savedInstanceState == null) {
+                supportFragmentManager
+                    .beginTransaction()
+                    .add(R.id.mainFragmentHost, feedFragment, null).hide(feedFragment)
+                    .add(R.id.mainFragmentHost, dialogsLisFragment, null).hide(dialogsLisFragment)
+                    .add(R.id.mainFragmentHost, profileFragment, null).hide(profileFragment)
+                    .commit()
+
                 mainNavigationBottom.selectedItemId = R.id.profileFragment
                 setFragment(R.id.profileFragment)
+            } else {
+                val bundleFeedFragment = supportFragmentManager.getFragment(savedInstanceState, "FeedFragment")
+                feedFragment = if ((bundleFeedFragment as? FeedFragment) != null) bundleFeedFragment
+                else FeedFragment().apply { arguments = userIdBundle; retainInstance = true }
+
+                val bundleDialogsListFragment = supportFragmentManager.getFragment(savedInstanceState, "DialogsListFragment")
+                dialogsLisFragment = if ((bundleDialogsListFragment as? DialogsListFragment) != null) bundleDialogsListFragment
+                else DialogsListFragment().apply { arguments = userIdBundle; retainInstance = true }
+
+                val bundleProfileFragment = supportFragmentManager.getFragment(savedInstanceState, "ProfileFragment")
+                profileFragment = if ((bundleProfileFragment as? ProfileFragment) != null) bundleProfileFragment
+                else ProfileFragment().apply { arguments = userIdBundle; retainInstance = true }
             }
 
             mainNavigationBottom.setOnNavigationItemSelectedListener { menuItem ->
@@ -58,6 +71,9 @@ class MainActivity : BaseActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt("selectedItemId", mainNavigationBottom.selectedItemId)
+        supportFragmentManager.putFragment(outState, "FeedFragment", feedFragment)
+        supportFragmentManager.putFragment(outState, "DialogsListFragment", dialogsLisFragment)
+        supportFragmentManager.putFragment(outState, "ProfileFragment", profileFragment)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {

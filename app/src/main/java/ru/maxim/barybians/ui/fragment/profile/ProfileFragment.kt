@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -48,19 +47,25 @@ class ProfileFragment :
         profileRecyclerAdapter = ProfileRecyclerAdapter(profileItems, this, this)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        profileRecyclerView.adapter = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userId = arguments?.getInt("userId") ?: PreferencesManager.userId
-        profilePresenter.loadUser(userId?:return)
         profileRefreshLayout.setOnRefreshListener {
             profilePresenter.loadUser(userId?:return@setOnRefreshListener)
         }
+        if (savedInstanceState == null)
+            profilePresenter.loadUser(userId?:return)
     }
 
     override fun showNoInternet() {
         profileLoader.visibility = View.GONE
         profileRefreshLayout.isRefreshing = false
-        context?.toast(getString(R.string.no_internet_connection))
+        context?.toast(R.string.no_internet_connection)
     }
 
     override fun showLoading() {
@@ -117,7 +122,7 @@ class ProfileFragment :
     override fun onUserLoadError() {
         profileLoader.visibility = View.GONE
         profileRefreshLayout.isRefreshing = false
-        context?.toast(getString(R.string.an_error_occurred_while_loading_profile))
+        context?.toast(R.string.an_error_occurred_while_loading_profile)
     }
 
     override fun onStatusEdited(newStatus: String?) {
@@ -146,7 +151,7 @@ class ProfileFragment :
     }
 
     override fun onPostCreateError() {
-        Toast.makeText(context, getString(R.string.unable_to_create_post), Toast.LENGTH_SHORT).show()
+        context?.toast(R.string.unable_to_create_post)
     }
 
     override fun onPostUpdated(itemPosition: Int, post: Post) {
@@ -160,7 +165,7 @@ class ProfileFragment :
     }
 
     override fun onPostUpdateError() {
-        context?.toast(getString(R.string.unable_to_update_post))
+        context?.toast(R.string.unable_to_update_post)
     }
 
     override fun onPostDeleted(itemPosition: Int) {
@@ -169,7 +174,7 @@ class ProfileFragment :
     }
 
     override fun onPostDeleteError() {
-        context?.toast(getString(R.string.unable_to_delete_post))
+        context?.toast(R.string.unable_to_delete_post)
     }
 
     override fun onCommentAdded(postPosition: Int, commentsCount: Int, comment: CommentResponse) {
@@ -191,7 +196,7 @@ class ProfileFragment :
     }
 
     override fun onCommentAddError() {
-        Toast.makeText(context, getString(R.string.unable_to_create_comment), Toast.LENGTH_SHORT).show()
+        context?.toast(R.string.unable_to_create_comment)
     }
 
     override fun onCommentDeleted(postPosition: Int, commentsCount: Int, commentPosition: Int) {
@@ -207,7 +212,7 @@ class ProfileFragment :
     }
 
     override fun onCommentDeleteError() {
-        Toast.makeText(context, getString(R.string.unable_to_delete_comment), Toast.LENGTH_SHORT).show()
+        context?.toast(R.string.unable_to_delete_comment)
     }
 
     override fun onLikeEdited(postPosition: Int, likedUsers: ArrayList<User>) {
