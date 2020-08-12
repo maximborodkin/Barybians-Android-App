@@ -17,11 +17,14 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_comment.view.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.ui.base.OnImageClickListener
+import ru.maxim.barybians.ui.base.OnUserClickListener
+import ru.maxim.barybians.ui.base.PostItem
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.weak
 
-class CommentsRecyclerAdapter(private val comments: ArrayList<ProfileItemPost.ItemComment>,
+class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentItem>,
                               private val onUserClickListener: OnUserClickListener,
                               private val onImageClickListener: OnImageClickListener,
                               private val deleteCommentCallback: (commentsCount: Int,

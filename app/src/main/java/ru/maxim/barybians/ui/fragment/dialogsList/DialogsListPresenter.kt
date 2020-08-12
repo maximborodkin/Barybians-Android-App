@@ -14,6 +14,11 @@ class DialogsListPresenter : MvpPresenter<DialogsListView>(), CoroutineScope by 
 
     private val dialogService = DialogService()
 
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        loadDialogsList()
+    }
+
     fun loadDialogsList() {
         launch {
             try {

@@ -22,8 +22,6 @@ class DialogsListFragment : MvpAppCompatFragment(), DialogsListView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialogsListRefreshLayout.setOnRefreshListener { dialogsListPresenter.loadDialogsList() }
-        if (savedInstanceState == null)
-            dialogsListPresenter.loadDialogsList()
     }
 
     override fun showDialogsList(dialogsList: ArrayList<Dialog>) {

@@ -13,12 +13,12 @@ import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_post_editor.view.*
 import kotlinx.android.synthetic.main.fragment_post_menu_bottom_sheet.*
 import ru.maxim.barybians.R
+import ru.maxim.barybians.ui.base.OnImageClickListener
+import ru.maxim.barybians.ui.base.OnUserClickListener
 import ru.maxim.barybians.ui.fragment.profile.CommentsRecyclerAdapter
 import ru.maxim.barybians.ui.fragment.profile.LikedUsersRecyclerAdapter
-import ru.maxim.barybians.ui.fragment.profile.OnImageClickListener
-import ru.maxim.barybians.ui.fragment.profile.OnUserClickListener
-import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemComment
-import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemUser
+import ru.maxim.barybians.ui.base.PostItem.CommentItem
+import ru.maxim.barybians.ui.base.PostItem.UserItem
 import ru.maxim.barybians.utils.HtmlParser
 
 /**
@@ -28,7 +28,7 @@ object DialogFactory {
 
     fun createLikesListDialog(
         context: Context,
-        likes: ArrayList<ItemUser>,
+        likes: ArrayList<UserItem>,
         onUserClickListener: OnUserClickListener
     ) =
         BottomSheetDialog(context).apply {
@@ -49,7 +49,7 @@ object DialogFactory {
         }
 
     fun createCommentsListDialog(context: Context,
-                                 comments: ArrayList<ItemComment>,
+                                 comments: ArrayList<CommentItem>,
                                  onUserClickListener: OnUserClickListener,
                                  onImageClickListener: OnImageClickListener,
                                  htmlParser: HtmlParser,

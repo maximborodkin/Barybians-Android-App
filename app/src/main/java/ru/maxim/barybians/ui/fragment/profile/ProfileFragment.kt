@@ -19,9 +19,9 @@ import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.activity.preferences.PreferencesActivity
 import ru.maxim.barybians.ui.activity.profile.ProfileActivity
-import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemComment
-import ru.maxim.barybians.ui.fragment.profile.ProfileItemPost.ItemUser
-import ru.maxim.barybians.ui.fragment.profile.ProfileRecyclerAdapter.*
+import ru.maxim.barybians.ui.base.*
+import ru.maxim.barybians.ui.base.FeedRecyclerAdapter.*
+import ru.maxim.barybians.ui.base.PostItem.*
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.toast
 
@@ -33,7 +33,7 @@ class ProfileFragment :
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
     private var userId: Int? = null
-    private val profileItems = ArrayList<ProfileItem>()
+    private val profileItems = ArrayList<FeedItem>()
     private lateinit var profileRecyclerAdapter: ProfileRecyclerAdapter
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -78,39 +78,49 @@ class ProfileFragment :
 
         profileItems.clear()
         profileItems.add(
-            ProfileItemHeader(
+            HeaderItem(
                 userId == PreferencesManager.userId,
                 user.getAvatarUrl(),
                 "${user.firstName} ${user.lastName}",
                 user.getRole().iconResource,
                 user.getRole().stringResource,
                 user.birthDate,
-                user.status)
+                user.status
+            )
         )
 
         if (userId == PreferencesManager.userId)
-            profileItems.add(ProfileItemPostCreator(user.getAvatarUrl(), isExpanded = false))
+            profileItems.add(
+                PostCreatorItem(
+                    user.getAvatarUrl(),
+                    isExpanded = false
+                )
+            )
 
         for (post in user.posts) {
-            val likes = ArrayList<ItemUser>()
+            val likes = ArrayList<UserItem>()
             likes.addAll(post.likedUsers.map {
-                    ItemUser(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
+                    UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
                 })
-            val comments = ArrayList<ItemComment>()
+            val comments = ArrayList<CommentItem>()
             comments.addAll(post.comments.map { comment ->
-                    val author = ItemUser(
+                    val author = UserItem(
                         comment.author.id,
                         "${comment.author.firstName} ${comment.author.lastName}",
                         comment.author.getAvatarUrl()
                     )
                     val date =
                         DateFormatUtils.getSimplifiedDate(comment.date*1000)
-                    ItemComment(comment.id, comment.text, date, author)
+                    CommentItem(comment.id, comment.text, date, author)
                 })
             val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
-            profileItems.add(ProfileItemPost(post.id, userId == PreferencesManager.userId,
-                user.getAvatarUrl(), "${user.firstName} ${user.lastName}", date,
-                post.title, post.text, likes, comments))
+            profileItems.add(
+                PostItem(
+                    post.id, userId == PreferencesManager.userId,
+                    user.getAvatarUrl(), "${user.firstName} ${user.lastName}", date,
+                    post.title, post.text, likes, comments
+                )
+            )
         }
 
         profileRecyclerView.apply {
@@ -126,7 +136,7 @@ class ProfileFragment :
     }
 
     override fun onStatusEdited(newStatus: String?) {
-        (profileRecyclerView.findViewHolderForAdapterPosition(0) as? ProfileHeaderViewHolder)?.apply {
+        (profileRecyclerView.findViewHolderForAdapterPosition(0) as? HeaderViewHolder)?.apply {
             if (!newStatus.isNullOrBlank()) {
                 statusView.text = newStatus
                 statusView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
@@ -140,13 +150,14 @@ class ProfileFragment :
     override fun onPostCreated(post: Post) {
         val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
         profileItems.add(2,
-            ProfileItemPost(
+            PostItem(
                 post.id, true, PreferencesManager.userAvatar, PreferencesManager.userName, date,
                 post.title, post.text, ArrayList(), ArrayList()
             )
         )
-        (profileItems[1] as? ProfileItemPostCreator)?.isExpanded = false
-        (profileRecyclerView.findViewHolderForAdapterPosition(1) as? ProfilePostCreatorViewHolder)?.reset()
+        (profileItems[1] as? PostCreatorItem)?.isExpanded = false
+        (profileRecyclerView.findViewHolderForAdapterPosition(1)
+                as? PostCreatorViewHolder)?.reset()
         profileRecyclerAdapter.notifyItemInserted(2)
     }
 
@@ -156,7 +167,7 @@ class ProfileFragment :
 
     override fun onPostUpdated(itemPosition: Int, post: Post) {
         val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
-        (profileItems[itemPosition] as? ProfileItemPost)?.let {
+        (profileItems[itemPosition] as? PostItem)?.let {
             it.title = post.title
             it.text = post.text
             it.date = date
@@ -179,12 +190,12 @@ class ProfileFragment :
 
     override fun onCommentAdded(postPosition: Int, commentsCount: Int, comment: CommentResponse) {
         val date = DateFormatUtils.getSimplifiedDate(comment.date*1000)
-        val author = ItemUser(
+        val author = UserItem(
             PreferencesManager.userId,
             PreferencesManager.userName,
             PreferencesManager.userAvatar
         )
-        (profileItems[postPosition] as? ProfileItemPost)?.comments?.add(ItemComment(comment.id, comment.text, date, author))
+        (profileItems[postPosition] as? PostItem)?.comments?.add(CommentItem(comment.id, comment.text, date, author))
 
         profileRecyclerAdapter.notifyItemChanged(postPosition)
         profileRecyclerAdapter.currentBottomSheetDialog?.let {
@@ -200,7 +211,7 @@ class ProfileFragment :
     }
 
     override fun onCommentDeleted(postPosition: Int, commentsCount: Int, commentPosition: Int) {
-        (profileItems[postPosition] as? ProfileItemPost)?.comments?.removeAt(commentPosition)
+        (profileItems[postPosition] as? PostItem)?.comments?.removeAt(commentPosition)
         profileRecyclerAdapter.notifyItemChanged(postPosition)
         profileRecyclerAdapter.currentBottomSheetDialog?.let {
             if (commentsCount > 1){
@@ -216,14 +227,14 @@ class ProfileFragment :
     }
 
     override fun onLikeEdited(postPosition: Int, likedUsers: ArrayList<User>) {
-        val likesList = (profileItems[postPosition] as? ProfileItemPost)?.likes
+        val likesList = (profileItems[postPosition] as? PostItem)?.likes
         likesList?.clear()
         likedUsers.forEach {
-            likesList?.add(ItemUser(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl()))
+            likesList?.add(UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl()))
         }
         val postItemViewHolder =
             profileRecyclerView.findViewHolderForAdapterPosition(postPosition)
-        (postItemViewHolder as? ProfilePostViewHolder)?.invalidateLikes?.invoke()
+        (postItemViewHolder as? PostViewHolder)?.invalidateLikes?.invoke()
     }
 
     /* ProfileItemsListener */

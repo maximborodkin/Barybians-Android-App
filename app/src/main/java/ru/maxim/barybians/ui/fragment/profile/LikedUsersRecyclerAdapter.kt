@@ -8,10 +8,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_user.view.*
 import ru.maxim.barybians.R
+import ru.maxim.barybians.ui.base.OnUserClickListener
+import ru.maxim.barybians.ui.base.PostItem
 import ru.maxim.barybians.ui.fragment.profile.LikedUsersRecyclerAdapter.UserViewHolder
 import ru.maxim.barybians.ui.view.AvatarView
 
-class LikedUsersRecyclerAdapter(private val users: ArrayList<ProfileItemPost.ItemUser>,
+class LikedUsersRecyclerAdapter(private val users: ArrayList<PostItem.UserItem>,
                                 private val onUserClickListener: OnUserClickListener
 ) : RecyclerView.Adapter<UserViewHolder>() {
 

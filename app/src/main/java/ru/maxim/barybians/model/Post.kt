@@ -7,6 +7,7 @@ data class Post (
     @PrimaryKey
     val id: Int,
     val userId: Int,
+    val author: User?,
     val title: String?,
     val text: String,
     @SerializedName("utime")

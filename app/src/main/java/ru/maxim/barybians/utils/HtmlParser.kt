@@ -14,7 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.ui.fragment.profile.OnImageClickListener
+import ru.maxim.barybians.ui.base.OnImageClickListener
 import java.lang.ref.WeakReference
 
 class HtmlParser(private val scope: CoroutineScope,

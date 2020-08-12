@@ -8,6 +8,9 @@ import ru.maxim.barybians.repository.remote.RetrofitClient
 
 interface PostService {
 
+    @GET("/api/posts")
+    suspend fun getFeed(): Response<ArrayList<Post>>
+
     @FormUrlEncoded
     @POST("/api/posts")
     suspend fun createPost(@Field("title") title: String?,
