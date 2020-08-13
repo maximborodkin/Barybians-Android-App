@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.base
+package ru.maxim.barybians.ui.fragment.base
 
 import android.graphics.drawable.Drawable
 

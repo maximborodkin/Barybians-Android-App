@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui.fragment.profile
 
+import android.content.Context
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
@@ -7,21 +8,26 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.Glide
 import ru.maxim.barybians.R
-import ru.maxim.barybians.ui.DialogFactory
-import ru.maxim.barybians.ui.base.*
+import ru.maxim.barybians.utils.DialogFactory
+import ru.maxim.barybians.ui.fragment.base.FeedItem
+import ru.maxim.barybians.ui.fragment.base.HeaderItem
+import ru.maxim.barybians.ui.fragment.base.PostCreatorItem
+import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter
 import ru.maxim.barybians.utils.toast
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ProfileRecyclerAdapter(
     private val feedItems: ArrayList<FeedItem>,
     private val profileItemsListener: ProfileItemsListener,
-    private val lifecycleOwner: LifecycleOwner
+    lifecycleOwner: LifecycleOwner
 ) : FeedRecyclerAdapter(feedItems, profileItemsListener, lifecycleOwner) {
 
-    override fun bindHeaderViewHolder(headerViewHolder: HeaderViewHolder, position: Int) {
-        super.bindHeaderViewHolder(headerViewHolder, position)
-        val context = headerViewHolder.itemView.context
+    override fun bindHeaderViewHolder(
+        headerViewHolder: HeaderViewHolder,
+        position: Int,
+        context: Context
+    ) {
+        super.bindHeaderViewHolder(headerViewHolder, position, context)
         if (headerViewHolder.isBinded) return
         val header = feedItems[position] as HeaderItem
 
@@ -71,18 +77,22 @@ class ProfileRecyclerAdapter(
 
         if (header.isPersonal) {
             headerViewHolder.statusView.setOnClickListener {
-                DialogFactory.createEditStatusDialog(context, header.status) { status ->
+                val editStatusDialog = DialogFactory.createEditStatusDialog(header.status) { status ->
                     profileItemsListener.editStatus(status)
-                }.show()
+                }
+                profileItemsListener.showDialog(editStatusDialog, "EditStatusDialogFragment")
             }
         }
 
         headerViewHolder.isBinded = true
     }
 
-    override fun bindPostCreatorViewHolder(postCreatorViewHolder: PostCreatorViewHolder, position: Int) {
-        super.bindPostCreatorViewHolder(postCreatorViewHolder, position)
-        val context = postCreatorViewHolder.itemView.context
+    override fun bindPostCreatorViewHolder(
+        postCreatorViewHolder: PostCreatorViewHolder,
+        position: Int,
+        context: Context
+    ) {
+        super.bindPostCreatorViewHolder(postCreatorViewHolder, position, context)
         val postCreator = feedItems[position] as PostCreatorItem
 
         Glide.with(context).load(postCreator.avatar).into(postCreatorViewHolder.avatarView)

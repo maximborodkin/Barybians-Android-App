@@ -1,8 +1,9 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-import ru.maxim.barybians.ui.base.FeedItemsListener
+import ru.maxim.barybians.ui.fragment.feed.FeedItemsListener
 
-interface ProfileItemsListener : FeedItemsListener {
+interface ProfileItemsListener :
+    FeedItemsListener {
     fun popBackStack()
     fun openPreferences() {}
     fun openDialog(userId: Int) {}

@@ -6,26 +6,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_feed.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Post
 import ru.maxim.barybians.model.User
 import ru.maxim.barybians.model.response.CommentResponse
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.profile.ProfileActivity
-import ru.maxim.barybians.ui.base.FeedRecyclerAdapter
-import ru.maxim.barybians.ui.base.FeedItem
-import ru.maxim.barybians.ui.base.FeedItemsListener
-import ru.maxim.barybians.ui.base.PostItem
+import ru.maxim.barybians.ui.fragment.base.FeedItem
+import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.utils.DateFormatUtils
+import ru.maxim.barybians.utils.DialogFactory
 import ru.maxim.barybians.utils.toast
 
-class FeedFragment : MvpAppCompatFragment(), FeedView, FeedItemsListener {
+open class FeedFragment :
+    MvpAppCompatFragment(),
+    FeedView,
+    FeedItemsListener {
 
     @InjectPresenter
     lateinit var feedPresenter: FeedPresenter
@@ -45,6 +47,7 @@ class FeedFragment : MvpAppCompatFragment(), FeedView, FeedItemsListener {
     }
 
     override fun showFeed(posts: ArrayList<Post>) {
+        feedLoader.visibility = View.GONE
         feedRefreshLayout.isRefreshing = false
         feedItems.clear()
 
@@ -76,21 +79,28 @@ class FeedFragment : MvpAppCompatFragment(), FeedView, FeedItemsListener {
         }
         feedRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = FeedRecyclerAdapter(feedItems, this@FeedFragment, this@FeedFragment)
+            adapter = FeedRecyclerAdapter(
+                feedItems,
+                this@FeedFragment,
+                this@FeedFragment
+            ).also { it.setHasStableIds(true) }
         }
     }
 
     override fun showNoInternet() {
+        feedLoader.visibility = View.GONE
         feedRefreshLayout.isRefreshing = false
         context?.toast(R.string.no_internet_connection)
     }
 
     override fun showLoading() {
-        TODO("Not yet implemented")
+        feedLoader.visibility = View.VISIBLE
     }
 
     override fun onFeedLoadError() {
-        TODO("Not yet implemented")
+        feedLoader.visibility = View.GONE
+        feedRefreshLayout.isRefreshing = false
+        context?.toast(R.string.an_error_occurred_while_loading_feed)
     }
 
     override fun onPostUpdated(itemPosition: Int, post: Post) {
@@ -116,45 +126,20 @@ class FeedFragment : MvpAppCompatFragment(), FeedView, FeedItemsListener {
         context?.toast(R.string.unable_to_delete_post)
     }
 
-    override fun onCommentAdded(postPosition: Int, commentsCount: Int, comment: CommentResponse) {
-        val date = DateFormatUtils.getSimplifiedDate(comment.date*1000)
-        val author = PostItem.UserItem(
-            PreferencesManager.userId,
-            PreferencesManager.userName,
-            PreferencesManager.userAvatar
-        )
-        (feedItems[postPosition] as? PostItem)?.comments?.add(
-            PostItem.CommentItem(
-                comment.id,
-                comment.text,
-                date,
-                author
-            )
-        )
-
+    override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
+        (activity?.supportFragmentManager?.findFragmentByTag("CommentsBottomSheetFragment") as?
+                DialogFactory.CommentBottomSheetFragment)?.addComment(comment)
         feedRecyclerView.adapter?.notifyItemChanged(postPosition)
-        (feedRecyclerView.adapter as? FeedRecyclerAdapter)?.currentBottomSheetDialog?.let {
-            it.commentsBottomSheetMessage?.text = resources.getQuantityString(
-                R.plurals.comment_plurals, commentsCount + 1, commentsCount + 1)
-            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemInserted(commentsCount)
-            it.commentsBottomSheetEditor?.text = null
-        }
     }
 
     override fun onCommentAddError() {
         context?.toast(R.string.unable_to_create_comment)
     }
 
-    override fun onCommentDeleted(postPosition: Int, commentsCount: Int, commentPosition: Int) {
-        (feedItems[postPosition] as? PostItem)?.comments?.removeAt(commentPosition)
+    override fun onCommentDeleted(postPosition: Int, commentPosition: Int) {
+        (activity?.supportFragmentManager?.findFragmentByTag("CommentsBottomSheetFragment") as?
+                DialogFactory.CommentBottomSheetFragment)?.deleteComment(commentPosition)
         feedRecyclerView.adapter?.notifyItemChanged(postPosition)
-        (feedRecyclerView.adapter as? FeedRecyclerAdapter)?.currentBottomSheetDialog?.let {
-            if (commentsCount > 1){
-                it.commentsBottomSheetMessage?.text = resources.getQuantityString(
-                    R.plurals.comment_plurals, commentsCount - 1, commentsCount - 1)
-            } else it.commentsBottomSheetMessage?.text = getString(R.string.no_comments_yet)
-            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemRemoved(commentPosition)
-        }
     }
 
     override fun onCommentDeleteError() {
@@ -185,6 +170,10 @@ class FeedFragment : MvpAppCompatFragment(), FeedView, FeedItemsListener {
         startActivity(profileIntent)
     }
 
+    override fun showDialog(dialogFragment: DialogFragment, tag: String) {
+        dialogFragment.show(activity?.supportFragmentManager?:return, tag)
+    }
+
     override fun openImage(drawable: Drawable) {
         TODO("Not yet implemented")
     }
@@ -197,12 +186,12 @@ class FeedFragment : MvpAppCompatFragment(), FeedView, FeedItemsListener {
         feedPresenter.deletePost(itemPosition, postId)
     }
 
-    override fun addComment(postId: Int, itemPosition: Int, commentsCount: Int, text: String) {
-        feedPresenter.addComment(postId, itemPosition, commentsCount, text)
+    override fun addComment(postId: Int, itemPosition: Int, text: String) {
+        feedPresenter.addComment(postId, itemPosition, text)
     }
 
-    override fun deleteComment(postPosition: Int, commentsCount: Int, commentId: Int, commentPosition: Int) {
-        feedPresenter.deleteComment(postPosition, commentsCount, commentId, commentPosition)
+    override fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
+        feedPresenter.deleteComment(postPosition, commentId, commentPosition)
     }
 
     override fun editLike(itemPosition: Int, postId: Int, setLike: Boolean) {

@@ -13,8 +13,8 @@ import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.ui.base.BaseActivity
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
+import ru.maxim.barybians.ui.activity.base.BaseActivity
 import java.io.File
 
 

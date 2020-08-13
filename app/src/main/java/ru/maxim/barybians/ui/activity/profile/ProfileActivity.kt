@@ -4,7 +4,7 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_profile.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.ui.base.BaseActivity
+import ru.maxim.barybians.ui.activity.base.BaseActivity
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
 
 class ProfileActivity : BaseActivity() {

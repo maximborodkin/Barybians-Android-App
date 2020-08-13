@@ -8,8 +8,8 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.ui.base.BaseActivity
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
+import ru.maxim.barybians.ui.activity.base.BaseActivity
 import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment

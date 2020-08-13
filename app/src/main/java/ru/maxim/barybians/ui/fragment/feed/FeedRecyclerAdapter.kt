@@ -1,7 +1,9 @@
-package ru.maxim.barybians.ui.base
+package ru.maxim.barybians.ui.fragment.feed
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +13,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -24,30 +26,27 @@ import kotlinx.android.synthetic.main.item_post_creator.view.*
 import kotlinx.android.synthetic.main.item_profile_header.view.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.ui.DialogFactory
+import ru.maxim.barybians.ui.fragment.base.*
 import ru.maxim.barybians.ui.view.AvatarView
+import ru.maxim.barybians.utils.DialogFactory
 import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.weak
-import kotlin.collections.ArrayList
 
-open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
-                               private val feedItemsListener: FeedItemsListener,
-                               private val lifecycleOwner: LifecycleOwner
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
-    OnUserClickListener,
-    OnImageClickListener {
 
-    private lateinit var recyclerView: RecyclerView
-    var currentBottomSheetDialog: BottomSheetDialog? = null
-
-    init {
-        setHasStableIds(true)
-    }
+open class FeedRecyclerAdapter(
+    private val feedItems: ArrayList<FeedItem>,
+    private val feedItemsListener: FeedItemsListener,
+    private val lifecycleOwner: LifecycleOwner
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     final override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        this.recyclerView = recyclerView
         recyclerView.setItemViewCacheSize(20)
+    }
+
+    final override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+
     }
 
     class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -80,6 +79,7 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
             buttonsLayout.visibility = View.VISIBLE
             view.isClickable = false
         }
+
         fun reduce() {
             labelView.visibility = View.VISIBLE
             titleLayoutView.visibility = View.GONE
@@ -87,6 +87,7 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
             buttonsLayout.visibility = View.GONE
             view.isClickable = true
         }
+
         fun reset() {
             reduce()
             titleView.clearFocus()
@@ -112,9 +113,12 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
         val commentBtn: AppCompatTextView = view.itemPostCommentBtn
     }
 
-    final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    final override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return when(viewType) {
+        return when (viewType) {
             FeedItemType.Header.viewType ->
                 HeaderViewHolder(
                     layoutInflater.inflate(
@@ -144,19 +148,35 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
     }
 
     final override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when(getItemViewType(position)) {
-            FeedItemType.Header.viewType -> bindHeaderViewHolder(holder as HeaderViewHolder, position)
-            FeedItemType.PostCreator.viewType -> { bindPostCreatorViewHolder(holder as PostCreatorViewHolder, position) }
-            FeedItemType.Post.viewType -> { bindPostViewHolder(holder as PostViewHolder, position) }
+        val context = holder.itemView.context
+        when (getItemViewType(position)) {
+            FeedItemType.Header.viewType -> bindHeaderViewHolder(
+                holder as HeaderViewHolder,
+                position,
+                context
+            )
+            FeedItemType.PostCreator.viewType -> {
+                bindPostCreatorViewHolder(
+                    holder as PostCreatorViewHolder,
+                    position,
+                    context
+                )
+            }
+            FeedItemType.Post.viewType -> {
+                bindPostViewHolder(
+                    holder as PostViewHolder,
+                    position,
+                    context
+                )
+            }
         }
     }
 
-    open fun bindHeaderViewHolder(headerViewHolder: HeaderViewHolder, position: Int) {}
+    open fun bindHeaderViewHolder(headerViewHolder: HeaderViewHolder, position: Int, context: Context) {}
 
-    open fun bindPostCreatorViewHolder(postCreatorViewHolder: PostCreatorViewHolder, position: Int) {}
+    open fun bindPostCreatorViewHolder(postCreatorViewHolder: PostCreatorViewHolder, position: Int, context: Context) {}
 
-    open fun bindPostViewHolder(postViewHolder: PostViewHolder, position: Int) {
-        val context = postViewHolder.itemView.context
+    open fun bindPostViewHolder(postViewHolder: PostViewHolder, position: Int, context: Context) {
         val post = feedItems[position] as PostItem
 
         Glide.with(context).load(post.avatar).into(postViewHolder.avatarView)
@@ -166,15 +186,15 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
         postViewHolder.menuBtn.apply {
             visibility = if (post.isPersonal) View.VISIBLE else View.GONE
             setOnClickListener {
-                val postMenu = DialogFactory.createPostMenu(context, post.title, post.text,
+                val postMenu = DialogFactory.createPostMenu(post.title, post.text,
                     {  // onDelete
                         feedItemsListener.deletePost(position, post.postId)
-                    }, {title, text -> // onEdit
+                    }, { title, text -> // onEdit
                         feedItemsListener.editPost(position, post.postId, title, text)
                     }
                 )
-                currentBottomSheetDialog = postMenu
-                postMenu.show()
+//                currentBottomSheetDialog = postMenu
+                feedItemsListener.showDialog(postMenu, "PostMenuBottomSheetDialog")
             }
         }
 
@@ -186,8 +206,14 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
         }
 
         postViewHolder.imagesViewGroup.removeAllViews()
-        val htmlUtils = HtmlParser(lifecycleOwner.lifecycleScope, context.resources, Glide.with(context))
-        htmlUtils.provideFormattedText(post.text, weak(context), weak(postViewHolder.textView), weak(postViewHolder.imagesViewGroup), this)
+        val htmlUtils =
+            HtmlParser(lifecycleOwner.lifecycleScope, context.resources, Glide.with(context))
+        htmlUtils.provideFormattedText(
+            post.text,
+            weak(context),
+            weak(postViewHolder.textView),
+            weak(postViewHolder.imagesViewGroup)
+        ) { onImageClick(it) }
 
         with(postViewHolder.likeBtn) {
             var hasPersonalLike: Boolean
@@ -195,7 +221,8 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
 
             postViewHolder.invalidateLikes = {
                 likesCount = post.likes.size
-                hasPersonalLike = post.likes.find { user -> user.id == PreferencesManager.userId } != null
+                hasPersonalLike =
+                    post.likes.find { user -> user.id == PreferencesManager.userId } != null
                 postViewHolder.likeBtn.text = if (likesCount == 0) null else likesCount.toString()
                 val likeDrawable =
                     if (hasPersonalLike) R.drawable.ic_like_red
@@ -204,16 +231,17 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
             }
 
             setOnClickListener {
-                hasPersonalLike = post.likes.find { user -> user.id == PreferencesManager.userId } != null
+                hasPersonalLike =
+                    post.likes.find { user -> user.id == PreferencesManager.userId } != null
                 feedItemsListener.editLike(position, post.postId, !hasPersonalLike)
             }
 
             postViewHolder.invalidateLikes()
             setOnLongClickListener {
                 val likesListFragment =
-                    DialogFactory.createLikesListDialog(context, post.likes, this@FeedRecyclerAdapter)
-                currentBottomSheetDialog = likesListFragment
-                likesListFragment.show()
+                    DialogFactory.createLikesListDialog(post.likes) { onUserClick(it) }
+//                currentBottomSheetDialog = likesListFragment
+                feedItemsListener.showDialog(likesListFragment, "LikesBottomSheetFragment")
                 true
             }
         }
@@ -222,15 +250,26 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
         postViewHolder.commentBtn.text = if (commentsCount == 0) null else commentsCount.toString()
         postViewHolder.commentBtn.setOnClickListener {
             val commentsListFragment =
-                DialogFactory.createCommentsListDialog(context, post.comments, this, this, htmlUtils,
+                DialogFactory.createCommentsListDialog(
+                    post.comments,
+                    { onUserClick(it) },
+                    { onImageClick(it) },
+                    htmlUtils,
                     { text ->
-                        feedItemsListener.addComment(post.postId, position, post.comments.size, text)
+                        feedItemsListener.addComment(
+                            post.postId,
+                            position,
+                            text
+                        )
                     },
-                    { commentsCount, commentPosition, commentId ->
-                        feedItemsListener.deleteComment(position, commentsCount, commentId, commentPosition)
+                    { commentPosition, commentId ->
+                        feedItemsListener.deleteComment(
+                            position,
+                            commentId,
+                            commentPosition
+                        )
                     })
-            currentBottomSheetDialog = commentsListFragment
-            commentsListFragment.show()
+            feedItemsListener.showDialog(commentsListFragment, "CommentsBottomSheetFragment")
         }
     }
 
@@ -242,15 +281,15 @@ open class FeedRecyclerAdapter(private val feedItems: ArrayList<FeedItem>,
 
     final override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        currentBottomSheetDialog?.dismiss()
+//        currentBottomSheetDialog?.dismiss()
     }
 
-    final override fun onClick(userId: Int) {
-        currentBottomSheetDialog?.dismiss()
+    private fun onUserClick(userId: Int) {
+//        currentBottomSheetDialog?.dismiss()
         feedItemsListener.openUserProfile(userId)
     }
 
-    final override fun onImageClick(drawable: Drawable) {
+    private fun onImageClick(drawable: Drawable) {
         feedItemsListener.openImage(drawable)
     }
 }

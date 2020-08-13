@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.base
+package ru.maxim.barybians.ui.activity.base
 
 import android.os.Bundle
 import com.arellomobile.mvp.MvpAppCompatActivity

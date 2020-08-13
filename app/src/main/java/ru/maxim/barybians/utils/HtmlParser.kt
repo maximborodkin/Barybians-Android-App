@@ -2,6 +2,7 @@ package ru.maxim.barybians.utils
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
@@ -14,7 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.ui.base.OnImageClickListener
+import ru.maxim.barybians.ui.fragment.base.OnImageClickListener
 import java.lang.ref.WeakReference
 
 class HtmlParser(private val scope: CoroutineScope,
@@ -27,7 +28,7 @@ class HtmlParser(private val scope: CoroutineScope,
         context: WeakReference<Context>,
         targetTextView: WeakReference<TextView>,
         targetImageLayout: WeakReference<ViewGroup>,
-        onImageClickListener: OnImageClickListener
+        onImageClick: (drawable: Drawable) -> Unit
     ) {
         if (targetTextView.isNull() || targetImageLayout.isNull()) return
         if (rawHtml.contains("<img")) {
@@ -54,7 +55,7 @@ class HtmlParser(private val scope: CoroutineScope,
                         .load(image.url)
                         .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .into(imageView)
-                    imageView.setOnClickListener { onImageClickListener.onImageClick(imageView.drawable) }
+                    imageView.setOnClickListener { onImageClick(imageView.drawable) }
                 }
                 textWithoutImages = textWithoutImages.replace(image.tag, "")
             }

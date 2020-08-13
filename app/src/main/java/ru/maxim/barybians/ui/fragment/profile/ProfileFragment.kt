@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
-import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Post
@@ -19,10 +19,15 @@ import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.activity.preferences.PreferencesActivity
 import ru.maxim.barybians.ui.activity.profile.ProfileActivity
-import ru.maxim.barybians.ui.base.*
-import ru.maxim.barybians.ui.base.FeedRecyclerAdapter.*
-import ru.maxim.barybians.ui.base.PostItem.*
+import ru.maxim.barybians.ui.fragment.base.FeedItem
+import ru.maxim.barybians.ui.fragment.base.HeaderItem
+import ru.maxim.barybians.ui.fragment.base.PostCreatorItem
+import ru.maxim.barybians.ui.fragment.base.PostItem
+import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
+import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
+import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.*
 import ru.maxim.barybians.utils.DateFormatUtils
+import ru.maxim.barybians.utils.DialogFactory
 import ru.maxim.barybians.utils.toast
 
 class ProfileFragment :
@@ -34,7 +39,7 @@ class ProfileFragment :
     lateinit var profilePresenter: ProfilePresenter
     private var userId: Int? = null
     private val profileItems = ArrayList<FeedItem>()
-    private lateinit var profileRecyclerAdapter: ProfileRecyclerAdapter
+
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
@@ -44,7 +49,6 @@ class ProfileFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         (activity as? MainActivity)?.supportActionBar?.hide()
-        profileRecyclerAdapter = ProfileRecyclerAdapter(profileItems, this, this)
     }
 
     override fun onDestroyView() {
@@ -73,13 +77,15 @@ class ProfileFragment :
     }
 
     override fun showUserProfile(user: User) {
+        val isPersonal = user.id == PreferencesManager.userId
         profileLoader.visibility = View.GONE
         profileRefreshLayout.isRefreshing = false
 
         profileItems.clear()
+
         profileItems.add(
             HeaderItem(
-                userId == PreferencesManager.userId,
+                isPersonal,
                 user.getAvatarUrl(),
                 "${user.firstName} ${user.lastName}",
                 user.getRole().iconResource,
@@ -89,13 +95,12 @@ class ProfileFragment :
             )
         )
 
-        if (userId == PreferencesManager.userId)
-            profileItems.add(
-                PostCreatorItem(
-                    user.getAvatarUrl(),
-                    isExpanded = false
-                )
+        if (isPersonal) profileItems.add(
+            PostCreatorItem(
+                user.getAvatarUrl(),
+                isExpanded = false
             )
+        )
 
         for (post in user.posts) {
             val likes = ArrayList<UserItem>()
@@ -116,16 +121,23 @@ class ProfileFragment :
             val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
             profileItems.add(
                 PostItem(
-                    post.id, userId == PreferencesManager.userId,
-                    user.getAvatarUrl(), "${user.firstName} ${user.lastName}", date,
-                    post.title, post.text, likes, comments
+                    post.id,
+                    isPersonal,
+                    user.getAvatarUrl(),
+                    "${user.firstName} ${user.lastName}",
+                    date,
+                    post.title,
+                    post.text,
+                    likes,
+                    comments
                 )
             )
         }
 
         profileRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = profileRecyclerAdapter
+            adapter = ProfileRecyclerAdapter(profileItems, this@ProfileFragment, this@ProfileFragment)
+                .also { it.setHasStableIds(true) }
         }
     }
 
@@ -158,7 +170,7 @@ class ProfileFragment :
         (profileItems[1] as? PostCreatorItem)?.isExpanded = false
         (profileRecyclerView.findViewHolderForAdapterPosition(1)
                 as? PostCreatorViewHolder)?.reset()
-        profileRecyclerAdapter.notifyItemInserted(2)
+        profileRecyclerView.adapter?.notifyItemInserted(2)
     }
 
     override fun onPostCreateError() {
@@ -171,7 +183,7 @@ class ProfileFragment :
             it.title = post.title
             it.text = post.text
             it.date = date
-            profileRecyclerAdapter.notifyItemChanged(itemPosition)
+            profileRecyclerView.adapter?.notifyItemChanged(itemPosition)
         }
     }
 
@@ -181,45 +193,27 @@ class ProfileFragment :
 
     override fun onPostDeleted(itemPosition: Int) {
         profileItems.removeAt(itemPosition)
-        profileRecyclerAdapter.notifyItemRemoved(itemPosition)
+        profileRecyclerView.adapter?.notifyItemRemoved(itemPosition)
     }
 
     override fun onPostDeleteError() {
         context?.toast(R.string.unable_to_delete_post)
     }
 
-    override fun onCommentAdded(postPosition: Int, commentsCount: Int, comment: CommentResponse) {
-        val date = DateFormatUtils.getSimplifiedDate(comment.date*1000)
-        val author = UserItem(
-            PreferencesManager.userId,
-            PreferencesManager.userName,
-            PreferencesManager.userAvatar
-        )
-        (profileItems[postPosition] as? PostItem)?.comments?.add(CommentItem(comment.id, comment.text, date, author))
-
-        profileRecyclerAdapter.notifyItemChanged(postPosition)
-        profileRecyclerAdapter.currentBottomSheetDialog?.let {
-            it.commentsBottomSheetMessage?.text = resources.getQuantityString(
-                R.plurals.comment_plurals, commentsCount + 1, commentsCount + 1)
-            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemInserted(commentsCount)
-            it.commentsBottomSheetEditor?.text = null
-        }
+    override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
+        (activity?.supportFragmentManager?.findFragmentByTag("CommentsBottomSheetFragment") as?
+                DialogFactory.CommentBottomSheetFragment)?.addComment(comment)
+        profileRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
     override fun onCommentAddError() {
         context?.toast(R.string.unable_to_create_comment)
     }
 
-    override fun onCommentDeleted(postPosition: Int, commentsCount: Int, commentPosition: Int) {
-        (profileItems[postPosition] as? PostItem)?.comments?.removeAt(commentPosition)
-        profileRecyclerAdapter.notifyItemChanged(postPosition)
-        profileRecyclerAdapter.currentBottomSheetDialog?.let {
-            if (commentsCount > 1){
-                it.commentsBottomSheetMessage?.text = resources.getQuantityString(
-                    R.plurals.comment_plurals, commentsCount - 1, commentsCount - 1)
-            } else it.commentsBottomSheetMessage?.text = getString(R.string.no_comments_yet)
-            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemRemoved(commentPosition)
-        }
+    override fun onCommentDeleted(postPosition: Int, commentPosition: Int) {
+        (activity?.supportFragmentManager?.findFragmentByTag("CommentsBottomSheetFragment") as?
+                DialogFactory.CommentBottomSheetFragment)?.deleteComment(commentPosition)
+        profileRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
     override fun onCommentDeleteError() {
@@ -252,6 +246,11 @@ class ProfileFragment :
         }
         startActivity(profileIntent)
     }
+
+    override fun showDialog(dialogFragment: DialogFragment, tag: String) {
+        dialogFragment.show(activity?.supportFragmentManager?:return, tag)
+    }
+
     override fun openImage(drawable: Drawable) {
         TODO("Not yet implemented")
     }
@@ -280,12 +279,12 @@ class ProfileFragment :
         profilePresenter.deletePost(itemPosition, postId)
     }
 
-    override fun addComment(postId: Int, itemPosition: Int, commentsCount: Int, text: String) {
-        profilePresenter.addComment(postId, itemPosition, commentsCount, text)
+    override fun addComment(postId: Int, itemPosition: Int, text: String) {
+        profilePresenter.addComment(postId, itemPosition, text)
     }
 
-    override fun deleteComment(postPosition: Int, commentsCount: Int, commentId: Int, commentPosition: Int) {
-        profilePresenter.deleteComment(postPosition, commentsCount, commentId, commentPosition)
+    override fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
+        profilePresenter.deleteComment(postPosition, commentId, commentPosition)
     }
 
     override fun editLike(itemPosition: Int, postId: Int, setLike: Boolean) {
