@@ -7,6 +7,7 @@ interface FeedItemsListener {
     fun openUserProfile(userId: Int)
     fun showDialog(dialogFragment: DialogFragment, tag: String)
     fun openImage(drawable: Drawable)
+    fun openImage(imageUrl: String)
     fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String)
     fun deletePost(itemPosition: Int, postId: Int)
     fun showCommentsList(postId: Int, postPosition: Int)

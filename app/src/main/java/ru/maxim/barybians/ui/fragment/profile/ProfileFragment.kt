@@ -24,10 +24,7 @@ import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.activity.preferences.PreferencesActivity
 import ru.maxim.barybians.ui.activity.profile.ProfileActivity
-import ru.maxim.barybians.ui.fragment.base.FeedItem
-import ru.maxim.barybians.ui.fragment.base.HeaderItem
-import ru.maxim.barybians.ui.fragment.base.PostCreatorItem
-import ru.maxim.barybians.ui.fragment.base.PostItem
+import ru.maxim.barybians.ui.fragment.base.*
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.*
@@ -92,6 +89,7 @@ class ProfileFragment :
             HeaderItem(
                 isPersonal,
                 user.getAvatarUrl(),
+                user.getAvatarUrl(loadFull = true),
                 "${user.firstName} ${user.lastName}",
                 user.getRole().iconResource,
                 user.getRole().stringResource,
@@ -298,7 +296,15 @@ class ProfileFragment :
     }
 
     override fun openImage(drawable: Drawable) {
-        TODO("Not yet implemented")
+        ImageViewerFragment
+            .newInstance(drawable = drawable)
+            .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
+    }
+
+    override fun openImage(imageUrl: String) {
+        ImageViewerFragment
+            .newInstance(imageUrl = imageUrl)
+            .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
     }
 
     override fun openDialog(userId: Int) {

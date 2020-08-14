@@ -8,14 +8,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.Glide
 import ru.maxim.barybians.R
-import ru.maxim.barybians.utils.DialogFactory
 import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.HeaderItem
 import ru.maxim.barybians.ui.fragment.base.PostCreatorItem
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter
-import ru.maxim.barybians.utils.clearDrawables
-import ru.maxim.barybians.utils.setDrawableEnd
-import ru.maxim.barybians.utils.toast
+import ru.maxim.barybians.utils.*
 import java.util.*
 
 class ProfileRecyclerAdapter(
@@ -46,8 +43,12 @@ class ProfileRecyclerAdapter(
             headerViewHolder.editBtn.visibility = View.GONE
         }
 
-        Glide.with(context).load(header.avatar).into(headerViewHolder.avatarView)
-        Glide.with(context).load(header.avatar).into(headerViewHolder.backgroundView)
+        Glide.with(context).load(header.avatarSmall).into(headerViewHolder.avatarView)
+        headerViewHolder.avatarView.setOnClickListener {
+            if (!header.avatarFull.isNullOrBlank())
+                onImageClick(header.avatarFull)
+        }
+        Glide.with(context).load(header.avatarSmall).into(headerViewHolder.backgroundView)
 
         headerViewHolder.nameView.apply {
             text = header.name

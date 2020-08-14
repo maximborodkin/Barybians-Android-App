@@ -23,7 +23,7 @@ data class User (
     val posts: ArrayList<Post>
 ) {
     fun getAvatarUrl(loadFull: Boolean = false) =
-        if (photo != null) "${RetrofitClient.BASE_URL}/avatars${if (loadFull) null else "/min"}/$photo"
+        if (photo != null) "${RetrofitClient.BASE_URL}/avatars${if (loadFull) "" else "/min"}/$photo"
         else null
 
     fun getRole() = when(roleId) {

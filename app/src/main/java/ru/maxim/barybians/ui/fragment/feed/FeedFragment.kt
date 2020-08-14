@@ -22,12 +22,12 @@ import ru.maxim.barybians.model.response.CommentResponse
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.profile.ProfileActivity
 import ru.maxim.barybians.ui.fragment.base.FeedItem
+import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
 import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.DialogFactory
-import ru.maxim.barybians.utils.DialogFactory.CommentBottomSheetFragment
 import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.toast
 
@@ -224,7 +224,15 @@ class FeedFragment :
     }
 
     override fun openImage(drawable: Drawable) {
-        TODO("Not yet implemented")
+        ImageViewerFragment
+            .newInstance(drawable = drawable)
+            .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
+    }
+
+    override fun openImage(imageUrl: String) {
+        ImageViewerFragment
+            .newInstance(imageUrl = imageUrl)
+            .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
     }
 
     override fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String) {
