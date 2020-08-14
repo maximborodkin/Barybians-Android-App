@@ -20,14 +20,15 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
 
     fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String) {
         if (!RetrofitClient.isOnline()){
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {
                 val updatedPostResponse = postService.updatePost(postId, newTitle, newText)
                 if (updatedPostResponse.isSuccessful && updatedPostResponse.body() != null) {
                     viewState.onPostUpdated(itemPosition, updatedPostResponse.body()!!)
+                } else {
+                    viewState.onPostUpdateError()
                 }
             } catch (e: Exception) {
                 viewState.onPostUpdateError()
@@ -37,8 +38,7 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
 
     fun deletePost(itemPosition: Int, postId: Int) {
         if (!RetrofitClient.isOnline()){
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {
@@ -54,11 +54,9 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
         }
     }
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
     fun addComment(postId: Int, postPosition: Int, text: String) {
         if (!RetrofitClient.isOnline()){
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {
@@ -74,17 +72,15 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
         }
     }
 
-    @StateStrategyType(OneExecutionStateStrategy::class)
     fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
         if (!RetrofitClient.isOnline()){
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {
                 val deleteCommentRequest = commentService.deleteComment(commentId)
                 if (deleteCommentRequest.isSuccessful && deleteCommentRequest.body() == "true") {
-                    viewState.onCommentDeleted(postPosition, commentPosition)
+                    viewState.onCommentDeleted(postPosition, commentPosition, commentId)
                 } else {
                     viewState.onCommentDeleteError()
                 }
@@ -97,8 +93,7 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun editLike(itemPosition: Int, postId: Int, hasLike: Boolean) {
         if (!RetrofitClient.isOnline()){
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {
@@ -108,9 +103,7 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
                 if (editLikeResponse.isSuccessful && editLikeResponse.body() != null) {
                     viewState.onLikeEdited(itemPosition, editLikeResponse.body()!!.likedUsers)
                 }
-            } catch (e: Exception) {
-
-            }
+            } catch (e: Exception) { }
         }
     }
 }

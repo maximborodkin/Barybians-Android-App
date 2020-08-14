@@ -10,7 +10,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
-import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Post
@@ -21,10 +20,10 @@ import ru.maxim.barybians.ui.activity.profile.ProfileActivity
 import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.utils.DateFormatUtils
-import ru.maxim.barybians.utils.DialogFactory
+import ru.maxim.barybians.utils.DialogFactory.CommentBottomSheetFragment
 import ru.maxim.barybians.utils.toast
 
-open class FeedFragment :
+class FeedFragment :
     MvpAppCompatFragment(),
     FeedView,
     FeedItemsListener {
@@ -51,6 +50,11 @@ open class FeedFragment :
         feedRefreshLayout.isRefreshing = false
         feedItems.clear()
 
+        val currentCommentsListFragment =
+            (activity
+                ?.supportFragmentManager
+                ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
+
         for (post in posts) {
             val user = post.author
             val likes = ArrayList<PostItem.UserItem>()
@@ -68,12 +72,23 @@ open class FeedFragment :
                     DateFormatUtils.getSimplifiedDate(comment.date*1000)
                 PostItem.CommentItem(comment.id, comment.text, date, author)
             })
+            if (post.id == currentCommentsListFragment?.getPostId()) {
+                currentCommentsListFragment.setComments(comments)
+            }
+
             val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
             feedItems.add(
                 PostItem(
-                    post.id, user?.id == PreferencesManager.userId,
-                    user?.getAvatarUrl(), "${user?.firstName} ${user?.lastName}", date,
-                    post.title, post.text, likes, comments
+                    post.id,
+                    user?.id == PreferencesManager.userId,
+                    user?.id?:PreferencesManager.userId,
+                    user?.getAvatarUrl(),
+                    "${user?.firstName} ${user?.lastName}",
+                    date,
+                    post.title,
+                    post.text,
+                    likes,
+                    comments
                 )
             )
         }
@@ -127,8 +142,10 @@ open class FeedFragment :
     }
 
     override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
-        (activity?.supportFragmentManager?.findFragmentByTag("CommentsBottomSheetFragment") as?
-                DialogFactory.CommentBottomSheetFragment)?.addComment(comment)
+        (activity
+            ?.supportFragmentManager
+            ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
+            ?.addComment(comment)
         feedRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
@@ -136,9 +153,11 @@ open class FeedFragment :
         context?.toast(R.string.unable_to_create_comment)
     }
 
-    override fun onCommentDeleted(postPosition: Int, commentPosition: Int) {
-        (activity?.supportFragmentManager?.findFragmentByTag("CommentsBottomSheetFragment") as?
-                DialogFactory.CommentBottomSheetFragment)?.deleteComment(commentPosition)
+    override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
+        (activity
+            ?.supportFragmentManager
+            ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
+            ?.deleteComment(commentPosition, commentId)
         feedRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 

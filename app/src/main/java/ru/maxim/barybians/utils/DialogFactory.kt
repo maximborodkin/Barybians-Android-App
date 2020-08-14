@@ -13,14 +13,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_edit_status.*
 import kotlinx.android.synthetic.main.fragment_edit_status.view.*
-import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_post_editor.view.*
 import kotlinx.android.synthetic.main.fragment_post_menu_bottom_sheet.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.response.CommentResponse
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.ui.fragment.profile.CommentsRecyclerAdapter
@@ -38,18 +36,20 @@ object DialogFactory {
     ) = LikesBottomSheetFragment.newInstance(likes, onUserClick)
 
     fun createCommentsListDialog(
+        postId: Int,
         comments: ArrayList<CommentItem>,
         onUserClick: (userId: Int) -> Unit,
         onImageClick: (drawable: Drawable) -> Unit,
         htmlParser: HtmlParser,
-        addCommentCallback: (text: String) -> Unit,
-        deleteCommentCallback: (commentPosition: Int, commentId: Int) -> Unit
+        onCommentAdd: (text: String) -> Unit,
+        onCommentDelete: (commentPosition: Int, commentId: Int) -> Unit
     ) = CommentBottomSheetFragment.newInstance(
+            postId,
             comments,
             onUserClick,
             onImageClick,
-            addCommentCallback,
-            deleteCommentCallback,
+            onCommentAdd,
+            onCommentDelete,
             htmlParser)
 
     fun createEditStatusDialog(
@@ -142,7 +142,7 @@ object DialogFactory {
                         dismiss()
                     },
                     onImageClick,
-                    deleteCommentCallback,
+                    onCommentDelete,
                     htmlParser
                 )
             }
@@ -159,7 +159,7 @@ object DialogFactory {
                 setOnClickListener {
                     val text = commentsBottomSheetEditor.text
                     if (!text.isNullOrBlank()) {
-                        addCommentCallback(text.toString())
+                        onCommentAdd(text.toString())
                     }
                 }
             }
@@ -181,39 +181,52 @@ object DialogFactory {
             commentsBottomSheetEditor?.text = null
         }
 
-        fun deleteComment(commentPosition: Int) {
+        fun deleteComment(commentPosition: Int, commentId: Int) {
             comments.removeAt(commentPosition)
 
             commentsBottomSheetTitle?.text =
-                if (comments.size == 0)
-                    resources.getQuantityString(R.plurals.comment_plurals, comments.size, comments.size)
+                if (comments.size > 0)
+                    resources.getQuantityString(
+                        R.plurals.comment_plurals,
+                        comments.size,
+                        comments.size
+                    )
                 else
                     getString(R.string.no_comments_yet)
             commentsBottomSheetRecyclerView?.adapter?.notifyItemRemoved(commentPosition)
+        }
 
+        fun getPostId() = postId
+        fun getComments() = comments
+        fun setComments(newComments: ArrayList<CommentItem>) {
+            comments = newComments
+            commentsBottomSheetRecyclerView.adapter?.notifyDataSetChanged()
         }
 
         companion object {
+            private var postId: Int = 0
             private lateinit var comments: ArrayList<CommentItem>
             private lateinit var onUserClick: (userId: Int) -> Unit
             private lateinit var onImageClick: (drawable: Drawable) -> Unit
-            private lateinit var addCommentCallback: (text: String) -> Unit
-            private lateinit var deleteCommentCallback: (commentPosition: Int, commentId: Int) -> Unit
+            private lateinit var onCommentDelete: (commentPosition: Int, commentId: Int) -> Unit
+            private lateinit var onCommentAdd: (text: String) -> Unit
             private lateinit var htmlParser: HtmlParser
 
             fun newInstance(
+                postId: Int,
                 comments: ArrayList<CommentItem>,
                 onUserClick: (userId: Int) -> Unit,
                 onImageClick: (drawable: Drawable) -> Unit,
-                addCommentCallback: (text: String) -> Unit,
-                deleteCommentCallback: (commentPosition: Int, commentId: Int) -> Unit,
+                onCommentAdd: (text: String) -> Unit,
+                onCommentDelete: (commentPosition: Int, commentId: Int) -> Unit,
                 htmlParser: HtmlParser
             ): CommentBottomSheetFragment {
+                this.postId = postId
                 this.comments = comments
                 this.onUserClick = onUserClick
                 this.onImageClick = onImageClick
-                this.addCommentCallback = addCommentCallback
-                this.deleteCommentCallback = deleteCommentCallback
+                this.onCommentAdd = onCommentAdd
+                this.onCommentDelete = onCommentDelete
                 this.htmlParser = htmlParser
                 return CommentBottomSheetFragment()
             }

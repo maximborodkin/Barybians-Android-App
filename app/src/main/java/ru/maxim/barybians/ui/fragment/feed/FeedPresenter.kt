@@ -15,8 +15,7 @@ open class FeedPresenter : BaseWallPresenter<FeedView>() {
 
     fun loadFeed() {
         if (!RetrofitClient.isOnline()) {
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {

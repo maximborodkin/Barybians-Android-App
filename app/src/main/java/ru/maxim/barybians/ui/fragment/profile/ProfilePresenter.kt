@@ -10,14 +10,15 @@ class ProfilePresenter : BaseWallPresenter<ProfileView>() {
 
     fun loadUser(userId: Int) {
         if (!RetrofitClient.isOnline()){
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {
                 val loadUserResponse = userService.getUser(userId)
                 if (loadUserResponse.isSuccessful && loadUserResponse.body() != null){
                     viewState.showUserProfile(loadUserResponse.body()!!)
+                } else {
+                    viewState.onUserLoadError()
                 }
             } catch (e: Exception) {
                 viewState.onUserLoadError()
@@ -27,13 +28,14 @@ class ProfilePresenter : BaseWallPresenter<ProfileView>() {
 
     fun createPost(title: String?, text: String) {
         if (!RetrofitClient.isOnline()){
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {
                 val createPostResponse = postService.createPost(title, text)
                 if (createPostResponse.isSuccessful && createPostResponse.body() != null) {
+                    viewState.onPostCreated(createPostResponse.body()!!)
+                } else {
                     viewState.onPostCreated(createPostResponse.body()!!)
                 }
             } catch (e: Exception) {
@@ -44,8 +46,7 @@ class ProfilePresenter : BaseWallPresenter<ProfileView>() {
 
     fun editStatus(newStatus: String?) {
         if (!RetrofitClient.isOnline()){
-            viewState.showNoInternet()
-            return
+            return viewState.showNoInternet()
         }
         launch {
             try {
@@ -53,9 +54,7 @@ class ProfilePresenter : BaseWallPresenter<ProfileView>() {
                 if (status.isSuccessful && status.body() == "true") {
                     viewState.onStatusEdited(newStatus)
                 }
-            } catch (e: Exception) {
-
-            }
+            } catch (e: Exception) { }
         }
     }
 }

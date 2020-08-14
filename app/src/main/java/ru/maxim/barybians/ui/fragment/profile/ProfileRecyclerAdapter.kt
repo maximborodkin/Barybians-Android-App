@@ -13,6 +13,8 @@ import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.HeaderItem
 import ru.maxim.barybians.ui.fragment.base.PostCreatorItem
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter
+import ru.maxim.barybians.utils.clearDrawables
+import ru.maxim.barybians.utils.setDrawableEnd
 import ru.maxim.barybians.utils.toast
 import java.util.*
 
@@ -68,11 +70,10 @@ class ProfileRecyclerAdapter(
             headerViewHolder.statusView.visibility = View.GONE
         } else if (header.isPersonal && header.status.isNullOrBlank()) {
             headerViewHolder.statusView.text = context.getString(R.string.enter_your_status)
-            headerViewHolder.statusView
-                .setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_edit_grey, 0)
+            headerViewHolder.statusView.setDrawableEnd(R.drawable.ic_edit_grey)
         } else {
             headerViewHolder.statusView.text = header.status
-            headerViewHolder.statusView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+            headerViewHolder.statusView.clearDrawables()
         }
 
         if (header.isPersonal) {

@@ -15,7 +15,7 @@ class PostCreatorItem(val avatar: String?, var isExpanded: Boolean = false) : Fe
         FeedItemType.PostCreator
 }
 
-class PostItem(val postId: Int, val isPersonal: Boolean, val avatar: String?,
+class PostItem(val postId: Int, val isPersonal: Boolean, val authorId: Int, val avatar: String?,
                val name: String, var date: String, var title: String?, var text: String,
                val likes: ArrayList<UserItem>, val comments: ArrayList<CommentItem>) : FeedItem() {
     override fun getType() =

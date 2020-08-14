@@ -27,7 +27,9 @@ import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.*
 import ru.maxim.barybians.utils.DateFormatUtils
-import ru.maxim.barybians.utils.DialogFactory
+import ru.maxim.barybians.utils.DialogFactory.CommentBottomSheetFragment
+import ru.maxim.barybians.utils.clearDrawables
+import ru.maxim.barybians.utils.setDrawableEnd
 import ru.maxim.barybians.utils.toast
 
 class ProfileFragment :
@@ -41,9 +43,11 @@ class ProfileFragment :
     private val profileItems = ArrayList<FeedItem>()
 
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
         inflater.inflate(R.layout.fragment_profile, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -60,10 +64,10 @@ class ProfileFragment :
         super.onViewCreated(view, savedInstanceState)
         userId = arguments?.getInt("userId") ?: PreferencesManager.userId
         profileRefreshLayout.setOnRefreshListener {
-            profilePresenter.loadUser(userId?:return@setOnRefreshListener)
+            profilePresenter.loadUser(userId ?: return@setOnRefreshListener)
         }
         if (savedInstanceState == null)
-            profilePresenter.loadUser(userId?:return)
+            profilePresenter.loadUser(userId ?: return)
     }
 
     override fun showNoInternet() {
@@ -95,34 +99,40 @@ class ProfileFragment :
             )
         )
 
-        if (isPersonal) profileItems.add(
-            PostCreatorItem(
-                user.getAvatarUrl(),
-                isExpanded = false
-            )
-        )
+        if (isPersonal) profileItems.add(PostCreatorItem(user.getAvatarUrl(), isExpanded = false))
+
+        val currentCommentsListFragment =
+            (activity
+                ?.supportFragmentManager
+                ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
 
         for (post in user.posts) {
             val likes = ArrayList<UserItem>()
             likes.addAll(post.likedUsers.map {
-                    UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
-                })
-            val comments = ArrayList<CommentItem>()
+                UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
+            })
+            val comments: ArrayList<CommentItem> = ArrayList()
             comments.addAll(post.comments.map { comment ->
-                    val author = UserItem(
-                        comment.author.id,
-                        "${comment.author.firstName} ${comment.author.lastName}",
-                        comment.author.getAvatarUrl()
-                    )
-                    val date =
-                        DateFormatUtils.getSimplifiedDate(comment.date*1000)
-                    CommentItem(comment.id, comment.text, date, author)
-                })
-            val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
+                val author = UserItem(
+                    comment.author.id,
+                    "${comment.author.firstName} ${comment.author.lastName}",
+                    comment.author.getAvatarUrl()
+                )
+                val date =
+                    DateFormatUtils.getSimplifiedDate(comment.date * 1000)
+                CommentItem(comment.id, comment.text, date, author)
+            })
+
+            if (post.id == currentCommentsListFragment?.getPostId()) {
+                currentCommentsListFragment.setComments(comments)
+            }
+
+            val date = DateFormatUtils.getSimplifiedDate(post.date * 1000)
             profileItems.add(
                 PostItem(
                     post.id,
                     isPersonal,
+                    user.id,
                     user.getAvatarUrl(),
                     "${user.firstName} ${user.lastName}",
                     date,
@@ -136,8 +146,9 @@ class ProfileFragment :
 
         profileRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = ProfileRecyclerAdapter(profileItems, this@ProfileFragment, this@ProfileFragment)
-                .also { it.setHasStableIds(true) }
+            adapter =
+                ProfileRecyclerAdapter(profileItems, this@ProfileFragment, this@ProfileFragment)
+                    .also { it.setHasStableIds(true) }
         }
     }
 
@@ -151,20 +162,29 @@ class ProfileFragment :
         (profileRecyclerView.findViewHolderForAdapterPosition(0) as? HeaderViewHolder)?.apply {
             if (!newStatus.isNullOrBlank()) {
                 statusView.text = newStatus
-                statusView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                statusView.clearDrawables()
             } else {
                 statusView.text = itemView.context.getString(R.string.enter_your_status)
-                statusView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_edit_grey, 0)
+                statusView.setDrawableEnd(R.drawable.ic_edit_grey)
             }
         }
     }
 
     override fun onPostCreated(post: Post) {
-        val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
-        profileItems.add(2,
+        val date = DateFormatUtils.getSimplifiedDate(post.date * 1000)
+        profileItems.add(
+            2,
             PostItem(
-                post.id, true, PreferencesManager.userAvatar, PreferencesManager.userName, date,
-                post.title, post.text, ArrayList(), ArrayList()
+                post.id,
+                true,
+                PreferencesManager.userId,
+                PreferencesManager.userAvatar,
+                PreferencesManager.userName,
+                date,
+                post.title,
+                post.text,
+                ArrayList(),
+                ArrayList()
             )
         )
         (profileItems[1] as? PostCreatorItem)?.isExpanded = false
@@ -178,7 +198,7 @@ class ProfileFragment :
     }
 
     override fun onPostUpdated(itemPosition: Int, post: Post) {
-        val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
+        val date = DateFormatUtils.getSimplifiedDate(post.date * 1000)
         (profileItems[itemPosition] as? PostItem)?.let {
             it.title = post.title
             it.text = post.text
@@ -201,8 +221,10 @@ class ProfileFragment :
     }
 
     override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
-        (activity?.supportFragmentManager?.findFragmentByTag("CommentsBottomSheetFragment") as?
-                DialogFactory.CommentBottomSheetFragment)?.addComment(comment)
+        (activity
+            ?.supportFragmentManager
+            ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
+            ?.addComment(comment)
         profileRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
@@ -210,9 +232,11 @@ class ProfileFragment :
         context?.toast(R.string.unable_to_create_comment)
     }
 
-    override fun onCommentDeleted(postPosition: Int, commentPosition: Int) {
-        (activity?.supportFragmentManager?.findFragmentByTag("CommentsBottomSheetFragment") as?
-                DialogFactory.CommentBottomSheetFragment)?.deleteComment(commentPosition)
+    override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
+        (activity
+            ?.supportFragmentManager
+            ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
+            ?.deleteComment(commentPosition, commentId)
         profileRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
@@ -248,7 +272,7 @@ class ProfileFragment :
     }
 
     override fun showDialog(dialogFragment: DialogFragment, tag: String) {
-        dialogFragment.show(activity?.supportFragmentManager?:return, tag)
+        dialogFragment.show(activity?.supportFragmentManager ?: return, tag)
     }
 
     override fun openImage(drawable: Drawable) {

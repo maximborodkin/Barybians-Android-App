@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_user.view.*
 import ru.maxim.barybians.R
-import ru.maxim.barybians.ui.fragment.base.OnUserClickListener
 import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.fragment.profile.LikedUsersRecyclerAdapter.UserViewHolder
 import ru.maxim.barybians.ui.view.AvatarView

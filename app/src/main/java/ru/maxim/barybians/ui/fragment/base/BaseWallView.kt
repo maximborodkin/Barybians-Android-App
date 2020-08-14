@@ -15,7 +15,7 @@ interface BaseWallView : MvpView{
     fun onPostDeleteError()
     fun onCommentAdded(postPosition: Int, comment: CommentResponse)
     fun onCommentAddError()
-    fun onCommentDeleted(postPosition: Int, commentPosition: Int)
+    fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int)
     fun onCommentDeleteError()
     fun onLikeEdited(postPosition: Int, likedUsers: ArrayList<User>)
 }

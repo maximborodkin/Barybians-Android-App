@@ -183,6 +183,9 @@ open class FeedRecyclerAdapter(
         postViewHolder.nameView.text = post.name
         postViewHolder.dateView.text = post.date
 
+        postViewHolder.avatarView.setOnClickListener { feedItemsListener.openUserProfile(post.authorId) }
+        postViewHolder.nameView.setOnClickListener { feedItemsListener.openUserProfile(post.authorId) }
+
         postViewHolder.menuBtn.apply {
             visibility = if (post.isPersonal) View.VISIBLE else View.GONE
             setOnClickListener {
@@ -251,6 +254,7 @@ open class FeedRecyclerAdapter(
         postViewHolder.commentBtn.setOnClickListener {
             val commentsListFragment =
                 DialogFactory.createCommentsListDialog(
+                    post.postId,
                     post.comments,
                     { onUserClick(it) },
                     { onImageClick(it) },
@@ -281,11 +285,9 @@ open class FeedRecyclerAdapter(
 
     final override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-//        currentBottomSheetDialog?.dismiss()
     }
 
     private fun onUserClick(userId: Int) {
-//        currentBottomSheetDialog?.dismiss()
         feedItemsListener.openUserProfile(userId)
     }
 
