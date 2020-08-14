@@ -7,9 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
+import kotlinx.android.synthetic.main.fragment_feed.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Post
@@ -26,11 +31,7 @@ import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.*
-import ru.maxim.barybians.utils.DateFormatUtils
-import ru.maxim.barybians.utils.DialogFactory.CommentBottomSheetFragment
-import ru.maxim.barybians.utils.clearDrawables
-import ru.maxim.barybians.utils.setDrawableEnd
-import ru.maxim.barybians.utils.toast
+import ru.maxim.barybians.utils.*
 
 class ProfileFragment :
     MvpAppCompatFragment(),
@@ -41,7 +42,7 @@ class ProfileFragment :
     lateinit var profilePresenter: ProfilePresenter
     private var userId: Int? = null
     private val profileItems = ArrayList<FeedItem>()
-
+    private var currentCommentsListDialog: BottomSheetDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -101,11 +102,6 @@ class ProfileFragment :
 
         if (isPersonal) profileItems.add(PostCreatorItem(user.getAvatarUrl(), isExpanded = false))
 
-        val currentCommentsListFragment =
-            (activity
-                ?.supportFragmentManager
-                ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
-
         for (post in user.posts) {
             val likes = ArrayList<UserItem>()
             likes.addAll(post.likedUsers.map {
@@ -123,10 +119,6 @@ class ProfileFragment :
                 CommentItem(comment.id, comment.text, date, author)
             })
 
-            if (post.id == currentCommentsListFragment?.getPostId()) {
-                currentCommentsListFragment.setComments(comments)
-            }
-
             val date = DateFormatUtils.getSimplifiedDate(post.date * 1000)
             profileItems.add(
                 PostItem(
@@ -142,6 +134,12 @@ class ProfileFragment :
                     comments
                 )
             )
+
+            val currentPostId = profilePresenter.currentPostId
+            val currentPostPosition = profilePresenter.currentPostPosition
+            if (currentPostId == post.id && currentPostPosition != -1) {
+                showCommentsList(currentPostId, currentPostPosition)
+            }
         }
 
         profileRecyclerView.apply {
@@ -221,11 +219,29 @@ class ProfileFragment :
     }
 
     override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
-        (activity
-            ?.supportFragmentManager
-            ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
-            ?.addComment(comment)
-        profileRecyclerView.adapter?.notifyItemChanged(postPosition)
+        val postComments = (profileItems[postPosition] as? PostItem)?.comments?:return
+
+        val author = UserItem(
+            PreferencesManager.userId,
+            PreferencesManager.userName,
+            PreferencesManager.userAvatar
+        )
+        val date = DateFormatUtils.getSimplifiedDate(comment.date * 1000)
+        val commentItem = CommentItem(comment.id, comment.text, date, author)
+
+        postComments.add(commentItem)
+        val commentsCount = postComments.size
+        currentCommentsListDialog?.let {
+            it.commentsBottomSheetTitle?.text =
+                resources.getQuantityString(
+                    R.plurals.comment_plurals,
+                    commentsCount,
+                    commentsCount
+                )
+            it.commentsBottomSheetEditor?.text = null
+            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemInserted(commentsCount)
+        }
+        feedRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
     override fun onCommentAddError() {
@@ -233,11 +249,17 @@ class ProfileFragment :
     }
 
     override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
-        (activity
-            ?.supportFragmentManager
-            ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
-            ?.deleteComment(commentPosition, commentId)
-        profileRecyclerView.adapter?.notifyItemChanged(postPosition)
+        val postComments = (profileItems[postPosition] as? PostItem)?.comments?:return
+        if (postComments[commentPosition].id == commentId) postComments.removeAt(commentPosition)
+        currentCommentsListDialog?.let {
+            it.commentsBottomSheetTitle?.text =
+                if (postComments.size > 0)
+                    resources.getQuantityString(R.plurals.comment_plurals, postComments.size, postComments.size)
+                else
+                    getString(R.string.no_comments_yet)
+            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemRemoved(commentPosition)
+        }
+        feedRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
     override fun onCommentDeleteError() {
@@ -303,12 +325,34 @@ class ProfileFragment :
         profilePresenter.deletePost(itemPosition, postId)
     }
 
-    override fun addComment(postId: Int, itemPosition: Int, text: String) {
-        profilePresenter.addComment(postId, itemPosition, text)
+    private fun addComment(postPosition: Int, postId: Int, text: String) {
+        profilePresenter.addComment(postId, postPosition, text)
     }
 
-    override fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
+    private fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
         profilePresenter.deleteComment(postPosition, commentId, commentPosition)
+    }
+
+    override fun showCommentsList(postId: Int, postPosition: Int) {
+        if (postId == -1 || postPosition == -1) return
+        profilePresenter.currentPostId = postId
+        profilePresenter.currentPostPosition = postPosition
+        val commentsListDialog = DialogFactory.createCommentsListDialog(
+            requireContext(),
+            (profileItems[postPosition] as? PostItem)?.comments?:ArrayList(),
+            HtmlParser(lifecycleScope, resources, Glide.with(requireContext())),
+            { userId: Int -> openUserProfile(userId) },
+            { drawable: Drawable -> openImage(drawable) },
+            { text: String -> addComment(postPosition, postId, text) },
+            { commentPosition: Int, commentId: Int -> deleteComment(postPosition, commentId, commentPosition) }
+        )
+        commentsListDialog.setOnDismissListener {
+            profilePresenter.currentPostId = -1
+            profilePresenter.currentPostPosition = -1
+            currentCommentsListDialog = null
+        }
+        currentCommentsListDialog = commentsListDialog
+        commentsListDialog.show()
     }
 
     override fun editLike(itemPosition: Int, postId: Int, setLike: Boolean) {

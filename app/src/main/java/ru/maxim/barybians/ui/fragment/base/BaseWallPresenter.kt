@@ -11,8 +11,19 @@ import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.repository.remote.service.CommentService
 import ru.maxim.barybians.repository.remote.service.PostService
 import ru.maxim.barybians.repository.remote.service.UserService
+import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 
 open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineScope by MainScope() {
+
+    /**
+     * id and layout position of post that currently shown on view
+     * Used to restore BottomSheetDialog state.
+     * If dialog was shown before change state, it will be restored by this parameters.
+     * Passed to [FeedFragment.showCommentsList]
+     * If value is -1, dialog will not appear
+     */
+    var currentPostId: Int = 0
+    var currentPostPosition: Int = 0
 
     protected val userService = UserService()
     protected val postService: PostService by lazy { PostService() }

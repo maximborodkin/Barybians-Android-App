@@ -7,9 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Post
@@ -19,8 +23,12 @@ import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.profile.ProfileActivity
 import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.PostItem
+import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
+import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.utils.DateFormatUtils
+import ru.maxim.barybians.utils.DialogFactory
 import ru.maxim.barybians.utils.DialogFactory.CommentBottomSheetFragment
+import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.toast
 
 class FeedFragment :
@@ -31,6 +39,7 @@ class FeedFragment :
     @InjectPresenter
     lateinit var feedPresenter: FeedPresenter
     private val feedItems = ArrayList<FeedItem>()
+    private var currentCommentsListDialog: BottomSheetDialog? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_feed, container, false)
@@ -46,35 +55,28 @@ class FeedFragment :
     }
 
     override fun showFeed(posts: ArrayList<Post>) {
+        if (view == null) return
         feedLoader.visibility = View.GONE
         feedRefreshLayout.isRefreshing = false
         feedItems.clear()
 
-        val currentCommentsListFragment =
-            (activity
-                ?.supportFragmentManager
-                ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
-
         for (post in posts) {
             val user = post.author
-            val likes = ArrayList<PostItem.UserItem>()
+            val likes = ArrayList<UserItem>()
             likes.addAll(post.likedUsers.map {
-                PostItem.UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
+                UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
             })
-            val comments = ArrayList<PostItem.CommentItem>()
+            val comments = ArrayList<CommentItem>()
             comments.addAll(post.comments.map { comment ->
-                val author = PostItem.UserItem(
+                val author = UserItem(
                     comment.author.id,
                     "${comment.author.firstName} ${comment.author.lastName}",
                     comment.author.getAvatarUrl()
                 )
                 val date =
                     DateFormatUtils.getSimplifiedDate(comment.date*1000)
-                PostItem.CommentItem(comment.id, comment.text, date, author)
+                CommentItem(comment.id, comment.text, date, author)
             })
-            if (post.id == currentCommentsListFragment?.getPostId()) {
-                currentCommentsListFragment.setComments(comments)
-            }
 
             val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
             feedItems.add(
@@ -91,6 +93,10 @@ class FeedFragment :
                     comments
                 )
             )
+
+            if (feedPresenter.currentPostId == post.id && feedPresenter.currentPostPosition != -1) {
+                showCommentsList(feedPresenter.currentPostId, feedPresenter.currentPostPosition)
+            }
         }
         feedRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -142,10 +148,28 @@ class FeedFragment :
     }
 
     override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
-        (activity
-            ?.supportFragmentManager
-            ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
-            ?.addComment(comment)
+        val postComments = (feedItems[postPosition] as? PostItem)?.comments?:return
+
+        val author = UserItem(
+            PreferencesManager.userId,
+            PreferencesManager.userName,
+            PreferencesManager.userAvatar
+        )
+        val date = DateFormatUtils.getSimplifiedDate(comment.date * 1000)
+        val commentItem = CommentItem(comment.id, comment.text, date, author)
+
+        postComments.add(commentItem)
+        val commentsCount = postComments.size
+        currentCommentsListDialog?.let {
+            it.commentsBottomSheetTitle?.text =
+                resources.getQuantityString(
+                    R.plurals.comment_plurals,
+                    commentsCount,
+                    commentsCount
+                )
+            it.commentsBottomSheetEditor?.text = null
+            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemInserted(commentsCount)
+        }
         feedRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
@@ -154,10 +178,16 @@ class FeedFragment :
     }
 
     override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
-        (activity
-            ?.supportFragmentManager
-            ?.findFragmentByTag("CommentsBottomSheetFragment") as? CommentBottomSheetFragment)
-            ?.deleteComment(commentPosition, commentId)
+        val postComments = (feedItems[postPosition] as? PostItem)?.comments?:return
+        if (postComments[commentPosition].id == commentId) postComments.removeAt(commentPosition)
+        currentCommentsListDialog?.let {
+            it.commentsBottomSheetTitle?.text =
+                if (postComments.size > 0)
+                    resources.getQuantityString(R.plurals.comment_plurals, postComments.size, postComments.size)
+                else
+                    getString(R.string.no_comments_yet)
+            it.commentsBottomSheetRecyclerView?.adapter?.notifyItemRemoved(commentPosition)
+        }
         feedRecyclerView.adapter?.notifyItemChanged(postPosition)
     }
 
@@ -170,7 +200,7 @@ class FeedFragment :
         likesList?.clear()
         likedUsers.forEach {
             likesList?.add(
-                PostItem.UserItem(
+                UserItem(
                     it.id,
                     "${it.firstName} ${it.lastName}",
                     it.getAvatarUrl()
@@ -205,12 +235,34 @@ class FeedFragment :
         feedPresenter.deletePost(itemPosition, postId)
     }
 
-    override fun addComment(postId: Int, itemPosition: Int, text: String) {
-        feedPresenter.addComment(postId, itemPosition, text)
+    private fun addComment(postPosition: Int, postId: Int, text: String) {
+        feedPresenter.addComment(postId, postPosition, text)
     }
 
-    override fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
+    private fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
         feedPresenter.deleteComment(postPosition, commentId, commentPosition)
+    }
+
+    override fun showCommentsList(postId: Int, postPosition: Int) {
+        if (postId == -1 || postPosition == -1) return
+        feedPresenter.currentPostId = postId
+        feedPresenter.currentPostPosition = postPosition
+        val commentsListDialog = DialogFactory.createCommentsListDialog(
+            requireContext(),
+            (feedItems[postPosition] as? PostItem)?.comments?:ArrayList(),
+            HtmlParser(lifecycleScope, resources, Glide.with(requireContext())),
+            { userId: Int -> openUserProfile(userId) },
+            { drawable: Drawable -> openImage(drawable) },
+            { text: String -> addComment(postPosition, postId, text) },
+            { commentPosition: Int, commentId: Int -> deleteComment(postPosition, commentId, commentPosition) }
+        )
+        commentsListDialog.setOnDismissListener {
+            feedPresenter.currentPostId = -1
+            feedPresenter.currentPostPosition = -1
+            currentCommentsListDialog = null
+        }
+        currentCommentsListDialog = commentsListDialog
+        commentsListDialog.show()
     }
 
     override fun editLike(itemPosition: Int, postId: Int, setLike: Boolean) {

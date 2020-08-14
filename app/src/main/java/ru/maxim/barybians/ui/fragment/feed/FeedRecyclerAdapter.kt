@@ -252,28 +252,28 @@ open class FeedRecyclerAdapter(
         val commentsCount = post.comments.size
         postViewHolder.commentBtn.text = if (commentsCount == 0) null else commentsCount.toString()
         postViewHolder.commentBtn.setOnClickListener {
-            val commentsListFragment =
-                DialogFactory.createCommentsListDialog(
-                    post.postId,
-                    post.comments,
-                    { onUserClick(it) },
-                    { onImageClick(it) },
-                    htmlUtils,
-                    { text ->
-                        feedItemsListener.addComment(
-                            post.postId,
-                            position,
-                            text
-                        )
-                    },
-                    { commentPosition, commentId ->
-                        feedItemsListener.deleteComment(
-                            position,
-                            commentId,
-                            commentPosition
-                        )
-                    })
-            feedItemsListener.showDialog(commentsListFragment, "CommentsBottomSheetFragment")
+            feedItemsListener.showCommentsList(post.postId, position)
+//            val commentsListFragment =
+//                DialogFactory.createCommentsListDialog(
+//                    post.postId,
+//                    post.comments,
+//                    { onUserClick(it) },
+//                    { onImageClick(it) },
+//                    { text ->
+//                        feedItemsListener.addComment(
+//                            post.postId,
+//                            position,
+//                            text
+//                        )
+//                    },
+//                    { commentPosition, commentId ->
+//                        feedItemsListener.deleteComment(
+//                            position,
+//                            commentId,
+//                            commentPosition
+//                        )
+//                    })
+//            feedItemsListener.showDialog(commentsListFragment, "CommentsBottomSheetFragment")
         }
     }
 

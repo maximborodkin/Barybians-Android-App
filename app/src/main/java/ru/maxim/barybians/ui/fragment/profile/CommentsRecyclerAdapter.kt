@@ -51,7 +51,6 @@ class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentIt
         override fun getSwipeDirs(recyclerView: RecyclerView,
                                   viewHolder: RecyclerView.ViewHolder
         ): Int {
-            Log.d("getSwipeDirs", "adapterPosition: ${viewHolder.adapterPosition}, commentId: ${comments[viewHolder.adapterPosition].id}")
             val authorId = comments[viewHolder.adapterPosition].author.id
             val isPersonal = authorId == PreferencesManager.userId
             return if(isPersonal) Callback.makeMovementFlags(0, LEFT or RIGHT) else 0
