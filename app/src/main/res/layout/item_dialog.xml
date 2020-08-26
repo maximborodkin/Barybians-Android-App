@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginHorizontal="12dp"
         android:textSize="20sp"
-        android:textColor="@color/black"
+        style="?accentTextStyle"
         tools:text="Дима"/>
 
     <LinearLayout

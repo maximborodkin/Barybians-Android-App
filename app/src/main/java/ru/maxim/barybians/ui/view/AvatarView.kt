@@ -26,7 +26,7 @@ class AvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         }
 
         maskPaint.apply {
-            setLayerType(LAYER_TYPE_SOFTWARE, null)
+            setLayerType(LAYER_TYPE_HARDWARE, null)
             xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
             maskPaint.color = Color.TRANSPARENT
             isAntiAlias = true

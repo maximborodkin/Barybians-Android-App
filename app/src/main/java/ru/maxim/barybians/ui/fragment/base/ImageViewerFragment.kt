@@ -1,31 +1,27 @@
 package ru.maxim.barybians.ui.fragment.base
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.ImageView
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import ru.maxim.barybians.ui.view.ScaleImageView
 import ru.maxim.barybians.utils.isNotNull
-import ru.maxim.barybians.utils.isNull
 
 class ImageViewerFragment : AppCompatDialogFragment() {
 
-    @IdRes
-    private var imageViewId = View.generateViewId()
+    init {
+        setStyle(DialogFragment.STYLE_NO_TITLE, 0)
+    }
 
     override fun onStart() {
         super.onStart()
@@ -40,6 +36,9 @@ class ImageViewerFragment : AppCompatDialogFragment() {
     ): View? {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         val imageView = ScaleImageView(requireContext())
+        imageView.onDismissListener = {
+            dismiss()
+        }
         val params = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         imageView.layoutParams = params
         if (drawable != null) {
