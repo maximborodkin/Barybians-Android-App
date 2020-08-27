@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
+import ru.maxim.barybians.utils.isNotNullOrBlank
 
 class LoginActivity : MvpAppCompatActivity(), LoginView {
 
@@ -34,10 +35,10 @@ class LoginActivity : MvpAppCompatActivity(), LoginView {
         }
 
         loginLogin.doAfterTextChanged {
-            if (!it.isNullOrBlank()) loginLoginLayout.error = null
+            if (it.isNotNullOrBlank()) loginLoginLayout.error = null
         }
         loginPassword.doAfterTextChanged {
-            if (!it.isNullOrBlank()) loginPasswordLayout.error = null
+            if (it.isNotNullOrBlank()) loginPasswordLayout.error = null
         }
 
         loginRegisterLink.setOnClickListener {

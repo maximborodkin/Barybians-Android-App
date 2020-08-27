@@ -4,17 +4,21 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
-import android.widget.Toast
 import androidx.databinding.library.BuildConfig
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.activity.base.BaseActivity
+import ru.maxim.barybians.utils.toast
 import java.io.File
 
 
@@ -37,22 +41,14 @@ class PreferencesActivity : BaseActivity() {
 
             findPreference<Preference>(PreferencesManager.versionKey)?.summary = BuildConfig.VERSION_NAME
 
-            val cacheSize = getCacheSize()
-            findPreference<Preference>(PreferencesManager.clearCacheKey)?.summary =
-                when{
-                    cacheSize >= 1000_000 -> getString(R.string.mbytes, cacheSize.toInt()/1000_000)
-                    cacheSize >= 1000 -> getString(R.string.kbytes, cacheSize.toInt()/1000)
-                    else -> getString(R.string.bytes, cacheSize.toInt())
-                }
+            setClearCacheSummary()
 
             findPreference<Preference>(PreferencesManager.clearCacheKey)?.setOnPreferenceClickListener {
-                // TODO("Clear Glide and database cache")
-//                lifecycleScope.launch(Dispatchers.IO) {
-//                    val glide = Glide.get(requireContext().applicationContext)
-//                    glide.clearMemory()
-//                    glide.clearDiskCache()
-//                }
-                Toast.makeText(context, "Not implemented", Toast.LENGTH_SHORT).show()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    Glide.get(requireContext().applicationContext).clearDiskCache()
+                }
+                context?.toast(R.string.cache_cleared)
+                setClearCacheSummary()
                 true
             }
 
@@ -73,10 +69,19 @@ class PreferencesActivity : BaseActivity() {
             }
         }
 
+        private fun setClearCacheSummary() {
+            val cacheSize = getCacheSize()
+            findPreference<Preference>(PreferencesManager.clearCacheKey)?.summary =
+                when{
+                    cacheSize >= 1000_000 -> getString(R.string.mbytes, cacheSize.toInt()/1000_000)
+                    cacheSize >= 1000 -> getString(R.string.kbytes, cacheSize.toInt()/1000)
+                    else -> getString(R.string.bytes, cacheSize.toInt())
+                }
+        }
+
         private fun getCacheSize() =
             getDirSize(context?.cacheDir) +
             getDirSize(context?.externalCacheDir)
-
 
         private fun getDirSize(dir: File?): Long {
             if (dir == null) return 0

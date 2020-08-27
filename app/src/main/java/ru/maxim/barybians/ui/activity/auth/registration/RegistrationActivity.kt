@@ -11,6 +11,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.activity_registration.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.ui.activity.main.MainActivity
+import ru.maxim.barybians.utils.isNotNullOrBlank
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -61,11 +62,11 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, DatePicke
         }
 
         registrationFirstName.doAfterTextChanged {
-            if (!it.isNullOrBlank()) registrationFirstNameLayout.error = null
+            if (it.isNotNullOrBlank()) registrationFirstNameLayout.error = null
         }
 
         registrationLastName.doAfterTextChanged {
-            if (!it.isNullOrBlank()) registrationLastNameLayout.error = null
+            if (it.isNotNullOrBlank()) registrationLastNameLayout.error = null
         }
 
         registrationBirthDate.doAfterTextChanged {
@@ -74,15 +75,15 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView, DatePicke
         }
 
         registrationLogin.doAfterTextChanged {
-            if (!it.isNullOrBlank()) registrationLoginLayout.error = null
+            if (it.isNotNullOrBlank()) registrationLoginLayout.error = null
         }
 
         registrationPassword.doAfterTextChanged {
-            if (!it.isNullOrBlank()) registrationPasswordLayout.error = null
+            if (it.isNotNullOrBlank()) registrationPasswordLayout.error = null
         }
 
         registrationPasswordRepeat.doAfterTextChanged {
-            if (!it.isNullOrBlank()) registrationPasswordRepeatLayout.error = null
+            if (it.isNotNullOrBlank()) registrationPasswordRepeatLayout.error = null
         }
 
         registrationBtn.setOnClickListener {

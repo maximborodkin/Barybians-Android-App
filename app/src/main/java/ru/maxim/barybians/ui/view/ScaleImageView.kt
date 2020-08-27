@@ -10,14 +10,16 @@ import android.graphics.Matrix.*
 import android.graphics.PointF
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
+import android.view.MotionEvent.ACTION_CANCEL
+import android.view.MotionEvent.ACTION_UP
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ScaleGestureDetectorCompat
-
 
 /**
  * ScaleImageView is a extension of [AppCompatImageView], providing a pinch-to-zoom and
@@ -29,13 +31,13 @@ class ScaleImageView @JvmOverloads constructor(
     defStyle: Int = 0
 ) : AppCompatImageView(context, attrs, defStyle), OnScaleGestureListener {
 
-    private val resetAnimationDuration = 200
+    private val resetAnimationDuration = 200L
     private var startMatrix = Matrix()
     private val currentMatrix = Matrix()
     private val matrixValues = FloatArray(9)
     private var startValues: FloatArray? = null
-    private var minScale = 0.5F
-    private var maxScale = 10F
+    private val minScale = 0.5F
+    private val maxScale = 10F
     private var calculatedMinScale = minScale
     private var calculatedMaxScale = maxScale
     private val bounds = RectF()
@@ -46,24 +48,28 @@ class ScaleImageView @JvmOverloads constructor(
     private var currentScaleFactor = 1f
     private var previousPointerCount = 1
     private var currentPointerCount = 0
-    private var scaleDetector: ScaleGestureDetector = ScaleGestureDetector(context, this)
+    private var scaleDetector: ScaleGestureDetector = ScaleGestureDetector(context, this).apply {
+        ScaleGestureDetectorCompat.setQuickScaleEnabled(this, false)
+    }
     private var resetAnimator: ValueAnimator? = null
     private var doubleTapDetected = false
     private var singleTapDetected = false
     private val gestureListener: GestureDetector.OnGestureListener =
         object : SimpleOnGestureListener() {
             override fun onDoubleTapEvent(e: MotionEvent): Boolean {
-                if (e.action == MotionEvent.ACTION_UP) { doubleTapDetected = true }
+                if (e.action == ACTION_UP) { doubleTapDetected = true }
                 singleTapDetected = false
                 return false
             }
 
-            override fun onSingleTapUp(e: MotionEvent): Boolean {
+            override fun onSingleTapUp(event: MotionEvent): Boolean {
+                if (event.x !in bounds.left..bounds.right || event.y !in bounds.top..bounds.bottom)
+                    dismissView()
                 singleTapDetected = true
                 return false
             }
 
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
                 singleTapDetected = false
                 return false
             }
@@ -72,10 +78,6 @@ class ScaleImageView @JvmOverloads constructor(
         }
     private var gestureDetector: GestureDetector = GestureDetector(context, gestureListener)
     var onDismissListener: () -> Unit? = {}
-
-    init {
-        ScaleGestureDetectorCompat.setQuickScaleEnabled(scaleDetector, false)
-    }
 
     private fun updateBounds(values: FloatArray) {
         if (drawable != null) {
@@ -101,79 +103,86 @@ class ScaleImageView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (!isClickable && isEnabled) {
-            if (scaleType != ScaleType.MATRIX) {
-                super.setScaleType(ScaleType.MATRIX)
-            }
-            if (startValues == null) {
-                setStartValues()
-            }
-            currentPointerCount = event.pointerCount
+        Log.d("JOPAJOPA", "Image bounds. left: ${bounds.left}, right: ${bounds.right}, top: ${bounds.top}, bottom: ${bounds.bottom}")
+        Log.d("JOPAJOPA", "TouchEvent. x: ${event.x}, y: ${event.y}, rawX: ${event.rawX}, rawY: ${event.rawY}")
 
-            //get the current state of the image matrix, its values, and the bounds of the drawn bitmap
-            currentMatrix.set(imageMatrix)
-            currentMatrix.getValues(matrixValues)
-            updateBounds(matrixValues)
-            scaleDetector.onTouchEvent(event)
-            gestureDetector.onTouchEvent(event)
-            if (doubleTapDetected) {
-                doubleTapDetected = false
-                singleTapDetected = false
-                if (matrixValues[MSCALE_X] != startValues!![MSCALE_X]) {
-                    animateToStartMatrix()
-                } else {
-                    val zoomMatrix = Matrix(currentMatrix)
-                    zoomMatrix.postScale(
-                        doubleTapToZoomScaleFactor,
-                        doubleTapToZoomScaleFactor,
-                        scaleDetector.focusX,
-                        scaleDetector.focusY
-                    )
-                    animateScaleAndTranslationToMatrix(zoomMatrix)
-                }
-                return true
-            } else if (!singleTapDetected) {
-                /* if the event is a down touch, or if the number of touch points changed,
-                 * we should reset our start point, as event origins have likely shifted to a
-                 * different part of the screen*/
-                if (event.actionMasked == MotionEvent.ACTION_DOWN ||
-                    currentPointerCount != previousPointerCount
-                ) {
-                    last[scaleDetector.focusX] = scaleDetector.focusY
-                } else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
-                    val focusX = scaleDetector.focusX
-                    val focusY = scaleDetector.focusY
-                        //calculate the distance for translation
-                    val xDistance = getXDistance(focusX, last.x)
-                    val yDistance = getYDistance(focusY, last.y)
-                    currentMatrix.postTranslate(xDistance, yDistance)
-                    currentMatrix.postScale(scaleBy, scaleBy, focusX, focusY)
-                    currentScaleFactor =
-                        matrixValues[MSCALE_X] / startValues!![MSCALE_X]
-                    imageMatrix = currentMatrix
-                    last[focusX] = focusY
-                }
-                if (event.actionMasked == MotionEvent.ACTION_UP ||
-                    event.actionMasked == MotionEvent.ACTION_CANCEL
-                ) {
-                    scaleBy = 1f
-                    resetImage()
-                }
-            }
-            parent.requestDisallowInterceptTouchEvent(disallowParentTouch())
 
-            //this tracks whether they have changed the number of fingers down
-            previousPointerCount = currentPointerCount
+        if (scaleType != ScaleType.MATRIX) {
+            super.setScaleType(ScaleType.MATRIX)
+        }
+
+        if (startValues == null) {
+            setStartValues()
+        }
+
+        currentPointerCount = event.pointerCount
+
+        currentMatrix.set(imageMatrix)
+        currentMatrix.getValues(matrixValues)
+        updateBounds(matrixValues)
+        scaleDetector.onTouchEvent(event)
+        gestureDetector.onTouchEvent(event)
+
+        if (event.y !in bounds.top..bounds.bottom || event.x !in bounds.left..bounds.right){
+//            if (event.actionMasked == MotionEvent.ACTION_UP) dismissView()
             return true
         }
-        return super.onTouchEvent(event)
+
+        if (doubleTapDetected) {
+            doubleTapDetected = false
+            singleTapDetected = false
+            if (matrixValues[MSCALE_X] != startValues!![MSCALE_X]) {
+                animateToStartMatrix()
+            } else {
+                val zoomMatrix = Matrix(currentMatrix)
+                zoomMatrix.postScale(
+                    doubleTapToZoomScaleFactor,
+                    doubleTapToZoomScaleFactor,
+                    scaleDetector.focusX,
+                    scaleDetector.focusY
+                )
+                animateScaleAndTranslationToMatrix(zoomMatrix)
+            }
+            return true
+        } else if (!singleTapDetected) {
+            /* if the event is a down touch, or if the number of touch points changed,
+             * we should reset our start point, as event origins have likely shifted to a
+             * different part of the screen*/
+            if (event.actionMasked == MotionEvent.ACTION_DOWN ||
+                currentPointerCount != previousPointerCount
+            ) {
+                last[scaleDetector.focusX] = scaleDetector.focusY
+            } else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
+                val focusX = scaleDetector.focusX
+                val focusY = scaleDetector.focusY
+                    //calculate the distance for translation
+                val xDistance = getXDistance(focusX, last.x)
+                val yDistance = getYDistance(focusY, last.y)
+                currentMatrix.postTranslate(xDistance, yDistance)
+                currentMatrix.postScale(scaleBy, scaleBy, focusX, focusY)
+                currentScaleFactor =
+                    matrixValues[MSCALE_X] / startValues!![MSCALE_X]
+                imageMatrix = currentMatrix
+                last[focusX] = focusY
+            }
+            if (event.actionMasked == ACTION_UP || event.actionMasked == ACTION_CANCEL) {
+                scaleBy = 1f
+                resetImage()
+            }
+        }
+        parent.requestDisallowInterceptTouchEvent(disallowParentTouch())
+
+        //this tracks whether they have changed the number of fingers down
+        previousPointerCount = currentPointerCount
+        performClick()
+        return true
     }
 
     private fun disallowParentTouch() =
-        currentPointerCount > 1 || currentScaleFactor > 1.0f || isAnimating
+        /*currentPointerCount > 1 || */currentScaleFactor > 1.0f || isAnimating
 
     private val isAnimating: Boolean
-        get() = resetAnimator != null && resetAnimator!!.isRunning
+        get() = resetAnimator?.isRunning?:false
 
     private fun resetImage() {
        if (matrixValues[MSCALE_X] <= startValues!![MSCALE_X]) {
@@ -245,7 +254,7 @@ class ScaleImageView @JvmOverloads constructor(
             override fun onAnimationCancel(p0: Animator?) {}
             override fun onAnimationRepeat(p0: Animator?) {}
         })
-        resetAnimator?.duration = resetAnimationDuration.toLong()
+        resetAnimator?.duration = resetAnimationDuration
         resetAnimator?.start()
     }
 
@@ -286,20 +295,21 @@ class ScaleImageView @JvmOverloads constructor(
     }
 
     private fun animateMatrixIndex(index: Int, to: Float) {
-        val animator = ValueAnimator.ofFloat(matrixValues[index], to)
-        animator.addUpdateListener(object : AnimatorUpdateListener {
-            val values = FloatArray(9)
-            var current = Matrix()
-            override fun onAnimationUpdate(animation: ValueAnimator) {
-                current.set(imageMatrix)
-                current.getValues(values)
-                values[index] = animation.animatedValue as Float
-                current.setValues(values)
-                imageMatrix = current
-            }
-        })
-        animator.duration = resetAnimationDuration.toLong()
-        animator.start()
+        ValueAnimator.ofFloat(matrixValues[index], to).apply {
+            addUpdateListener(object : AnimatorUpdateListener {
+                val values = FloatArray(9)
+                var current = Matrix()
+                override fun onAnimationUpdate(animation: ValueAnimator) {
+                    current.set(imageMatrix)
+                    current.getValues(values)
+                    values[index] = animation.animatedValue as Float
+                    current.setValues(values)
+                    imageMatrix = current
+                }
+            })
+            duration = resetAnimationDuration
+            start()
+        }
     }
 
     /**
@@ -394,14 +404,18 @@ class ScaleImageView @JvmOverloads constructor(
             }
         } else if (!scaleDetector.isInProgress) {
             if (bounds.top >= 0 && bounds.top + yDistance < 0) {
-                onDismissListener()
+                dismissView()
                 restrictedYDistance = -bounds.top
             } else if (bounds.bottom <= height && bounds.bottom + yDistance > height) {
-                onDismissListener()
+                dismissView()
                 restrictedYDistance = height - bounds.bottom
             }
         }
         return restrictedYDistance
+    }
+
+    private fun dismissView() {
+        onDismissListener()
     }
 
     override fun onScale(detector: ScaleGestureDetector): Boolean {
@@ -430,4 +444,3 @@ class ScaleImageView @JvmOverloads constructor(
         scaleBy = 1f
     }
 }
-//618

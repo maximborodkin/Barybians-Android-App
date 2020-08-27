@@ -149,4 +149,6 @@
     <string name="unable_to_create_comment">Unable to create comment</string>
     <string name="unable_to_delete_comment">Unable to delete comment</string>
     <string name="an_error_occurred_while_loading_feed">An error occurred while loading feed</string>
+    <string name="unable_to_load_image">Unable to load image</string>
+    <string name="cache_cleared">Cache cleared</string>
 </resources>

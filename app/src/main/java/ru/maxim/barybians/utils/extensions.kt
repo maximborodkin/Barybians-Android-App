@@ -12,6 +12,9 @@ fun <T> WeakReference<T>.isNotNull() = !this.isNull()
 fun Any?.isNull() = this == null
 fun Any?.isNotNull() = !this.isNull()
 
+fun CharSequence?.isNotNullOrEmpty(): Boolean = !this.isNullOrEmpty()
+fun CharSequence?.isNotNullOrBlank(): Boolean = !this.isNullOrBlank()
+
 fun TextView.setDrawableStart(drawableResource: Int) = this.setCompoundDrawablesRelativeWithIntrinsicBounds(drawableResource, 0, 0, 0)
 fun TextView.setDrawableEnd(drawableResource: Int) = this.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, drawableResource, 0)
 fun TextView.clearDrawables() = this.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
