@@ -6,4 +6,5 @@ import ru.maxim.barybians.model.Dialog
 interface DialogsListView : MvpView {
 
     fun showDialogsList(dialogsList: ArrayList<Dialog>)
+    fun onDialogsListLoadError()
 }

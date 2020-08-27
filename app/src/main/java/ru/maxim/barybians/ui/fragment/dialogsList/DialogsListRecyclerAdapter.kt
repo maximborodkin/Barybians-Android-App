@@ -15,7 +15,10 @@ import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListRecyclerAdapter.Dia
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.DateFormatUtils
 
-class DialogsListRecyclerAdapter(private val dialogs: ArrayList<Dialog>) : RecyclerView.Adapter<DialogViewHolder>() {
+class DialogsListRecyclerAdapter(
+    private val dialogs: ArrayList<Dialog>,
+    private val onDialogClick: (userId: Int) -> Unit
+) : RecyclerView.Adapter<DialogViewHolder>() {
 
     class DialogViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val avatarView: AvatarView = view.itemDialogAvatar
@@ -35,10 +38,12 @@ class DialogsListRecyclerAdapter(private val dialogs: ArrayList<Dialog>) : Recyc
         Glide.with(context).load(dialog.secondUser.getAvatarUrl()).into(holder.avatarView)
         holder.nameView.text = "${dialog.secondUser.firstName} ${dialog.secondUser.lastName}"
         val sender =
-            if (dialog.lastMessage.senderId == PreferencesManager.userId)context.getString(R.string.you)
+            if (dialog.lastMessage.senderId == PreferencesManager.userId)
+                context.getString(R.string.you)
             else
                 dialog.secondUser.firstName
         holder.messageView.text = "$sender: ${dialog.lastMessage.text}"
         holder.dateView.text = DateFormatUtils.getSimplifiedDate(dialog.lastMessage.time*1000)
+        holder.itemView.setOnClickListener { onDialogClick(dialog.secondUser.id) }
     }
 }

@@ -151,4 +151,6 @@
     <string name="an_error_occurred_while_loading_feed">An error occurred while loading feed</string>
     <string name="unable_to_load_image">Unable to load image</string>
     <string name="cache_cleared">Cache cleared</string>
+    <string name="an_error_occurred_while_loading_dialogs">An error occurred while loading dialogs</string>
+    <string name="type_message">Type message&#8230;</string>
 </resources>

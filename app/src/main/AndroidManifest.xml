@@ -34,6 +34,7 @@
         <activity android:name="ru.maxim.barybians.ui.activity.preferences.PreferencesActivity"
             android:parentActivityName="ru.maxim.barybians.ui.activity.main.MainActivity"/>
         <activity android:name="ru.maxim.barybians.ui.activity.profile.ProfileActivity" />
+        <activity android:name=".ui.activity.dialog.DialogActivity" />
     </application>
 
 </manifest>

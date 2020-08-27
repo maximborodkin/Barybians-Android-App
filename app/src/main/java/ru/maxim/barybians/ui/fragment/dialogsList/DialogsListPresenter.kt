@@ -30,9 +30,11 @@ class DialogsListPresenter : MvpPresenter<DialogsListView>(), CoroutineScope by 
                     }
                     dialogList.sortByDescending { dialog -> dialog.lastMessage.time }
                     viewState.showDialogsList(dialogList)
+                } else {
+                    viewState.onDialogsListLoadError()
                 }
             } catch (e: Exception) {
-
+                viewState.onDialogsListLoadError()
             }
         }
     }
