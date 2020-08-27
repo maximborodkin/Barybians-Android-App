@@ -22,6 +22,8 @@
         <item name="textButtonStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
         <item name="commentInputStyle">@style/LightTheme.CommentEditText</item>
         <item name="cardBackground">@color/white</item>
+        <item name="incomingMessageBackgroundColor">@color/light_incoming_message_background</item>
+        <item name="outgoingMessageBackgroundColor">@color/light_outgoing_message_background</item>
     </style>
 
     <style name="LightTheme.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
@@ -55,6 +57,8 @@
         <item name="bottomSheetDialogTheme">@style/DarkTheme.BottomSheet</item>
         <item name="commentInputStyle">@style/DarkTheme.CommentEditText</item>
         <item name="cardBackground">@color/dark_colorPrimary</item>
+        <item name="incomingMessageBackgroundColor">@color/dark_incoming_message_background</item>
+        <item name="outgoingMessageBackgroundColor">@color/dark_outgoing_message_background</item>
     </style>
 
     <style name="DarkTheme.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">

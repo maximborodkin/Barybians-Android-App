@@ -22,4 +22,6 @@
     <attr name="postTextInputStyle" format="reference" />
     <attr name="textButtonStyle" format="reference" />
     <attr name="commentInputStyle" format="reference" />
+    <attr name="incomingMessageBackgroundColor" format="reference"/>
+    <attr name="outgoingMessageBackgroundColor" format="reference"/>
 </resources>
