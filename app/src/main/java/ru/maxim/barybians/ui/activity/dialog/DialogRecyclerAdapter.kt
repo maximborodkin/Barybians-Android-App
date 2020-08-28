@@ -1,13 +1,18 @@
 package ru.maxim.barybians.ui.activity.dialog
 
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.AnimationDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.incoming_message.view.*
-import kotlinx.android.synthetic.main.outgoing_message.view.*
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import kotlinx.android.synthetic.main.item_incoming_message.view.*
+import kotlinx.android.synthetic.main.item_outgoing_message.view.*
 import ru.maxim.barybians.R
 
 class DialogRecyclerAdapter(
@@ -22,6 +27,7 @@ class DialogRecyclerAdapter(
     class OutgoingMessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: AppCompatTextView = view.itemOutgoingMessageText
         val timeView: TextView = view.itemOutgoingMessageTime
+        val messageLabel: AppCompatImageView = view.itemOutgoingMessageLabel
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -29,12 +35,12 @@ class DialogRecyclerAdapter(
             MessageType.IncomingMessage.viewType -> IncomingMessageViewHolder(
                 LayoutInflater
                     .from(parent.context)
-                    .inflate(R.layout.incoming_message, parent, false)
+                    .inflate(R.layout.item_incoming_message, parent, false)
             )
             MessageType.OutgoingMessage.viewType -> OutgoingMessageViewHolder(
                 LayoutInflater
                     .from(parent.context)
-                    .inflate(R.layout.outgoing_message, parent, false)
+                    .inflate(R.layout.item_outgoing_message, parent, false)
             )
             else -> throw IllegalStateException("Unknown view type")
         }

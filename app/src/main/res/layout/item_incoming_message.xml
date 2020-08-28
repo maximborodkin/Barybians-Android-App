@@ -4,24 +4,25 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="end"
-    android:gravity="end"
-    android:background="@drawable/outgoing_message_background"
+    android:background="@drawable/incoming_message_background"
+    android:layout_gravity="start"
+    android:gravity="start"
     android:paddingStart="@dimen/message_padding"
     android:paddingTop="@dimen/message_padding"
     android:paddingEnd="@dimen/message_padding"
-    android:paddingBottom="2dp">
+    android:paddingBottom="2dp"
+    android:layout_marginBottom="@dimen/space_between_messages">
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemOutgoingMessageText"
+        android:id="@+id/itemIncomingMessageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Outgoing message sample"
+        tools:text="Incoming message sample"
         style="?accentTextStyle"/>
 
     <TextView
-        android:id="@+id/itemOutgoingMessageTime"
+        android:id="@+id/itemIncomingMessageTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="0:38"/>
+        tools:text="0:34"/>
 </LinearLayout>

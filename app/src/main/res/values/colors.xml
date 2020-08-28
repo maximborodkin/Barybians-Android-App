@@ -8,6 +8,8 @@
     <color name="white_transparent_60">#3CFFFFFF</color>
     <color name="online_circle_color">#32AD37</color>
     <color name="transparent">#00000000</color>
+    <color name="unread_message_circle_color">#516BFF</color>
+    <color name="error_message_circle_color">#B51A1A</color>
     
 <!--  Light Theme  -->
     <color name="light_colorPrimaryLight">#83B9FF</color>
