@@ -69,18 +69,18 @@ class ProfileFragment :
     }
 
     override fun showNoInternet() {
-        profileLoader.visibility = View.GONE
+        profileLoading.visibility = View.GONE
         profileRefreshLayout.isRefreshing = false
         context?.toast(R.string.no_internet_connection)
     }
 
     override fun showLoading() {
-        profileLoader.visibility = View.VISIBLE
+        profileLoading.visibility = View.VISIBLE
     }
 
     override fun showUserProfile(user: User) {
         val isPersonal = user.id == PreferencesManager.userId
-        profileLoader.visibility = View.GONE
+        profileLoading.visibility = View.GONE
         profileRefreshLayout.isRefreshing = false
 
         profileItems.clear()
@@ -149,7 +149,7 @@ class ProfileFragment :
     }
 
     override fun onUserLoadError() {
-        profileLoader.visibility = View.GONE
+        profileLoading.visibility = View.GONE
         profileRefreshLayout.isRefreshing = false
         context?.toast(R.string.an_error_occurred_while_loading_profile)
     }

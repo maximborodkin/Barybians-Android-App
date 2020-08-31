@@ -38,22 +38,6 @@ object DialogFactory {
         likes: ArrayList<UserItem>,
         onUserClick: (userId: Int) -> Unit
     ) = LikesBottomSheetFragment.newInstance(likes, onUserClick)
-//
-//    fun createCommentsListDialog(
-//        postId: Int,
-//        comments: ArrayList<CommentItem>,
-//        onUserClick: (userId: Int) -> Unit,
-//        onImageClick: (drawable: Drawable) -> Unit,
-//        onCommentAdd: (text: String) -> Unit,
-//        onCommentDelete: (commentPosition: Int, commentId: Int) -> Unit
-//    ) = CommentBottomSheetFragment.newInstance(
-//        postId,
-//        comments,
-//        onUserClick,
-//        onImageClick,
-//        onCommentAdd,
-//        onCommentDelete
-//    )
 
     fun createEditStatusDialog(
         status: String?,
@@ -112,128 +96,6 @@ object DialogFactory {
                 this.likes = likes
                 this.onUserClick = onUserClick
                 return LikesBottomSheetFragment()
-            }
-        }
-    }
-
-    class CommentBottomSheetFragment : BottomSheetDialogFragment() {
-
-        private lateinit var htmlParser: HtmlParser
-
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View? = inflater.inflate(R.layout.fragment_comments_bottom_sheet, container, false)
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-            htmlParser = HtmlParser(lifecycleScope, resources, Glide.with(requireContext()))
-            val commentsCount = comments.size
-            if (commentsCount == 0) {
-                commentsBottomSheetTitle.text = context?.getString(R.string.no_comments_yet)
-            } else {
-                commentsBottomSheetTitle.text =
-                    context?.resources?.getQuantityString(
-                        R.plurals.comment_plurals,
-                        commentsCount,
-                        commentsCount
-                    )
-            }
-            commentsBottomSheetRecyclerView.let {
-                it.layoutManager = LinearLayoutManager(context)
-                it.adapter = CommentsRecyclerAdapter(
-                    comments,
-                    { userId ->
-                        onUserClick(userId)
-                        dismiss()
-                    },
-                    onImageClick,
-                    onCommentDelete,
-                    htmlParser
-                )
-            }
-
-            commentsBottomSheetEditor.addTextChangedListener {
-                val buttonResource =
-                    if (it.isNullOrBlank()) R.drawable.ic_send_grey
-                    else R.drawable.ic_send_blue
-                commentsBottomSheetSend.setBackgroundResource(buttonResource)
-                commentsBottomSheetEditor.requestFocus()
-            }
-            commentsBottomSheetSend.apply {
-                setBackgroundResource(R.drawable.ic_send_grey)
-                setOnClickListener {
-                    val text = commentsBottomSheetEditor.text
-                    if (!text.isNullOrBlank()) {
-                        onCommentAdd(text.toString())
-                    }
-                }
-            }
-        }
-
-        fun addComment(comment: CommentResponse) {
-            val date = DateFormatUtils.getSimplifiedDate(comment.date * 1000)
-            val author = UserItem(
-                PreferencesManager.userId,
-                PreferencesManager.userName,
-                PreferencesManager.userAvatar
-            )
-
-            comments.add(CommentItem(comment.id, comment.text, date, author))
-
-            commentsBottomSheetTitle?.text = resources.getQuantityString(
-                R.plurals.comment_plurals, comments.size, comments.size
-            )
-            commentsBottomSheetRecyclerView?.adapter?.notifyItemInserted(comments.size)
-            commentsBottomSheetEditor?.text = null
-        }
-
-        fun deleteComment(commentPosition: Int, commentId: Int) {
-            comments.removeAt(commentPosition)
-
-            commentsBottomSheetTitle?.text =
-                if (comments.size > 0)
-                    resources.getQuantityString(
-                        R.plurals.comment_plurals,
-                        comments.size,
-                        comments.size
-                    )
-                else
-                    getString(R.string.no_comments_yet)
-            commentsBottomSheetRecyclerView?.adapter?.notifyItemRemoved(commentPosition)
-        }
-
-        fun getPostId() = postId
-        fun getComments() = comments
-        fun setComments(newComments: ArrayList<CommentItem>) {
-            comments = newComments
-            commentsBottomSheetRecyclerView.adapter?.notifyDataSetChanged()
-        }
-
-        companion object {
-            private var postId: Int = 0
-            private lateinit var comments: ArrayList<CommentItem>
-            private lateinit var onUserClick: (userId: Int) -> Unit
-            private lateinit var onImageClick: (drawable: Drawable) -> Unit
-            private lateinit var onCommentDelete: (commentPosition: Int, commentId: Int) -> Unit
-            private lateinit var onCommentAdd: (text: String) -> Unit
-
-            fun newInstance(
-                postId: Int,
-                comments: ArrayList<CommentItem>,
-                onUserClick: (userId: Int) -> Unit,
-                onImageClick: (drawable: Drawable) -> Unit,
-                onCommentAdd: (text: String) -> Unit,
-                onCommentDelete: (commentPosition: Int, commentId: Int) -> Unit
-            ): CommentBottomSheetFragment {
-                this.postId = postId
-                this.comments = comments
-                this.onUserClick = onUserClick
-                this.onImageClick = onImageClick
-                this.onCommentAdd = onCommentAdd
-                this.onCommentDelete = onCommentDelete
-                return CommentBottomSheetFragment()
             }
         }
     }
@@ -379,14 +241,14 @@ object DialogFactory {
             }
 
             commentsBottomSheetEditor.addTextChangedListener {
-                val buttonResource =
-                    if (it.isNullOrBlank()) R.drawable.ic_send_grey
-                    else R.drawable.ic_send_blue
-                commentsBottomSheetSend.setBackgroundResource(buttonResource)
+                val buttonTintResource =
+                    if (it.isNullOrBlank()) R.color.send_btn_disabled_color
+                    else R.color.send_btn_enabled_color
+                commentsBottomSheetSend.setColorFilter(buttonTintResource)
                 commentsBottomSheetEditor.requestFocus()
             }
             commentsBottomSheetSend.apply {
-                setBackgroundResource(R.drawable.ic_send_grey)
+                setBackgroundResource(R.drawable.ic_send)
                 setOnClickListener {
                     val text = commentsBottomSheetEditor.text
                     if (!text.isNullOrBlank()) {

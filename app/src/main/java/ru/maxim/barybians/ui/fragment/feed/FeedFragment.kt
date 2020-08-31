@@ -56,7 +56,7 @@ class FeedFragment :
 
     override fun showFeed(posts: ArrayList<Post>) {
         if (view == null) return
-        feedLoader.visibility = View.GONE
+        feedLoading.visibility = View.GONE
         feedRefreshLayout.isRefreshing = false
         feedItems.clear()
 
@@ -109,17 +109,17 @@ class FeedFragment :
     }
 
     override fun showNoInternet() {
-        feedLoader.visibility = View.GONE
+        feedLoading.visibility = View.GONE
         feedRefreshLayout.isRefreshing = false
         context?.toast(R.string.no_internet_connection)
     }
 
     override fun showLoading() {
-        feedLoader.visibility = View.VISIBLE
+        feedLoading.visibility = View.VISIBLE
     }
 
     override fun onFeedLoadError() {
-        feedLoader.visibility = View.GONE
+        feedLoading.visibility = View.GONE
         feedRefreshLayout.isRefreshing = false
         context?.toast(R.string.an_error_occurred_while_loading_feed)
     }

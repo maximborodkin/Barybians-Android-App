@@ -30,4 +30,23 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
             }
         }
     }
+
+    fun sendMessage(interlocutorId: Int, text: String, viewHolderId: Long) {
+        if (!RetrofitClient.isOnline()) {
+            viewState.onMessageSendingError(viewHolderId)
+            return viewState.showNoInternet()
+        }
+        launch {
+            try {
+                val sendMessageResponse = dialogService.sendMessage(interlocutorId, text)
+                if (sendMessageResponse.isSuccessful && sendMessageResponse.body() == "true") {
+                    viewState.onMessageSent(text, viewHolderId)
+                } else {
+                    viewState.onMessageSendingError(viewHolderId)
+                }
+            } catch (e: Exception) {
+                viewState.onMessageSendingError(viewHolderId)
+            }
+        }
+    }
 }

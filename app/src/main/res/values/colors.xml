@@ -10,7 +10,9 @@
     <color name="transparent">#00000000</color>
     <color name="unread_message_circle_color">#516BFF</color>
     <color name="error_message_circle_color">#B51A1A</color>
-    
+    <color name="send_btn_enabled_color">#448AFF</color>
+    <color name="send_btn_disabled_color">#666666</color>
+
 <!--  Light Theme  -->
     <color name="light_colorPrimaryLight">#83B9FF</color>
     <color name="light_colorPrimary">#448AFF</color>

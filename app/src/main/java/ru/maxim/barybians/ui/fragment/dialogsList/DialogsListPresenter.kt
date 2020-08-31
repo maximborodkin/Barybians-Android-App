@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.model.Dialog
+import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.repository.remote.service.DialogService
 
 @InjectViewState
@@ -20,6 +21,9 @@ class DialogsListPresenter : MvpPresenter<DialogsListView>(), CoroutineScope by 
     }
 
     fun loadDialogsList() {
+        if (!RetrofitClient.isOnline()){
+            return viewState.showNoInternet()
+        }
         launch {
             try {
                 val dialogs = dialogService.getDialogsList()

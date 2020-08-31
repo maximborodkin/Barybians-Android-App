@@ -2,8 +2,7 @@ package ru.maxim.barybians.repository.remote.service
 
 import com.google.gson.JsonObject
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 import ru.maxim.barybians.model.Message
 import ru.maxim.barybians.model.response.DialogResponse
 import ru.maxim.barybians.repository.remote.RetrofitClient
@@ -15,6 +14,10 @@ interface DialogService {
 
     @GET("/api/dialogs/{userId}")
     suspend fun getMessages(@Path("userId") userId: Int): Response<DialogResponse>
+
+    @FormUrlEncoded
+    @POST("/api/dialogs/{userId}")
+    suspend fun sendMessage(@Path("userId") userId: Int, @Field("text") text: String): Response<String>
 
     companion object{
         operator fun invoke(): DialogService =

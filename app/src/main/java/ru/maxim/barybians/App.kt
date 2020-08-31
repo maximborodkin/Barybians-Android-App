@@ -9,6 +9,7 @@ import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.utils.DateFormatUtils
 
+
 class App : MultiDexApplication() {
 
     override fun attachBaseContext(base: Context?) {

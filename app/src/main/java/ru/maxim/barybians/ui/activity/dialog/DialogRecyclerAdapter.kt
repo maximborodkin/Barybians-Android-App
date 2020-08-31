@@ -1,8 +1,6 @@
 package ru.maxim.barybians.ui.activity.dialog
 
 import android.graphics.drawable.Animatable
-import android.graphics.drawable.AnimatedVectorDrawable
-import android.graphics.drawable.AnimationDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +8,19 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import androidx.recyclerview.widget.RecyclerView.NO_ID
 import kotlinx.android.synthetic.main.item_incoming_message.view.*
 import kotlinx.android.synthetic.main.item_outgoing_message.view.*
 import ru.maxim.barybians.R
+import ru.maxim.barybians.ui.activity.dialog.OutgoingMessage.MessageStatus.*
 
 class DialogRecyclerAdapter(
     private val messages: ArrayList<MessageItem>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    init {
+        setHasStableIds(true)
+    }
 
     class IncomingMessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: AppCompatTextView = view.itemIncomingMessageText
@@ -27,7 +30,27 @@ class DialogRecyclerAdapter(
     class OutgoingMessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textView: AppCompatTextView = view.itemOutgoingMessageText
         val timeView: TextView = view.itemOutgoingMessageTime
-        val messageLabel: AppCompatImageView = view.itemOutgoingMessageLabel
+        private val messageLabel: AppCompatImageView = view.itemOutgoingMessageLabel
+
+        init { clearLabel() }
+
+        fun setSendingProcessLabel() {
+            messageLabel.setBackgroundResource(R.drawable.ic_sending_process_animated)
+            (messageLabel.background as Animatable).start()
+        }
+
+        fun setErrorLabel() { messageLabel.setBackgroundResource(R.drawable.ic_error) }
+
+        fun setUnreadLabel() { messageLabel.setBackgroundResource(R.drawable.unread_circle) }
+
+        fun clearLabel() { messageLabel.background = null }
+    }
+
+    override fun getItemId(position: Int): Long {
+        val message = messages[position]
+        return if (message is OutgoingMessage){
+            message.viewHolderId
+        } else NO_ID
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -57,10 +80,16 @@ class DialogRecyclerAdapter(
                 }
             }
             MessageType.OutgoingMessage.viewType -> {
-                val outgoingMessage = message as? OutgoingMessage
+                val outgoingMessage = message as? OutgoingMessage ?: return
                 (holder as? OutgoingMessageViewHolder)?.let {
-                    it.textView.text = outgoingMessage?.text
-                    it.timeView.text = outgoingMessage?.time
+                    it.textView.text = outgoingMessage.text
+                    it.timeView.text = outgoingMessage.time
+                    when(outgoingMessage.status) {
+                        Sending -> holder.setSendingProcessLabel()
+                        Unread -> holder.setUnreadLabel()
+                        Read -> holder.clearLabel()
+                        Error -> holder.setErrorLabel()
+                    }
                 }
             }
         }

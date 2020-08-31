@@ -8,4 +8,7 @@ interface DialogView : MvpView {
     fun showMessages(messages: ArrayList<Message>)
     fun onLoadingMessagesError()
     fun showNoInternet()
+    fun onMessageSent(text: String, messageId: Long)
+    fun onMessageSendingError(messageId: Long)
+    fun onMessageReceived(message: Message)
 }
