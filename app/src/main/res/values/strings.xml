@@ -154,4 +154,5 @@
     <string name="an_error_occurred_while_loading_dialogs">An error occurred while loading dialogs</string>
     <string name="type_message">Type message&#8230;</string>
     <string name="an_error_occurred_while_loading_messages">An error occurred while loading messages</string>
+    <string name="open_dialog">Open dialog</string>
 </resources>

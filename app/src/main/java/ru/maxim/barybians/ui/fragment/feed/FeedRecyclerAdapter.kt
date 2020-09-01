@@ -3,7 +3,6 @@ package ru.maxim.barybians.ui.fragment.feed
 import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,12 +12,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -60,6 +57,7 @@ open class FeedRecyclerAdapter(
         val nameView: AppCompatTextView = view.itemProfileHeaderName
         val ageView: TextView = view.itemProfileHeaderAge
         val statusView: TextView = view.itemProfileHeaderStatus
+        val openDialogBtn = view.itemProfileHeaderDialogBtn
     }
 
     class PostCreatorViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

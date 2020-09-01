@@ -3,6 +3,8 @@ package ru.maxim.barybians.ui.fragment.profile
 import android.content.Context
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.LifecycleOwner
@@ -31,16 +33,23 @@ class ProfileRecyclerAdapter(
         val header = feedItems[position] as HeaderItem
 
         if (header.isPersonal) {
-            headerViewHolder.backBtn.visibility = View.GONE
-            headerViewHolder.preferencesBtn.visibility = View.VISIBLE
+            headerViewHolder.backBtn.visibility = GONE
+            headerViewHolder.openDialogBtn.visibility = GONE
+            headerViewHolder.preferencesBtn.visibility = VISIBLE
             headerViewHolder.preferencesBtn.setOnClickListener { profileItemsListener.openPreferences() }
-            headerViewHolder.editBtn.visibility = View.VISIBLE
+            headerViewHolder.editBtn.visibility = VISIBLE
             headerViewHolder.editBtn.setOnClickListener { profileItemsListener.editUserInfo() }
         } else {
-            headerViewHolder.backBtn.visibility = View.VISIBLE
-            headerViewHolder.backBtn.setOnClickListener { profileItemsListener.popBackStack() }
-            headerViewHolder.preferencesBtn.visibility = View.GONE
-            headerViewHolder.editBtn.visibility = View.GONE
+            headerViewHolder.backBtn.apply {
+                visibility = VISIBLE
+                setOnClickListener { profileItemsListener.popBackStack() }
+            }
+            headerViewHolder.openDialogBtn.apply {
+                visibility = VISIBLE
+                setOnClickListener { profileItemsListener.openDialog(header.userId) }
+            }
+            headerViewHolder.preferencesBtn.visibility = GONE
+            headerViewHolder.editBtn.visibility = GONE
         }
 
         Glide.with(context).load(header.avatarSmall).into(headerViewHolder.avatarView)
@@ -68,7 +77,7 @@ class ProfileRecyclerAdapter(
         headerViewHolder.ageView.text = context.resources.getQuantityString(R.plurals.age_plurals, age, age)
 
         if (!header.isPersonal && header.status.isNullOrBlank()) {
-            headerViewHolder.statusView.visibility = View.GONE
+            headerViewHolder.statusView.visibility = GONE
         } else if (header.isPersonal && header.status.isNullOrBlank()) {
             headerViewHolder.statusView.text = context.getString(R.string.enter_your_status)
             headerViewHolder.statusView.setDrawableEnd(R.drawable.ic_edit_grey)

@@ -21,6 +21,7 @@ import ru.maxim.barybians.model.Post
 import ru.maxim.barybians.model.User
 import ru.maxim.barybians.model.response.CommentResponse
 import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.ui.activity.dialog.DialogActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.activity.preferences.PreferencesActivity
 import ru.maxim.barybians.ui.activity.profile.ProfileActivity
@@ -88,6 +89,7 @@ class ProfileFragment :
 
         profileItems.add(
             HeaderItem(
+                user.id,
                 isPersonal,
                 user.getAvatarUrl(),
                 user.getAvatarUrl(loadFull = true),
@@ -309,7 +311,10 @@ class ProfileFragment :
     }
 
     override fun openDialog(userId: Int) {
-        TODO("Not yet implemented")
+        startActivity(
+            Intent(context, DialogActivity::class.java)
+                .apply { putExtra("userId", userId) }
+        )
     }
 
     override fun editStatus(newStatus: String?) {

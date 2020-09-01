@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingTop="44dp"
-                android:paddingBottom="18dp">
+                android:paddingBottom="12dp">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/itemProfileHeaderName"
@@ -107,6 +107,14 @@
                     android:paddingHorizontal="32dp"
                     style="?accentTextStyle"
                     tools:text="Работа над приложением продолжается"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/itemProfileHeaderDialogBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/open_dialog"
+                    style="?textButtonStyle" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

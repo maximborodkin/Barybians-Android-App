@@ -4,7 +4,8 @@ sealed class FeedItem {
     abstract fun getType(): FeedItemType
 }
 
-class HeaderItem(val isPersonal: Boolean,
+class HeaderItem(val userId: Int,
+                 val isPersonal: Boolean,
                  val avatarSmall: String?,
                  val avatarFull: String?,
                  val name: String,
