@@ -115,7 +115,8 @@ class FeedFragment :
     }
 
     override fun showLoading() {
-        feedLoading.visibility = View.VISIBLE
+        if (!feedRefreshLayout.isRefreshing)
+            feedLoading.visibility = View.VISIBLE
     }
 
     override fun onFeedLoadError() {

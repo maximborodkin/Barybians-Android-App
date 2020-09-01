@@ -47,15 +47,18 @@ class DialogsListFragment : MvpAppCompatFragment(), DialogsListView {
     }
 
     override fun showLoading() {
-        dialogsListLoading.visibility = VISIBLE
+        if (!dialogsListRefreshLayout.isRefreshing)
+            dialogsListLoading.visibility = VISIBLE
     }
 
     override fun onDialogsListLoadError() {
         dialogsListLoading.visibility = GONE
+        dialogsListRefreshLayout.isRefreshing = false
         context?.toast(R.string.an_error_occurred_while_loading_dialogs)
     }
 
     override fun showNoInternet() {
+        dialogsListRefreshLayout.isRefreshing = false
         dialogsListLoading.visibility = GONE
         context?.toast(R.string.no_internet_connection)
     }

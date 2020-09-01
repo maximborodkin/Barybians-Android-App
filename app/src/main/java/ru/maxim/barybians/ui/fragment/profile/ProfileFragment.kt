@@ -75,7 +75,8 @@ class ProfileFragment :
     }
 
     override fun showLoading() {
-        profileLoading.visibility = View.VISIBLE
+        if (!profileRefreshLayout.isRefreshing)
+            profileLoading.visibility = View.VISIBLE
     }
 
     override fun showUserProfile(user: User) {
