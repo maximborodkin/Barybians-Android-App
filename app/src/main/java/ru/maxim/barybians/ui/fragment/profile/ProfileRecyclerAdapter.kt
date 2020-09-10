@@ -46,7 +46,7 @@ class ProfileRecyclerAdapter(
             }
             headerViewHolder.openDialogBtn.apply {
                 visibility = VISIBLE
-                setOnClickListener { profileItemsListener.openDialog(header.userId) }
+                setOnClickListener { profileItemsListener.openDialog(header.userId, header.avatarSmall, header.name) }
             }
             headerViewHolder.preferencesBtn.visibility = GONE
             headerViewHolder.editBtn.visibility = GONE
@@ -88,10 +88,7 @@ class ProfileRecyclerAdapter(
 
         if (header.isPersonal) {
             headerViewHolder.statusView.setOnClickListener {
-                val editStatusDialog = DialogFactory.createEditStatusDialog(header.status) { status ->
-                    profileItemsListener.editStatus(status)
-                }
-                profileItemsListener.showDialog(editStatusDialog, "EditStatusDialogFragment")
+                profileItemsListener.showEditStatusDialog(header.status)
             }
         }
 

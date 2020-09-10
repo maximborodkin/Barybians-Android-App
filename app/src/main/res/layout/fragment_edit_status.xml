@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints="text,textAutoComplete"
+        android:textColorHint="@color/grey"
         android:hint="@string/enter_your_status"
         android:layout_below="@id/fragmentEditStatusTitle"
         android:inputType="textAutoComplete" />
@@ -32,7 +33,7 @@
         android:layout_below="@id/fragmentEditStatusText"
         android:text="@string/cancel"
         android:layout_toStartOf="@id/fragmentEditStatusOkBtn"
-        style="@style/Widget.MaterialComponents.Button.TextButton"/>
+        style="?textButtonStyle"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragmentEditStatusOkBtn"
@@ -43,5 +44,5 @@
         android:layout_below="@id/fragmentEditStatusText"
         android:layout_alignEnd="@id/fragmentEditStatusText"
         android:text="@string/ok"
-        style="@style/Widget.MaterialComponents.Button.TextButton"/>
+        style="?textButtonStyle"/>
 </RelativeLayout>

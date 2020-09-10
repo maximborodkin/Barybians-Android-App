@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,6 +43,10 @@ class ProfileFragment :
     private val profileItems = ArrayList<FeedItem>()
     private var currentCommentsListDialog: BottomSheetDialog? = null
 
+    private var editStatusDialog: AlertDialog? = null
+    private var isEditStatusDialogShown = false
+    private var currentEditableStatus: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,19 +59,37 @@ class ProfileFragment :
         (activity as? MainActivity)?.supportActionBar?.hide()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        profileRecyclerView.adapter = null
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userId = arguments?.getInt("userId") ?: PreferencesManager.userId
         profileRefreshLayout.setOnRefreshListener {
             profilePresenter.loadUser(userId ?: return@setOnRefreshListener)
         }
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
             profilePresenter.loadUser(userId ?: return)
+        } else {
+            isEditStatusDialogShown =
+                savedInstanceState.getBoolean("isEditStatusDialogShown", false)
+
+            if (isEditStatusDialogShown) {
+                val currentEditableStatus =
+                    savedInstanceState.getString("currentEditableStatus")
+                showEditStatusDialog(currentEditableStatus)
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isEditStatusDialogShown", isEditStatusDialogShown)
+        if (currentEditableStatus.isNotNull())
+            outState.putString("currentEditableStatus", currentEditableStatus)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        profileRecyclerView.adapter = null
+        editStatusDialog?.cancel()
     }
 
     override fun showNoInternet() {
@@ -310,15 +333,30 @@ class ProfileFragment :
             .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
     }
 
-    override fun openDialog(userId: Int) {
+    override fun openDialog(userId: Int, userAvatar: String?, userName: String) {
         startActivity(
-            Intent(context, DialogActivity::class.java)
-                .apply { putExtra("userId", userId) }
+            Intent(context, DialogActivity::class.java).apply {
+                putExtra("userId", userId)
+                putExtra("userAvatar", userAvatar)
+                putExtra("userName", userName)
+            }
         )
     }
 
-    override fun editStatus(newStatus: String?) {
-        profilePresenter.editStatus(newStatus)
+    override fun showEditStatusDialog(status: String?) {
+        var currentStatus = status
+        editStatusDialog = DialogFactory.createEditStatusDialog(context?:return, currentStatus,
+            onStatusEdited = {
+                currentStatus = it
+            }, onStatusEditConfirmed = {
+                profilePresenter.editStatus(currentStatus)
+            }
+        ).apply {
+            setOnDismissListener { isEditStatusDialogShown = false }
+            setOnCancelListener { currentEditableStatus = currentStatus }
+        }
+        editStatusDialog?.show()
+        isEditStatusDialogShown = true
     }
 
     override fun editUserInfo() {

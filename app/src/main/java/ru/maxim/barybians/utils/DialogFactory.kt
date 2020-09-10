@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_edit_status.*
 import kotlinx.android.synthetic.main.fragment_edit_status.view.*
@@ -21,12 +21,10 @@ import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_post_editor.view.*
 import kotlinx.android.synthetic.main.fragment_post_menu_bottom_sheet.*
 import ru.maxim.barybians.R
-import ru.maxim.barybians.model.response.CommentResponse
-import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
-import ru.maxim.barybians.ui.fragment.profile.CommentsRecyclerAdapter
-import ru.maxim.barybians.ui.fragment.profile.LikedUsersRecyclerAdapter
+import ru.maxim.barybians.ui.fragment.feed.CommentsRecyclerAdapter
+import ru.maxim.barybians.ui.fragment.feed.LikedUsersRecyclerAdapter
 
 
 /**
@@ -40,11 +38,24 @@ object DialogFactory {
     ) = LikesBottomSheetFragment.newInstance(likes, onUserClick)
 
     fun createEditStatusDialog(
-        status: String?,
-        editCallback: (status: String?) -> Unit
-    ) =
-        EditStatusDialogFragment.newInstance(status, editCallback)
-
+        context: Context,
+        status: String? = null,
+        onStatusEdited: (status: String?) -> Unit,
+        onStatusEditConfirmed: () -> Unit
+    ) = MaterialAlertDialogBuilder(context).apply {
+            setTitle(context.getString(R.string.edit_status))
+            val editText = EditText(context).apply {
+                setText(status)
+                hint = context.getString(R.string.new_status)
+                addTextChangedListener { onStatusEdited(text.toString()) }
+            }
+            if (editText.parent == null) { setView(editText) }
+                setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+                setPositiveButton(R.string.ok) { dialog, _ ->
+                    onStatusEditConfirmed()
+                    dialog.dismiss()
+                }
+        }.create()
 
     fun createPostMenu(
         title: String?,
@@ -110,6 +121,7 @@ object DialogFactory {
 
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
+            view.fragmentEditStatusText.setText(status)
             view.fragmentEditStatusOkBtn.setOnClickListener {
                 editCallback(fragmentEditStatusText.text.toString())
                 dialog?.dismiss()

@@ -2,10 +2,13 @@ package ru.maxim.barybians.ui.activity.dialog
 
 import android.os.Bundle
 import android.view.View.GONE
+import androidx.appcompat.app.ActionBar
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.actionbar_dialog.view.*
 import kotlinx.android.synthetic.main.activity_dialog.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Message
@@ -29,9 +32,21 @@ class DialogActivity : BaseActivity(), DialogView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dialog)
+        supportActionBar?.apply {
+            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+            setDisplayShowCustomEnabled(true)
+            setCustomView(R.layout.actionbar_dialog)
+        }
         if (savedInstanceState.isNull()){
             interlocutorId = intent.getIntExtra("userId", 0)
+            supportActionBar?.customView?.let {
+                Glide.with(this)
+                    .load(intent.getStringExtra("userAvatar"))
+                    .into(it.dialogInterlocutorAvatar)
+                it.dialogInterlocutorName.text = intent.getStringExtra("userName")
+            }
             dialogPresenter.loadMessages(interlocutorId)
+            dialogPresenter.startDialogObserving(interlocutorId)
         }
         dialogMessageInput.addTextChangedListener {
             val tintColorId = if (it.isNullOrBlank()) R.color.send_btn_disabled_color
@@ -97,7 +112,7 @@ class DialogActivity : BaseActivity(), DialogView {
             ?.setErrorLabel()
     }
 
-    override fun onMessageReceived(message: Message) {
-        TODO("Not yet implemented")
+    override fun onMessageReceived(messages: ArrayList<Message>) {
+        toast(messages.size.toString())
     }
 }

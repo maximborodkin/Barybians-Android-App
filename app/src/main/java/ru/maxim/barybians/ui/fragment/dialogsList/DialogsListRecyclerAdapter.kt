@@ -1,5 +1,9 @@
 package ru.maxim.barybians.ui.fragment.dialogsList
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +21,7 @@ import ru.maxim.barybians.utils.DateFormatUtils
 
 class DialogsListRecyclerAdapter(
     private val dialogs: ArrayList<Dialog>,
-    private val onDialogClick: (userId: Int) -> Unit
+    private val onDialogClick: (userId: Int, userAvatar: String?, userName: String) -> Unit
 ) : RecyclerView.Adapter<DialogViewHolder>() {
 
     class DialogViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -36,14 +40,36 @@ class DialogsListRecyclerAdapter(
         val context = holder.itemView.context
         val dialog = dialogs[position]
         Glide.with(context).load(dialog.secondUser.getAvatarUrl()).into(holder.avatarView)
-        holder.nameView.text = "${dialog.secondUser.firstName} ${dialog.secondUser.lastName}"
-        val sender =
-            if (dialog.lastMessage.senderId == PreferencesManager.userId)
-                context.getString(R.string.you)
-            else
-                dialog.secondUser.firstName
-        holder.messageView.text = "$sender: ${dialog.lastMessage.text}"
+        val interlocutorName = "${dialog.secondUser.firstName} ${dialog.secondUser.lastName}"
+        holder.nameView.text = interlocutorName
+        val lastMessageSpan =  SpannableStringBuilder()
+        if (dialog.lastMessage.senderId == PreferencesManager.userId){
+            val youString = context.getString(R.string.you)
+            lastMessageSpan.append(youString)
+            lastMessageSpan.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                youString.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        } else{
+            val interlocutorFirstName = dialog.secondUser.firstName
+            lastMessageSpan.append(interlocutorFirstName)
+            lastMessageSpan.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                interlocutorFirstName.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        lastMessageSpan.append(": ${dialog.lastMessage.text}")
+        val messagePreviewText = lastMessageSpan.toString()
+        holder.messageView.text = messagePreviewText
         holder.dateView.text = DateFormatUtils.getSimplifiedDate(dialog.lastMessage.time*1000)
-        holder.itemView.setOnClickListener { onDialogClick(dialog.secondUser.id) }
+        holder.itemView.setOnClickListener { onDialogClick(
+            dialog.secondUser.id,
+            dialog.secondUser.getAvatarUrl(),
+            interlocutorName
+        ) }
     }
 }

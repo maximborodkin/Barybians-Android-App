@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.profile
+package ru.maxim.barybians.ui.fragment.feed
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_user.view.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.ui.fragment.base.PostItem
-import ru.maxim.barybians.ui.fragment.profile.LikedUsersRecyclerAdapter.UserViewHolder
+import ru.maxim.barybians.ui.fragment.feed.LikedUsersRecyclerAdapter.UserViewHolder
 import ru.maxim.barybians.ui.view.AvatarView
 
 class LikedUsersRecyclerAdapter(private val users: ArrayList<PostItem.UserItem>,

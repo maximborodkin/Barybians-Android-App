@@ -3,17 +3,16 @@ package ru.maxim.barybians.repository.remote
 import android.content.Context
 import android.net.ConnectivityManager
 import com.google.gson.GsonBuilder
-import okhttp3.CipherSuite
-import okhttp3.ConnectionSpec
-import okhttp3.OkHttpClient
-import okhttp3.TlsVersion
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
+import okhttp3.logging.HttpLoggingInterceptor.Level.HEADERS
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.repository.remote.RetrofitClient.context
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -41,26 +40,40 @@ object RetrofitClient {
             .build()
         )
 
-    private val okHttpClient: OkHttpClient by lazy {
+    private val authorizationInterceptor = Interceptor {
+        val request = it.request().newBuilder()
+            .addHeader("Authorization", "Bearer ${PreferencesManager.token}")
+            .build()
+        return@Interceptor it.proceed(request)
+    }
+
+    private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor { authorizationInterceptor.intercept(it) }
+        .addInterceptor(HttpLoggingInterceptor().apply { level = HEADERS })
+        .connectionSpecs(connectionSpec)
+        .build()
+
+
+    private val longPollingHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
-            .addInterceptor {
-                val request = it.request().newBuilder()
-                    .addHeader("Authorization", "Bearer ${PreferencesManager.token}")
-                    .build()
-                return@addInterceptor it.proceed(request)
-            }
+            .addInterceptor { authorizationInterceptor.intercept(it)}
             .addInterceptor(HttpLoggingInterceptor().apply { level = BODY })
             .connectionSpecs(connectionSpec)
+            .readTimeout(50, TimeUnit.SECONDS)
             .build()
     }
 
-    val instance: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
-            .client(okHttpClient)
-            .build()
-    }
+    val instance: Retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+        .client(okHttpClient)
+        .build()
+
+    val longPollingInstance: Retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
+        .client(longPollingHttpClient)
+        .build()
 
     /**
      * Shows is device has internet connection

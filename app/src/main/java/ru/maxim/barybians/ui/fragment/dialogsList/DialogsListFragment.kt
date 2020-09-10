@@ -13,6 +13,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.fragment_dialogs_list.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Dialog
+import ru.maxim.barybians.repository.local.PreferencesManager.userId
 import ru.maxim.barybians.ui.activity.dialog.DialogActivity
 import ru.maxim.barybians.utils.toast
 
@@ -37,10 +38,13 @@ class DialogsListFragment : MvpAppCompatFragment(), DialogsListView {
         dialogsListRefreshLayout.isRefreshing = false
         dialogsListRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = DialogsListRecyclerAdapter(dialogsList) { userId ->
+            adapter = DialogsListRecyclerAdapter(dialogsList) { userId, userAvatar, userName ->
                 startActivity(
-                    Intent(context, DialogActivity::class.java)
-                        .apply { putExtra("userId", userId) }
+                    Intent(context, DialogActivity::class.java).apply {
+                        putExtra("userId", userId)
+                        putExtra("userAvatar", userAvatar)
+                        putExtra("userName", userName)
+                    }
                 )
             }
         }
