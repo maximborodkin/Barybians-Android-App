@@ -19,7 +19,7 @@ fun TextView.setDrawableStart(drawableResource: Int) = this.setCompoundDrawables
 fun TextView.setDrawableEnd(drawableResource: Int) = this.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, drawableResource, 0)
 fun TextView.clearDrawables() = this.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
 
-fun Context.toast(text: String) {Toast.makeText(this, text, Toast.LENGTH_SHORT).show()}
-fun Context.toast(resource: Int) {Toast.makeText(this, getString(resource), Toast.LENGTH_SHORT).show()}
-fun Context.longToast(text: String) {Toast.makeText(this, text, Toast.LENGTH_LONG).show()}
-fun Context.longToast(resource: Int) {Toast.makeText(this, getString(resource), Toast.LENGTH_LONG).show()}
+fun Context.toast(text: String) { Toast.makeText(this, text, Toast.LENGTH_SHORT).show() }
+fun Context.toast(resource: Int) { Toast.makeText(this, getString(resource), Toast.LENGTH_SHORT).show() }
+fun Context.longToast(text: String) { Toast.makeText(this, text, Toast.LENGTH_LONG).show() }
+fun Context.longToast(resource: Int) { Toast.makeText(this, getString(resource), Toast.LENGTH_LONG).show() }

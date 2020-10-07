@@ -5,15 +5,12 @@ import android.net.ConnectivityManager
 import com.google.gson.GsonBuilder
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import okhttp3.logging.HttpLoggingInterceptor.Level.HEADERS
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.repository.remote.RetrofitClient.context
 import java.util.*
-import java.util.concurrent.TimeUnit
-
 
 /**
  * Singleton object for access to SharedPreferences
@@ -22,7 +19,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
 
     lateinit var context: Context
-    const val BASE_URL = "https://barybians.site/"
+    const val BASE_URL = "https://barybians.ru/"
 
     private val connectionSpec: MutableList<ConnectionSpec> =
         Collections.singletonList(ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS)
@@ -53,26 +50,10 @@ object RetrofitClient {
         .connectionSpecs(connectionSpec)
         .build()
 
-
-    private val longPollingHttpClient: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .addInterceptor { authorizationInterceptor.intercept(it)}
-            .addInterceptor(HttpLoggingInterceptor().apply { level = BODY })
-            .connectionSpecs(connectionSpec)
-            .readTimeout(50, TimeUnit.SECONDS)
-            .build()
-    }
-
     val instance: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         .client(okHttpClient)
-        .build()
-
-    val longPollingInstance: Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
-        .client(longPollingHttpClient)
         .build()
 
     /**

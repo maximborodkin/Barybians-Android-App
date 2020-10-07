@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.actionbar_dialog.view.*
 import kotlinx.android.synthetic.main.activity_dialog.*
+import kotlinx.android.synthetic.main.fragment_dialogs_list.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Message
 import ru.maxim.barybians.repository.local.PreferencesManager
@@ -46,7 +47,6 @@ class DialogActivity : BaseActivity(), DialogView {
                 it.dialogInterlocutorName.text = intent.getStringExtra("userName")
             }
             dialogPresenter.loadMessages(interlocutorId)
-            dialogPresenter.startDialogObserving(interlocutorId)
         }
         dialogMessageInput.addTextChangedListener {
             val tintColorId = if (it.isNullOrBlank()) R.color.send_btn_disabled_color
@@ -113,6 +113,17 @@ class DialogActivity : BaseActivity(), DialogView {
     }
 
     override fun onMessageReceived(messages: ArrayList<Message>) {
-        toast(messages.size.toString())
+        messages.forEach {
+            val time = DateFormatUtils.getTime(it.time)
+            messageItems.add(IncomingMessage(it.text, time, it.senderId))
+        }
+        dialogRecyclerView.apply {
+            adapter?.notifyItemRangeInserted(messageItems.size - messages.size - 1, messages.size)
+            val lastVisibleItemPosition =
+                (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            if (lastVisibleItemPosition >= messageItems.size - 2) {
+                smoothScrollToPosition(messageItems.size - 1)
+            }
+        }
     }
 }

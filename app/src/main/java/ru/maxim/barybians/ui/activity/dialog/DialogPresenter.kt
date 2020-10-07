@@ -1,6 +1,5 @@
 package ru.maxim.barybians.ui.activity.dialog
 
-import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.*
@@ -8,7 +7,6 @@ import kotlinx.coroutines.channels.Channel
 import retrofit2.Response
 import ru.maxim.barybians.model.response.DialogResponse
 import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.DialogLongPollingService
 import ru.maxim.barybians.repository.remote.service.DialogService
 import ru.maxim.barybians.utils.isNotNull
 
@@ -16,7 +14,6 @@ import ru.maxim.barybians.utils.isNotNull
 class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope() {
 
     private val dialogService = DialogService()
-    private val dialogLongPollingService = DialogLongPollingService()
     private var lastMessageId = 0
     private val pollingTimeout = 50000L
     private val pollingFrequency = 100L
@@ -39,6 +36,7 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
             } catch (e: Exception) {
                 viewState.onLoadingMessagesError()
             }
+            startDialogObserving(userId)
         }
     }
 
@@ -84,16 +82,22 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
 //        }
 //    }
 
-    fun startDialogObserving(interlocutorId: Int) {
+    private fun startDialogObserving(interlocutorId: Int) {
        CoroutineScope(Dispatchers.IO).launch {
            while (pollingChannel.isNotNull()) {
                withTimeoutOrNull(pollingTimeout) {
                    try {
                        val pollingResponse =
-                           dialogLongPollingService.observeMessages(interlocutorId, lastMessageId)
+                           dialogService.observeMessages(/*interlocutorId, */lastMessageId)
                        if (pollingResponse.isSuccessful && pollingResponse.body().isNotNull()) {
                            val messages = pollingResponse.body()?.messages
-                           if (messages != null) viewState.onMessageReceived(messages)
+                           if (messages != null) {
+                               val lm = messages.last().id
+                               lastMessageId = lm
+                               CoroutineScope(Dispatchers.Main).launch {
+                                   viewState.onMessageReceived(messages)
+                               }
+                           }
                        }
                    } catch (ignored: Exception) { }
                    delay(pollingFrequency)

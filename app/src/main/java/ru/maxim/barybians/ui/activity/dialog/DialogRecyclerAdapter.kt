@@ -92,6 +92,7 @@ class DialogRecyclerAdapter(
                     }
                 }
             }
+            else -> throw IllegalStateException("Unknown view type")
         }
     }
 
