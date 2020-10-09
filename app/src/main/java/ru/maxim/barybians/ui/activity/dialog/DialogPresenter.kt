@@ -88,7 +88,7 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
                withTimeoutOrNull(pollingTimeout) {
                    try {
                        val pollingResponse =
-                           dialogService.observeMessages(/*interlocutorId, */lastMessageId)
+                           dialogService.observeMessages(interlocutorId, lastMessageId)
                        if (pollingResponse.isSuccessful && pollingResponse.body().isNotNull()) {
                            val messages = pollingResponse.body()?.messages
                            if (messages != null) {
@@ -104,6 +104,5 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
                }
            }
        }
-
     }
 }

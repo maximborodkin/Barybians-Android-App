@@ -7,16 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
-import kotlinx.android.synthetic.main.fragment_edit_status.*
-import kotlinx.android.synthetic.main.fragment_edit_status.view.*
 import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_post_editor.view.*
 import kotlinx.android.synthetic.main.fragment_post_menu_bottom_sheet.*
@@ -25,7 +24,6 @@ import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.ui.fragment.feed.CommentsRecyclerAdapter
 import ru.maxim.barybians.ui.fragment.feed.LikedUsersRecyclerAdapter
-
 
 /**
  * Singleton class for create dialogs
@@ -44,12 +42,24 @@ object DialogFactory {
         onStatusEditConfirmed: () -> Unit
     ) = MaterialAlertDialogBuilder(context).apply {
             setTitle(context.getString(R.string.edit_status))
+            val container = FrameLayout(context)
+            val margin = dpToPx(context.resources, 16)
+            val containerLayoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply { marginStart = margin; marginEnd = margin}
+
+
             val editText = EditText(context).apply {
                 setText(status)
                 hint = context.getString(R.string.new_status)
+                setSingleLine()
+                setHintTextColor(ContextCompat.getColor(context, R.color.dark_colorTertiaryText))
                 addTextChangedListener { onStatusEdited(text.toString()) }
+                layoutParams = containerLayoutParams
             }
-            if (editText.parent == null) { setView(editText) }
+            container.addView(editText)
+            if (container.parent == null) { setView(container) }
                 setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
                 setPositiveButton(R.string.ok) { dialog, _ ->
                     onStatusEditConfirmed()
@@ -107,39 +117,6 @@ object DialogFactory {
                 this.likes = likes
                 this.onUserClick = onUserClick
                 return LikesBottomSheetFragment()
-            }
-        }
-    }
-
-    class EditStatusDialogFragment : DialogFragment() {
-
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View? = inflater.inflate(R.layout.fragment_edit_status, container, false)
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-            view.fragmentEditStatusText.setText(status)
-            view.fragmentEditStatusOkBtn.setOnClickListener {
-                editCallback(fragmentEditStatusText.text.toString())
-                dialog?.dismiss()
-            }
-            view.fragmentEditStatusCancelBtn.setOnClickListener { dialog?.dismiss() }
-        }
-
-        companion object {
-            private var status: String? = null
-            private lateinit var editCallback: (status: String?) -> Unit
-
-            fun newInstance(
-                status: String?,
-                editCallback: (status: String?) -> Unit
-            ): EditStatusDialogFragment {
-                this.status = status
-                this.editCallback = editCallback
-                return EditStatusDialogFragment()
             }
         }
     }
