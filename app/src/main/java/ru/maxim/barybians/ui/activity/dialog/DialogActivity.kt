@@ -10,7 +10,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.actionbar_dialog.view.*
 import kotlinx.android.synthetic.main.activity_dialog.*
-import kotlinx.android.synthetic.main.fragment_dialogs_list.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Message
 import ru.maxim.barybians.repository.local.PreferencesManager
@@ -59,6 +58,11 @@ class DialogActivity : BaseActivity(), DialogView {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        dialogPresenter.stopObserving()
+    }
+
     override fun showMessages(messages: ArrayList<Message>) {
         dialogLoading.visibility = GONE
         val currentUserId = PreferencesManager.userId
@@ -68,9 +72,9 @@ class DialogActivity : BaseActivity(), DialogView {
             val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
             val status = if (it.unread == 1) Unread else Read
             return@map if (it.senderId == currentUserId)
-                OutgoingMessage(it.text, time, viewHolderId, status)
+                OutgoingMessage(viewHolderId, it.text, time, status)
             else
-                IncomingMessage(it.text, time, it.senderId)
+                IncomingMessage(viewHolderId, it.text, time, it.senderId)
         })
         dialogRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@DialogActivity)
@@ -83,7 +87,7 @@ class DialogActivity : BaseActivity(), DialogView {
         val timestamp = Date().time
         val time = DateFormatUtils.getTime(timestamp)
         val viewHolderId = "${text}${timestamp}".hashCode().toLong()
-        messageItems.add(OutgoingMessage(text, time, viewHolderId, Sending))
+        messageItems.add(OutgoingMessage(viewHolderId, text, time, Sending))
         dialogRecyclerView.apply {
             adapter?.notifyItemInserted(messageItems.size - 1)
             smoothScrollToPosition(messageItems.size - 1)
@@ -112,10 +116,11 @@ class DialogActivity : BaseActivity(), DialogView {
             ?.setErrorLabel()
     }
 
-    override fun onMessageReceived(messages: ArrayList<Message>) {
+    override fun onMessagesReceived(messages: ArrayList<Message>) {
         messages.forEach {
             val time = DateFormatUtils.getTime(it.time)
-            messageItems.add(IncomingMessage(it.text, time, it.senderId))
+            val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
+            messageItems.add(IncomingMessage(viewHolderId, it.text, time, it.senderId))
         }
         dialogRecyclerView.apply {
             adapter?.notifyItemRangeInserted(messageItems.size - messages.size - 1, messages.size)

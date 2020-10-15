@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.NO_ID
 import kotlinx.android.synthetic.main.item_incoming_message.view.*
 import kotlinx.android.synthetic.main.item_outgoing_message.view.*
 import ru.maxim.barybians.R
@@ -46,12 +45,7 @@ class DialogRecyclerAdapter(
         fun clearLabel() { messageLabel.background = null }
     }
 
-    override fun getItemId(position: Int): Long {
-        val message = messages[position]
-        return if (message is OutgoingMessage){
-            message.viewHolderId
-        } else NO_ID
-    }
+    override fun getItemId(position: Int) = messages[position].viewId
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {

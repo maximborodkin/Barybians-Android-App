@@ -10,5 +10,5 @@ interface DialogView : MvpView {
     fun showNoInternet()
     fun onMessageSent(text: String, messageId: Long)
     fun onMessageSendingError(messageId: Long)
-    fun onMessageReceived(messages: ArrayList<Message>)
+    fun onMessagesReceived(messages: ArrayList<Message>)
 }

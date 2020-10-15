@@ -18,11 +18,11 @@ interface DialogService {
     @POST("/api/dialogs/{userId}")
     suspend fun sendMessage(@Path("userId") userId: Int, @Field("text") text: String): Response<String>
 
-    @GET("/api/messages/{interlocutorId}")
+    @GET("/api/messages/{interlocutorId}/lastMessage={lastMessageId}")
     suspend fun observeMessages(@Path("interlocutorId") interlocutorId: Int,
-                                @Query("lastMessage") lastMessageId: Int): Response<DialogResponse>
+                                @Path("lastMessageId") lastMessageId: Int): Response<DialogResponse>
 
-    companion object{
+    companion object {
         operator fun invoke(): DialogService =
             RetrofitClient.instance.create(DialogService::class.java)
     }

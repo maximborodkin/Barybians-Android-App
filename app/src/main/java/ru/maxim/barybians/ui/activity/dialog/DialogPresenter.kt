@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui.activity.dialog
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.*
@@ -36,6 +37,7 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
             } catch (e: Exception) {
                 viewState.onLoadingMessagesError()
             }
+        }.invokeOnCompletion {
             startDialogObserving(userId)
         }
     }
@@ -59,47 +61,33 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
         }
     }
 
-//    fun startDialogObserving(interlocutorId: Int) {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            withTimeoutOrNull(pollingTimeout) {
-//                while (pollingChannel.isNotNull()) {
-//                    pollingChannel.send(async {
-//                          dialogLongPollingService.observeMessages(interlocutorId, lastMessageId)
-//                    })
-//                    delay(pollingFrequency)
-//                }
-//            }
-//        }
-//        CoroutineScope(Dispatchers.IO).launch {
-//            for (event in pollingChannel) {
-//                val messages = event.await().body()?.messages
-//                if (messages != null) {
-//                    Log.i("MESSAGE_OBSERVER", "event: $event, messages: $messages")
-//                    lastMessageId = messages.last().id
-//                    viewState.onMessageReceived(messages)
-//                }
-//            }
-//        }
-//    }
+    fun stopObserving() {
+        Log.d("MESSAGES_OBSERVING", "Pause observing with lastMessageId $lastMessageId")
+        pollingChannel.close()
+    }
 
     private fun startDialogObserving(interlocutorId: Int) {
+       Log.d("MESSAGES_OBSERVING", "Start observing with id $interlocutorId and lastMessageId $lastMessageId")
        CoroutineScope(Dispatchers.IO).launch {
-           while (pollingChannel.isNotNull()) {
+           while (!pollingChannel.isClosedForReceive) {
                withTimeoutOrNull(pollingTimeout) {
                    try {
-                       val pollingResponse =
-                           dialogService.observeMessages(interlocutorId, lastMessageId)
+                       val pollingResponse = dialogService.observeMessages(interlocutorId, lastMessageId)
+                       Log.d("MESSAGES_OBSERVING", "pollingResponse: $pollingResponse")
                        if (pollingResponse.isSuccessful && pollingResponse.body().isNotNull()) {
+                           Log.d("MESSAGES_OBSERVING", "pollingResponse: ${pollingResponse.body()}")
                            val messages = pollingResponse.body()?.messages
                            if (messages != null) {
-                               val lm = messages.last().id
-                               lastMessageId = lm
+                               Log.d("MESSAGES_OBSERVING", "Messages received: $messages, lastMessageId=${messages.last().id}")
+                               lastMessageId = messages.last().id
                                CoroutineScope(Dispatchers.Main).launch {
-                                   viewState.onMessageReceived(messages)
+                                   viewState.onMessagesReceived(messages)
                                }
                            }
                        }
-                   } catch (ignored: Exception) { }
+                   } catch (ignored: Exception) {
+                       Log.d("MESSAGES_OBSERVING", "Error: ${ignored.localizedMessage}")
+                   }
                    delay(pollingFrequency)
                }
            }

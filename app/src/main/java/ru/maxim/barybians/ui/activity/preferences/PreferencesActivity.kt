@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
-import androidx.databinding.library.BuildConfig
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.ListPreference
@@ -39,7 +38,8 @@ class PreferencesActivity : BaseActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.fragment_preferences)
 
-            findPreference<Preference>(PreferencesManager.versionKey)?.summary = BuildConfig.VERSION_NAME
+            findPreference<Preference>(PreferencesManager.versionKey)?.summary =
+                context?.packageName?.let { context?.packageManager?.getPackageInfo(it, 0)?.versionName }
 
             setClearCacheSummary()
 

@@ -3,19 +3,23 @@ package ru.maxim.barybians.ui.activity.dialog
 import ru.maxim.barybians.ui.activity.dialog.MessageType.IncomingMessage
 import ru.maxim.barybians.ui.activity.dialog.MessageType.OutgoingMessage
 
-sealed class MessageItem(val text: String, val time: String) {
+sealed class MessageItem(val viewId: Long, val text: String, val time: String) {
     abstract fun getType(): Int
 }
 
-class IncomingMessage(text: String, time: String, val userId: Int) : MessageItem(text, time) {
+class IncomingMessage(viewId: Long,
+                      text: String,
+                      time: String,
+                      val senderId: Int
+) : MessageItem(viewId, text, time) {
     override fun getType(): Int = IncomingMessage.viewType
 }
 
-class OutgoingMessage(text: String,
+class OutgoingMessage(viewId: Long,
+                      text: String,
                       time: String,
-                      val viewHolderId: Long,
                       var status: MessageStatus
-) : MessageItem(text, time) {
+) : MessageItem(viewId, text, time) {
     override fun getType(): Int = OutgoingMessage.viewType
 
     enum class MessageStatus {
