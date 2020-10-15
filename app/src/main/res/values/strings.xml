@@ -155,4 +155,6 @@
     <string name="type_message">Type message&#8230;</string>
     <string name="an_error_occurred_while_loading_messages">An error occurred while loading messages</string>
     <string name="open_dialog">Open dialog</string>
+    <string name="messages_notifications_channel_name">Messages notifications</string>
+    <string name="messages_notifications_channel_description">Notify you about new messages</string>
 </resources>

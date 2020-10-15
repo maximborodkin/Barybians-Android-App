@@ -19,8 +19,11 @@ interface DialogService {
     suspend fun sendMessage(@Path("userId") userId: Int, @Field("text") text: String): Response<String>
 
     @GET("/api/messages/{interlocutorId}/lastMessage={lastMessageId}")
-    suspend fun observeMessages(@Path("interlocutorId") interlocutorId: Int,
-                                @Path("lastMessageId") lastMessageId: Int): Response<DialogResponse>
+    suspend fun observeMessagesForUser(@Path("interlocutorId") interlocutorId: Int,
+                                       @Path("lastMessageId") lastMessageId: Int): Response<DialogResponse>
+
+    @GET("/api/messages/lastMessage={lastMessageId}")
+    suspend fun observeNewMessages(@Path("lastMessageId") lastMessageId: Int): Response<DialogResponse>
 
     companion object {
         operator fun invoke(): DialogService =

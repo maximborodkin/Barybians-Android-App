@@ -72,7 +72,7 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
            while (!pollingChannel.isClosedForReceive) {
                withTimeoutOrNull(pollingTimeout) {
                    try {
-                       val pollingResponse = dialogService.observeMessages(interlocutorId, lastMessageId)
+                       val pollingResponse = dialogService.observeMessagesForUser(interlocutorId, lastMessageId)
                        Log.d("MESSAGES_OBSERVING", "pollingResponse: $pollingResponse")
                        if (pollingResponse.isSuccessful && pollingResponse.body().isNotNull()) {
                            Log.d("MESSAGES_OBSERVING", "pollingResponse: ${pollingResponse.body()}")
