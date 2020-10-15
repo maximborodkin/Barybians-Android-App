@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.activity.dialog
 
 import android.graphics.drawable.Animatable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +49,7 @@ class DialogRecyclerAdapter(
     override fun getItemId(position: Int) = messages[position].viewId
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        Log.d("DialogRecyclerAdapter", "Creating viewHolder for ${if(viewType==MessageType.IncomingMessage.viewType){"incoming"}else{"outgoing"}} message")
         return when(viewType) {
             MessageType.IncomingMessage.viewType -> IncomingMessageViewHolder(
                 LayoutInflater
@@ -65,6 +67,7 @@ class DialogRecyclerAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
+        Log.d("DialogRecyclerAdapter", "Binding viewHolder for ${if(getItemViewType(position)==MessageType.IncomingMessage.viewType){"incoming"}else{"outgoing"}} message with messageType:${message.getType()}, messageId: ${message.viewId}, text: ${message.text}")
         when(getItemViewType(position)) {
             MessageType.IncomingMessage.viewType -> {
                 val incomingMessage = message as? IncomingMessage

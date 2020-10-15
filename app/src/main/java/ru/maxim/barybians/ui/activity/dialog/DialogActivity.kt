@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui.activity.dialog
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View.GONE
 import androidx.appcompat.app.ActionBar
@@ -16,6 +17,7 @@ import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.base.BaseActivity
 import ru.maxim.barybians.ui.activity.dialog.DialogRecyclerAdapter.OutgoingMessageViewHolder
 import ru.maxim.barybians.ui.activity.dialog.OutgoingMessage.MessageStatus.*
+import ru.maxim.barybians.ui.activity.profile.ProfileActivity
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.isNull
 import ru.maxim.barybians.utils.toast
@@ -34,8 +36,10 @@ class DialogActivity : BaseActivity(), DialogView {
         setContentView(R.layout.activity_dialog)
         supportActionBar?.apply {
             displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-            setDisplayShowCustomEnabled(true)
             setCustomView(R.layout.actionbar_dialog)
+            setDisplayShowCustomEnabled(true)
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
         }
         if (savedInstanceState.isNull()){
             interlocutorId = intent.getIntExtra("userId", 0)
@@ -44,6 +48,12 @@ class DialogActivity : BaseActivity(), DialogView {
                     .load(intent.getStringExtra("userAvatar"))
                     .into(it.dialogInterlocutorAvatar)
                 it.dialogInterlocutorName.text = intent.getStringExtra("userName")
+                it.setOnClickListener {
+                    val profileIntent = Intent(this, ProfileActivity::class.java).apply {
+                        putExtra("userId", interlocutorId)
+                    }
+                    startActivity(profileIntent)
+                }
             }
             dialogPresenter.loadMessages(interlocutorId)
         }
@@ -118,12 +128,19 @@ class DialogActivity : BaseActivity(), DialogView {
 
     override fun onMessagesReceived(messages: ArrayList<Message>) {
         messages.forEach {
-            val time = DateFormatUtils.getTime(it.time)
-            val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
-            messageItems.add(IncomingMessage(viewHolderId, it.text, time, it.senderId))
+            when(it.senderId) {
+                interlocutorId -> {
+                    val time = DateFormatUtils.getTime(it.time)
+                    val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
+                    messageItems.add(IncomingMessage(viewHolderId, it.text, time, it.senderId))
+                    dialogRecyclerView.adapter?.notifyItemInserted(messageItems.size)
+                }
+                PreferencesManager.userId -> {
+
+                }
+            }
         }
         dialogRecyclerView.apply {
-            adapter?.notifyItemRangeInserted(messageItems.size - messages.size - 1, messages.size)
             val lastVisibleItemPosition =
                 (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
             if (lastVisibleItemPosition >= messageItems.size - 2) {

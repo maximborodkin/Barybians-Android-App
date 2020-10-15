@@ -6,7 +6,12 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.activity.base.BaseActivity
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
-
+/**
+ * Activity that shows user profile from anywhere
+ * Contains [ProfileFragment] in [androidx.fragment.app.FragmentContainerView]
+ * Requires userId parameter in extras bundle
+ * By default open current user profile
+ * */
 class ProfileActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
