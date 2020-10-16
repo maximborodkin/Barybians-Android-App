@@ -2,38 +2,40 @@ package ru.maxim.barybians.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.*
+import android.os.Build
+import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
-import retrofit2.Response
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Dialog
-import ru.maxim.barybians.model.Message
-import ru.maxim.barybians.model.response.DialogResponse
+import ru.maxim.barybians.model.response.MessageNotificationResponse
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.repository.remote.service.DialogService
+import ru.maxim.barybians.ui.activity.dialog.DialogActivity
 import ru.maxim.barybians.utils.isNotNull
-import java.util.ArrayList
+import java.util.*
 
 /**
- * Indeterminate background service for receiving new messages and notify user about it
+ * Indeterminate background service for receiving new messages and notify user about
+ * it by [NotificationManager].
  *
  * */
 class MessageService : Service() {
 
-    private val newMessagesChannel = Channel<Deferred<Response<DialogResponse>>>()
+    private val newMessages = ArrayList<MessageNotificationResponse>()
     private var lastReceivedMessageId = 0
-    private val currentUserId = PreferencesManager.userId
     private val notificationsChannelId = "MessagesNotificationsChannel"
     private var messageNotificationId = 125
-    private val requestTimeout = 5000L
+    private val pendingIntentResultCode = 367
+    private val requestTimeout = 50000L
     private val requestsFrequency = 300L
     private val dialogService = DialogService()
 
@@ -62,20 +64,23 @@ class MessageService : Service() {
 
     private fun startMessagesObserving() {
         CoroutineScope(Dispatchers.IO).launch {
-            while (!newMessagesChannel.isClosedForReceive && lastReceivedMessageId > 0) {
+            while (lastReceivedMessageId > 0) {
                 withTimeoutOrNull(requestTimeout) {
                     try {
                         val pollingResponse = dialogService.observeNewMessages(lastReceivedMessageId)
                         Log.d("MESSAGES_SERVICE", "pollingResponse: $pollingResponse")
                         if (pollingResponse.isSuccessful && pollingResponse.body().isNotNull()) {
                             Log.d("MESSAGES_SERVICE", "pollingResponse: ${pollingResponse.body()}")
-                            val messages = pollingResponse.body()?.messages
-                            if (messages != null) {
-                                Log.d("MESSAGES_SERVICE", "Messages received: $messages, lastMessageId=${messages.last().id}")
-                                lastReceivedMessageId = messages.last().id
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    createNotification(messages)
-                                }
+                            pollingResponse.body()?.entrySet()?.forEach {
+                                try {
+                                    val message = (Gson().fromJson(
+                                        it.value,
+                                        MessageNotificationResponse::class.java
+                                    ))
+                                    newMessages.add(message)
+                                    lastReceivedMessageId = message.message.id
+                                    createNotification(message)
+                                } catch (e: Exception){ }
                             }
                         }
                     } catch (ignored: Exception) {
@@ -87,13 +92,30 @@ class MessageService : Service() {
         }
     }
 
-    private fun createNotification(messages: ArrayList<Message>) {
-        Log.d("MESSAGES_SERVICE", "Created notification: ${messages.last().text}")
+    private fun createNotification(message: MessageNotificationResponse) {
+        // TODO("Make vibrate and sound for notification")
+        // TODO("Create preferences for notifications(disable, mute, mute for time range)")
+        Log.d("MESSAGES_SERVICE", "Created notification: ${newMessages.last().message.text}")
+        val interlocutor = message.secondUser
+        val interlocutorName = "${interlocutor.firstName} ${interlocutor.lastName}"
+        val dialogIntent = Intent(this, DialogActivity::class.java).apply {
+            putExtra("userId", interlocutor.id)
+            putExtra("userName", interlocutorName)
+            putExtra("userAvatar", interlocutor.getAvatarUrl())
+        }
+        val pendingIntent = TaskStackBuilder.create(this).run {
+            addNextIntentWithParentStack(dialogIntent)
+            getPendingIntent(pendingIntentResultCode, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
         val builder = NotificationCompat.Builder(this, notificationsChannelId)
             .setSmallIcon(R.drawable.ic_dialogs_list_white)
-            .setContentTitle("You has a new message")
-            .setContentText(messages.first().text)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentTitle(interlocutorName)
+            .setContentText(newMessages.last().message.text)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setGroup("group_${message.secondUser.id}")
+            .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+            .setGroupSummary(true)
         with(NotificationManagerCompat.from(this)) {
             notify(messageNotificationId, builder.build())
         }
@@ -103,9 +125,10 @@ class MessageService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.messages_notifications_channel_name)
             val descriptionText = getString(R.string.messages_notifications_channel_description)
-            val importance = NotificationManager.IMPORTANCE_HIGH
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(notificationsChannelId, name, importance).apply {
                 description = descriptionText
+                enableVibration(true)
             }
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -114,7 +137,11 @@ class MessageService : Service() {
     }
 
     override fun onDestroy() {
-        newMessagesChannel.close()
+        newMessages.clear()
         super.onDestroy()
+    }
+
+    enum class CommandType {
+        START_SERVICE, STOP_SERVICE, REBOOT_SERVICE, CLEAR_NOTIFICATIONS_POOL, UPDATE_SETTINGS
     }
 }
