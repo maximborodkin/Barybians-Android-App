@@ -6,9 +6,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.*
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +35,21 @@ class PreferencesActivity : BaseActivity() {
     class PreferencesFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.fragment_preferences)
+
+            findPreference<SwitchPreferenceCompat>(PreferencesManager.enableNotificationsServiceKey)?.setOnPreferenceChangeListener { preference, newValue ->
+
+                true
+            }
+
+            findPreference<MultiSelectListPreference>(PreferencesManager.notificationsSoundEffectsKey)?.setOnPreferenceChangeListener { preference, newValue ->
+
+                true
+            }
+
+            findPreference<Preference>(PreferencesManager.clearNotificationsPoolKey)?.setOnPreferenceClickListener {
+
+                true
+            }
 
             findPreference<Preference>(PreferencesManager.versionKey)?.summary =
                 context?.packageName?.let { context?.packageManager?.getPackageInfo(it, 0)?.versionName }

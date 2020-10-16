@@ -18,21 +18,29 @@ object PreferencesManager {
     /**
      * SharedPreferences keys
      */
-    val versionKey by lazy { context.getString(R.string.build_version_preference) }
+    val enableNotificationsServiceKey by lazy { context.getString(R.string.enable_notifications_service_preference) }
+    val notificationsSoundEffectsKey by lazy { context.getString(R.string.notification_sound_effects_preference) }
+    val clearNotificationsPoolKey by lazy { context.getString(R.string.clear_notifications_pool_preference) }
     val themeKey by lazy { context.getString(R.string.theme_preference) }
-    val tokenKey by lazy { context.getString(R.string.token_preference) }
+    val versionKey by lazy { context.getString(R.string.build_version_preference) }
     val clearCacheKey by lazy { context.getString(R.string.clear_cache_preference) }
+    val logoutKey by lazy { context.getString(R.string.logout_preference) }
+    val tokenKey by lazy { context.getString(R.string.token_preference) }
     val userIdKey by lazy { context.getString(R.string.user_id_preference) }
     val userNameKey by lazy { context.getString(R.string.user_name_preference) }
     val userAvatarKey by lazy { context.getString(R.string.user_avatar_preference) }
-    val logoutKey by lazy { context.getString(R.string.logout_preference) }
 
     /**
      * Preference access methods
      */
-    var theme: String
-        get() = sharedPreferences.getString(themeKey, context.getString(R.string.theme_light))!!
-        set(value) { sharedPreferences.edit().putString(themeKey, value).apply() }
+    val isNotificationsEnabled: Boolean = sharedPreferences.getBoolean(enableNotificationsServiceKey, true)
+
+    val notificationsSoundEffects: Set<String> = sharedPreferences.getStringSet(
+            notificationsSoundEffectsKey,
+            context.resources.getStringArray(R.array.notification_effects_default_values).toSet()
+    )!!
+
+    val theme: String = sharedPreferences.getString(themeKey, context.getString(R.string.theme_light))!!
 
     var token: String?
         get() = sharedPreferences.getString(tokenKey, null)
