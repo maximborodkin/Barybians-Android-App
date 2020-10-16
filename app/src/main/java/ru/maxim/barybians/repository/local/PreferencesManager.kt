@@ -18,7 +18,7 @@ object PreferencesManager {
     /**
      * SharedPreferences keys
      */
-    val versionKey by lazy { context.getString(R.string.version_preference) }
+    val versionKey by lazy { context.getString(R.string.build_version_preference) }
     val themeKey by lazy { context.getString(R.string.theme_preference) }
     val tokenKey by lazy { context.getString(R.string.token_preference) }
     val clearCacheKey by lazy { context.getString(R.string.clear_cache_preference) }

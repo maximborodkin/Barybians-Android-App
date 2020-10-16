@@ -32,6 +32,7 @@ class MessageService : Service() {
 
     private val newMessages = ArrayList<MessageNotificationResponse>()
     private var lastReceivedMessageId = 0
+    private val notificationManager by lazy { NotificationManagerCompat.from(this) }
     private val notificationsChannelId = "MessagesNotificationsChannel"
     private var messageNotificationId = 125
     private val pendingIntentResultCode = 367
@@ -113,12 +114,8 @@ class MessageService : Service() {
             .setContentText(newMessages.last().message.text)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
-            .setGroup("group_${message.secondUser.id}")
-            .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
-            .setGroupSummary(true)
-        with(NotificationManagerCompat.from(this)) {
-            notify(messageNotificationId, builder.build())
-        }
+
+        notificationManager.notify(messageNotificationId, builder.build())
     }
 
     private fun createMessagesNotificationChannel() {

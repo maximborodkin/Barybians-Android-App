@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context=".ui.activity.preferences.PreferencesActivity">
 
     <PreferenceCategory
         app:title="@string/general"
+        app:iconSpaceReserved="false"/>
+
+    <PreferenceCategory
+        app:title="@string/notifications"
         app:iconSpaceReserved="false">
 
+        <SwitchPreferenceCompat
+            app:key="@string/enable_notifications_service_preference"
+            app:title="@string/enable_background_notifications_service"
+            app:singleLineTitle="false"
+            app:summary="@string/enable_notifications_service_summary"
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"/>
+
+        <MultiSelectListPreference
+            app:key="@string/sound_notification_preference"
+            app:title="@string/notifications_sound_effects"
+            app:entries="@array/notification_effects_entries"
+            app:entryValues="@array/notification_effects_values"
+            app:iconSpaceReserved="false"
+            app:dependency="@string/enable_notifications_service_preference"/>
+
+        <Preference
+            app:key="@string/clear_notifications_pool_preference"
+            app:title="@string/clear_notification_pool"
+            app:iconSpaceReserved="false"
+            app:dependency="@string/enable_notifications_service_preference"/>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -43,7 +67,7 @@
         app:iconSpaceReserved="false">
 
         <Preference
-            app:key="@string/version_preference"
+            app:key="@string/build_version_preference"
             app:title="@string/build_version"
             app:iconSpaceReserved="false"
             tools:summary="1.0.0"/>
