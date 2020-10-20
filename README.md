@@ -2,6 +2,8 @@
 
 #### Application for [Barybians Social Network](https://barybians.site)
 
+![](https://vk.com/doc199026622_572675887?hash=94a48be16cf5f68525&dl=9d1bc669cc70060b7c&wnd=1&module=im)
+
 #### Build
 ```
 git clone https://github.com/maximborodkin/Barybians-Android-App.git
