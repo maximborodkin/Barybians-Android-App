@@ -1,23 +1,22 @@
 package ru.maxim.barybians.ui.activity.preferences
 
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import com.bumptech.glide.Glide
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
+import ru.maxim.barybians.service.Actions
+import ru.maxim.barybians.service.MessageService
+import ru.maxim.barybians.service.ServiceState
 import ru.maxim.barybians.ui.activity.base.BaseActivity
+import ru.maxim.barybians.utils.DialogFactory
 import ru.maxim.barybians.utils.toast
 import java.io.File
-
 
 class PreferencesActivity : BaseActivity() {
 
@@ -36,12 +35,16 @@ class PreferencesActivity : BaseActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             addPreferencesFromResource(R.xml.fragment_preferences)
 
-            findPreference<SwitchPreferenceCompat>(PreferencesManager.enableNotificationsServiceKey)?.setOnPreferenceChangeListener { preference, newValue ->
-
-                true
+            findPreference<SwitchPreferenceCompat>(PreferencesManager.isNotificationsEnabledKey)?.setOnPreferenceChangeListener { preference, newValue ->
+                if ((preference as SwitchPreferenceCompat).isChecked){
+                    if (actionOnService(Actions.START)) return@setOnPreferenceChangeListener true
+                } else {
+                    if (actionOnService(Actions.STOP)) return@setOnPreferenceChangeListener true
+                }
+                false
             }
 
-            findPreference<MultiSelectListPreference>(PreferencesManager.notificationsSoundEffectsKey)?.setOnPreferenceChangeListener { preference, newValue ->
+            findPreference<MultiSelectListPreference>(PreferencesManager.notificationSoundEffectKey)?.setOnPreferenceChangeListener { preference, newValue ->
 
                 true
             }
@@ -66,7 +69,7 @@ class PreferencesActivity : BaseActivity() {
             }
 
             findPreference<Preference>(PreferencesManager.logoutKey)?.setOnPreferenceClickListener {
-                LogoutAlertDialog().show(parentFragmentManager, "LogoutDialogFragment")
+                DialogFactory.createLogoutAlertDialog().show(parentFragmentManager, "LogoutDialogFragment")
                 true
             }
 
@@ -108,21 +111,19 @@ class PreferencesActivity : BaseActivity() {
             }
             return size
         }
-    }
 
-    class LogoutAlertDialog : DialogFragment() {
-
-        override fun onCreateDialog(savedInstanceState: Bundle?) =
-            MaterialAlertDialogBuilder(requireContext()).apply {
-                setTitle(getString(R.string.are_you_sure))
-                setPositiveButton(R.string.yes) { _, _ ->
-                    PreferencesManager.token = null
-                    PreferencesManager.userId = 0
-                    val loginActivityIntent = Intent(context, LoginActivity::class.java)
-                    loginActivityIntent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(loginActivityIntent)
+        private fun actionOnService(action: Actions): Boolean {
+            if (PreferencesManager.serviceState == ServiceState.STOPPED.name && action == Actions.STOP) return false
+            if (PreferencesManager.serviceState == ServiceState.STARTED.name && action == Actions.START) return false
+            Intent(context, MessageService::class.java).also {
+                it.action = action.name
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context?.startForegroundService(it)
+                } else{
+                    context?.startService(it)
                 }
-                setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
-            }.create()
+            }
+            return true
+        }
     }
 }

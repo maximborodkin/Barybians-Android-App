@@ -124,7 +124,7 @@
         <string name="enable_notifications_service_summary">Run or stop background service for receiving new messages and making notifications. Service starts on system boot and works always.</string>
             <string name="enable_notifications_service_preference">enable_notifications_service</string>
         <string name="notifications_sound_effects">Notification sound effects</string>
-            <string name="notification_sound_effects_preference">notification_sounds_effects</string>
+            <string name="notification_sound_effect_preference">notification_sound_effect</string>
                 <string name="sound">Sound</string>
                 <string name="vibration">Vibration</string>
                 <string name="blink">Blink</string>
@@ -138,10 +138,6 @@
                 <string name="notification_effect_blink" translatable="false">blink</string>
                 <string-array name="notification_effects_values">
                     <item>@string/notification_effect_sound</item>
-                    <item>@string/notification_effect_vibration</item>
-                    <item>@string/notification_effect_blink</item>
-                </string-array>
-                <string-array name="notification_effects_default_values">
                     <item>@string/notification_effect_vibration</item>
                     <item>@string/notification_effect_blink</item>
                 </string-array>
@@ -178,8 +174,10 @@
             <string name="user_id_preference" translatable="false">user_id</string>
             <string name="user_name_preference" translatable="false">user_name</string>
             <string name="user_avatar_preference" translatable="false">user_avatar</string>
+            <string name="service_state_preference" translatable="false">service_state</string>
 
-<!--  Notifications  -->
+
+    <!--  Notifications  -->
     <string name="messages_notifications_channel_name">Messages notifications</string>
     <string name="messages_notifications_channel_description">Notify you about new messages</string>
 

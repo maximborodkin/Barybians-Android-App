@@ -1,6 +1,7 @@
 package ru.maxim.barybians.utils
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -20,6 +22,8 @@ import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_post_editor.view.*
 import kotlinx.android.synthetic.main.fragment_post_menu_bottom_sheet.*
 import ru.maxim.barybians.R
+import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.ui.fragment.feed.CommentsRecyclerAdapter
@@ -246,4 +250,20 @@ object DialogFactory {
                 }
             }
         }
+
+    fun createLogoutAlertDialog() = object : DialogFragment() {
+
+        override fun onCreateDialog(savedInstanceState: Bundle?) =
+            MaterialAlertDialogBuilder(requireContext()).apply {
+                setTitle(getString(R.string.are_you_sure))
+                setPositiveButton(R.string.yes) { _, _ ->
+                    PreferencesManager.token = null
+                    PreferencesManager.userId = 0
+                    val loginActivityIntent = Intent(context, LoginActivity::class.java)
+                    loginActivityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(loginActivityIntent)
+                }
+                setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
+            }.create()
+    }
 }

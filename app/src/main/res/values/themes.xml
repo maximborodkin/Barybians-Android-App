@@ -66,4 +66,5 @@
         <item name="colorPrimary">@color/dark_colorSecondary</item>
         <item name="materialAlertDialogTitleTextStyle">@style/DarkTheme.MaterialAlertDialog.TitleTextStyle</item>
     </style>
+
 </resources>

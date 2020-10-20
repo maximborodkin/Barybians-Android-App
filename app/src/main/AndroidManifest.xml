@@ -24,9 +24,23 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/LightTheme">
 
+        <receiver android:name=".service.StartReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".service.RestartBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+        </receiver>
+
         <service android:name=".service.MessageService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:stopWithTask="false"/>
         
         <activity android:name="ru.maxim.barybians.ui.activity.main.MainActivity"
             android:launchMode="singleTop">

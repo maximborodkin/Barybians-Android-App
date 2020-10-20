@@ -20,11 +20,10 @@
             app:iconSpaceReserved="false"/>
 
         <MultiSelectListPreference
-            app:key="@string/notification_sound_effects_preference"
+            app:key="@string/notification_sound_effect_preference"
             app:title="@string/notifications_sound_effects"
             app:entries="@array/notification_effects_entries"
             app:entryValues="@array/notification_effects_values"
-            app:defaultValue="@array/notification_effects_default_values"
             app:iconSpaceReserved="false"
             app:dependency="@string/enable_notifications_service_preference"/>
 

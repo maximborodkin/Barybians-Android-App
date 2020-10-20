@@ -1,14 +1,11 @@
 package ru.maxim.barybians.service
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.IBinder
+import android.os.*
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
@@ -30,6 +27,7 @@ import java.util.*
  * */
 class MessageService : Service() {
 
+    private val log_tag = "MESSAGE_SERVICE"
     private val newMessages = ArrayList<MessageNotificationResponse>()
     private var lastReceivedMessageId = 0
     private val notificationManager by lazy { NotificationManagerCompat.from(this) }
@@ -39,15 +37,81 @@ class MessageService : Service() {
     private val requestTimeout = 50000L
     private val requestsFrequency = 300L
     private val dialogService = DialogService()
+    private var wakeLock: PowerManager.WakeLock? = null
+    private var isServiceStarted = false
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int) = START_STICKY
+    inner class LocalBinder : Binder() {
+        val service: MessageService = this@MessageService
+    }
 
-    override fun onBind(intent: Intent?): IBinder? = null
+    override fun onBind(intent: Intent?): IBinder? = LocalBinder()
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent != null) {
+            onTaskRemoved(intent)
+            val action = intent.action
+            Log.e(log_tag, "using an intent with action $action")
+            when (action) {
+                Actions.START.name -> startService()
+                Actions.STOP.name -> stopService()
+                else -> Log.e(log_tag, "This should never happen. No action in the received intent")
+            }
+        }
+        return START_STICKY
+    }
+
 
     override fun onCreate() {
         super.onCreate()
+        Toast.makeText(this, "Message service started", Toast.LENGTH_LONG).show()
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Toast.makeText(this, "Message service stopped", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent) {
+        val restartServiceIntent = Intent(applicationContext, this::class.java).also {
+            it.action = Actions.START.name
+            it.setPackage(packageName)
+        }
+        applicationContext.getSystemService(Context.ALARM_SERVICE)
+        applicationContext.startService(restartServiceIntent)
+        super.onTaskRemoved(rootIntent)
+    }
+
+    private fun startService() {
+        if (isServiceStarted) return
+        isServiceStarted = true
+        PreferencesManager.serviceState = ServiceState.STARTED.name
+        wakeLock =
+            (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+                newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MessageService::lock").apply {
+                    acquire(10*60*1000L /*10 minutes*/)
+                }
+            }
         createMessagesNotificationChannel()
         getLastMessageId()
+    }
+
+    private fun stopService() {
+        Log.e(log_tag, "Stopping the foreground service")
+        Toast.makeText(this, "Service stopping", Toast.LENGTH_SHORT).show()
+        try {
+            wakeLock?.let {
+                if (it.isHeld) {
+                    it.release()
+                }
+            }
+            stopSelf()
+        } catch (e: Exception) {
+            Log.e(log_tag, "Service stopped without being started: ${e.message}")
+        } finally {
+            isServiceStarted = false
+            PreferencesManager.serviceState = ServiceState.STOPPED.name
+        }
     }
 
     private fun getLastMessageId() {
@@ -65,7 +129,7 @@ class MessageService : Service() {
 
     private fun startMessagesObserving() {
         CoroutineScope(Dispatchers.IO).launch {
-            while (lastReceivedMessageId > 0) {
+            while (isServiceStarted && lastReceivedMessageId > 0) {
                 withTimeoutOrNull(requestTimeout) {
                     try {
                         val pollingResponse = dialogService.observeNewMessages(lastReceivedMessageId)
@@ -132,13 +196,14 @@ class MessageService : Service() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+}
 
-    override fun onDestroy() {
-        newMessages.clear()
-        super.onDestroy()
-    }
+enum class Actions {
+    START,
+    STOP
+}
 
-    enum class CommandType {
-        START_SERVICE, STOP_SERVICE, REBOOT_SERVICE, CLEAR_NOTIFICATIONS_POOL, UPDATE_SETTINGS
-    }
+enum class ServiceState {
+    STARTED,
+    STOPPED,
 }
