@@ -1,6 +1,6 @@
 ### Barybians Android App
 
-#### Application for [Barybians Social Network](https://barybians.site)
+#### Application for [Barybians Social Network](https://barybians.ru)
 
 ![](readme/barybians.gif)
 
