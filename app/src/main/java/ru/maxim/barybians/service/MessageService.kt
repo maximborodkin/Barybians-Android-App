@@ -117,8 +117,8 @@ class MessageService : Service() {
     private fun getLastMessageId() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                dialogService.getDialogsList().body()?.entrySet()?.forEach {
-                    val dialogMessageId = (Gson().fromJson(it.value, Dialog::class.java)).lastMessage.id
+                dialogService.getDialogsList().body()?.forEach {
+                    val dialogMessageId = it.lastMessage.id
                     if (dialogMessageId > lastReceivedMessageId) lastReceivedMessageId = dialogMessageId
                 }
             } catch (ignored: Exception) {

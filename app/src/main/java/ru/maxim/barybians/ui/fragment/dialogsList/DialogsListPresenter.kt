@@ -29,8 +29,8 @@ class DialogsListPresenter : MvpPresenter<DialogsListView>(), CoroutineScope by 
                 val dialogs = dialogService.getDialogsList()
                 if (dialogs.isSuccessful && dialogs.body() != null) {
                     val dialogList = ArrayList<Dialog>()
-                    dialogs.body()?.entrySet()?.forEach {
-                        dialogList.add(Gson().fromJson(it.value, Dialog::class.java))
+                    dialogs.body()?.forEach {
+                        dialogList.add(it)
                     }
                     dialogList.sortByDescending { dialog -> dialog.lastMessage.time }
                     viewState.showDialogsList(dialogList)

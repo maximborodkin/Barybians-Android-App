@@ -27,7 +27,7 @@ class App : MultiDexApplication() {
         RetrofitClient.context = applicationContext
         DateFormatUtils.context = applicationContext
 
-        startService(Intent(this, MessageService::class.java).apply { action = Actions.START.name })
+//        startService(Intent(this, MessageService::class.java).apply { action = Actions.START.name })
         DateFormatUtils.currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             resources.configuration.locales[0]
         } else {

@@ -3,6 +3,7 @@ package ru.maxim.barybians.repository.remote.service
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.*
+import ru.maxim.barybians.model.Dialog
 import ru.maxim.barybians.model.response.DialogResponse
 import ru.maxim.barybians.repository.remote.RetrofitClient
 
@@ -13,7 +14,7 @@ interface DialogService {
      * @return list of ...
      **/
     @GET("/api/dialogs")
-    suspend fun getDialogsList(): Response<JsonObject>
+    suspend fun getDialogsList(): Response<ArrayList<Dialog>>
 
     /**
      * Method for getting all messages in dialog between current user and interlocutor

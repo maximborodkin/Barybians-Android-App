@@ -12,6 +12,6 @@ class RestartBroadcastReceiver : BroadcastReceiver() {
             RestartBroadcastReceiver::class.java.simpleName,
             "Service Stopped, but this is a never ending service."
         )
-        context.startService(Intent(context, MessageService::class.java).apply { action = Actions.START.name })
+//        context.startService(Intent(context, MessageService::class.java).apply { action = Actions.START.name })
     }
 }

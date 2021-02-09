@@ -1,11 +1,12 @@
 package ru.maxim.barybians.repository.remote
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import com.google.gson.GsonBuilder
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.logging.HttpLoggingInterceptor.Level.HEADERS
+import okhttp3.logging.HttpLoggingInterceptor.Level.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.maxim.barybians.repository.local.PreferencesManager
@@ -16,6 +17,7 @@ import java.util.*
  * Singleton object for access to SharedPreferences
  *  @property context uses applicationContext sets from [ru.maxim.barybians.App] class
  */
+@SuppressLint("StaticFieldLeak")
 object RetrofitClient {
 
     lateinit var context: Context
@@ -46,7 +48,7 @@ object RetrofitClient {
 
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor { authorizationInterceptor.intercept(it) }
-        .addInterceptor(HttpLoggingInterceptor().apply { level = HEADERS })
+        .addInterceptor(HttpLoggingInterceptor().apply { level = BODY })
         .connectionSpecs(connectionSpec)
         .build()
 
