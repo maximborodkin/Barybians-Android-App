@@ -180,5 +180,6 @@
     <!--  Notifications  -->
     <string name="messages_notifications_channel_name">Messages notifications</string>
     <string name="messages_notifications_channel_description">Notify you about new messages</string>
+    <string name="sticker">sticker</string>
 
 </resources>

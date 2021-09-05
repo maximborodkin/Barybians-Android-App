@@ -31,12 +31,18 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/dialogMessageEmojiBtn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_emoji_grey"/>
+
         <EditText
             android:id="@+id/dialogMessageInput"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:layout_marginStart="8dp"
             android:inputType="textAutoComplete"
             android:autofillHints="none"
             android:textColorHint="@color/grey"

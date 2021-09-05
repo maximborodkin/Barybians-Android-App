@@ -4,7 +4,9 @@ import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.*
 import ru.maxim.barybians.model.Dialog
+import ru.maxim.barybians.model.StickerPack
 import ru.maxim.barybians.model.response.DialogResponse
+import ru.maxim.barybians.model.response.SendMessageResponse
 import ru.maxim.barybians.repository.remote.RetrofitClient
 
 interface DialogService {
@@ -33,7 +35,14 @@ interface DialogService {
      **/
     @FormUrlEncoded
     @POST("/api/dialogs/{userId}")
-    suspend fun sendMessage(@Path("userId") userId: Int, @Field("text") text: String): Response<String>
+    suspend fun sendMessage(@Path("userId") userId: Int, @Field("text") text: String): Response<SendMessageResponse>
+
+    /**
+     * Method for getting a list of stickers packs.
+     * @return list of [StickerPack] objects.
+     **/
+    @GET("/api/stickers")
+    suspend fun getStickersPacks(): Response<ArrayList<StickerPack>>
 
     /**
      * Method for observing new messages from certain by [interlocutorId] user.
@@ -44,9 +53,9 @@ interface DialogService {
      * @return [DialogResponse] or throws [java.util.concurrent.TimeoutException]
      * if no new messages in 50 seconds.
      **/
-    @GET("/api/messages/{interlocutorId}/lastMessage={lastMessageId}")
+    @GET("/api/v2/longpoll/messages/{interlocutorId}")
     suspend fun observeMessagesForUser(@Path("interlocutorId") interlocutorId: Int,
-                                       @Path("lastMessageId") lastMessageId: Int): Response<DialogResponse>
+                                       @Query("last") lastMessageId: Int): Response<DialogResponse>
 
     /**
      * Method for observing new messages from all interlocutors for notify user by

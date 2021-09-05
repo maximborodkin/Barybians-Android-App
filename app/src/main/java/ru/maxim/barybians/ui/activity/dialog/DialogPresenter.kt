@@ -50,7 +50,7 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
         launch {
             try {
                 val sendMessageResponse = dialogService.sendMessage(interlocutorId, text)
-                if (sendMessageResponse.isSuccessful && sendMessageResponse.body() == "true") {
+                if (sendMessageResponse.isSuccessful && sendMessageResponse.body().isNotNull()) {
                     viewState.onMessageSent(text, viewHolderId)
                 } else {
                     viewState.onMessageSendingError(viewHolderId)

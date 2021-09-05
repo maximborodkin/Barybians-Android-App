@@ -115,14 +115,14 @@ class PreferencesActivity : BaseActivity() {
         private fun actionOnService(action: Actions): Boolean {
             if (PreferencesManager.serviceState == ServiceState.STOPPED.name && action == Actions.STOP) return false
             if (PreferencesManager.serviceState == ServiceState.STARTED.name && action == Actions.START) return false
-            Intent(context, MessageService::class.java).also {
-                it.action = action.name
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context?.startForegroundService(it)
-                } else{
-                    context?.startService(it)
-                }
-            }
+//            Intent(context, MessageService::class.java).also {
+//                it.action = action.name
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    context?.startForegroundService(it)
+//                } else{
+//                    context?.startService(it)
+//                }
+//            }
             return true
         }
     }

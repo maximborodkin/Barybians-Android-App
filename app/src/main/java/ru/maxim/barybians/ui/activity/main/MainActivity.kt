@@ -23,7 +23,6 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         val token = PreferencesManager.token
         val id = PreferencesManager.userId
 

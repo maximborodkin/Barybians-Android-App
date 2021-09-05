@@ -18,6 +18,7 @@ import ru.maxim.barybians.ui.activity.base.BaseActivity
 import ru.maxim.barybians.ui.activity.dialog.DialogRecyclerAdapter.OutgoingMessageViewHolder
 import ru.maxim.barybians.ui.activity.dialog.OutgoingMessage.MessageStatus.*
 import ru.maxim.barybians.ui.activity.profile.ProfileActivity
+import ru.maxim.barybians.ui.fragment.stickerPicker.StickersPickerDialog
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.isNull
 import ru.maxim.barybians.utils.toast
@@ -65,6 +66,12 @@ class DialogActivity : BaseActivity(), DialogView {
         dialogMessageSendBtn.setOnClickListener {
             val messageText = dialogMessageInput.text.toString()
             if (messageText.isNotBlank()) sendMessage(messageText)
+        }
+        dialogMessageEmojiBtn.setOnClickListener {
+            val stickersPicker = StickersPickerDialog.newInstance {
+                toast(it)
+            }
+            stickersPicker.show(supportFragmentManager, "StickersPicker")
         }
     }
 

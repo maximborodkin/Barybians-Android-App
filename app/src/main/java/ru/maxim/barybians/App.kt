@@ -1,15 +1,12 @@
 package ru.maxim.barybians
 
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.service.Actions
-import ru.maxim.barybians.service.MessageService
 import ru.maxim.barybians.utils.DateFormatUtils
 
 

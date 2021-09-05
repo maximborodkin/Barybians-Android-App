@@ -25,7 +25,8 @@
         android:theme="@style/LightTheme">
 
         <receiver android:name=".service.StartReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
@@ -37,17 +38,18 @@
             android:label="RestartServiceWhenStopped">
         </receiver>
 
-        <service android:name=".service.MessageService"
-            android:enabled="true"
-            android:exported="false"
-            android:stopWithTask="false"/>
+<!--        <service android:name=".service.MessageService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false"-->
+<!--            android:stopWithTask="false"/>-->
 
-        <service android:name=".service.UserStatusService"
-            android:enabled="true"
-            android:exported="false"/>
+<!--        <service android:name=".service.UserStatusService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false"/>-->
         
         <activity android:name="ru.maxim.barybians.ui.activity.main.MainActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

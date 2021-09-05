@@ -9,5 +9,6 @@ data class Message (
     val text: String,
     @SerializedName("utime")
     val time: Long,
-    val unread: Int
+    val unread: Int,
+    val attachments: ArrayList<MessageAttachment>?
 )
