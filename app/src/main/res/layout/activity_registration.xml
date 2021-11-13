@@ -1,189 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/light_colorPrimary"
-    android:fillViewport="true"
-    tools:context=".ui.activity.auth.registration.RegistrationActivity">
+<layout>
 
-    <LinearLayout
+    <data>
+
+        <variable
+            name="viewModel"
+            type="ru.maxim.barybians.ui.activity.auth.registration.RegistrationViewModel" />
+    </data>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="0dp"
-        android:paddingEnd="48dp">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/registrationBackBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:padding="12dp"
-            app:srcCompat="@drawable/ic_arrow_back_white"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:layout_marginStart="48dp"
-            android:textSize="28sp"
-            android:text="@string/registration"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/registrationFirstNameLayout"
-            style="@style/WhiteEditTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:layout_marginStart="48dp"
-            app:endIconMode="clear_text"
-            android:hint="@string/first_name">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/registrationFirstName"
-                style="@style/WhiteEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/registrationLastNameLayout"
-            style="@style/WhiteEditTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="48dp"
-            app:endIconMode="clear_text"
-            android:hint="@string/last_name">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/registrationLastName"
-                style="@style/WhiteEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/registrationBirthDateLayout"
-            style="@style/WhiteEditTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="48dp"
-            app:endIconMode="clear_text"
-            android:hint="@string/birth_date">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/registrationBirthDate"
-                style="@style/WhiteEditText"
-                android:layout_width="match_parent"
-                android:focusableInTouchMode="false"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
+        android:layout_height="match_parent"
+        android:background="@color/light_colorPrimary"
+        android:fillViewport="true"
+        tools:context=".ui.activity.auth.registration.RegistrationActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:layout_marginStart="48dp"
-            android:weightSum="3">
+            android:orientation="vertical"
+            android:paddingStart="0dp"
+            android:paddingEnd="48dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/registrationBackBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:padding="12dp"
+                app:srcCompat="@drawable/ic_arrow_back_white" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sex"
-                android:textSize="18sp"
+                android:layout_marginStart="48dp"
+                android:text="@string/registration"
+                android:textAlignment="center"
                 android:textColor="@color/white"
-                android:layout_gravity="center_vertical"/>
+                android:textSize="28sp" />
 
-            <Space
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/registrationFirstNameLayout"
+                style="@style/WhiteEditTextLayout"
+                errorText="@{viewModel.firstNameMessage}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="48dp"
+                android:hint="@string/first_name"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/registrationFirstName"
+                    style="@style/WhiteEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewModel.firstName}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/registrationLastNameLayout"
+                style="@style/WhiteEditTextLayout"
+                errorText="@{viewModel.lastNameMessage}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:hint="@string/last_name"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/registrationLastName"
+                    style="@style/WhiteEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewModel.lastName}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/registrationBirthDateLayout"
+                style="@style/WhiteEditTextLayout"
+                errorText="@{viewModel.birthDateMessage}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:hint="@string/birth_date"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/registrationBirthDate"
+                    style="@style/WhiteEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"
+                    android:text="@{viewModel.birthDateString}"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/sex"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/registrationMaleBtn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@{viewModel.sex ? @drawable/ic_male_selected : @drawable/ic_male_unselected}"
+                    tools:src="@drawable/ic_male_selected" />
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/registrationFemaleBtn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@{viewModel.sex ? @drawable/ic_female_unselected : @drawable/ic_female_selected}"
+                    tools:src="@drawable/ic_female_unselected" />
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/registrationLoginLayout"
+                style="@style/WhiteEditTextLayout"
+                errorText="@{viewModel.loginMessage}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:hint="@string/login"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/registrationLogin"
+                    style="@style/WhiteEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={viewModel.login}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/registrationPasswordLayout"
+                style="@style/WhiteEditTextLayout"
+                errorText="@{viewModel.passwordMessage}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:hint="@string/password"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/registrationPassword"
+                    style="@style/WhiteEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:text="@={viewModel.password}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/registrationPasswordRepeatLayout"
+                style="@style/WhiteEditTextLayout"
+                errorText="@{viewModel.repeatPasswordMessage}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:hint="@string/repeat_password"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/registrationPasswordRepeat"
+                    style="@style/WhiteEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:text="@={viewModel.repeatPassword}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/registrationBtn"
+                style="@style/WhiteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/registrationMaleBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                tools:srcCompat="@drawable/ic_male_selected" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/registrationFemaleBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                tools:srcCompat="@drawable/ic_female_unselected" />
+                android:layout_gravity="center"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="48dp"
+                android:text="@string/registration" />
         </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/registrationLoginLayout"
-            style="@style/WhiteEditTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="48dp"
-            app:endIconMode="clear_text"
-            android:hint="@string/login">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/registrationLogin"
-                style="@style/WhiteEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/registrationPasswordLayout"
-            style="@style/WhiteEditTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="48dp"
-            app:endIconMode="password_toggle"
-            android:hint="@string/password">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/registrationPassword"
-                style="@style/WhiteEditText"
-                android:inputType="textPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/registrationPasswordRepeatLayout"
-            style="@style/WhiteEditTextLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="48dp"
-            app:endIconMode="password_toggle"
-            android:hint="@string/repeat_password">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/registrationPasswordRepeat"
-                style="@style/WhiteEditText"
-                android:inputType="textPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/registrationBtn"
-            style="@style/WhiteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="48dp"
-            android:layout_marginStart="24dp"
-            android:text="@string/registration"
-            android:layout_gravity="center"/>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</layout>

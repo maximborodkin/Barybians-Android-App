@@ -21,7 +21,7 @@ class LoginActivity : MvpAppCompatActivity(), LoginView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_login)
         supportActionBar?.hide()
         with(binding) {
             loginBtn.setOnClickListener {
