@@ -181,5 +181,8 @@
     <string name="messages_notifications_channel_name">Messages notifications</string>
     <string name="messages_notifications_channel_description">Notify you about new messages</string>
     <string name="sticker">sticker</string>
+    <string name="common_network_error">Something went wring. Please try later</string>
+    <string name="request_timeout">Request timeout</string>
+    <string name="forbidden_error">You haven\'t permissions for this action</string>
 
 </resources>

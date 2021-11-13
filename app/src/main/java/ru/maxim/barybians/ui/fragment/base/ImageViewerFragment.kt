@@ -37,7 +37,7 @@ class ImageViewerFragment : AppCompatDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val parentContainer = RelativeLayout(requireContext())
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         val imageView = ScaleImageView(requireContext()).apply {

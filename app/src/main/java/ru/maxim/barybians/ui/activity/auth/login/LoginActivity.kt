@@ -2,47 +2,50 @@ package ru.maxim.barybians.ui.activity.auth.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
-import kotlinx.android.synthetic.main.activity_login.*
 import ru.maxim.barybians.R
+import ru.maxim.barybians.databinding.ActivityLoginBinding
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.utils.isNotNullOrBlank
+import ru.maxim.barybians.utils.longToast
 
 class LoginActivity : MvpAppCompatActivity(), LoginView {
 
     @InjectPresenter
     lateinit var loginPresenter: LoginPresenter
+    private val binding by viewBinding(ActivityLoginBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(binding.root)
         supportActionBar?.hide()
-        loginBtn.setOnClickListener {
-            val login = loginLogin.text.toString()
-            val password = loginPassword.text.toString()
+        with(binding) {
+            loginBtn.setOnClickListener {
+                val login = loginLogin.text.toString()
+                val password = loginPassword.text.toString()
 
-            if (login.isBlank()) loginLoginLayout.error = getString(R.string.this_field_is_required)
-            else loginLoginLayout.error = null
+                loginMessage = if (login.isBlank()) getString(R.string.this_field_is_required) else null
 
-            if (password.isBlank()) loginPasswordLayout.error = getString(R.string.this_field_is_required)
-            else loginPasswordLayout.error = null
+                passwordMessage = if (password.isBlank()) getString(R.string.this_field_is_required) else null
 
-            login(login.trim(), password.trim())
-        }
+                login(login.trim(), password.trim())
+            }
 
-        loginLogin.doAfterTextChanged {
-            if (it.isNotNullOrBlank()) loginLoginLayout.error = null
-        }
-        loginPassword.doAfterTextChanged {
-            if (it.isNotNullOrBlank()) loginPasswordLayout.error = null
-        }
+            // Clear error messages when user starts editing field
+            loginLogin.doAfterTextChanged {
+                if (it.isNotNullOrBlank()) loginMessage = null
+            }
+            loginPassword.doAfterTextChanged {
+                if (it.isNotNullOrBlank()) passwordMessage = null
+            }
 
-        loginRegisterLink.setOnClickListener {
-            startActivity(Intent(this, RegistrationActivity::class.java))
+            loginRegisterLink.setOnClickListener {
+                startActivity(Intent(this@LoginActivity, RegistrationActivity::class.java))
+            }
         }
     }
 
@@ -51,24 +54,10 @@ class LoginActivity : MvpAppCompatActivity(), LoginView {
             loginPresenter.login(login, password)
     }
 
-    override fun showNoConnection() {
-        loginMessage.text = getString(R.string.no_connection)
-    }
+    override fun showError(messageRes: Int) = longToast(messageRes)
 
-    override fun showNetworkError() {
-        loginMessage.text = getString(R.string.network_error)
-    }
-
-    override fun showServerError() {
-        loginMessage.text = getString(R.string.server_error)
-    }
-
-    override fun showInvalidData() {
-        loginMessage.text = getString(R.string.invalid_login_or_password)
-    }
-
-    override fun showUnknownError() {
-        Toast.makeText(this, getString(R.string.unknown_error), Toast.LENGTH_SHORT).show()
+    override fun showInvalidDataError() {
+        binding.errorMessage = getString(R.string.invalid_login_or_password)
     }
 
     override fun openMainActivity() {
