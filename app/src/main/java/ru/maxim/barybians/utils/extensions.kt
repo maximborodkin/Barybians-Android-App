@@ -1,8 +1,20 @@
 package ru.maxim.barybians.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
+import android.widget.Toast.LENGTH_SHORT
+import androidx.annotation.DrawableRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import ru.maxim.barybians.R
 import java.lang.ref.WeakReference
 
 fun <T> weak(obj: T) = WeakReference(obj)
@@ -15,11 +27,52 @@ fun Any?.isNotNull() = !this.isNull()
 fun CharSequence?.isNotNullOrEmpty(): Boolean = !this.isNullOrEmpty()
 fun CharSequence?.isNotNullOrBlank(): Boolean = !this.isNullOrBlank()
 
-fun TextView.setDrawableStart(drawableResource: Int) = this.setCompoundDrawablesRelativeWithIntrinsicBounds(drawableResource, 0, 0, 0)
-fun TextView.setDrawableEnd(drawableResource: Int) = this.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, drawableResource, 0)
-fun TextView.clearDrawables() = this.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+fun TextView.setDrawableStart(drawableResource: Int) =
+    setCompoundDrawablesRelativeWithIntrinsicBounds(
+        AppCompatResources.getDrawable(context, drawableResource), //start
+        compoundDrawablesRelative[1],                              //top
+        compoundDrawablesRelative[2],                              //end
+        compoundDrawablesRelative[3]                               //bottom
+    )
 
-fun Context.toast(text: String) { Toast.makeText(this, text, Toast.LENGTH_SHORT).show() }
-fun Context.toast(resource: Int) { Toast.makeText(this, getString(resource), Toast.LENGTH_SHORT).show() }
-fun Context.longToast(text: String) { Toast.makeText(this, text, Toast.LENGTH_LONG).show() }
-fun Context.longToast(resource: Int) { Toast.makeText(this, getString(resource), Toast.LENGTH_LONG).show() }
+fun TextView.setDrawableEnd(drawableResource: Int) =
+    setCompoundDrawablesRelativeWithIntrinsicBounds(
+        this.compoundDrawablesRelative[0],                         //start
+        this.compoundDrawablesRelative[1],                         //top
+        AppCompatResources.getDrawable(context, drawableResource), //end
+        this.compoundDrawablesRelative[3]                          //bottom
+    )
+
+fun TextView.clearDrawables() =
+    setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+
+fun Context.toast(text: String) = Toast.makeText(this, text, LENGTH_SHORT).show()
+fun Context.toast(resource: Int) = toast(getString(resource))
+fun Context.longToast(text: String) = Toast.makeText(this, text, LENGTH_LONG).show()
+fun Context.longToast(resource: Int) = longToast(getString(resource))
+
+@SuppressLint("CheckResult")
+fun ImageView.load(url: String, @DrawableRes placeholder: Int? = null, thumbnail: String? = null) {
+    val requestBuilder = Glide.with(context).load(url)
+
+    when {
+        thumbnail.isNotNullOrBlank() -> requestBuilder.thumbnail(
+            Glide.with(context).load(thumbnail)
+        )
+        placeholder != null -> requestBuilder.placeholder(placeholder)
+        else -> {
+            requestBuilder.placeholder(CircularProgressDrawable(context).apply {
+                strokeWidth = 3F
+                centerRadius = 64F
+                start()
+            })
+        }
+    }
+
+    requestBuilder
+        .error(R.drawable.ic_broken_image)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .into(this)
+}
+
+fun MutableLiveData<String>.isEmpty() = value?.length ?: 0 == 0

@@ -1,5 +1,7 @@
 package ru.maxim.barybians.utils
 
+import android.widget.ImageView
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
@@ -16,4 +18,15 @@ fun setErrorText(view: TextInputLayout, @StringRes errorMessage: Int?) {
     } else {
         null
     }
+}
+
+@BindingAdapter(value = ["image", "placeholder", "thumbnail"], requireAll = false)
+fun loadImage(
+    imageView: ImageView,
+    image: String?,
+    @DrawableRes placeholder: Int?,
+    thumbnail: String?
+) {
+    if (image.isNullOrEmpty()) return
+    imageView.load(url = image, placeholder = placeholder, thumbnail = thumbnail)
 }

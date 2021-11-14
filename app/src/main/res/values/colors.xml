@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <!--  Global  -->
+    <color name="grey">#666666</color>
     <color name="black">#000000</color>
     <color name="black_transparent_80">#50000000</color>
     <color name="white">#FFFFFF</color>
@@ -11,7 +12,7 @@
     <color name="unread_message_circle_color">#516BFF</color>
     <color name="error_message_circle_color">#B51A1A</color>
     <color name="send_btn_enabled_color">#448AFF</color>
-    <color name="send_btn_disabled_color">#666666</color>
+    <color name="send_btn_disabled_color">@color/grey</color>
 
 <!--  Light Theme  -->
     <color name="light_colorPrimaryLight">#83B9FF</color>
@@ -23,7 +24,7 @@
     <color name="light_colorSecondaryDark">#B0003A</color>
     <color name="light_colorSecondaryText">#000000</color>
     <color name="light_recyclerBackgroundColor">#F2F3F7</color>
-    <color name="light_colorTertiaryText">#666666</color>
+    <color name="light_colorTertiaryText">@color/grey</color>
     <color name="light_incoming_message_background">#D1DBFF</color>
     <color name="light_outgoing_message_background">#E0E0E0</color>
 
@@ -37,8 +38,7 @@
     <color name="dark_colorSecondaryDark">#000a12</color>
     <color name="dark_colorSecondaryText">#FFFFFF</color>
     <color name="dark_recyclerBackgroundColor">#121212</color>
-    <color name="dark_colorTertiaryText">#666666</color>
-    <color name="grey">#666666</color>
+    <color name="dark_colorTertiaryText">@color/grey</color>
     <color name="light_grey">#E0E0E0</color>
     <color name="delete_swipe_background">#FF0000</color>
     <color name="dark_incoming_message_background">#383838</color>
