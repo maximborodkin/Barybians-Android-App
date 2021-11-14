@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.DatePicker
-import android.widget.Toast
 import androidx.activity.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -84,7 +83,7 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView,
     override fun showError(messageRes: Int) = toast(messageRes)
 
     override fun showUsernameExistsError() {
-        Toast.makeText(this, "This username already registered", Toast.LENGTH_SHORT).show()
+        binding.registrationLoginLayout.error = getText(R.string.login_already_exists)
     }
 
     override fun openMainActivity() {

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="56dp"
-        tools:showIn="@layout/activity_main" />
+        tools:layout="@layout/fragment_feed" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainNavigationBottom"

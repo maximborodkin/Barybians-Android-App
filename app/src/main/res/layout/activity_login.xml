@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.activity.auth.login.LoginActivity">
 
     <data>
         <variable
@@ -19,8 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/light_colorPrimary"
-        android:fillViewport="true"
-        tools:context=".ui.activity.auth.login.LoginActivity">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"

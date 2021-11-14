@@ -3,6 +3,7 @@ package ru.maxim.barybians.ui.activity.auth.registration
 import androidx.lifecycle.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.utils.isNotNull
+import ru.maxim.barybians.utils.isNull
 import java.util.*
 import java.util.Calendar.*
 
@@ -117,11 +118,11 @@ class RegistrationViewModel : ViewModel() {
     fun validateFields(): Boolean {
         isErrorsShown.postValue(true)
 
-        return firstNameMessage.value.isNotNull() &&
-                lastNameMessage.value.isNotNull() &&
-                birthDateMessage.value.isNotNull() &&
-                loginMessage.value.isNotNull() &&
-                passwordMessage.value.isNotNull() &&
-                repeatPasswordMessage.value.isNotNull()
+        return firstNameMessage.value.isNull() &&
+                lastNameMessage.value.isNull() &&
+                birthDateMessage.value.isNull() &&
+                loginMessage.value.isNull() &&
+                passwordMessage.value.isNull() &&
+                repeatPasswordMessage.value.isNull()
     }
 }

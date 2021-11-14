@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-<!--  Light Theme  -->
-    <style name="LightTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="LightTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/light_colorPrimary</item>
         <item name="colorPrimaryDark">@color/light_colorPrimaryDark</item>
         <item name="android:textColorPrimary">@color/light_colorPrimaryText</item>
@@ -24,6 +23,8 @@
         <item name="cardBackground">@color/white</item>
         <item name="incomingMessageBackgroundColor">@color/light_incoming_message_background</item>
         <item name="outgoingMessageBackgroundColor">@color/light_outgoing_message_background</item>
+
+
     </style>
 
     <style name="LightTheme.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">

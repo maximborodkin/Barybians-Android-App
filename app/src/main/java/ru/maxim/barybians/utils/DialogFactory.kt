@@ -2,6 +2,8 @@ package ru.maxim.barybians.utils
 
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -45,31 +47,33 @@ object DialogFactory {
         onStatusEdited: (status: String?) -> Unit,
         onStatusEditConfirmed: () -> Unit
     ) = MaterialAlertDialogBuilder(context).apply {
-            setTitle(context.getString(R.string.edit_status))
-            val container = FrameLayout(context)
-            val margin = dpToPx(context.resources, 16)
-            val containerLayoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { marginStart = margin; marginEnd = margin}
+        setTitle(context.getString(R.string.edit_status))
+        val container = FrameLayout(context)
+        val margin = dpToPx(context.resources, 16)
+        val containerLayoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply { marginStart = margin; marginEnd = margin }
 
 
-            val editText = EditText(context).apply {
-                setText(status)
-                hint = context.getString(R.string.new_status)
-                setSingleLine()
-                setHintTextColor(ContextCompat.getColor(context, R.color.dark_colorTertiaryText))
-                addTextChangedListener { onStatusEdited(text.toString()) }
-                layoutParams = containerLayoutParams
-            }
-            container.addView(editText)
-            if (container.parent == null) { setView(container) }
-                setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-                setPositiveButton(R.string.ok) { dialog, _ ->
-                    onStatusEditConfirmed()
-                    dialog.dismiss()
-                }
-        }.create()
+        val editText = EditText(context).apply {
+            setText(status)
+            hint = context.getString(R.string.new_status)
+            setSingleLine()
+            setHintTextColor(ContextCompat.getColor(context, R.color.dark_colorTertiaryText))
+            addTextChangedListener { onStatusEdited(text.toString()) }
+            layoutParams = containerLayoutParams
+        }
+        container.addView(editText)
+        if (container.parent == null) {
+            setView(container)
+        }
+        setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+        setPositiveButton(R.string.ok) { dialog, _ ->
+            onStatusEditConfirmed()
+            dialog.dismiss()
+        }
+    }.create()
 
     fun createPostMenu(
         title: String?,
@@ -202,19 +206,21 @@ object DialogFactory {
         }
     }
 
-    fun createCommentsListDialog(context: Context,
-                                 comments: ArrayList<CommentItem>,
-                                 htmlParser: HtmlParser,
-                                 onUserClick: (userId: Int) -> Unit,
-                                 onImageClick: (drawable: Drawable) -> Unit,
-                                 onCommentAdd: (text: String) -> Unit,
-                                 onCommentDelete: (commentPosition: Int, commentId: Int) -> Unit) =
+    fun createCommentsListDialog(
+        context: Context,
+        comments: ArrayList<CommentItem>,
+        htmlParser: HtmlParser,
+        onUserClick: (userId: Int) -> Unit,
+        onImageClick: (drawable: Drawable) -> Unit,
+        onCommentAdd: (text: String) -> Unit,
+        onCommentDelete: (commentPosition: Int, commentId: Int) -> Unit
+    ) =
         BottomSheetDialog(context).apply {
             setContentView(R.layout.fragment_comments_bottom_sheet)
             val commentsCount = comments.size
 
             commentsBottomSheetTitle.text = if (commentsCount == 0) {
-                 context.getString(R.string.no_comments_yet)
+                context.getString(R.string.no_comments_yet)
             } else {
                 context.resources.getQuantityString(
                     R.plurals.comment_plurals,
@@ -259,9 +265,11 @@ object DialogFactory {
                 setPositiveButton(R.string.yes) { _, _ ->
                     PreferencesManager.token = null
                     PreferencesManager.userId = 0
-                    val loginActivityIntent = Intent(context, LoginActivity::class.java)
-                    loginActivityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(loginActivityIntent)
+
+                    with(Intent(context, LoginActivity::class.java)) {
+                        flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(this)
+                    }
                 }
                 setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
             }.create()

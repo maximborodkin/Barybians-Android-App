@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,33 +14,36 @@
             android:id="@+id/commentsBottomSheetTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="6dp"
-            tools:text="3 comments"/>
+            android:textAlignment="center"
+            android:textSize="20sp"
+            tools:text="3 comments" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/commentsBottomSheetRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_comment" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="12dp"
+            android:baselineAligned="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/commentsBottomSheetEditor"
+                style="?commentInputStyle"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:focusableInTouchMode="true"
-                style="?commentInputStyle"
-                android:hint="@string/add_comment"
                 android:layout_weight="1"
-                android:maxLines="3"/>
+                android:focusableInTouchMode="true"
+                android:hint="@string/add_comment"
+                android:maxLines="3" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/commentsBottomSheetSend"

@@ -5,7 +5,6 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 
-
 abstract class BaseActivity : MvpAppCompatActivity() {
 
     private var theme = PreferencesManager.theme

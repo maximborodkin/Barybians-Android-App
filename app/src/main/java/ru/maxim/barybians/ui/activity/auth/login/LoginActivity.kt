@@ -28,9 +28,13 @@ class LoginActivity : MvpAppCompatActivity(), LoginView {
                 val login = loginLogin.text.toString()
                 val password = loginPassword.text.toString()
 
-                loginMessage = if (login.isBlank()) getString(R.string.this_field_is_required) else null
+                loginMessage =
+                    if (login.isBlank()) getString(R.string.this_field_is_required)
+                    else null
 
-                passwordMessage = if (password.isBlank()) getString(R.string.this_field_is_required) else null
+                passwordMessage =
+                    if (password.isBlank()) getString(R.string.this_field_is_required)
+                    else null
 
                 login(login.trim(), password.trim())
             }

@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="end"
+    android:layout_marginBottom="@dimen/space_between_messages"
     android:gravity="end"
-    android:layout_marginBottom="@dimen/space_between_messages">
+    android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/itemOutgoingMessageLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        tools:srcCompat="@drawable/unread_circle"/>
+        tools:srcCompat="@drawable/unread_circle" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/outgoing_message_background"
+        android:gravity="end"
         android:orientation="vertical"
         android:paddingStart="@dimen/message_padding"
         android:paddingTop="@dimen/message_padding"
         android:paddingEnd="@dimen/message_padding"
-        android:paddingBottom="2dp"
-        android:layout_marginStart="8dp"
-        android:gravity="end"
-        android:background="@drawable/outgoing_message_background">
+        android:paddingBottom="2dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/itemOutgoingMessageText"
+            style="?accentTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Outgoing message sample"
-            style="?accentTextStyle"/>
+            tools:text="Outgoing message sample" />
 
         <TextView
             android:id="@+id/itemOutgoingMessageTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="0:38"/>
+            tools:text="@tools:sample/date/hhmm" />
     </LinearLayout>
 </LinearLayout>
