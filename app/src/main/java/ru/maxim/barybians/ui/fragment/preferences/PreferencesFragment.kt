@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.activity.preferences
+package ru.maxim.barybians.ui.fragment.preferences
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope

@@ -9,14 +9,22 @@
         android:id="@+id/feedFragment"
         android:name="ru.maxim.barybians.ui.fragment.feed.FeedFragment"
         android:label="FeedFragment"
-        tools:layout="@layout/fragment_feed" />
+        tools:layout="@layout/fragment_feed" >
+        <argument
+            android:name="hasBottomNavigation"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/dialogsListFragment"
         android:name="ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment"
         android:label="DialogsListFragment"
         tools:layout="@layout/fragment_dialogs_list">
-
+        <argument
+            android:name="hasBottomNavigation"
+            app:argType="boolean"
+            android:defaultValue="true" />
     </fragment>
 
     <fragment
@@ -27,18 +35,24 @@
 
         <argument
             android:name="userId"
-            app:argType="integer" />
+            app:argType="integer"
+            android:defaultValue="0" />
 
         <action
             android:id="@+id/profileToSettings"
             app:destination="@id/settingsFragment"
             app:launchSingleTop="false"
-            app:popUpTo="@id/profileFragment" />
+            app:popUpTo="@id/profileFragment"
+            app:popUpToInclusive="false" />
+        <argument
+            android:name="hasBottomNavigation"
+            app:argType="boolean"
+            android:defaultValue="true" />
     </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="ru.maxim.barybians.ui.activity.preferences.PreferencesFragment"
+        android:name="ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment"
         android:label="SettingsFragment"
         tools:layout="@xml/fragment_preferences" />
 
@@ -55,10 +69,19 @@
 
     <action
         android:id="@+id/toProfile"
-        app:destination="@id/profileFragment"/>
+        app:destination="@id/profileFragment"
+        app:launchSingleTop="false">
+        <argument
+            android:name="userId"
+            android:defaultValue="0" />
+        <argument
+            android:name="hasBottomNavigation"
+            android:defaultValue="false" />
+    </action>
 
     <action
         android:id="@+id/toChat"
-        app:destination="@id/chatFragment"/>
+        app:destination="@id/chatFragment"
+        app:launchSingleTop="false" />
 
 </navigation>

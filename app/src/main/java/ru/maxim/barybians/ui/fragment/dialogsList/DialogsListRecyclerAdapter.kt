@@ -22,7 +22,7 @@ import ru.maxim.barybians.utils.DateFormatUtils
 
 class DialogsListRecyclerAdapter(
     private val chats: ArrayList<Chat>,
-    private val onDialogClick: (userId: Int, userAvatar: String?, userName: String) -> Unit
+    private val onDialogClick: (userId: Int) -> Unit
 ) : RecyclerView.Adapter<DialogViewHolder>() {
     private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
     private val dateFormatUtils: DateFormatUtils by inject(DateFormatUtils::class.java)
@@ -69,10 +69,6 @@ class DialogsListRecyclerAdapter(
         val messagePreviewText = lastMessageSpan.toString()
         holder.messageView.text = messagePreviewText
         holder.dateView.text = dateFormatUtils.getSimplifiedDate(dialog.lastMessage.time*1000)
-        holder.itemView.setOnClickListener { onDialogClick(
-            dialog.secondUser.id,
-            dialog.secondUser.getAvatarUrl(),
-            interlocutorName
-        ) }
+        holder.itemView.setOnClickListener { onDialogClick(dialog.secondUser.id,) }
     }
 }

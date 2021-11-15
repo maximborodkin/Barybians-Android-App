@@ -1,75 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.preferences.PreferencesActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <PreferenceCategory
-        app:title="@string/general"
-        app:iconSpaceReserved="false"/>
+        app:iconSpaceReserved="false"
+        app:title="@string/general" />
 
     <PreferenceCategory
-        app:title="@string/notifications"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/notifications">
 
         <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
             app:key="@string/enable_notifications_service_preference"
-            app:title="@string/enable_background_notifications_service"
             app:singleLineTitle="false"
             app:summary="@string/enable_notifications_service_summary"
-            app:defaultValue="true"
-            app:iconSpaceReserved="false"/>
+            app:title="@string/enable_background_notifications_service" />
 
         <MultiSelectListPreference
-            app:key="@string/notification_sound_effect_preference"
-            app:title="@string/notifications_sound_effects"
+            app:dependency="@string/enable_notifications_service_preference"
             app:entries="@array/notification_effects_entries"
             app:entryValues="@array/notification_effects_values"
             app:iconSpaceReserved="false"
-            app:dependency="@string/enable_notifications_service_preference"/>
+            app:key="@string/notification_sound_effect_preference"
+            app:title="@string/notifications_sound_effects" />
 
         <Preference
-            app:key="@string/clear_notifications_pool_preference"
-            app:title="@string/clear_notification_pool"
+            app:dependency="@string/enable_notifications_service_preference"
             app:iconSpaceReserved="false"
-            app:dependency="@string/enable_notifications_service_preference"/>
+            app:key="@string/clear_notifications_pool_preference"
+            app:title="@string/clear_notification_pool" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/theme"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/theme">
 
         <ListPreference
-            app:key="@string/theme_preference"
-            app:title="@string/theme"
             app:defaultValue="@string/theme_light"
             app:entries="@array/themes_entries"
             app:entryValues="@array/themes_values"
-            app:iconSpaceReserved="false"/>
+            app:iconSpaceReserved="false"
+            app:key="@string/theme_preference"
+            app:title="@string/theme"
+            tools:summary="Light" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/application"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/application">
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="@string/clear_cache_preference"
-            app:title="@string/clear_cache"
-            app:iconSpaceReserved="false"/>
+            app:title="@string/clear_cache" />
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="@string/logout_preference"
-            app:title="@string/logout"
-            app:iconSpaceReserved="false"/>
+            app:title="@string/logout" />
     </PreferenceCategory>
 
     <PreferenceCategory
-        app:title="@string/about"
-        app:iconSpaceReserved="false">
+        app:iconSpaceReserved="false"
+        app:title="@string/about">
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="@string/build_version_preference"
             app:title="@string/build_version"
-            app:iconSpaceReserved="false"
-            tools:summary="1.0.0"/>
+            tools:summary="1.0.0" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -36,7 +36,7 @@ class DialogsListFragment : MvpAppCompatFragment(), DialogsListView {
         dialogsListRefreshLayout.isRefreshing = false
         dialogsListRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = DialogsListRecyclerAdapter(dialogsList) { userId, userAvatar, userName ->
+            adapter = DialogsListRecyclerAdapter(dialogsList) { userId ->
                 findNavController().navigate(DialogsListFragmentDirections.toChat(userId))
             }
         }

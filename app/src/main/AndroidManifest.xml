@@ -59,7 +59,6 @@
         <activity android:name="ru.maxim.barybians.ui.activity.auth.login.LoginActivity" />
         <activity android:name="ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity"
             android:parentActivityName="ru.maxim.barybians.ui.activity.auth.login.LoginActivity"/>
-        <activity android:name="ru.maxim.barybians.ui.activity.preferences.PreferencesActivity" />
     </application>
 
 </manifest>
