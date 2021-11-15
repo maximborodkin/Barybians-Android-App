@@ -1,4 +1,4 @@
-package ru.maxim.barybians.model
+package ru.maxim.barybians.domain.model
 
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName

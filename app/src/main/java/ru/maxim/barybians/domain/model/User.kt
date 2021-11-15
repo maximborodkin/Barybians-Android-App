@@ -1,10 +1,10 @@
-package ru.maxim.barybians.model
+package ru.maxim.barybians.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.remote.RetrofitClient
+import ru.maxim.barybians.data.network.RetrofitClient
 
 @Entity
 data class User (
@@ -23,11 +23,13 @@ data class User (
     val posts: ArrayList<Post>
 ) {
     val fullName: String
-        get() = "$firstName $lastName"
+        get() = getFullName(firstName, lastName)
 
-    fun getAvatarUrl(loadFull: Boolean = false) =
-        if (photo != null) "${RetrofitClient.BASE_URL}/avatars${if (loadFull) "" else "/min"}/$photo"
-        else null
+    val avatarFull: String
+        get() = getAvatarFull(photo)
+
+    val avatarMin: String
+        get() = getAvatarMin(photo)
 
     fun getRole() = when(roleId) {
         Role.Administrator.roleId -> Role.Administrator
@@ -41,5 +43,11 @@ data class User (
         Barybian(2, R.string.barybian, R.drawable.ic_role_barybian),
         Verified(3, R.string.verified, R.drawable.ic_role_verified),
         Unverified(4, R.string.unverified, 0)
+    }
+
+    companion object {
+        fun getFullName(firstName: String, lastName: String) = "$firstName $lastName"
+        fun getAvatarFull(photoName: String?) = "${RetrofitClient.BASE_URL}/avatars/$photoName"
+        fun getAvatarMin(photoName: String?) = "${RetrofitClient.BASE_URL}/avatars/min/$photoName"
     }
 }

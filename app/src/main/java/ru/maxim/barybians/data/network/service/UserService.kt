@@ -1,9 +1,8 @@
-package ru.maxim.barybians.repository.remote.service
+package ru.maxim.barybians.data.network.service
 
 import retrofit2.Response
 import retrofit2.http.*
-import ru.maxim.barybians.model.User
-import ru.maxim.barybians.repository.remote.RetrofitClient
+import ru.maxim.barybians.domain.model.User
 
 interface UserService {
 

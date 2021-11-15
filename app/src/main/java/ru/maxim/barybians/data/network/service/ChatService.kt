@@ -1,13 +1,12 @@
-package ru.maxim.barybians.repository.remote.service
+package ru.maxim.barybians.data.network.service
 
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.*
-import ru.maxim.barybians.model.Chat
-import ru.maxim.barybians.model.StickerPack
-import ru.maxim.barybians.model.response.ChatResponse
-import ru.maxim.barybians.model.response.SendMessageResponse
-import ru.maxim.barybians.repository.remote.RetrofitClient
+import ru.maxim.barybians.domain.model.Chat
+import ru.maxim.barybians.domain.model.StickerPack
+import ru.maxim.barybians.data.network.response.ChatResponse
+import ru.maxim.barybians.data.network.response.SendMessageResponse
 
 interface ChatService {
 

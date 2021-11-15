@@ -1,12 +1,12 @@
-package ru.maxim.barybians.repository.remote.service
+package ru.maxim.barybians.data.network.service
 
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
-import ru.maxim.barybians.model.response.AuthResponse
-import ru.maxim.barybians.repository.remote.RetrofitClient
+import ru.maxim.barybians.data.network.response.AuthResponse
+import ru.maxim.barybians.data.network.response.RegistrationResponse
 
 interface AuthService {
 
@@ -19,8 +19,8 @@ interface AuthService {
     suspend fun register(@Field("firstName") firstName: String,
                          @Field("lastName") lastName: String,
                          @Field("birthDate") birthDate: String,
-                         @Field("sex") sex: Int,
+                         @Field("sex") sex: Boolean,
                          @Field("photo") photo: String,
                          @Field("username") username: String,
-                         @Field("password") password: String): Response<JsonObject>
+                         @Field("password") password: String): Response<RegistrationResponse>
 }

@@ -1,4 +1,4 @@
-package ru.maxim.barybians.repository.local
+package ru.maxim.barybians.data.persistence
 
 import android.content.Context
 import android.content.SharedPreferences

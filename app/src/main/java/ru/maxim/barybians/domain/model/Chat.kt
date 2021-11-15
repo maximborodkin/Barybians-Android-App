@@ -1,4 +1,4 @@
-package ru.maxim.barybians.model
+package ru.maxim.barybians.domain.model
 
 data class Chat (
     val secondUser: User,

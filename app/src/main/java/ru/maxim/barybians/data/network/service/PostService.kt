@@ -1,10 +1,9 @@
-package ru.maxim.barybians.repository.remote.service
+package ru.maxim.barybians.data.network.service
 
 import retrofit2.Response
 import retrofit2.http.*
-import ru.maxim.barybians.model.Post
-import ru.maxim.barybians.model.response.LikeResponse
-import ru.maxim.barybians.repository.remote.RetrofitClient
+import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.data.network.response.LikeResponse
 
 interface PostService {
 
