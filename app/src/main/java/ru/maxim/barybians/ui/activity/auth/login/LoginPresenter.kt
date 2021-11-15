@@ -2,52 +2,42 @@ package ru.maxim.barybians.ui.activity.auth.login
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.*
 import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.component.KoinComponent
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.AuthService
-import java.net.HttpURLConnection.*
+import ru.maxim.barybians.data.network.exception.InvalidCredentialsException
+import ru.maxim.barybians.data.network.exception.ServerErrorException
+import ru.maxim.barybians.data.network.exception.TimeoutException
+import ru.maxim.barybians.data.repository.AuthRepository
+import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
-class LoginPresenter : MvpPresenter<LoginView>(), CoroutineScope by MainScope() {
+class LoginPresenter : MvpPresenter<LoginView>(), CoroutineScope, KoinComponent {
+    private val authRepository: AuthRepository by inject(AuthRepository::class.java)
 
-    private val authService: AuthService by inject(AuthService::class.java)
-    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
-    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
+    private val job = Job()
+    override val coroutineContext: CoroutineContext = job + Dispatchers.Main
 
     fun login(login: String, password: String) {
-        if (!retrofitClient.isOnline()){
-            viewState.showError(R.string.no_connection)
-            return
-        }
+
         launch {
-            val response = authService.auth(login, password)
-            CoroutineScope(Dispatchers.Main).launch {
-                val responseBody = response.body()
-                if (response.isSuccessful && responseBody != null) {
-                    with(preferencesManager) {
-                        token = responseBody.token
-                        userId = responseBody.user.id
-                        userName = "${responseBody.user.firstName} ${responseBody.user.lastName}"
-                        userAvatar = "${RetrofitClient.BASE_URL}/avatars/${responseBody.user.photo}"
-                    }
-                    viewState.openMainActivity()
-                } else {
-                    when (response.code()) {
-                        HTTP_FORBIDDEN -> viewState.showError(R.string.forbidden_error)
-                        HTTP_INTERNAL_ERROR -> viewState.showError(R.string.server_error)
-                        HTTP_CLIENT_TIMEOUT, HTTP_GATEWAY_TIMEOUT ->
-                            viewState.showError(R.string.request_timeout)
-                        else -> viewState.showError(R.string.common_network_error)
-                    }
+            try {
+                authRepository.authenticate(login, password)
+                viewState.openMainActivity()
+            } catch (e: Exception) {
+                when(e) {
+                    is InvalidCredentialsException -> viewState.showInvalidCredentialsError()
+                    is TimeoutException -> viewState.showError(R.string.request_timeout)
+                    is ServerErrorException -> viewState.showError(R.string.server_error)
+                    else -> viewState.showError(R.string.common_network_error)
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel("Presenter calls onDestroy")
     }
 }

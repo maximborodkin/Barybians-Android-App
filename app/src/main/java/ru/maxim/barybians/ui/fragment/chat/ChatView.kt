@@ -1,8 +1,8 @@
 package ru.maxim.barybians.ui.fragment.chat
 
 import com.arellomobile.mvp.MvpView
-import ru.maxim.barybians.model.Message
-import ru.maxim.barybians.model.User
+import ru.maxim.barybians.domain.model.Message
+import ru.maxim.barybians.domain.model.User
 
 interface ChatView : MvpView {
 

@@ -17,10 +17,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentProfileBinding
-import ru.maxim.barybians.model.Post
-import ru.maxim.barybians.model.User
-import ru.maxim.barybians.model.response.CommentResponse
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.data.network.response.CommentResponse
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.*
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
@@ -111,31 +111,31 @@ class ProfileFragment :
 
         profileItems.add(
             HeaderItem(
-                user.id,
-                isPersonal,
-                user.getAvatarUrl(),
-                user.getAvatarUrl(loadFull = true),
-                "${user.firstName} ${user.lastName}",
-                user.getRole().iconResource,
-                user.getRole().stringResource,
-                user.birthDate,
-                user.status
+                userId = user.id,
+                isPersonal = isPersonal,
+                avatarSmall = user.avatarMin,
+                avatarFull = user.avatarFull,
+                name = user.fullName,
+                roleDrawable = user.getRole().iconResource,
+                roleDescription = user.getRole().stringResource,
+                birthDate = user.birthDate,
+                status = user.status
             )
         )
 
-        if (isPersonal) profileItems.add(PostCreatorItem(user.getAvatarUrl(), isExpanded = false))
+        if (isPersonal) profileItems.add(PostCreatorItem(user.avatarMin, isExpanded = false))
 
         for (post in user.posts) {
             val likes = ArrayList<UserItem>()
             likes.addAll(post.likedUsers.map {
-                UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
+                UserItem(it.id, "${it.firstName} ${it.lastName}", it.avatarMin)
             })
             val comments: ArrayList<CommentItem> = ArrayList()
             comments.addAll(post.comments.map { comment ->
                 val author = UserItem(
                     comment.author.id,
                     "${comment.author.firstName} ${comment.author.lastName}",
-                    comment.author.getAvatarUrl()
+                    comment.author.avatarMin
                 )
                 val date = dateFormatUtils.getSimplifiedDate(comment.date * 1000)
                 CommentItem(comment.id, comment.text, date, author)
@@ -144,16 +144,16 @@ class ProfileFragment :
             val date = dateFormatUtils.getSimplifiedDate(post.date * 1000)
             profileItems.add(
                 PostItem(
-                    post.id,
-                    isPersonal,
-                    user.id,
-                    user.getAvatarUrl(),
-                    "${user.firstName} ${user.lastName}",
-                    date,
-                    post.title,
-                    post.text,
-                    likes,
-                    comments
+                    postId = post.id,
+                    isPersonal = isPersonal,
+                    authorId = user.id,
+                    avatar = user.avatarMin,
+                    name = user.fullName,
+                    date = date,
+                    title = post.title,
+                    text = post.text,
+                    likes = likes,
+                    comments = comments
                 )
             )
 
@@ -166,9 +166,9 @@ class ProfileFragment :
 
         binding.profileRecyclerView.adapter =
             ProfileRecyclerAdapter(
-                profileItems,
-                this@ProfileFragment,
-                this@ProfileFragment
+                feedItems = profileItems,
+                profileItemsListener = this@ProfileFragment,
+                lifecycleOwner = this@ProfileFragment
             )
                 .also { it.setHasStableIds(true) }
 
@@ -200,7 +200,7 @@ class ProfileFragment :
                 post.id,
                 true,
                 preferencesManager.userId,
-                preferencesManager.userAvatar,
+                User.getAvatarMin(preferencesManager.userAvatar),
                 preferencesManager.userName,
                 date,
                 post.title,
@@ -248,7 +248,7 @@ class ProfileFragment :
         val author = UserItem(
             preferencesManager.userId,
             preferencesManager.userName,
-            preferencesManager.userAvatar
+            User.getAvatarMin(preferencesManager.userAvatar)
         )
         val date = dateFormatUtils.getSimplifiedDate(comment.date * 1000)
         val commentItem = CommentItem(comment.id, comment.text, date, author)
@@ -296,7 +296,7 @@ class ProfileFragment :
         val likesList = (profileItems[postPosition] as? PostItem)?.likes
         likesList?.clear()
         likedUsers.forEach {
-            likesList?.add(UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl()))
+            likesList?.add(UserItem(it.id, "${it.firstName} ${it.lastName}", it.avatarMin))
         }
         val postItemViewHolder =
             binding.profileRecyclerView.findViewHolderForAdapterPosition(postPosition)

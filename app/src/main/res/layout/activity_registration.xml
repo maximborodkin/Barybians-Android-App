@@ -123,7 +123,7 @@
                     android:id="@+id/registrationMaleBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@{viewModel.sex ? @drawable/ic_male_selected : @drawable/ic_male_unselected}"
+                    android:src="@{viewModel.sex ? @drawable/ic_male_unselected : @drawable/ic_male_selected}"
                     tools:src="@drawable/ic_male_selected" />
 
                 <Space
@@ -135,7 +135,7 @@
                     android:id="@+id/registrationFemaleBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@{viewModel.sex ? @drawable/ic_female_unselected : @drawable/ic_female_selected}"
+                    android:src="@{viewModel.sex ? @drawable/ic_female_selected : @drawable/ic_female_lected}"
                     tools:src="@drawable/ic_female_unselected" />
             </LinearLayout>
 

@@ -1,9 +1,9 @@
 package ru.maxim.barybians.ui.fragment.base
 
 import com.arellomobile.mvp.MvpView
-import ru.maxim.barybians.model.Post
-import ru.maxim.barybians.model.User
-import ru.maxim.barybians.model.response.CommentResponse
+import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.data.network.response.CommentResponse
 
 interface BaseWallView : MvpView{
 

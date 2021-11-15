@@ -14,9 +14,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentChatBinding
-import ru.maxim.barybians.model.Message
-import ru.maxim.barybians.model.User
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.domain.model.Message
+import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.chat.ChatRecyclerAdapter.OutgoingMessageViewHolder
 import ru.maxim.barybians.ui.fragment.chat.OutgoingMessage.MessageStatus.*
 import ru.maxim.barybians.ui.fragment.stickerPicker.StickersPickerDialog
@@ -81,7 +81,7 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
         with(binding) {
             chatLoading.visibility = GONE
             chatToolbarUser.userName = interlocutor.fullName
-            chatToolbarUser.userAvatar = interlocutor.getAvatarUrl(loadFull = false)
+            chatToolbarUser.userAvatar = interlocutor.avatarMin
         }
         val currentUserId = preferencesManager.userId
         messageItems.clear()

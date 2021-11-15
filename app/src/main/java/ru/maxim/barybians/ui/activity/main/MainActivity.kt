@@ -11,7 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.ActivityMainBinding
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 
 class MainActivity : AppCompatActivity() {

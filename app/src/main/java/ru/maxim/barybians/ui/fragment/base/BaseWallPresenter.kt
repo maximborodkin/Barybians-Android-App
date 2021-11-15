@@ -2,16 +2,15 @@ package ru.maxim.barybians.ui.fragment.base
 
 import com.arellomobile.mvp.MvpPresenter
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
-import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.CommentService
-import ru.maxim.barybians.repository.remote.service.PostService
-import ru.maxim.barybians.repository.remote.service.UserService
+import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.service.CommentService
+import ru.maxim.barybians.data.network.service.PostService
+import ru.maxim.barybians.data.network.service.UserService
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 
 open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineScope by MainScope() {

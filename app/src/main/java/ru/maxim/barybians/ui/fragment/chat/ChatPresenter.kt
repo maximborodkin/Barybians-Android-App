@@ -7,9 +7,9 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Response
-import ru.maxim.barybians.model.response.ChatResponse
-import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.ChatService
+import ru.maxim.barybians.data.network.response.ChatResponse
+import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.utils.isNotNull
 
 @InjectViewState

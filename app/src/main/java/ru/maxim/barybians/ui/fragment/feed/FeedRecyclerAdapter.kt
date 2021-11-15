@@ -22,10 +22,9 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.item_post_creator.view.*
 import kotlinx.android.synthetic.main.item_profile_header.view.*
-import org.koin.android.ext.android.inject
 import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.*
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.DialogFactory

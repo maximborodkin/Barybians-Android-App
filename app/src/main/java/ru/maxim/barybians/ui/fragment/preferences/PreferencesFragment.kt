@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.service.Actions
 import ru.maxim.barybians.service.ServiceState
 import ru.maxim.barybians.utils.DialogFactory

@@ -2,8 +2,8 @@ package ru.maxim.barybians.di
 
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.repository.remote.RetrofitClient
+import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.network.RetrofitClient
 
 val persistenceModule = module {
 

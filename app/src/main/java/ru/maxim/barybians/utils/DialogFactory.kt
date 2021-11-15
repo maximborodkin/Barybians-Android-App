@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_post_editor.view.*
 import kotlinx.android.synthetic.main.fragment_post_menu_bottom_sheet.*
 import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem

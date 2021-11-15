@@ -19,7 +19,7 @@ class RegistrationViewModel : ViewModel() {
         // Format for dates given by API
         "${calendar.get(YEAR)}-${calendar.get(MONTH)}-${calendar.get(DAY_OF_MONTH)}"
     }
-    val sex = MutableLiveData(true) // true == male, false == female
+    val sex = MutableLiveData(true) // true == female, false == male
     val login = MutableLiveData<String>()
     val password = MutableLiveData<String>()
     val repeatPassword = MutableLiveData<String>()

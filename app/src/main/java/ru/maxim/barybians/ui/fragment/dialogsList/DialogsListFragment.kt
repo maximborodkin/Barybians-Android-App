@@ -12,7 +12,7 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.fragment_dialogs_list.*
 import ru.maxim.barybians.R
-import ru.maxim.barybians.model.Chat
+import ru.maxim.barybians.domain.model.Chat
 import ru.maxim.barybians.utils.toast
 
 class DialogsListFragment : MvpAppCompatFragment(), DialogsListView {

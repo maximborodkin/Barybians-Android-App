@@ -5,12 +5,11 @@ import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.AuthService
+import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.service.AuthService
 import java.net.HttpURLConnection.*
 
 @InjectViewState
@@ -32,7 +31,7 @@ class RegistrationPresenter : MvpPresenter<RegistrationView>(), CoroutineScope b
         launch {
             val response = authService.register(
                 firstName, lastName, birthDate,
-                if (sex) 0 else 1, defaultAvatarUrl, login, password
+                sex, defaultAvatarUrl, login, password
             )
             if (response.isSuccessful && response.body() != null) {
                 if (response.body()?.has("message") == true && response.body()

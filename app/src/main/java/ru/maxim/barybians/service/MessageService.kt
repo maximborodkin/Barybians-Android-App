@@ -13,9 +13,9 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.model.response.MessageNotificationResponse
-import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.repository.remote.service.ChatService
+import ru.maxim.barybians.data.network.response.MessageNotificationResponse
+import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.utils.isNotNull
 import java.util.*
@@ -167,7 +167,7 @@ class MessageService : Service() {
         val dialogIntent = Intent(this, ChatFragment::class.java).apply {
             putExtra("userId", interlocutor.id)
             putExtra("userName", interlocutorName)
-            putExtra("userAvatar", interlocutor.getAvatarUrl())
+            putExtra("userAvatar", interlocutor.avatarMin)
         }
         val pendingIntent = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(dialogIntent)

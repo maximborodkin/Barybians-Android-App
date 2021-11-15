@@ -5,6 +5,6 @@ import com.arellomobile.mvp.MvpView
 
 interface LoginView : MvpView {
     fun showError(@StringRes messageRes: Int)
-    fun showInvalidDataError()
+    fun showInvalidCredentialsError()
     fun openMainActivity()
 }

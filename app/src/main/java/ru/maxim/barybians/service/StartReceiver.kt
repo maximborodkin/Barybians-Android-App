@@ -3,8 +3,6 @@ package ru.maxim.barybians.service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import ru.maxim.barybians.repository.local.PreferencesManager
 
 class StartReceiver : BroadcastReceiver() {
 

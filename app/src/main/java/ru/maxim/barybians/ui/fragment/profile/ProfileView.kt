@@ -1,7 +1,7 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-import ru.maxim.barybians.model.Post
-import ru.maxim.barybians.model.User
+import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.fragment.base.BaseWallView
 
 interface ProfileView : BaseWallView {

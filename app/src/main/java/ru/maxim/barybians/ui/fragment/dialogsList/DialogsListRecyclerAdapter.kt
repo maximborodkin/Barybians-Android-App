@@ -14,8 +14,8 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_dialog.view.*
 import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.model.Chat
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.domain.model.Chat
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListRecyclerAdapter.DialogViewHolder
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.DateFormatUtils
@@ -42,7 +42,7 @@ class DialogsListRecyclerAdapter(
     override fun onBindViewHolder(holder: DialogViewHolder, position: Int) {
         val context = holder.itemView.context
         val dialog = chats[position]
-        Glide.with(context).load(dialog.secondUser.getAvatarUrl()).into(holder.avatarView)
+        Glide.with(context).load(dialog.secondUser.avatarMin).into(holder.avatarView)
         val interlocutorName = "${dialog.secondUser.firstName} ${dialog.secondUser.lastName}"
         holder.nameView.text = interlocutorName
         val lastMessageSpan =  SpannableStringBuilder()

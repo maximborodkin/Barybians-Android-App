@@ -16,10 +16,9 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_comment.view.*
 import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.view.AvatarView
-import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.weak
 

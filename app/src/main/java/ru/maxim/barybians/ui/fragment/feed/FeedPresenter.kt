@@ -3,7 +3,7 @@ package ru.maxim.barybians.ui.fragment.feed
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
-import ru.maxim.barybians.repository.remote.RetrofitClient
+import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.ui.fragment.base.BaseWallPresenter
 
 @InjectViewState

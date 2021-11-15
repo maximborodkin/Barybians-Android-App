@@ -17,8 +17,8 @@ import kotlinx.android.synthetic.main.fragment_stickers_picker.*
 import kotlinx.coroutines.*
 import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.ChatService
+import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.utils.toast
 
 

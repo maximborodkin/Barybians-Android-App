@@ -1,6 +1,5 @@
 package ru.maxim.barybians.ui.fragment.feed
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,12 +16,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_feed.*
 import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent
 import ru.maxim.barybians.R
-import ru.maxim.barybians.model.Post
-import ru.maxim.barybians.model.User
-import ru.maxim.barybians.model.response.CommentResponse
-import ru.maxim.barybians.repository.local.PreferencesManager
+import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.data.network.response.CommentResponse
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
 import ru.maxim.barybians.ui.fragment.base.PostItem
@@ -68,14 +66,14 @@ class FeedFragment :
             val user = post.author
             val likes = ArrayList<UserItem>()
             likes.addAll(post.likedUsers.map {
-                UserItem(it.id, "${it.firstName} ${it.lastName}", it.getAvatarUrl())
+                UserItem(it.id, "${it.firstName} ${it.lastName}", it.avatarMin)
             })
             val comments = ArrayList<CommentItem>()
             comments.addAll(post.comments.map { comment ->
                 val author = UserItem(
                     comment.author.id,
                     "${comment.author.firstName} ${comment.author.lastName}",
-                    comment.author.getAvatarUrl()
+                    comment.author.avatarMin
                 )
                 val date =
                     dateFormatUtils.getSimplifiedDate(comment.date*1000)
@@ -88,7 +86,7 @@ class FeedFragment :
                     post.id,
                     user?.id == preferencesManager.userId,
                     user?.id?:preferencesManager.userId,
-                    user?.getAvatarUrl(),
+                    user?.avatarMin,
                     "${user?.firstName} ${user?.lastName}",
                     date,
                     post.title,
@@ -158,7 +156,7 @@ class FeedFragment :
         val author = UserItem(
             preferencesManager.userId,
             preferencesManager.userName,
-            preferencesManager.userAvatar
+            User.getAvatarMin(preferencesManager.userAvatar)
         )
         val date = dateFormatUtils.getSimplifiedDate(comment.date * 1000)
         val commentItem = CommentItem(comment.id, comment.text, date, author)
@@ -208,7 +206,7 @@ class FeedFragment :
                 UserItem(
                     it.id,
                     "${it.firstName} ${it.lastName}",
-                    it.getAvatarUrl()
+                    it.avatarMin
                 )
             )
         }

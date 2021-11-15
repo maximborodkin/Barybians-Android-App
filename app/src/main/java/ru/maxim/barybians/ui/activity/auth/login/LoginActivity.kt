@@ -60,7 +60,7 @@ class LoginActivity : MvpAppCompatActivity(), LoginView {
 
     override fun showError(messageRes: Int) = longToast(messageRes)
 
-    override fun showInvalidDataError() {
+    override fun showInvalidCredentialsError() {
         binding.errorMessage = getString(R.string.invalid_login_or_password)
     }
 

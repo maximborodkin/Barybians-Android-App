@@ -6,9 +6,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
-import ru.maxim.barybians.model.Chat
-import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.ChatService
+import ru.maxim.barybians.domain.model.Chat
+import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.service.ChatService
 
 @InjectViewState
 class DialogsListPresenter : MvpPresenter<DialogsListView>(), CoroutineScope by MainScope() {
