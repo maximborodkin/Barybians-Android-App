@@ -1,11 +1,12 @@
-package ru.maxim.barybians.ui.activity.dialog
+package ru.maxim.barybians.ui.fragment.chat
 
 import com.arellomobile.mvp.MvpView
 import ru.maxim.barybians.model.Message
+import ru.maxim.barybians.model.User
 
-interface DialogView : MvpView {
+interface ChatView : MvpView {
 
-    fun showMessages(messages: ArrayList<Message>)
+    fun showMessages(messages: ArrayList<Message>, interlocutor: User)
     fun onLoadingMessagesError()
     fun showNoInternet()
     fun onMessageSent(text: String, messageId: Long)

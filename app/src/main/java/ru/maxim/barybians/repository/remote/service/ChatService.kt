@@ -3,29 +3,29 @@ package ru.maxim.barybians.repository.remote.service
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.*
-import ru.maxim.barybians.model.Dialog
+import ru.maxim.barybians.model.Chat
 import ru.maxim.barybians.model.StickerPack
-import ru.maxim.barybians.model.response.DialogResponse
+import ru.maxim.barybians.model.response.ChatResponse
 import ru.maxim.barybians.model.response.SendMessageResponse
 import ru.maxim.barybians.repository.remote.RetrofitClient
 
-interface DialogService {
+interface ChatService {
 
     /**
-     * Method for getting list of dialogs.
+     * Method for getting list of chats.
      * @return list of ...
      **/
     @GET("/api/dialogs")
-    suspend fun getDialogsList(): Response<ArrayList<Dialog>>
+    suspend fun getChatsList(): Response<ArrayList<Chat>>
 
     /**
-     * Method for getting all messages in dialog between current user and interlocutor
+     * Method for getting all messages in chat between current user and interlocutor
      * specified by [userId].
      * @param userId is id of interlocutor. @see [ru.maxim.barybians.model.User.id].
-     * @return [DialogResponse] object.
+     * @return [ChatResponse] object.
      **/
     @GET("/api/dialogs/{userId}")
-    suspend fun getMessages(@Path("userId") userId: Int): Response<DialogResponse>
+    suspend fun getMessages(@Path("userId") userId: Int): Response<ChatResponse>
 
     /**
      * Method for sending a message to interlocutor specified by [userId].
@@ -46,30 +46,25 @@ interface DialogService {
 
     /**
      * Method for observing new messages from certain by [interlocutorId] user.
-     * Used in [ru.maxim.barybians.ui.activity.dialog.DialogPresenter].
+     * Used in [ru.maxim.barybians.ui.fragment.chat.ChatPresenter].
      * Working by longpolling algorithm.
      * @param interlocutorId is id of interlocutor. @see [ru.maxim.barybians.model.User.id].
      * @param lastMessageId is id of last received message from any interlocutor.
-     * @return [DialogResponse] or throws [java.util.concurrent.TimeoutException]
+     * @return [ChatResponse] or throws [java.util.concurrent.TimeoutException]
      * if no new messages in 50 seconds.
      **/
     @GET("/api/v2/longpoll/messages/{interlocutorId}")
     suspend fun observeMessagesForUser(@Path("interlocutorId") interlocutorId: Int,
-                                       @Query("last") lastMessageId: Int): Response<DialogResponse>
+                                       @Query("last") lastMessageId: Int): Response<ChatResponse>
 
     /**
      * Method for observing new messages from all interlocutors for notify user by
      * status bar notification. @see [androidx.core.app.NotificationCompat].
      * Working by longpolling algorithm.
      * @param lastMessageId is id of last received message from any interlocutor.
-     * @return [DialogResponse] or throws [java.util.concurrent.TimeoutException]
+     * @return [ChatResponse] or throws [java.util.concurrent.TimeoutException]
      * if no new messages in 50 seconds.
      **/
     @GET("/api/messages/lastMessage={lastMessageId}")
     suspend fun observeNewMessages(@Path("lastMessageId") lastMessageId: Int): Response<JsonObject>
-
-    companion object {
-        operator fun invoke(): DialogService =
-            RetrofitClient.instance.create(DialogService::class.java)
-    }
 }

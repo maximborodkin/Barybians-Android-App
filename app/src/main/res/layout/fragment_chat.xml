@@ -17,11 +17,11 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/dialogToolbar"
+            android:id="@+id/chatToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:layout_constraintBottom_toTopOf="@id/dialogRecyclerView"
+            app:layout_constraintBottom_toTopOf="@id/chatRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,33 +29,33 @@
             tools:layout="@layout/toolbar_user">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/dialogBackBtn"
+                android:id="@+id/chatBackBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:padding="12dp"
                 android:src="@drawable/ic_arrow_back_white"
-                android:tint="@color/grey" />
+                android:tint="@color/grey"
+                android:padding="12dp" />
 
             <include
-                android:id="@+id/dialogToolbarUser"
+                android:id="@+id/chatToolbarUser"
                 layout="@layout/toolbar_user" />
         </com.google.android.material.appbar.MaterialToolbar>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dialogRecyclerView"
+            android:id="@+id/chatRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:paddingHorizontal="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/dialogMessageInput"
+            app:layout_constraintBottom_toTopOf="@id/chatMessageInput"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dialogToolbar"
+            app:layout_constraintTop_toBottomOf="@id/chatToolbar"
             tools:itemCount="20"
             tools:listitem="@layout/item_incoming_message" />
 
         <ProgressBar
-            android:id="@+id/dialogLoading"
+            android:id="@+id/chatLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
@@ -65,17 +65,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/dialogMessageEmojiBtn"
+            android:id="@+id/chatMessageEmojiBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/dialogMessageInput"
+            app:layout_constraintEnd_toStartOf="@id/chatMessageInput"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_emoji" />
 
         <EditText
-            android:id="@+id/dialogMessageInput"
+            android:id="@+id/chatMessageInput"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:autofillHints="none"
@@ -84,11 +84,11 @@
             android:text="@={messageText}"
             android:textColorHint="@color/grey"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/dialogMessageSendBtn"
-            app:layout_constraintStart_toEndOf="@id/dialogMessageEmojiBtn" />
+            app:layout_constraintEnd_toStartOf="@id/chatMessageSendBtn"
+            app:layout_constraintStart_toEndOf="@id/chatMessageEmojiBtn" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/dialogMessageSendBtn"
+            android:id="@+id/chatMessageSendBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="8dp"
@@ -96,7 +96,7 @@
             android:tint="@{ExtensionsKt.isEmpty(messageText) ? @color/grey : @color/send_btn_enabled_color}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/dialogMessageInput" />
+            app:layout_constraintStart_toEndOf="@id/chatMessageInput" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

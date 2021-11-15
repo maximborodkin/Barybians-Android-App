@@ -1,7 +1,6 @@
-package ru.maxim.barybians.ui.activity.dialog
+package ru.maxim.barybians.ui.fragment.chat
 
 import android.graphics.drawable.Animatable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_incoming_message.view.*
 import kotlinx.android.synthetic.main.item_outgoing_message.view.*
 import ru.maxim.barybians.R
-import ru.maxim.barybians.ui.activity.dialog.OutgoingMessage.MessageStatus.*
+import ru.maxim.barybians.ui.fragment.chat.OutgoingMessage.MessageStatus.*
 
-class DialogRecyclerAdapter(
+class ChatRecyclerAdapter(
     private val messages: ArrayList<MessageItem>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -49,7 +48,6 @@ class DialogRecyclerAdapter(
     override fun getItemId(position: Int) = messages[position].viewId
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        Log.d("DialogRecyclerAdapter", "Creating viewHolder for ${if(viewType==MessageType.IncomingMessage.viewType){"incoming"}else{"outgoing"}} message")
         return when(viewType) {
             MessageType.IncomingMessage.viewType -> IncomingMessageViewHolder(
                 LayoutInflater
@@ -67,7 +65,6 @@ class DialogRecyclerAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
-        Log.d("DialogRecyclerAdapter", "Binding viewHolder for ${if(getItemViewType(position)==MessageType.IncomingMessage.viewType){"incoming"}else{"outgoing"}} message with messageType:${message.getType()}, messageId: ${message.viewId}, text: ${message.text}")
         when(getItemViewType(position)) {
             MessageType.IncomingMessage.viewType -> {
                 val incomingMessage = message as? IncomingMessage

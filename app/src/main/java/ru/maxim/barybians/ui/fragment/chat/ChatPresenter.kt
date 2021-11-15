@@ -1,38 +1,43 @@
-package ru.maxim.barybians.ui.activity.dialog
+package ru.maxim.barybians.ui.fragment.chat
 
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import org.koin.java.KoinJavaComponent.inject
 import retrofit2.Response
-import ru.maxim.barybians.model.response.DialogResponse
+import ru.maxim.barybians.model.response.ChatResponse
 import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.DialogService
+import ru.maxim.barybians.repository.remote.service.ChatService
 import ru.maxim.barybians.utils.isNotNull
 
 @InjectViewState
-class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope() {
+class ChatPresenter : MvpPresenter<ChatView>(), CoroutineScope by MainScope() {
 
-    private val dialogService = DialogService()
+    private val dialogService: ChatService by inject(ChatService::class.java)
+    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
     private var lastMessageId = 0
     private val pollingTimeout = 50000L
     private val pollingFrequency = 100L
-    private val pollingChannel = Channel<Deferred<Response<DialogResponse>>>()
+    private val pollingChannel = Channel<Deferred<Response<ChatResponse>>>()
 
     fun loadMessages(userId: Int) {
-        if (!RetrofitClient.isOnline()) {
+        if (!retrofitClient.isOnline()) {
             return viewState.showNoInternet()
         }
         launch {
             try {
                 val loadMessagesResponse = dialogService.getMessages(userId)
-                if (loadMessagesResponse.isSuccessful && loadMessagesResponse.body().isNotNull()) {
-                    val messages = loadMessagesResponse.body()!!.messages
-                    lastMessageId = messages.last().id
-                    viewState.showMessages(messages)
-                } else {
-                    viewState.onLoadingMessagesError()
+                loadMessagesResponse.body()?.apply {
+                    if (loadMessagesResponse.isSuccessful) {
+                        val messages = messages
+                        lastMessageId = messages.last().id
+                        val interlocutor = if (firstUser.id == userId) firstUser else secondUser
+                        viewState.showMessages(messages, interlocutor)
+                    } else {
+                        viewState.onLoadingMessagesError()
+                    }
                 }
             } catch (e: Exception) {
                 viewState.onLoadingMessagesError()
@@ -43,7 +48,7 @@ class DialogPresenter : MvpPresenter<DialogView>(), CoroutineScope by MainScope(
     }
 
     fun sendMessage(interlocutorId: Int, text: String, viewHolderId: Long) {
-        if (!RetrofitClient.isOnline()) {
+        if (!retrofitClient.isOnline()) {
             viewState.onMessageSendingError(viewHolderId)
             return viewState.showNoInternet()
         }

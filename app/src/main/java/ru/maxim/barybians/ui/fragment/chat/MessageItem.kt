@@ -1,7 +1,7 @@
-package ru.maxim.barybians.ui.activity.dialog
+package ru.maxim.barybians.ui.fragment.chat
 
-import ru.maxim.barybians.ui.activity.dialog.MessageType.IncomingMessage
-import ru.maxim.barybians.ui.activity.dialog.MessageType.OutgoingMessage
+import ru.maxim.barybians.ui.fragment.chat.MessageType.IncomingMessage
+import ru.maxim.barybians.ui.fragment.chat.MessageType.OutgoingMessage
 
 sealed class MessageItem(val viewId: Long, val text: String, val time: String) {
     abstract fun getType(): Int
