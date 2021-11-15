@@ -185,5 +185,6 @@
     <string name="messages_notifications_channel_description">Notify you about new messages</string>
     <string name="sticker">sticker</string>
     <string name="login_already_exists">Login already exists</string>
+    <string name="invalid_registration_data">Invalid registration data</string>
 
 </resources>

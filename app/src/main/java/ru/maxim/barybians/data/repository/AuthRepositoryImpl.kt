@@ -1,5 +1,7 @@
 package ru.maxim.barybians.data.repository
 
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.network.exception.*
 import ru.maxim.barybians.data.network.response.RegistrationResponse
@@ -15,12 +17,13 @@ class AuthRepositoryImpl(
     private val preferencesManager: PreferencesManager
 ) : AuthRepository {
 
-    override suspend fun authenticate(login: String, password: String) {
+    override suspend fun authenticate(login: String, password: String) = withContext(IO) {
         try {
             if (!retrofitClient.isOnline()) throw NoConnectionException()
 
             val authResponse = authService.auth(login, password)
             val responseBody = authResponse.body()
+
             if (authResponse.isSuccessful && responseBody != null) {
                 with(preferencesManager) {
                     token = responseBody.token
@@ -50,7 +53,7 @@ class AuthRepositoryImpl(
         sex: Boolean,
         login: String,
         password: String
-    ) {
+    ) = withContext(IO) {
         try {
             if (!retrofitClient.isOnline()) throw NoConnectionException()
 
@@ -64,13 +67,14 @@ class AuthRepositoryImpl(
                 password
             )
             val responseBody = registerResponse.body()
+
             if (registerResponse.isSuccessful && responseBody != null) {
                 if (responseBody.message == RegistrationResponse.usernameExistsErrorMessage) {
-                    throw UsernameAlreadyExistsException()
+                    throw AlreadyExistsException()
                 }
                 authenticate(login, password)
             } else {
-                throw when(registerResponse.code()) {
+                throw when (registerResponse.code()) {
                     HTTP_CLIENT_TIMEOUT, HTTP_GATEWAY_TIMEOUT -> TimeoutException()
                     HTTP_BAD_REQUEST -> BadRequestException()
                     in 500..599 -> ServerErrorException()
