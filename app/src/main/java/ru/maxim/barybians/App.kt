@@ -4,7 +4,7 @@ import androidx.multidex.MultiDexApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import ru.maxim.barybians.di.appModule
-import ru.maxim.barybians.di.persistenceModule
+import ru.maxim.barybians.di.dataModule
 import timber.log.Timber
 
 class App : MultiDexApplication() {
@@ -19,7 +19,7 @@ class App : MultiDexApplication() {
             androidContext(applicationContext)
             modules(listOf(
                 appModule,
-                persistenceModule
+                dataModule
             ))
         }
     }

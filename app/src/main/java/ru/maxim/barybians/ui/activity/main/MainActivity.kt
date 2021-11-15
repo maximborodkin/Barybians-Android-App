@@ -19,14 +19,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         if (preferencesManager.token.isNullOrEmpty() || preferencesManager.userId == 0) {
             val loginActivityIntent = Intent(this, LoginActivity::class.java)
             loginActivityIntent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
             startActivity(loginActivityIntent)
         } else {
+            val binding = ActivityMainBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+
             with(findNavController(R.id.mainFragmentHost)) {
                 addOnDestinationChangedListener { _, _, arguments ->
                     binding.mainNavigationBottom.isVisible =

@@ -25,6 +25,9 @@ class AuthRepositoryImpl(
             val responseBody = authResponse.body()
 
             if (authResponse.isSuccessful && responseBody != null) {
+                if (responseBody.user == null || responseBody.token.isNullOrEmpty())
+                    throw InvalidCredentialsException()
+
                 with(preferencesManager) {
                     token = responseBody.token
                     userId = responseBody.user.id

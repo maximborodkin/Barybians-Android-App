@@ -135,7 +135,7 @@
                     android:id="@+id/registrationFemaleBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@{viewModel.sex ? @drawable/ic_female_selected : @drawable/ic_female_lected}"
+                    android:src="@{viewModel.sex ? @drawable/ic_female_selected : @drawable/ic_female_unselected}"
                     tools:src="@drawable/ic_female_unselected" />
             </LinearLayout>
 
