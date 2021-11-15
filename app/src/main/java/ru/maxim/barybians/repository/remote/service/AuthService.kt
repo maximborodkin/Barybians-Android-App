@@ -23,10 +23,4 @@ interface AuthService {
                          @Field("photo") photo: String,
                          @Field("username") username: String,
                          @Field("password") password: String): Response<JsonObject>
-
-
-    companion object{
-        operator fun invoke(): AuthService =
-            RetrofitClient.instance.create(AuthService::class.java)
-    }
 }

@@ -22,6 +22,8 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.item_post_creator.view.*
 import kotlinx.android.synthetic.main.item_profile_header.view.*
+import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.*
@@ -36,6 +38,7 @@ open class FeedRecyclerAdapter(
     private val feedItemsListener: FeedItemsListener,
     private val lifecycleOwner: LifecycleOwner
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
 
     final override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -57,7 +60,7 @@ open class FeedRecyclerAdapter(
         val nameView: AppCompatTextView = view.itemProfileHeaderName
         val ageView: TextView = view.itemProfileHeaderAge
         val statusView: TextView = view.itemProfileHeaderStatus
-        val openDialogBtn = view.itemProfileHeaderDialogBtn
+        val openChatBtn: MaterialButton = view.itemProfileHeaderDialogBtn
     }
 
     class PostCreatorViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
@@ -224,7 +227,7 @@ open class FeedRecyclerAdapter(
             postViewHolder.invalidateLikes = {
                 likesCount = post.likes.size
                 hasPersonalLike =
-                    post.likes.find { user -> user.id == PreferencesManager.userId } != null
+                    post.likes.find { user -> user.id == preferencesManager.userId } != null
                 postViewHolder.likeBtn.text = if (likesCount == 0) null else likesCount.toString()
                 val likeDrawable =
                     if (hasPersonalLike) R.drawable.ic_like_red
@@ -234,7 +237,7 @@ open class FeedRecyclerAdapter(
 
             setOnClickListener {
                 hasPersonalLike =
-                    post.likes.find { user -> user.id == PreferencesManager.userId } != null
+                    post.likes.find { user -> user.id == preferencesManager.userId } != null
                 feedItemsListener.editLike(position, post.postId, !hasPersonalLike)
             }
 

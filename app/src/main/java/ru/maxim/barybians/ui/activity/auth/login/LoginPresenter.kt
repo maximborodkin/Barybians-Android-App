@@ -6,6 +6,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.repository.remote.RetrofitClient
@@ -15,10 +17,12 @@ import java.net.HttpURLConnection.*
 @InjectViewState
 class LoginPresenter : MvpPresenter<LoginView>(), CoroutineScope by MainScope() {
 
-    private val authService = AuthService()
+    private val authService: AuthService by inject(AuthService::class.java)
+    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
+    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
 
     fun login(login: String, password: String) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             viewState.showError(R.string.no_connection)
             return
         }
@@ -27,7 +31,7 @@ class LoginPresenter : MvpPresenter<LoginView>(), CoroutineScope by MainScope() 
             CoroutineScope(Dispatchers.Main).launch {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
-                    with(PreferencesManager) {
+                    with(preferencesManager) {
                         token = responseBody.token
                         userId = responseBody.user.id
                         userName = "${responseBody.user.firstName} ${responseBody.user.lastName}"

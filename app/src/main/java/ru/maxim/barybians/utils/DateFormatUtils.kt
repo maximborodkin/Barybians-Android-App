@@ -1,15 +1,20 @@
 package ru.maxim.barybians.utils
 
 import android.content.Context
+import android.os.Build
 import android.text.format.DateUtils
 import ru.maxim.barybians.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-object DateFormatUtils : DateUtils() {
+class DateFormatUtils(private val context: Context) {
 
-    var currentLocale: Locale = Locale("ru","RU")
-    lateinit var context: Context
+    private val currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        context.resources.configuration.locales[0]
+    } else {
+        @Suppress("DEPRECATION")
+        context.resources.configuration.locale
+    }
 
     fun getSimplifiedDate(timestamp: Long): String {
         val today = Calendar.getInstance()

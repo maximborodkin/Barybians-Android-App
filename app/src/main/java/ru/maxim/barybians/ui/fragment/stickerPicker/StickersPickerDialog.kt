@@ -15,13 +15,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_stickers_picker.*
 import kotlinx.coroutines.*
+import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.remote.RetrofitClient
-import ru.maxim.barybians.repository.remote.service.DialogService
+import ru.maxim.barybians.repository.remote.service.ChatService
 import ru.maxim.barybians.utils.toast
 
 
 class StickersPickerDialog : BottomSheetDialogFragment() {
+    private val chatService: ChatService by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         layoutInflater.inflate(R.layout.fragment_stickers_picker, container, false)
@@ -32,9 +34,8 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
     }
 
     private fun loadTabs() {
-        val dialogService = DialogService()
         CoroutineScope(Dispatchers.IO).launch {
-            val packs = dialogService.getStickersPacks()
+            val packs = chatService.getStickersPacks()
             CoroutineScope(Dispatchers.Main).launch {
                 if (packs.isSuccessful && packs.body() != null) {
                     packs.body()?.forEach { pack ->

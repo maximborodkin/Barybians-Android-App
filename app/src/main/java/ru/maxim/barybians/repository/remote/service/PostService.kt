@@ -30,9 +30,4 @@ interface PostService {
 
     @DELETE("/api/posts/{postId}/like")
     suspend fun removeLike(@Path("postId") postId: Int): Response<LikeResponse>
-
-    companion object{
-        operator fun invoke(): PostService =
-            RetrofitClient.instance.create(PostService::class.java)
-    }
 }

@@ -4,17 +4,17 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import ru.maxim.barybians.R
-import ru.maxim.barybians.repository.local.PreferencesManager.context
 import ru.maxim.barybians.service.ServiceState
 
 /**
  * Singleton object for access to SharedPreferences
  *  @property context uses applicationContext sets from [ru.maxim.barybians.App] class
  */
-object PreferencesManager {
-    
-    lateinit var context: Context
-    private val sharedPreferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
+class PreferencesManager(val context: Context) {
+
+    private val sharedPreferences: SharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
     /**
      * SharedPreferences keys

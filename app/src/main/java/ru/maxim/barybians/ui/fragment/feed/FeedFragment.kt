@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -15,12 +16,13 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_feed.*
+import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent
 import ru.maxim.barybians.R
 import ru.maxim.barybians.model.Post
 import ru.maxim.barybians.model.User
 import ru.maxim.barybians.model.response.CommentResponse
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.ui.activity.profile.ProfileActivity
 import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
 import ru.maxim.barybians.ui.fragment.base.PostItem
@@ -40,6 +42,8 @@ class FeedFragment :
     lateinit var feedPresenter: FeedPresenter
     private val feedItems = ArrayList<FeedItem>()
     private var currentCommentsListDialog: BottomSheetDialog? = null
+    private val dateFormatUtils: DateFormatUtils by inject()
+    private val preferencesManager: PreferencesManager by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_feed, container, false)
@@ -74,16 +78,16 @@ class FeedFragment :
                     comment.author.getAvatarUrl()
                 )
                 val date =
-                    DateFormatUtils.getSimplifiedDate(comment.date*1000)
+                    dateFormatUtils.getSimplifiedDate(comment.date*1000)
                 CommentItem(comment.id, comment.text, date, author)
             })
 
-            val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
+            val date = dateFormatUtils.getSimplifiedDate(post.date*1000)
             feedItems.add(
                 PostItem(
                     post.id,
-                    user?.id == PreferencesManager.userId,
-                    user?.id?:PreferencesManager.userId,
+                    user?.id == preferencesManager.userId,
+                    user?.id?:preferencesManager.userId,
                     user?.getAvatarUrl(),
                     "${user?.firstName} ${user?.lastName}",
                     date,
@@ -126,7 +130,7 @@ class FeedFragment :
     }
 
     override fun onPostUpdated(itemPosition: Int, post: Post) {
-        val date = DateFormatUtils.getSimplifiedDate(post.date*1000)
+        val date = dateFormatUtils.getSimplifiedDate(post.date*1000)
         (feedItems[itemPosition] as? PostItem)?.let {
             it.title = post.title
             it.text = post.text
@@ -152,11 +156,11 @@ class FeedFragment :
         val postComments = (feedItems[postPosition] as? PostItem)?.comments?:return
 
         val author = UserItem(
-            PreferencesManager.userId,
-            PreferencesManager.userName,
-            PreferencesManager.userAvatar
+            preferencesManager.userId,
+            preferencesManager.userName,
+            preferencesManager.userAvatar
         )
-        val date = DateFormatUtils.getSimplifiedDate(comment.date * 1000)
+        val date = dateFormatUtils.getSimplifiedDate(comment.date * 1000)
         val commentItem = CommentItem(comment.id, comment.text, date, author)
 
         postComments.add(commentItem)
@@ -214,10 +218,11 @@ class FeedFragment :
     }
 
     override fun openUserProfile(userId: Int) {
-        val profileIntent = Intent(context, ProfileActivity::class.java).apply {
-            putExtra("userId", userId)
-        }
-        startActivity(profileIntent)
+//        val profileIntent = Intent(context, ProfileActivity::class.java).apply {
+//            putExtra("userId", userId)
+//        }
+//        startActivity(profileIntent)
+        findNavController().navigate(FeedFragmentDirections.toProfile(userId))
     }
 
     override fun showDialog(dialogFragment: DialogFragment, tag: String) {

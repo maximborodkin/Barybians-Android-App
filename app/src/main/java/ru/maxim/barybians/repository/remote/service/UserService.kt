@@ -13,9 +13,4 @@ interface UserService {
     @FormUrlEncoded
     @POST("/api/status")
     suspend fun editStatus(@Field("text") newStatus: String?): Response<String>
-
-    companion object{
-        operator fun invoke(): UserService =
-            RetrofitClient.instance.create(UserService::class.java)
-    }
 }

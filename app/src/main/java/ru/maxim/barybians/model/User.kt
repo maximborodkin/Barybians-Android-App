@@ -22,6 +22,9 @@ data class User (
     val roleId: Int?,
     val posts: ArrayList<Post>
 ) {
+    val fullName: String
+        get() = "$firstName $lastName"
+
     fun getAvatarUrl(loadFull: Boolean = false) =
         if (photo != null) "${RetrofitClient.BASE_URL}/avatars${if (loadFull) "" else "/min"}/$photo"
         else null

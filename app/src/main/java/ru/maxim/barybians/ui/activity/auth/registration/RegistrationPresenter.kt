@@ -5,6 +5,8 @@ import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.repository.remote.RetrofitClient
@@ -14,13 +16,15 @@ import java.net.HttpURLConnection.*
 @InjectViewState
 class RegistrationPresenter : MvpPresenter<RegistrationView>(), CoroutineScope by MainScope() {
 
-    private val authService = AuthService()
+    private val authService: AuthService by inject(AuthService::class.java)
+    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
+    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
 
     fun register(
         firstName: String, lastName: String, birthDate: String,
         sex: Boolean, login: String, password: String
     ) {
-        if (!RetrofitClient.isOnline()) {
+        if (!retrofitClient.isOnline()) {
             viewState.showError(R.string.no_internet_connection)
             return
         }
@@ -38,8 +42,8 @@ class RegistrationPresenter : MvpPresenter<RegistrationView>(), CoroutineScope b
                     if (message?.asString == "Registration was successful!") {
                         val authResponse = authService.auth(login, password)
                         if (authResponse.isSuccessful && authResponse.body() != null) {
-                            PreferencesManager.token = authResponse.body()!!.token
-                            PreferencesManager.userId = authResponse.body()!!.user.id
+                            preferencesManager.token = authResponse.body()!!.token
+                            preferencesManager.userId = authResponse.body()!!.user.id
                             viewState.openMainActivity()
                         } else {
                             when (response.code()) {

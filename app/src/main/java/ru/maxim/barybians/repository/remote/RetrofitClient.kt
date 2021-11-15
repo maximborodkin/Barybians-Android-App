@@ -10,7 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor.Level.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.repository.remote.RetrofitClient.context
+import ru.maxim.barybians.repository.remote.service.*
 import java.util.*
 
 /**
@@ -18,10 +18,11 @@ import java.util.*
  *  @property context uses applicationContext sets from [ru.maxim.barybians.App] class
  */
 @SuppressLint("StaticFieldLeak")
-object RetrofitClient {
+class RetrofitClient(
+    private val context: Context,
+    private val preferencesManager: PreferencesManager
+    ) {
 
-    lateinit var context: Context
-    const val BASE_URL = "https://barybians.ru/"
 
     private val connectionSpec: MutableList<ConnectionSpec> =
         Collections.singletonList(ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS)
@@ -46,7 +47,7 @@ object RetrofitClient {
 
     private val authorizationInterceptor = Interceptor {
         val request = it.request().newBuilder()
-            .addHeader("Authorization", "Bearer ${PreferencesManager.token}")
+            .addHeader("Authorization", "Bearer ${preferencesManager.token}")
             .build()
         return@Interceptor it.proceed(request)
     }
@@ -57,11 +58,17 @@ object RetrofitClient {
         .connectionSpecs(connectionSpec)
         .build()
 
-    val instance: Retrofit = Retrofit.Builder()
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         .client(okHttpClient)
         .build()
+
+    val authService: AuthService = retrofit.create(AuthService::class.java)
+    val userService: UserService = retrofit.create(UserService::class.java)
+    val chatService: ChatService = retrofit.create(ChatService::class.java)
+    val postService: PostService = retrofit.create(PostService::class.java)
+    val commentService: CommentService = retrofit.create(CommentService::class.java)
 
     /**
      * Shows is device has internet connection
@@ -71,5 +78,9 @@ object RetrofitClient {
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
         return networkInfo?.isConnected?:true
+    }
+
+    companion object {
+        const val BASE_URL = "https://barybians.ru/"
     }
 }

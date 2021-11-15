@@ -7,6 +7,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.repository.remote.service.CommentService
 import ru.maxim.barybians.repository.remote.service.PostService
@@ -25,12 +26,13 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
     var currentPostId: Int = 0
     var currentPostPosition: Int = 0
 
-    protected val userService = UserService()
-    protected val postService: PostService by lazy { PostService() }
-    private val commentService: CommentService by lazy { CommentService() }
+    protected val userService: UserService by inject(UserService::class.java)
+    protected val postService: PostService by inject(PostService::class.java)
+    private val commentService: CommentService by inject(CommentService::class.java)
+    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
 
     fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             return viewState.showNoInternet()
         }
         launch {
@@ -48,7 +50,7 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
     }
 
     fun deletePost(itemPosition: Int, postId: Int) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             return viewState.showNoInternet()
         }
         launch {
@@ -66,7 +68,7 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
     }
 
     fun addComment(postId: Int, postPosition: Int, text: String) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             return viewState.showNoInternet()
         }
         launch {
@@ -84,7 +86,7 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
     }
 
     fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             return viewState.showNoInternet()
         }
         launch {
@@ -103,7 +105,7 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>(), CoroutineSco
 
     @StateStrategyType(AddToEndSingleStrategy::class)
     fun editLike(itemPosition: Int, postId: Int, hasLike: Boolean) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             return viewState.showNoInternet()
         }
         launch {

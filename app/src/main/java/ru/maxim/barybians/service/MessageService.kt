@@ -11,12 +11,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import com.google.gson.Gson
 import kotlinx.coroutines.*
+import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.model.Dialog
 import ru.maxim.barybians.model.response.MessageNotificationResponse
 import ru.maxim.barybians.repository.local.PreferencesManager
-import ru.maxim.barybians.repository.remote.service.DialogService
-import ru.maxim.barybians.ui.activity.dialog.DialogActivity
+import ru.maxim.barybians.repository.remote.service.ChatService
+import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.utils.isNotNull
 import java.util.*
 
@@ -36,7 +36,8 @@ class MessageService : Service() {
     private val pendingIntentResultCode = 367
     private val requestTimeout = 50000L
     private val requestsFrequency = 300L
-    private val dialogService = DialogService()
+    private val chatService: ChatService by inject()
+    private val preferencesManager: PreferencesManager by inject()
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false
 
@@ -44,7 +45,7 @@ class MessageService : Service() {
         val service: MessageService = this@MessageService
     }
 
-    override fun onBind(intent: Intent?): IBinder? = LocalBinder()
+    override fun onBind(intent: Intent?): IBinder = LocalBinder()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
@@ -85,7 +86,7 @@ class MessageService : Service() {
     private fun startService() {
         if (isServiceStarted) return
         isServiceStarted = true
-        PreferencesManager.serviceState = ServiceState.STARTED.name
+        preferencesManager.serviceState = ServiceState.STARTED.name
         wakeLock =
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
                 newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MessageService::lock").apply {
@@ -110,14 +111,14 @@ class MessageService : Service() {
             Log.e(log_tag, "Service stopped without being started: ${e.message}")
         } finally {
             isServiceStarted = false
-            PreferencesManager.serviceState = ServiceState.STOPPED.name
+            preferencesManager.serviceState = ServiceState.STOPPED.name
         }
     }
 
     private fun getLastMessageId() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                dialogService.getDialogsList().body()?.forEach {
+                chatService.getChatsList().body()?.forEach {
                     val dialogMessageId = it.lastMessage.id
                     if (dialogMessageId > lastReceivedMessageId) lastReceivedMessageId = dialogMessageId
                 }
@@ -132,7 +133,7 @@ class MessageService : Service() {
             while (isServiceStarted && lastReceivedMessageId > 0) {
                 withTimeoutOrNull(requestTimeout) {
                     try {
-                        val pollingResponse = dialogService.observeNewMessages(lastReceivedMessageId)
+                        val pollingResponse = chatService.observeNewMessages(lastReceivedMessageId)
                         Log.d("MESSAGES_SERVICE", "pollingResponse: $pollingResponse")
                         if (pollingResponse.isSuccessful && pollingResponse.body().isNotNull()) {
                             Log.d("MESSAGES_SERVICE", "pollingResponse: ${pollingResponse.body()}")
@@ -163,7 +164,7 @@ class MessageService : Service() {
         Log.d("MESSAGES_SERVICE", "Created notification: ${newMessages.last().message.text}")
         val interlocutor = message.secondUser
         val interlocutorName = "${interlocutor.firstName} ${interlocutor.lastName}"
-        val dialogIntent = Intent(this, DialogActivity::class.java).apply {
+        val dialogIntent = Intent(this, ChatFragment::class.java).apply {
             putExtra("userId", interlocutor.id)
             putExtra("userName", interlocutorName)
             putExtra("userAvatar", interlocutor.getAvatarUrl())

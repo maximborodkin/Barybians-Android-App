@@ -10,8 +10,9 @@
         android:id="@+id/mainFragmentHost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_marginBottom="56dp"
-        tools:layout="@layout/fragment_feed" />
+        app:navGraph="@navigation/main_nav_graph" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainNavigationBottom"

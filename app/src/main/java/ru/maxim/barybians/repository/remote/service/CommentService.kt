@@ -14,9 +14,4 @@ interface CommentService {
     
     @DELETE("/api/comments/{commentId}")
     suspend fun deleteComment(@Path("commentId") commentId: Int): Response<String>
-
-    companion object{
-        operator fun invoke(): CommentService =
-            RetrofitClient.instance.create(CommentService::class.java)
-    }
 }

@@ -2,11 +2,13 @@ package ru.maxim.barybians.ui.fragment.feed
 
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.ui.fragment.base.BaseWallPresenter
 
 @InjectViewState
 open class FeedPresenter : BaseWallPresenter<FeedView>() {
+    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -14,7 +16,7 @@ open class FeedPresenter : BaseWallPresenter<FeedView>() {
     }
 
     fun loadFeed() {
-        if (!RetrofitClient.isOnline()) {
+        if (!retrofitClient.isOnline()) {
             return viewState.showNoInternet()
         }
         launch {

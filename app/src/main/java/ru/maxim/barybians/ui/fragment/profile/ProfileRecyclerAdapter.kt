@@ -34,7 +34,7 @@ class ProfileRecyclerAdapter(
 
         if (header.isPersonal) {
             headerViewHolder.backBtn.visibility = GONE
-            headerViewHolder.openDialogBtn.visibility = GONE
+            headerViewHolder.openChatBtn.visibility = GONE
             headerViewHolder.preferencesBtn.visibility = VISIBLE
             headerViewHolder.preferencesBtn.setOnClickListener { profileItemsListener.openPreferences() }
             headerViewHolder.editBtn.visibility = VISIBLE
@@ -42,9 +42,9 @@ class ProfileRecyclerAdapter(
         } else {
             headerViewHolder.backBtn.apply {
                 visibility = VISIBLE
-                setOnClickListener { profileItemsListener.popBackStack() }
+                setOnClickListener { /*profileItemsListener.popBackStack()*/ }
             }
-            headerViewHolder.openDialogBtn.apply {
+            headerViewHolder.openChatBtn.apply {
                 visibility = VISIBLE
                 setOnClickListener { profileItemsListener.openDialog(header.userId, header.avatarSmall, header.name) }
             }

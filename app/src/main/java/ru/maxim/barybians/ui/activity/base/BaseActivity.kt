@@ -2,15 +2,17 @@ package ru.maxim.barybians.ui.activity.base
 
 import android.os.Bundle
 import com.arellomobile.mvp.MvpAppCompatActivity
+import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 
 abstract class BaseActivity : MvpAppCompatActivity() {
 
-    private var theme = PreferencesManager.theme
+    private val preferencesManager: PreferencesManager by inject()
+    private var theme = preferencesManager.theme
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(when (PreferencesManager.theme) {
+        setTheme(when (preferencesManager.theme) {
             getString(R.string.theme_dark) -> R.style.DarkTheme
             else -> R.style.LightTheme
         })
@@ -19,8 +21,8 @@ abstract class BaseActivity : MvpAppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (theme != PreferencesManager.theme){
-            theme = PreferencesManager.theme
+        if (theme != preferencesManager.theme){
+            theme = preferencesManager.theme
             recreate()
         }
     }

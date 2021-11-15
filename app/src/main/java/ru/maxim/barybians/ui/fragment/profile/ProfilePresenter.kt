@@ -2,14 +2,16 @@ package ru.maxim.barybians.ui.fragment.profile
 
 import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.repository.remote.RetrofitClient
 import ru.maxim.barybians.ui.fragment.base.BaseWallPresenter
 
 @InjectViewState
 class ProfilePresenter : BaseWallPresenter<ProfileView>() {
+    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
 
     fun loadUser(userId: Int) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             return viewState.showNoInternet()
         }
         launch {
@@ -27,7 +29,7 @@ class ProfilePresenter : BaseWallPresenter<ProfileView>() {
     }
 
     fun createPost(title: String?, text: String) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             return viewState.showNoInternet()
         }
         launch {
@@ -45,7 +47,7 @@ class ProfilePresenter : BaseWallPresenter<ProfileView>() {
     }
 
     fun editStatus(newStatus: String?) {
-        if (!RetrofitClient.isOnline()){
+        if (!retrofitClient.isOnline()){
             return viewState.showNoInternet()
         }
         launch {

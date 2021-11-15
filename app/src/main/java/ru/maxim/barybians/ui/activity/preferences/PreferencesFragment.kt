@@ -6,6 +6,7 @@ import androidx.preference.*
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.service.Actions
@@ -15,10 +16,12 @@ import ru.maxim.barybians.utils.toast
 import java.io.File
 
 class PreferencesFragment : PreferenceFragmentCompat() {
+    private val preferencesManager: PreferencesManager by inject()
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.fragment_preferences)
 
-        findPreference<SwitchPreferenceCompat>(PreferencesManager.isNotificationsEnabledKey)
+        findPreference<SwitchPreferenceCompat>(preferencesManager.isNotificationsEnabledKey)
             ?.setOnPreferenceChangeListener { preference, _ ->
                 if ((preference as SwitchPreferenceCompat).isChecked) {
                     if (actionOnService(Actions.START)) return@setOnPreferenceChangeListener true
@@ -28,26 +31,26 @@ class PreferencesFragment : PreferenceFragmentCompat() {
                 false
             }
 
-        findPreference<MultiSelectListPreference>(PreferencesManager.notificationSoundEffectKey)
+        findPreference<MultiSelectListPreference>(preferencesManager.notificationSoundEffectKey)
             ?.setOnPreferenceChangeListener { preference, newValue ->
 
                 true
             }
 
-        findPreference<Preference>(PreferencesManager.clearNotificationsPoolKey)
+        findPreference<Preference>(preferencesManager.clearNotificationsPoolKey)
             ?.setOnPreferenceClickListener {
 
                 true
             }
 
-        findPreference<Preference>(PreferencesManager.versionKey)?.summary =
+        findPreference<Preference>(preferencesManager.versionKey)?.summary =
             context?.packageName?.let { packageName ->
                 context?.packageManager?.getPackageInfo(packageName, 0)?.versionName
             }
 
         setClearCacheSummary()
 
-        findPreference<Preference>(PreferencesManager.clearCacheKey)?.setOnPreferenceClickListener {
+        findPreference<Preference>(preferencesManager.clearCacheKey)?.setOnPreferenceClickListener {
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                 Glide.get(requireContext().applicationContext).clearDiskCache()
             }
@@ -56,13 +59,13 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<Preference>(PreferencesManager.logoutKey)?.setOnPreferenceClickListener {
+        findPreference<Preference>(preferencesManager.logoutKey)?.setOnPreferenceClickListener {
             DialogFactory.createLogoutAlertDialog()
                 .show(parentFragmentManager, "LogoutDialogFragment")
             true
         }
 
-        findPreference<ListPreference>(PreferencesManager.themeKey)?.apply {
+        findPreference<ListPreference>(preferencesManager.themeKey)?.apply {
             setOnPreferenceChangeListener { _, _ ->
                 activity?.recreate()
                 true
@@ -78,7 +81,7 @@ class PreferencesFragment : PreferenceFragmentCompat() {
 
     private fun setClearCacheSummary() {
         val cacheSize = getCacheSize()
-        findPreference<Preference>(PreferencesManager.clearCacheKey)?.summary =
+        findPreference<Preference>(preferencesManager.clearCacheKey)?.summary =
             when {
                 cacheSize >= 1000_000 -> getString(
                     R.string.mbytes,
@@ -106,8 +109,8 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     }
 
     private fun actionOnService(action: Actions): Boolean {
-        if (PreferencesManager.serviceState == ServiceState.STOPPED.name && action == Actions.STOP) return false
-        if (PreferencesManager.serviceState == ServiceState.STARTED.name && action == Actions.START) return false
+        if (preferencesManager.serviceState == ServiceState.STOPPED.name && action == Actions.STOP) return false
+        if (preferencesManager.serviceState == ServiceState.STARTED.name && action == Actions.START) return false
 //            Intent(context, MessageService::class.java).also {
 //                it.action = action.name
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

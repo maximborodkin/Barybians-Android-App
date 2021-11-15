@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_comment.view.*
+import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.repository.local.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.view.AvatarView
+import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.weak
 
@@ -29,6 +31,7 @@ class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentIt
                               private val htmlParser: HtmlParser
 ) : RecyclerView.Adapter<CommentsRecyclerAdapter.CommentViewHolder>() {
 
+    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
     private lateinit var swipeBackground: ColorDrawable
     private lateinit var deleteIcon: Drawable
 
@@ -51,7 +54,7 @@ class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentIt
                                   viewHolder: RecyclerView.ViewHolder
         ): Int {
             val authorId = comments[viewHolder.adapterPosition].author.id
-            val isPersonal = authorId == PreferencesManager.userId
+            val isPersonal = authorId == preferencesManager.userId
             return if(isPersonal) Callback.makeMovementFlags(0, LEFT or RIGHT) else 0
         }
 

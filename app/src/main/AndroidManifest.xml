@@ -59,11 +59,7 @@
         <activity android:name="ru.maxim.barybians.ui.activity.auth.login.LoginActivity" />
         <activity android:name="ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity"
             android:parentActivityName="ru.maxim.barybians.ui.activity.auth.login.LoginActivity"/>
-        <activity android:name="ru.maxim.barybians.ui.activity.preferences.PreferencesActivity"
-            android:parentActivityName="ru.maxim.barybians.ui.activity.main.MainActivity"/>
-        <activity android:name="ru.maxim.barybians.ui.activity.profile.ProfileActivity" />
-        <activity android:name=".ui.activity.dialog.DialogActivity"
-            android:parentActivityName=".ui.activity.main.MainActivity"/>
+        <activity android:name="ru.maxim.barybians.ui.activity.preferences.PreferencesActivity" />
     </application>
 
 </manifest>
