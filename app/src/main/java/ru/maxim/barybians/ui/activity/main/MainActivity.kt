@@ -14,6 +14,7 @@ import ru.maxim.barybians.databinding.ActivityMainBinding
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 
+// Hihi hehe haha
 class MainActivity : AppCompatActivity() {
     private val preferencesManager: PreferencesManager by inject()
 

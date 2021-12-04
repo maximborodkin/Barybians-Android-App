@@ -7,6 +7,8 @@ import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.data.repository.AuthRepository
 import ru.maxim.barybians.data.repository.AuthRepositoryImpl
+import ru.maxim.barybians.data.repository.PostRepository
+import ru.maxim.barybians.data.repository.PostRepositoryImpl
 
 val dataModule = module {
 // Network
@@ -19,6 +21,7 @@ val dataModule = module {
 
 // Repository
     single { AuthRepositoryImpl(get(), get(), get()) } bind AuthRepository::class
+    single { PostRepositoryImpl(get(), get()) } bind PostRepository::class
 
 // Persistence
     single { PreferencesManager(androidContext()) }
