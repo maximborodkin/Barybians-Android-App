@@ -6,12 +6,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import ru.maxim.barybians.data.network.RetrofitClient
-import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.data.repository.AuthRepository
 import ru.maxim.barybians.data.repository.AuthRepositoryImpl
-import ru.maxim.barybians.data.repository.PostRepository
-import ru.maxim.barybians.data.repository.PostRepositoryImpl
+import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
+import ru.maxim.barybians.ui.activity.main.MainActivity
+import ru.maxim.barybians.ui.fragment.chat.ChatFragment
+import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment
+import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 import ru.maxim.barybians.utils.DateFormatUtils
 import javax.inject.Singleton
 
@@ -27,9 +29,11 @@ interface AppComponent {
         fun build(): AppComponent
     }
 
-    val authRepository: AuthRepository
-    @Binds
-    fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+    fun inject(mainActivity: MainActivity)
+    fun inject(loginActivity: LoginActivity)
+    fun inject(chatFragment: ChatFragment)
+    fun inject(dialogsListFragment: DialogsListFragment)
+    fun inject(feedFragment: FeedFragment)
 }
 
 
@@ -59,7 +63,7 @@ object UtilModule {
     }
 }
 
-@Module
+@Module(includes = [DataModuleBindings::class])
 object DataModule {
 
     @Reusable
@@ -81,4 +85,11 @@ object DataModule {
     @Reusable
     @Provides
     fun provideCommentService(retrofitClient: RetrofitClient) = retrofitClient.commentService
+}
+
+@Module
+interface DataModuleBindings {
+
+    @Binds
+    fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 }

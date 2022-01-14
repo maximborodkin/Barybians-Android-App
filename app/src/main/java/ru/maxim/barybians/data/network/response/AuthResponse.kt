@@ -11,6 +11,13 @@ data class AuthResponse(
         val id: Int,
         val firstName: String,
         val lastName: String,
-        val photo: String?
+        val photo: String?,
+        val status: String?,
+        @SerializedName("ubirthDate")
+        val birthDate: Long,
+        val sex: String,
+        @SerializedName("ulastVisit")
+        val lastVisit: Long,
+        val roleId: Int,
     )
 }

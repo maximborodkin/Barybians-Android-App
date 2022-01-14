@@ -12,7 +12,6 @@ import ru.maxim.barybians.domain.model.User
 import timber.log.Timber
 import java.net.HttpURLConnection.*
 import javax.inject.Inject
-import javax.inject.Qualifier
 
 @Reusable
 class AuthRepositoryImpl @Inject constructor(
@@ -29,7 +28,7 @@ class AuthRepositoryImpl @Inject constructor(
             val responseBody = authResponse.body()
 
             if (authResponse.isSuccessful && responseBody != null) {
-                if (responseBody.user == null || responseBody.token.isNullOrEmpty())
+                if (responseBody.user == null || responseBody.token.isNullOrBlank())
                     throw InvalidCredentialsException()
 
                 with(preferencesManager) {
