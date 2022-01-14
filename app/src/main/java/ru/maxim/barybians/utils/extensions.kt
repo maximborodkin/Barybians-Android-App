@@ -9,12 +9,13 @@ import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import ru.maxim.barybians.App
 import ru.maxim.barybians.R
+import ru.maxim.barybians.di.AppComponent
 import java.lang.ref.WeakReference
 
 fun <T> weak(obj: T) = WeakReference(obj)
@@ -76,3 +77,9 @@ fun ImageView.load(url: String, @DrawableRes placeholder: Int? = null, thumbnail
 }
 
 fun MutableLiveData<String>.isEmpty() = value?.length ?: 0 == 0
+
+val Context.appComponent: AppComponent
+    get() = when (this) {
+        is App -> appComponent
+        else -> this.applicationContext.appComponent
+    }

@@ -1,48 +1,51 @@
 package ru.maxim.barybians.data.network
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import com.google.gson.GsonBuilder
+import dagger.Reusable
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.HttpLoggingInterceptor.Level.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.data.network.service.*
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Singleton object for access to SharedPreferences
  *  @property context uses applicationContext sets from [ru.maxim.barybians.App] class
  */
-@SuppressLint("StaticFieldLeak")
-class RetrofitClient(
+
+@Reusable
+class RetrofitClient @Inject constructor(
     private val context: Context,
     private val preferencesManager: PreferencesManager
-    ) {
-
+) {
 
     private val connectionSpec: MutableList<ConnectionSpec> =
-        Collections.singletonList(ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS)
-            .tlsVersions(
-                TlsVersion.TLS_1_0,
-                TlsVersion.TLS_1_1,
-                TlsVersion.TLS_1_2,
-                TlsVersion.TLS_1_3
-            )
-            .cipherSuites(
-                CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-                CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
-                CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-            )
-            .build()
+        Collections.singletonList(
+            ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS)
+                .tlsVersions(
+                    TlsVersion.TLS_1_0,
+                    TlsVersion.TLS_1_1,
+                    TlsVersion.TLS_1_2,
+                    TlsVersion.TLS_1_3
+                )
+                .cipherSuites(
+                    CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
+                    CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA,
+                    CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+                    CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+                    CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+                    CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+                    CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+                    CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
+                )
+                .build()
         )
 
     private val authorizationInterceptor = Interceptor {
@@ -77,7 +80,7 @@ class RetrofitClient(
     fun isOnline(): Boolean {
         val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connMgr.activeNetworkInfo
-        return networkInfo?.isConnected?:true
+        return networkInfo?.isConnected == true
     }
 
     companion object {

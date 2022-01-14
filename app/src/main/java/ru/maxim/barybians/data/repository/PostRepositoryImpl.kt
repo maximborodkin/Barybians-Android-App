@@ -1,12 +1,15 @@
 package ru.maxim.barybians.data.repository
 
+import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.domain.model.Post
+import javax.inject.Inject
 
-class PostRepositoryImpl(
+@Reusable
+class PostRepositoryImpl @Inject constructor(
     private val postService: PostService,
     private val retrofitClient: RetrofitClient
 ) : PostRepository {

@@ -1,5 +1,6 @@
 package ru.maxim.barybians.data.repository
 
+import dagger.Reusable
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.network.RetrofitClient
@@ -10,8 +11,11 @@ import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.domain.model.User
 import timber.log.Timber
 import java.net.HttpURLConnection.*
+import javax.inject.Inject
+import javax.inject.Qualifier
 
-class AuthRepositoryImpl(
+@Reusable
+class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val retrofitClient: RetrofitClient,
     private val preferencesManager: PreferencesManager

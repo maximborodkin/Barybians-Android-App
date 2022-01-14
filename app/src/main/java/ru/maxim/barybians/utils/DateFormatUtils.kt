@@ -3,11 +3,14 @@ package ru.maxim.barybians.utils
 import android.content.Context
 import android.os.Build
 import android.text.format.DateUtils
+import dagger.Reusable
 import ru.maxim.barybians.R
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class DateFormatUtils(private val context: Context) {
+@Reusable
+class DateFormatUtils @Inject constructor(private val context: Context) {
 
     private val currentLocale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         context.resources.configuration.locales[0]

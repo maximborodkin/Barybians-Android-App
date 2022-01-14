@@ -10,6 +10,7 @@ import ru.maxim.barybians.data.network.exception.InvalidCredentialsException
 import ru.maxim.barybians.data.network.exception.ServerErrorException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.AuthRepository
+import ru.maxim.barybians.di.DaggerAppComponent
 import kotlin.coroutines.CoroutineContext
 
 @InjectViewState
