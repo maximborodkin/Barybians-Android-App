@@ -19,6 +19,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.response.CommentResponse
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentProfileBinding
+import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.fragment.base.*
@@ -256,7 +257,7 @@ class ProfileFragment :
         context?.toast(R.string.unable_to_delete_post)
     }
 
-    override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
+    override fun onCommentAdded(postPosition: Int, comment: Comment) {
         val postComments = (profileItems[postPosition] as? PostItem)?.comments ?: return
 
         val author = UserItem(
@@ -287,6 +288,14 @@ class ProfileFragment :
         context?.toast(R.string.unable_to_create_comment)
     }
 
+    override fun onCommentEdit(comment: Comment) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCommentEditError() {
+        TODO("Not yet implemented")
+    }
+
     override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
         val postComments = (profileItems[postPosition] as? PostItem)?.comments ?: return
         if (postComments[commentPosition].id == commentId) postComments.removeAt(commentPosition)
@@ -315,6 +324,10 @@ class ProfileFragment :
         val postItemViewHolder =
             binding.profileRecyclerView.findViewHolderForAdapterPosition(postPosition)
         (postItemViewHolder as? PostViewHolder)?.invalidateLikes?.invoke()
+    }
+
+    override fun onLikeEditError() {
+        TODO("Not yet implemented")
     }
 
     /* ProfileItemsListener */
@@ -395,7 +408,7 @@ class ProfileFragment :
     }
 
     private fun addComment(postPosition: Int, postId: Int, text: String) {
-        profilePresenter.addComment(postId, postPosition, text)
+        profilePresenter.createComment(postId, postPosition, text)
     }
 
     private fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {

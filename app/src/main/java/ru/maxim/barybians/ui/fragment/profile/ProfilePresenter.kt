@@ -3,13 +3,18 @@ package ru.maxim.barybians.ui.fragment.profile
 import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.presenterScope
+import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.data.repository.PostRepository
+import ru.maxim.barybians.data.repository.UserRepository
 import ru.maxim.barybians.ui.fragment.base.BaseWallPresenter
 import javax.inject.Inject
 
 @InjectViewState
-class ProfilePresenter @Inject constructor(private val postRepository: PostRepository) :
-    BaseWallPresenter<ProfileView>(postRepository) {
+class ProfilePresenter @Inject constructor(
+    private val postRepository: PostRepository,
+    userRepository: UserRepository,
+    commentRepository: CommentRepository
+) : BaseWallPresenter<ProfileView>(postRepository, userRepository, commentRepository) {
 
     fun loadUser(userId: Int) = presenterScope.launch {
 //        try {

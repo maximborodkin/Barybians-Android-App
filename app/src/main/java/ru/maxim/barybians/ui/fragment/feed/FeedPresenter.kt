@@ -3,14 +3,18 @@ package ru.maxim.barybians.ui.fragment.feed
 import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.presenterScope
-import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.data.repository.PostRepository
+import ru.maxim.barybians.data.repository.UserRepository
 import ru.maxim.barybians.ui.fragment.base.BaseWallPresenter
 import javax.inject.Inject
 
 @InjectViewState
-open class FeedPresenter @Inject constructor(private val postRepository: PostRepository) :
-    BaseWallPresenter<FeedView>(postRepository) {
+open class FeedPresenter @Inject constructor(
+    private val postRepository: PostRepository,
+    userRepository: UserRepository,
+    commentRepository: CommentRepository
+) : BaseWallPresenter<FeedView>(postRepository, userRepository, commentRepository) {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -24,6 +28,5 @@ open class FeedPresenter @Inject constructor(private val postRepository: PostRep
         } catch (e: Exception) {
             viewState.onFeedLoadError()
         }
-
     }
 }

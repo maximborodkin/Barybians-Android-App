@@ -4,7 +4,7 @@ import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEnd
 import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
-import ru.maxim.barybians.data.network.response.CommentResponse
+import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
 
@@ -29,10 +29,16 @@ interface BaseWallView : MvpView {
     fun onPostDeleteError()
 
     @AddToEnd
-    fun onCommentAdded(postPosition: Int, comment: CommentResponse)
+    fun onCommentAdded(postPosition: Int, comment: Comment)
 
     @OneExecution
     fun onCommentAddError()
+
+    @AddToEnd
+    fun onCommentEdit(comment: Comment)
+
+    @OneExecution
+    fun onCommentEditError()
 
     @AddToEnd
     fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int)
@@ -42,4 +48,7 @@ interface BaseWallView : MvpView {
 
     @AddToEnd
     fun onLikeEdited(postPosition: Int, likedUsers: List<User>)
+
+    @OneExecution
+    fun onLikeEditError()
 }

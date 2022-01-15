@@ -3,11 +3,16 @@ package ru.maxim.barybians.ui.fragment.base
 import kotlinx.coroutines.launch
 import moxy.MvpPresenter
 import moxy.presenterScope
+import ru.maxim.barybians.data.network.exception.NoConnectionException
+import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.data.repository.PostRepository
+import ru.maxim.barybians.data.repository.UserRepository
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 
 abstract class BaseWallPresenter<T : BaseWallView>(
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
+    private val commentRepository: CommentRepository
 ) : MvpPresenter<T>() {
 
     /**
@@ -20,18 +25,16 @@ abstract class BaseWallPresenter<T : BaseWallView>(
     var currentPostId: Int = 0
     var currentPostPosition: Int = 0
 
-//    protected val userService: UserService by inject(UserService::class.java)
-//    protected val postService: PostService by inject(PostService::class.java)
-//    private val commentService: CommentService by inject(CommentService::class.java)
-//    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
-
     fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String) =
         presenterScope.launch {
             try {
                 val updatedPostResponse = postRepository.updatePost(postId, newTitle, newText)
                 viewState.onPostUpdated(itemPosition, updatedPostResponse)
             } catch (e: Exception) {
-                viewState.onPostUpdateError()
+                when (e) {
+                    is NoConnectionException -> viewState.showNoInternet()
+                    else -> viewState.onPostUpdateError()
+                }
             }
         }
 
@@ -43,40 +46,52 @@ abstract class BaseWallPresenter<T : BaseWallView>(
                 viewState.onPostDeleteError()
             }
         } catch (e: Exception) {
-            viewState.onPostDeleteError()
+            when (e) {
+                is NoConnectionException -> viewState.showNoInternet()
+                else -> viewState.onPostDeleteError()
+            }
         }
     }
 
-    fun addComment(postId: Int, postPosition: Int, text: String) = presenterScope.launch {
-//        try {
-//            val comment = commentService.addComment(postId, text)
-//            if (comment.isSuccessful && comment.body() != null) {
-//                viewState.onCommentAdded(postPosition, comment.body()!!)
-//            } else {
-//                viewState.onCommentAddError()
-//            }
-//        } catch (e: Exception) {
-//            viewState.onCommentAddError()
-//        }
+    fun createComment(postId: Int, postPosition: Int, text: String) = presenterScope.launch {
+        try {
+            val comment = commentRepository.createComment(postId, text)
+            viewState.onCommentAdded(postPosition, comment)
+        } catch (e: Exception) {
+            when (e) {
+                is NoConnectionException -> viewState.showNoInternet()
+                else -> viewState.onCommentAddError()
+            }
+        }
+    }
+
+    fun editComment(commentId: Int, text: String) = presenterScope.launch {
+        try {
+            val comment = commentRepository.editComment(commentId, text)
+            viewState.onCommentEdit(comment)
+        } catch (e: Exception) {
+            when (e) {
+                is NoConnectionException -> viewState.showNoInternet()
+                else -> viewState.onCommentEditError()
+            }
+        }
     }
 
     fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) =
         presenterScope.launch {
-//            if (!retrofitClient.isOnline()) {
-//                return@launch viewState.showNoInternet()
-//            }
-//            try {
-//                val deleteCommentRequest = commentService.deleteComment(commentId)
-//                if (deleteCommentRequest.isSuccessful && deleteCommentRequest.body() == "true") {
-//                    viewState.onCommentDeleted(postPosition, commentPosition, commentId)
-//                } else {
-//                    viewState.onCommentDeleteError()
-//                }
-//            } catch (e: Exception) {
-//                viewState.onCommentDeleteError()
-//            }
+            try {
+                if (commentRepository.deleteComment(commentId)) {
+                    viewState.onCommentDeleted(postPosition, commentPosition, commentId)
+                } else {
+                    viewState.onCommentDeleteError()
+                }
+            } catch (e: Exception) {
+                when (e) {
+                    is NoConnectionException -> viewState.showNoInternet()
+                    else -> viewState.onCommentDeleteError()
+                }
+            }
         }
-
 
     fun editLike(itemPosition: Int, postId: Int, hasLike: Boolean) = presenterScope.launch {
         try {
@@ -85,6 +100,10 @@ abstract class BaseWallPresenter<T : BaseWallView>(
                 else postRepository.removeLike(postId)
             viewState.onLikeEdited(itemPosition, editLikeResponse.whoLiked)
         } catch (e: Exception) {
+            when (e) {
+                is NoConnectionException -> viewState.showNoInternet()
+                else -> viewState.onLikeEditError()
+            }
         }
     }
 }

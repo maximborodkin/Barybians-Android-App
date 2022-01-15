@@ -19,6 +19,7 @@ import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.response.CommentResponse
 import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.fragment.base.FeedItem
@@ -166,7 +167,7 @@ class FeedFragment :
         context?.toast(R.string.unable_to_delete_post)
     }
 
-    override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
+    override fun onCommentAdded(postPosition: Int, comment: Comment) {
         val postComments = (feedItems[postPosition] as? PostItem)?.comments ?: return
 
         val author = UserItem(
@@ -194,6 +195,14 @@ class FeedFragment :
 
     override fun onCommentAddError() {
         context?.toast(R.string.unable_to_create_comment)
+    }
+
+    override fun onCommentEdit(comment: Comment) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCommentEditError() {
+        TODO("Not yet implemented")
     }
 
     override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
@@ -235,6 +244,10 @@ class FeedFragment :
         (postItemViewHolder as? FeedRecyclerAdapter.PostViewHolder)?.invalidateLikes?.invoke()
     }
 
+    override fun onLikeEditError() {
+        TODO("Not yet implemented")
+    }
+
     override fun openUserProfile(userId: Int) {
 //        val profileIntent = Intent(context, ProfileActivity::class.java).apply {
 //            putExtra("userId", userId)
@@ -268,7 +281,7 @@ class FeedFragment :
     }
 
     private fun addComment(postPosition: Int, postId: Int, text: String) {
-        feedPresenter.addComment(postId, postPosition, text)
+        feedPresenter.createComment(postId, postPosition, text)
     }
 
     private fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) {
