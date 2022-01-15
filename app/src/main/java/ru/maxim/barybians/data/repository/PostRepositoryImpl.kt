@@ -7,22 +7,23 @@ import javax.inject.Inject
 @Reusable
 class PostRepositoryImpl @Inject constructor(
     private val postService: PostService,
+    private val repositoryBound: RepositoryBound
 ) : PostRepository {
 
-    override suspend fun getFeed() = repositoryBoundResource(postService::getFeed)
+    override suspend fun getFeed() = repositoryBound.wrapRequest(postService::getFeed)
 
     override suspend fun createPost(title: String?, text: String) =
-        repositoryBoundResource { postService.createPost(title, text) }
+        repositoryBound.wrapRequest { postService.createPost(title, text) }
 
     override suspend fun updatePost(postId: Int, title: String?, text: String) =
-        repositoryBoundResource { postService.updatePost(postId, title, text) }
+        repositoryBound.wrapRequest { postService.updatePost(postId, title, text) }
 
     override suspend fun deletePost(postId: Int): Boolean =
-        repositoryBoundResource { postService.deletePost(postId) }
+        repositoryBound.wrapRequest { postService.deletePost(postId) }
 
     override suspend fun setLike(postId: Int) =
-        repositoryBoundResource { postService.setLike(postId) }
+        repositoryBound.wrapRequest { postService.setLike(postId) }
 
     override suspend fun removeLike(postId: Int) =
-        repositoryBoundResource { postService.removeLike(postId) }
+        repositoryBound.wrapRequest { postService.removeLike(postId) }
 }

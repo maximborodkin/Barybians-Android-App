@@ -54,7 +54,7 @@ class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), Ch
         with(binding) {
             chatsListLoading.isVisible = false
             chatsListRefreshLayout.isRefreshing = false
-            chatsListEmptyLabel.isVisible = chatsList.isEmpty()
+            chatsEmptyListLabel.isVisible = chatsList.isEmpty()
             chatsListRecyclerView.apply {
                 adapter = ChatsListRecyclerAdapter(
                     chats = chatsList,
@@ -69,9 +69,9 @@ class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), Ch
     }
 
     override fun showLoading() = with(binding) {
+        chatsEmptyListLabel.isVisible = false
         if (!chatsListRefreshLayout.isRefreshing) {
             chatsListLoading.isVisible = true
-            chatsListEmptyLabel.isVisible = false
         }
     }
 
@@ -79,13 +79,13 @@ class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), Ch
         context?.toast(R.string.an_error_occurred_while_loading_chats)
         chatsListLoading.isVisible = false
         chatsListRefreshLayout.isRefreshing = false
-        chatsListEmptyLabel.isVisible = false
+        chatsEmptyListLabel.isVisible = false
     }
 
     override fun showNoInternet() = with(binding) {
         context?.toast(R.string.no_internet_connection)
         chatsListLoading.isVisible = false
         chatsListRefreshLayout.isRefreshing = false
-        chatsListEmptyLabel.isVisible = false
+        chatsEmptyListLabel.isVisible = false
     }
 }

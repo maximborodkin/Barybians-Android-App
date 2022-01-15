@@ -6,7 +6,8 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val userService: UserService,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val repositoryBound: RepositoryBound
 ) : UserRepository {
 
 }

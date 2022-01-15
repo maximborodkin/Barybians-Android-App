@@ -4,6 +4,7 @@ import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import moxy.presenterScope
+import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.repository.ChatRepository
 import javax.inject.Inject
 
@@ -17,11 +18,15 @@ class ChatsListPresenter @Inject constructor(
     }
 
     fun loadDialogsList() = presenterScope.launch {
+        viewState.showLoading()
         try {
             val dialogs = chatRepository.getChatsList()
             viewState.showChatsList(dialogs.sortedByDescending { it.lastMessage.time })
         } catch (e: Exception) {
-            viewState.showChatsListLoadError()
+            when (e) {
+                is NoConnectionException -> viewState.showNoInternet()
+                else -> viewState.showChatsListLoadError()
+            }
         }
     }
 }

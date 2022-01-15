@@ -6,7 +6,8 @@ import javax.inject.Inject
 
 class CommentRepositoryImpl @Inject constructor(
     private val commentService: CommentService,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val repositoryBound: RepositoryBound
 ): CommentRepository {
 
 }

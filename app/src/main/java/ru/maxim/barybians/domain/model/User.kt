@@ -47,7 +47,7 @@ data class User (
 
     companion object {
         fun getFullName(firstName: String, lastName: String) = "$firstName $lastName"
-        fun getAvatarFull(photoName: String?) = "${RetrofitClient.BASE_URL}/avatars/$photoName"
-        fun getAvatarMin(photoName: String?) = "${RetrofitClient.BASE_URL}/avatars/min/$photoName"
+        fun getAvatarFull(photoName: String?) = "${RetrofitClient.AVATARS_BASE_URL}/$photoName"
+        fun getAvatarMin(photoName: String?) = "${RetrofitClient.AVATARS_BASE_URL}/min/$photoName"
     }
 }
