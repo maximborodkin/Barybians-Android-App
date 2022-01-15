@@ -18,9 +18,9 @@
 
     <fragment
         android:id="@+id/dialogsListFragment"
-        android:name="ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment"
+        android:name="ru.maxim.barybians.ui.fragment.chatsList.ChatsListFragment"
         android:label="DialogsListFragment"
-        tools:layout="@layout/fragment_dialogs_list">
+        tools:layout="@layout/fragment_chats_list">
         <argument
             android:name="hasBottomNavigation"
             app:argType="boolean"

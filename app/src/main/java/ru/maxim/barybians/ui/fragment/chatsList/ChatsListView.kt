@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.dialogsList
+package ru.maxim.barybians.ui.fragment.chatsList
 
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEnd
@@ -6,16 +6,16 @@ import moxy.viewstate.strategy.alias.AddToEndSingle
 import moxy.viewstate.strategy.alias.OneExecution
 import ru.maxim.barybians.domain.model.Chat
 
-interface DialogsListView : MvpView {
+interface ChatsListView : MvpView {
 
     @AddToEnd
-    fun showDialogsList(dialogsList: ArrayList<Chat>)
+    fun showChatsList(chatsList: List<Chat>)
 
     @AddToEndSingle
     fun showLoading()
 
     @OneExecution
-    fun onDialogsListLoadError()
+    fun showChatsListLoadError()
 
     @AddToEndSingle
     fun showNoInternet()

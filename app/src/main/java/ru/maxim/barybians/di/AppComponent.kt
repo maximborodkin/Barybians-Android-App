@@ -9,7 +9,7 @@ import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
-import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment
+import ru.maxim.barybians.ui.fragment.chatsList.ChatsListFragment
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 import ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
@@ -34,7 +34,7 @@ interface AppComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(loginActivity: LoginActivity)
     fun inject(chatFragment: ChatFragment)
-    fun inject(dialogsListFragment: DialogsListFragment)
+    fun inject(chatsListFragment: ChatsListFragment)
     fun inject(feedFragment: FeedFragment)
     fun inject(registrationActivity: RegistrationActivity)
     fun inject(profileFragment: ProfileFragment)

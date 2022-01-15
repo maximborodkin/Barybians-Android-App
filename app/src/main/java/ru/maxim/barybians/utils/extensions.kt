@@ -57,9 +57,7 @@ fun ImageView.load(url: String, @DrawableRes placeholder: Int? = null, thumbnail
     val requestBuilder = Glide.with(context).load(url)
 
     when {
-        thumbnail.isNotNullOrBlank() -> requestBuilder.thumbnail(
-            Glide.with(context).load(thumbnail)
-        )
+        thumbnail != null -> requestBuilder.thumbnail(Glide.with(context).load(thumbnail))
         placeholder != null -> requestBuilder.placeholder(placeholder)
         else -> {
             requestBuilder.placeholder(CircularProgressDrawable(context).apply {

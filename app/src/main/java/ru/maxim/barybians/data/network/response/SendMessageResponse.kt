@@ -1,5 +1,19 @@
 package ru.maxim.barybians.data.network.response
 
+import com.google.gson.annotations.SerializedName
+import ru.maxim.barybians.domain.model.MessageAttachment
+
 data class SendMessageResponse(
-    val id: Int
-)
+    val user: MessageResponse
+) {
+    data class MessageResponse(
+        val id: Int,
+        val senderId: Int,
+        val receiverId: Int,
+        val text: String,
+        @SerializedName("utime")
+        val time: Long,
+        val unread: Int,
+        val attachments: List<MessageAttachment>?
+    )
+}

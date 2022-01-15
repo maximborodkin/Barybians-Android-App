@@ -46,7 +46,7 @@
     <string name="dialogs">Dialogs</string>
     <string name="profile">Profile</string>
     <string name="an_error_occurred_while_loading_feed">An error occurred while loading feed</string>
-    <string name="an_error_occurred_while_loading_dialogs">An error occurred while loading dialogs</string>
+    <string name="an_error_occurred_while_loading_chats">An error occurred while loading chats</string>
     <string name="an_error_occurred_while_loading_messages">An error occurred while loading messages</string>
     <!--  Profile  -->
         <string name="an_error_occurred_while_loading_profile">An error occurred while loading profile</string>
@@ -183,5 +183,7 @@
     <string name="sticker">sticker</string>
     <string name="login_already_exists">Login already exists</string>
     <string name="invalid_registration_data">Invalid registration data</string>
+    <string name="new_chat_label">There is no dialogs. Start new by clicking + button below</string>
+    <string name="add_chat">Add dialog</string>
 
 </resources>

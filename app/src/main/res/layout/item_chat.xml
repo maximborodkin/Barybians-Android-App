@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp">
+
+    <ru.maxim.barybians.ui.view.AvatarView
+        android:id="@+id/itemChatUserAvatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:hasOnlineStatus="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:isOnline="true"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/itemChatUserName"
+        style="?accentTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:maxLines="1"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/itemChatUserAvatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/full_names" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/itemChatMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        android:maxLines="1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/itemChatDate"
+        app:layout_constraintStart_toEndOf="@id/itemChatUserAvatar"
+        app:layout_constraintTop_toBottomOf="@id/itemChatUserName"
+        tools:text="Some message" />
+
+    <TextView
+        android:id="@+id/itemChatDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBaseline_toBaselineOf="@id/itemChatMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@tools:sample/date/hhmm" />
+</androidx.constraintlayout.widget.ConstraintLayout>

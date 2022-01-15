@@ -27,6 +27,6 @@ fun loadImage(
     @DrawableRes placeholder: Int?,
     thumbnail: String?
 ) {
-    if (image.isNullOrEmpty()) return
+    if (image.isNullOrBlank()) return
     imageView.load(url = image, placeholder = placeholder, thumbnail = thumbnail)
 }

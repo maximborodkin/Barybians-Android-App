@@ -12,7 +12,7 @@ interface ChatService {
 
     /**
      * Method for getting list of chats.
-     * @return list of ...
+     * @return list of chats
      **/
     @GET("/v2/dialogs")
     suspend fun getChatsList(): Response<ArrayList<Chat>>

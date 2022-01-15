@@ -15,7 +15,7 @@ class AvatarView @JvmOverloads constructor(
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
     private var hasOnlineStatus: Boolean = true
-    private var isOnline: Boolean = false
+    var isOnline: Boolean = false
 
     private var maskPath: Path? = null
     private val maskPaint = Paint()
