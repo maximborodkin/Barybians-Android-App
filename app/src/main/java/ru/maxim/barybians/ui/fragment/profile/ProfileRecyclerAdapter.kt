@@ -20,8 +20,9 @@ import java.util.*
 class ProfileRecyclerAdapter(
     private val feedItems: ArrayList<FeedItem>,
     private val profileItemsListener: ProfileItemsListener,
+    currentUserId: Int,
     lifecycleOwner: LifecycleOwner
-) : FeedRecyclerAdapter(feedItems, profileItemsListener, lifecycleOwner) {
+) : FeedRecyclerAdapter(feedItems, currentUserId, profileItemsListener, lifecycleOwner) {
 
     override fun bindHeaderViewHolder(
         headerViewHolder: HeaderViewHolder,

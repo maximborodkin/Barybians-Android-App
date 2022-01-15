@@ -26,9 +26,6 @@ class ChatPresenter @Inject constructor(
     private val pollingChannel = Channel<Deferred<Response<ChatResponse>>>()
 
     fun loadMessages(userId: Int) = presenterScope.launch {
-        if (!retrofitClient.isOnline()) {
-            return@launch viewState.showNoInternet()
-        }
         try {
             val loadMessagesResponse = chatService.getMessages(userId)
             loadMessagesResponse.body()?.apply {
@@ -50,10 +47,6 @@ class ChatPresenter @Inject constructor(
 
 
     fun sendMessage(interlocutorId: Int, text: String, viewHolderId: Long) = presenterScope.launch {
-        if (!retrofitClient.isOnline()) {
-            viewState.onMessageSendingError(viewHolderId)
-            return@launch viewState.showNoInternet()
-        }
         launch {
             try {
                 val sendMessageResponse = chatService.sendMessage(interlocutorId, text)

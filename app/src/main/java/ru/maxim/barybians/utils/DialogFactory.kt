@@ -23,9 +23,9 @@ import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_post_editor.view.*
 import kotlinx.android.synthetic.main.fragment_post_menu_bottom_sheet.*
-import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.repository.AuthRepository
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
@@ -36,7 +36,6 @@ import ru.maxim.barybians.ui.fragment.feed.LikedUsersRecyclerAdapter
  * Singleton class for create dialogs
  */
 object DialogFactory {
-    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
 
     fun createLikesListDialog(
         likes: ArrayList<UserItem>,
@@ -211,6 +210,7 @@ object DialogFactory {
     fun createCommentsListDialog(
         context: Context,
         comments: ArrayList<CommentItem>,
+        currentUserId: Int,
         htmlParser: HtmlParser,
         onUserClick: (userId: Int) -> Unit,
         onImageClick: (drawable: Drawable) -> Unit,
@@ -234,7 +234,7 @@ object DialogFactory {
                 it.layoutManager = LinearLayoutManager(context)
                 it.adapter = CommentsRecyclerAdapter(
                     comments,
-                    preferencesManager.userId,
+                    currentUserId,
                     onUserClick,
                     onImageClick,
                     onCommentDelete,
@@ -260,14 +260,13 @@ object DialogFactory {
             }
         }
 
-    fun createLogoutAlertDialog() = object : DialogFragment() {
+    fun createLogoutAlertDialog(onLogout: () -> Unit) = object : DialogFragment() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?) =
             MaterialAlertDialogBuilder(requireContext()).apply {
                 setTitle(getString(R.string.are_you_sure))
                 setPositiveButton(R.string.yes) { _, _ ->
-                    preferencesManager.token = null
-                    preferencesManager.userId = 0
+                    onLogout()
 
                     with(Intent(context, LoginActivity::class.java)) {
                         flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK

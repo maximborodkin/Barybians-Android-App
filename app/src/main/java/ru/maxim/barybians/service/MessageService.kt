@@ -11,7 +11,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.TaskStackBuilder
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.response.MessageNotificationResponse
 import ru.maxim.barybians.data.persistence.PreferencesManager
@@ -19,6 +18,7 @@ import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.utils.isNotNull
 import java.util.*
+import javax.inject.Inject
 
 /**
  * Indeterminate background service for receiving new messages and notify user about
@@ -36,8 +36,13 @@ class MessageService : Service() {
     private val pendingIntentResultCode = 367
     private val requestTimeout = 50000L
     private val requestsFrequency = 300L
-    private val chatService: ChatService by inject()
-    private val preferencesManager: PreferencesManager by inject()
+
+    @Inject
+    lateinit var chatService: ChatService
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
+
     private var wakeLock: PowerManager.WakeLock? = null
     private var isServiceStarted = false
 

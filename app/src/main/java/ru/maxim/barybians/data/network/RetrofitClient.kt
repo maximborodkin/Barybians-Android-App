@@ -13,7 +13,6 @@ import ru.maxim.barybians.data.network.service.*
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Singleton object for access to SharedPreferences
@@ -22,7 +21,6 @@ import javax.inject.Singleton
 
 @Reusable
 class RetrofitClient @Inject constructor(
-    private val context: Context,
     private val preferencesManager: PreferencesManager
 ) {
 
@@ -72,16 +70,6 @@ class RetrofitClient @Inject constructor(
     val chatService: ChatService = retrofit.create(ChatService::class.java)
     val postService: PostService = retrofit.create(PostService::class.java)
     val commentService: CommentService = retrofit.create(CommentService::class.java)
-
-    /**
-     * Shows is device has internet connection
-     */
-    @Suppress("DEPRECATION")
-    fun isOnline(): Boolean {
-        val connMgr = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connMgr.activeNetworkInfo
-        return networkInfo?.isConnected == true
-    }
 
     companion object {
         const val BASE_URL = "https://api.barybians.ru"

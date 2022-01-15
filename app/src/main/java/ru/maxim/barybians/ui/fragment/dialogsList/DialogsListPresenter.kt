@@ -22,9 +22,6 @@ class DialogsListPresenter @Inject constructor(
     }
 
     fun loadDialogsList() = presenterScope.launch {
-        if (!retrofitClient.isOnline()) {
-            return@launch viewState.showNoInternet()
-        }
         try {
             val dialogs = chatService.getChatsList()
             if (dialogs.isSuccessful && dialogs.body() != null) {

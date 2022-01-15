@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.fragment_stickers_picker.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.network.service.ChatService

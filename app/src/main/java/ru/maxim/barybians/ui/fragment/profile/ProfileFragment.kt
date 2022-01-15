@@ -181,6 +181,7 @@ class ProfileFragment :
             ProfileRecyclerAdapter(
                 feedItems = profileItems,
                 profileItemsListener = this@ProfileFragment,
+                preferencesManager.userId,
                 lifecycleOwner = this@ProfileFragment
             )
                 .also { it.setHasStableIds(true) }
@@ -305,7 +306,7 @@ class ProfileFragment :
         context?.toast(R.string.unable_to_delete_comment)
     }
 
-    override fun onLikeEdited(postPosition: Int, likedUsers: ArrayList<User>) {
+    override fun onLikeEdited(postPosition: Int, likedUsers: List<User>) {
         val likesList = (profileItems[postPosition] as? PostItem)?.likes
         likesList?.clear()
         likedUsers.forEach {
@@ -406,18 +407,21 @@ class ProfileFragment :
         profilePresenter.currentPostId = postId
         profilePresenter.currentPostPosition = postPosition
         val commentsListDialog = DialogFactory.createCommentsListDialog(
-            requireContext(),
-            (profileItems[postPosition] as? PostItem)?.comments ?: ArrayList(),
-            HtmlParser(lifecycleScope, resources, Glide.with(requireContext())),
-            { userId: Int -> openUserProfile(userId) },
-            { drawable: Drawable -> openImage(drawable) },
-            { text: String -> addComment(postPosition, postId, text) },
-            { commentPosition: Int, commentId: Int ->
-                deleteComment(
-                    postPosition,
-                    commentId,
-                    commentPosition
-                )
+            context = requireContext(),
+            comments = (profileItems[postPosition] as? PostItem)?.comments ?: ArrayList(),
+            htmlParser = HtmlParser(lifecycleScope, resources, Glide.with(requireContext())),
+            currentUserId = preferencesManager.userId,
+            onUserClick = { userId: Int ->
+                openUserProfile(userId)
+            },
+            onImageClick = { drawable: Drawable ->
+                openImage(drawable)
+            },
+            onCommentAdd = { text: String ->
+                addComment(postPosition, postId, text)
+            },
+            onCommentDelete = { commentPosition: Int, commentId: Int ->
+                deleteComment(postPosition, commentId, commentPosition)
             }
         )
         commentsListDialog.setOnDismissListener {

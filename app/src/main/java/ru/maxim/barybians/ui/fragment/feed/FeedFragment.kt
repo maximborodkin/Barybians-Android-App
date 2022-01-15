@@ -71,7 +71,7 @@ class FeedFragment :
         feedRecyclerView.adapter = null
     }
 
-    override fun showFeed(posts: ArrayList<Post>) {
+    override fun showFeed(posts: List<Post>) {
         if (view == null) return
         feedLoading.visibility = View.GONE
         feedRefreshLayout.isRefreshing = false
@@ -119,6 +119,7 @@ class FeedFragment :
             layoutManager = LinearLayoutManager(context)
             adapter = FeedRecyclerAdapter(
                 feedItems,
+                preferencesManager.userId,
                 this@FeedFragment,
                 this@FeedFragment
             ).also { it.setHasStableIds(true) }
@@ -217,7 +218,7 @@ class FeedFragment :
         context?.toast(R.string.unable_to_delete_comment)
     }
 
-    override fun onLikeEdited(postPosition: Int, likedUsers: ArrayList<User>) {
+    override fun onLikeEdited(postPosition: Int, likedUsers: List<User>) {
         val likesList = (feedItems[postPosition] as? PostItem)?.likes
         likesList?.clear()
         likedUsers.forEach {
@@ -279,18 +280,21 @@ class FeedFragment :
         feedPresenter.currentPostId = postId
         feedPresenter.currentPostPosition = postPosition
         val commentsListDialog = DialogFactory.createCommentsListDialog(
-            requireContext(),
-            (feedItems[postPosition] as? PostItem)?.comments ?: ArrayList(),
-            HtmlParser(lifecycleScope, resources, Glide.with(requireContext())),
-            { userId: Int -> openUserProfile(userId) },
-            { drawable: Drawable -> openImage(drawable) },
-            { text: String -> addComment(postPosition, postId, text) },
-            { commentPosition: Int, commentId: Int ->
-                deleteComment(
-                    postPosition,
-                    commentId,
-                    commentPosition
-                )
+            context = requireContext(),
+            comments = (feedItems[postPosition] as? PostItem)?.comments ?: ArrayList(),
+            currentUserId = preferencesManager.userId,
+            htmlParser = HtmlParser(lifecycleScope, resources, Glide.with(requireContext())),
+            onUserClick = { userId: Int ->
+                openUserProfile(userId)
+            },
+            onImageClick = { drawable: Drawable ->
+                openImage(drawable)
+            },
+            onCommentAdd = { text: String ->
+                addComment(postPosition, postId, text)
+            },
+            onCommentDelete = { commentPosition: Int, commentId: Int ->
+                deleteComment(postPosition, commentId, commentPosition)
             }
         )
         commentsListDialog.setOnDismissListener {

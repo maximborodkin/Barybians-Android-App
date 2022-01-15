@@ -22,9 +22,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.item_post.view.*
 import kotlinx.android.synthetic.main.item_post_creator.view.*
 import kotlinx.android.synthetic.main.item_profile_header.view.*
-import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.FeedItemType
 import ru.maxim.barybians.ui.fragment.base.PostItem
@@ -35,10 +33,10 @@ import ru.maxim.barybians.utils.weak
 
 open class FeedRecyclerAdapter(
     private val feedItems: ArrayList<FeedItem>,
+    private val currentUserId: Int,
     private val feedItemsListener: FeedItemsListener,
     private val lifecycleOwner: LifecycleOwner
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
 
     final override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -237,7 +235,7 @@ open class FeedRecyclerAdapter(
             postViewHolder.invalidateLikes = {
                 likesCount = post.likes.size
                 hasPersonalLike =
-                    post.likes.find { user -> user.id == preferencesManager.userId } != null
+                    post.likes.find { user -> user.id == currentUserId } != null
                 postViewHolder.likeBtn.text = if (likesCount == 0) null else likesCount.toString()
                 val likeDrawable =
                     if (hasPersonalLike) R.drawable.ic_like_red
@@ -247,7 +245,7 @@ open class FeedRecyclerAdapter(
 
             setOnClickListener {
                 hasPersonalLike =
-                    post.likes.find { user -> user.id == preferencesManager.userId } != null
+                    post.likes.find { user -> user.id == currentUserId } != null
                 feedItemsListener.editLike(position, post.postId, !hasPersonalLike)
             }
 

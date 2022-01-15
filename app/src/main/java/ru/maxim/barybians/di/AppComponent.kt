@@ -3,21 +3,17 @@ package ru.maxim.barybians.di
 import android.content.Context
 import dagger.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import ru.maxim.barybians.data.network.RetrofitClient
-import ru.maxim.barybians.data.persistence.PreferencesManager
-import ru.maxim.barybians.data.repository.AuthRepository
-import ru.maxim.barybians.data.repository.AuthRepositoryImpl
+import ru.maxim.barybians.data.repository.*
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
+import ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
 import ru.maxim.barybians.ui.fragment.stickerPicker.StickersPickerDialog
-import ru.maxim.barybians.utils.DateFormatUtils
 import javax.inject.Singleton
 
 @Singleton
@@ -43,6 +39,7 @@ interface AppComponent {
     fun inject(registrationActivity: RegistrationActivity)
     fun inject(profileFragment: ProfileFragment)
     fun inject(stickersPickerDialog: StickersPickerDialog)
+    fun inject(preferencesFragment: PreferencesFragment)
 }
 
 @Module(includes = [DataModuleBindings::class])
@@ -74,4 +71,16 @@ interface DataModuleBindings {
 
     @Binds
     fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    fun bindChatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
+
+    @Binds
+    fun bindCommentRepository(commentRepositoryImpl: CommentRepositoryImpl): CommentRepository
+
+    @Binds
+    fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl): PostRepository
+
+    @Binds
+    fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
 }

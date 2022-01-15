@@ -41,5 +41,5 @@ interface BaseWallView : MvpView {
     fun onCommentDeleteError()
 
     @AddToEnd
-    fun onLikeEdited(postPosition: Int, likedUsers: ArrayList<User>)
+    fun onLikeEdited(postPosition: Int, likedUsers: List<User>)
 }

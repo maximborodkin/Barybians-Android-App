@@ -3,14 +3,12 @@ package ru.maxim.barybians.ui.fragment.base
 import kotlinx.coroutines.launch
 import moxy.MvpPresenter
 import moxy.presenterScope
-import org.koin.java.KoinJavaComponent.inject
-import ru.maxim.barybians.data.network.RetrofitClient
-import ru.maxim.barybians.data.network.service.CommentService
-import ru.maxim.barybians.data.network.service.PostService
-import ru.maxim.barybians.data.network.service.UserService
+import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 
-open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>() {
+abstract class BaseWallPresenter<T : BaseWallView>(
+    private val postRepository: PostRepository
+) : MvpPresenter<T>() {
 
     /**
      * id and layout position of currently shown post
@@ -22,35 +20,24 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>() {
     var currentPostId: Int = 0
     var currentPostPosition: Int = 0
 
-    protected val userService: UserService by inject(UserService::class.java)
-    protected val postService: PostService by inject(PostService::class.java)
-    private val commentService: CommentService by inject(CommentService::class.java)
-    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
+//    protected val userService: UserService by inject(UserService::class.java)
+//    protected val postService: PostService by inject(PostService::class.java)
+//    private val commentService: CommentService by inject(CommentService::class.java)
+//    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
 
     fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String) =
         presenterScope.launch {
-            if (!retrofitClient.isOnline()) {
-                return@launch viewState.showNoInternet()
-            }
             try {
-                val updatedPostResponse = postService.updatePost(postId, newTitle, newText)
-                if (updatedPostResponse.isSuccessful && updatedPostResponse.body() != null) {
-                    viewState.onPostUpdated(itemPosition, updatedPostResponse.body()!!)
-                } else {
-                    viewState.onPostUpdateError()
-                }
+                val updatedPostResponse = postRepository.updatePost(postId, newTitle, newText)
+                viewState.onPostUpdated(itemPosition, updatedPostResponse)
             } catch (e: Exception) {
                 viewState.onPostUpdateError()
             }
         }
 
     fun deletePost(itemPosition: Int, postId: Int) = presenterScope.launch {
-        if (!retrofitClient.isOnline()) {
-            return@launch viewState.showNoInternet()
-        }
         try {
-            val deletePostResponse = postService.deletePost(postId)
-            if (deletePostResponse.isSuccessful && deletePostResponse.body() == "true") {
+            if (postRepository.deletePost(postId)) {
                 viewState.onPostDeleted(itemPosition)
             } else {
                 viewState.onPostDeleteError()
@@ -61,50 +48,42 @@ open class BaseWallPresenter<T : BaseWallView> : MvpPresenter<T>() {
     }
 
     fun addComment(postId: Int, postPosition: Int, text: String) = presenterScope.launch {
-        if (!retrofitClient.isOnline()) {
-            return@launch viewState.showNoInternet()
-        }
-        try {
-            val comment = commentService.addComment(postId, text)
-            if (comment.isSuccessful && comment.body() != null) {
-                viewState.onCommentAdded(postPosition, comment.body()!!)
-            } else {
-                viewState.onCommentAddError()
-            }
-        } catch (e: Exception) {
-            viewState.onCommentAddError()
-        }
+//        try {
+//            val comment = commentService.addComment(postId, text)
+//            if (comment.isSuccessful && comment.body() != null) {
+//                viewState.onCommentAdded(postPosition, comment.body()!!)
+//            } else {
+//                viewState.onCommentAddError()
+//            }
+//        } catch (e: Exception) {
+//            viewState.onCommentAddError()
+//        }
     }
 
     fun deleteComment(postPosition: Int, commentId: Int, commentPosition: Int) =
         presenterScope.launch {
-            if (!retrofitClient.isOnline()) {
-                return@launch viewState.showNoInternet()
-            }
-            try {
-                val deleteCommentRequest = commentService.deleteComment(commentId)
-                if (deleteCommentRequest.isSuccessful && deleteCommentRequest.body() == "true") {
-                    viewState.onCommentDeleted(postPosition, commentPosition, commentId)
-                } else {
-                    viewState.onCommentDeleteError()
-                }
-            } catch (e: Exception) {
-                viewState.onCommentDeleteError()
-            }
+//            if (!retrofitClient.isOnline()) {
+//                return@launch viewState.showNoInternet()
+//            }
+//            try {
+//                val deleteCommentRequest = commentService.deleteComment(commentId)
+//                if (deleteCommentRequest.isSuccessful && deleteCommentRequest.body() == "true") {
+//                    viewState.onCommentDeleted(postPosition, commentPosition, commentId)
+//                } else {
+//                    viewState.onCommentDeleteError()
+//                }
+//            } catch (e: Exception) {
+//                viewState.onCommentDeleteError()
+//            }
         }
 
 
     fun editLike(itemPosition: Int, postId: Int, hasLike: Boolean) = presenterScope.launch {
-        if (!retrofitClient.isOnline()) {
-            return@launch viewState.showNoInternet()
-        }
         try {
             val editLikeResponse =
-                if (hasLike) postService.addLike(postId)
-                else postService.removeLike(postId)
-            if (editLikeResponse.isSuccessful && editLikeResponse.body() != null) {
-                viewState.onLikeEdited(itemPosition, editLikeResponse.body()!!.likedUsers)
-            }
+                if (hasLike) postRepository.setLike(postId)
+                else postRepository.removeLike(postId)
+            viewState.onLikeEdited(itemPosition, editLikeResponse.whoLiked)
         } catch (e: Exception) {
         }
     }

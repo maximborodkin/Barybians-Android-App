@@ -8,7 +8,7 @@ import ru.maxim.barybians.ui.fragment.base.BaseWallView
 interface FeedView : BaseWallView {
 
     @AddToEnd
-    fun showFeed(posts: ArrayList<Post>)
+    fun showFeed(posts: List<Post>)
 
     @OneExecution
     fun onFeedLoadError()

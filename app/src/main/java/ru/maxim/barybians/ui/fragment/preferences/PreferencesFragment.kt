@@ -1,22 +1,35 @@
 package ru.maxim.barybians.ui.fragment.preferences
 
+import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.*
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.repository.AuthRepository
 import ru.maxim.barybians.service.Actions
 import ru.maxim.barybians.service.ServiceState
 import ru.maxim.barybians.utils.DialogFactory
+import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import java.io.File
+import javax.inject.Inject
 
 class PreferencesFragment : PreferenceFragmentCompat() {
-    private val preferencesManager: PreferencesManager by inject()
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
+
+    @Inject
+    lateinit var authRepository: AuthRepository
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.appComponent.inject(this)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.fragment_preferences)
@@ -60,7 +73,13 @@ class PreferencesFragment : PreferenceFragmentCompat() {
         }
 
         findPreference<Preference>(preferencesManager.logoutKey)?.setOnPreferenceClickListener {
-            DialogFactory.createLogoutAlertDialog()
+            DialogFactory.createLogoutAlertDialog(
+                onLogout = {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        authRepository.logout()
+                    }
+                }
+            )
                 .show(parentFragmentManager, "LogoutDialogFragment")
             true
         }

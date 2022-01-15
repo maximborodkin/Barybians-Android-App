@@ -4,12 +4,13 @@ import kotlinx.coroutines.launch
 import moxy.InjectViewState
 import moxy.presenterScope
 import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.ui.fragment.base.BaseWallPresenter
 import javax.inject.Inject
 
 @InjectViewState
-open class FeedPresenter @Inject constructor(private val retrofitClient: RetrofitClient) :
-    BaseWallPresenter<FeedView>() {
+open class FeedPresenter @Inject constructor(private val postRepository: PostRepository) :
+    BaseWallPresenter<FeedView>(postRepository) {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -17,16 +18,9 @@ open class FeedPresenter @Inject constructor(private val retrofitClient: Retrofi
     }
 
     fun loadFeed() = presenterScope.launch {
-        if (!retrofitClient.isOnline()) {
-            return@launch viewState.showNoInternet()
-        }
         try {
-            val loadFeedResponse = postService.getFeed()
-            if (loadFeedResponse.isSuccessful && loadFeedResponse.body() != null) {
-                viewState.showFeed(loadFeedResponse.body()!!)
-            } else {
-                viewState.onFeedLoadError()
-            }
+            val loadFeedResponse = postRepository.getFeed()
+            viewState.showFeed(loadFeedResponse)
         } catch (e: Exception) {
             viewState.onFeedLoadError()
         }
