@@ -1,8 +1,12 @@
 package ru.maxim.barybians.ui.activity.auth.registration
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import ru.maxim.barybians.R
 import ru.maxim.barybians.utils.isNull
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
 
@@ -10,14 +14,20 @@ class RegistrationViewModel : ViewModel() {
     // Turning to true when the registration button was pressed
     // and to false when the user starts editing data in fields
     private val isErrorsShown = MutableLiveData(false)
+    private val uiDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+    private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     val firstName = MutableLiveData(String())
     val lastName = MutableLiveData(String())
     val birthDate = MutableLiveData(getInstance())
-    val birthDateString = Transformations.map(birthDate) { calendar ->
-        // Format for dates given by API
-        "${calendar.get(YEAR)}-${calendar.get(MONTH)}-${calendar.get(DAY_OF_MONTH)}"
+    val birthDateString = MediatorLiveData<String>().apply {
+        addSource(birthDate) { calendar ->
+            this.postValue(uiDateFormat.format(calendar.time))
+            birthDateApiString.postValue(apiDateFormat.format(calendar.time))
+        }
     }
+    val birthDateApiString = MutableLiveData(String())
+
     val sex = MutableLiveData(false) // true == female, false == male
     val login = MutableLiveData(String())
     val password = MutableLiveData(String())
@@ -28,7 +38,6 @@ class RegistrationViewModel : ViewModel() {
         set(MINUTE, 0)
         set(SECOND, 0)
         set(MILLISECOND, 0)
-        add(HOUR_OF_DAY, 3)
     }
 
     private val _firstNameMessage = MediatorLiveData<Int?>().apply {

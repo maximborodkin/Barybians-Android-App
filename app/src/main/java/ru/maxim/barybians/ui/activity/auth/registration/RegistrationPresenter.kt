@@ -7,6 +7,7 @@ import moxy.presenterScope
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.AlreadyExistsException
 import ru.maxim.barybians.data.network.exception.BadRequestException
+import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.AuthRepository
 import javax.inject.Inject
@@ -28,6 +29,7 @@ class RegistrationPresenter @Inject constructor(private val authRepository: Auth
             viewState.openMainActivity()
         } catch (e: Exception) {
             when (e) {
+                is NoConnectionException -> viewState.showError(R.string.no_internet_connection)
                 is AlreadyExistsException -> viewState.showUsernameExistsError()
                 is BadRequestException -> viewState.showError(R.string.invalid_registration_data)
                 is TimeoutException -> viewState.showError(R.string.request_timeout)

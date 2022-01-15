@@ -6,6 +6,7 @@ import moxy.MvpPresenter
 import moxy.presenterScope
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.InvalidCredentialsException
+import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.ServerErrorException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.AuthRepository
@@ -21,6 +22,7 @@ class LoginPresenter @Inject constructor(private val authRepository: AuthReposit
             viewState.openMainActivity()
         } catch (e: Exception) {
             when (e) {
+                is NoConnectionException -> viewState.showError(R.string.no_internet_connection)
                 is InvalidCredentialsException -> viewState.showInvalidCredentialsError()
                 is TimeoutException -> viewState.showError(R.string.request_timeout)
                 is ServerErrorException -> viewState.showError(R.string.server_error)

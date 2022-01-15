@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.widget.DatePicker
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
-import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
-import kotlinx.coroutines.launch
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
@@ -60,12 +58,12 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView,
                 with(model) {
                     if (validateFields()) {
                         register(
-                            firstName.value?.trim().toString(),
-                            lastName.value?.trim().toString(),
-                            birthDateString.value.toString(),
-                            sex.value == true,
-                            login.value?.trim().toString(),
-                            password.value?.trim().toString()
+                            requireNotNull(firstName.value).trim(),
+                            requireNotNull(lastName.value).trim(),
+                            requireNotNull(birthDateApiString.value),
+                            requireNotNull(sex.value),
+                            requireNotNull(login.value).trim(),
+                            requireNotNull(password.value?.trim())
                         )
                     }
                 }
@@ -90,9 +88,7 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView,
         login: String,
         password: String
     ) {
-        lifecycleScope.launch {
-            registrationPresenter.register(firstName, lastName, birthDate, sex, login, password)
-        }
+        registrationPresenter.register(firstName, lastName, birthDate, sex, login, password)
     }
 
     override fun showError(@StringRes messageRes: Int) = toast(messageRes)

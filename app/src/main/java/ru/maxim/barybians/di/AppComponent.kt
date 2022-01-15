@@ -21,13 +21,16 @@ import ru.maxim.barybians.utils.DateFormatUtils
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AppModule::class])
+@Component(modules = [DataModule::class])
 interface AppComponent {
 
     @Component.Builder
     interface Builder {
         @BindsInstance
         fun applicationContext(context: Context): Builder
+
+        @BindsInstance
+        fun applicationScope(coroutineScope: CoroutineScope): Builder
 
         fun build(): AppComponent
     }
@@ -40,32 +43,6 @@ interface AppComponent {
     fun inject(registrationActivity: RegistrationActivity)
     fun inject(profileFragment: ProfileFragment)
     fun inject(stickersPickerDialog: StickersPickerDialog)
-}
-
-@Module(includes = [UtilModule::class, DataModule::class])
-object AppModule {
-
-    @Singleton
-    @Provides
-    fun provideApplicationScope(): CoroutineScope {
-        return CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    }
-}
-
-@Module
-object UtilModule {
-
-    @Reusable
-    @Provides
-    fun providePreferencesManager(applicationContext: Context): PreferencesManager {
-        return PreferencesManager(applicationContext)
-    }
-
-    @Reusable
-    @Provides
-    fun provideDateFormatUtils(applicationContext: Context): DateFormatUtils {
-        return DateFormatUtils(applicationContext)
-    }
 }
 
 @Module(includes = [DataModuleBindings::class])

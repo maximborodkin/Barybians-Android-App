@@ -2,7 +2,6 @@
 <!--  Shared  -->
     <string name="server_error">Server error</string>
     <string name="network_error">Network error</string>
-    <string name="no_connection">No connection</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="common_network_error">Something went wring. Please try later</string>
     <string name="request_timeout">Request timeout</string>
@@ -18,7 +17,6 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="you">You</string>
-
 
 <!--  Application  -->
     <string name="app_name_release">Barybians</string>
@@ -178,7 +176,6 @@
             <string name="user_name_preference" translatable="false">user_name</string>
             <string name="user_avatar_preference" translatable="false">user_avatar</string>
             <string name="service_state_preference" translatable="false">service_state</string>
-
 
     <!--  Notifications  -->
     <string name="messages_notifications_channel_name">Messages notifications</string>

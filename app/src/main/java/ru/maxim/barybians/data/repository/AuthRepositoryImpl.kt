@@ -1,14 +1,17 @@
 package ru.maxim.barybians.data.repository
 
+import com.google.gson.Gson
 import dagger.Reusable
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
-import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.network.exception.*
+import ru.maxim.barybians.data.network.response.ErrorResponse
 import ru.maxim.barybians.data.network.response.RegistrationResponse
 import ru.maxim.barybians.data.network.service.AuthService
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.utils.NetworkUtils
+import ru.maxim.barybians.utils.isNotNull
 import timber.log.Timber
 import java.net.HttpURLConnection.*
 import javax.inject.Inject
@@ -16,13 +19,13 @@ import javax.inject.Inject
 @Reusable
 class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService,
-    private val retrofitClient: RetrofitClient,
+    private val networkUtils: NetworkUtils,
     private val preferencesManager: PreferencesManager
 ) : AuthRepository {
 
     override suspend fun authenticate(login: String, password: String) = withContext(IO) {
         try {
-            if (!retrofitClient.isOnline()) throw NoConnectionException()
+            if (!networkUtils.networkStateChangeListener.value) throw NoConnectionException()
 
             val authResponse = authService.auth(login, password)
             val responseBody = authResponse.body()
@@ -39,7 +42,6 @@ class AuthRepositoryImpl @Inject constructor(
                     userAvatar = responseBody.user.photo.orEmpty()
                 }
             } else {
-                // TODO("Realize invalid credentials case")
                 throw when (authResponse.code()) {
                     HTTP_CLIENT_TIMEOUT, HTTP_GATEWAY_TIMEOUT -> TimeoutException()
                     in 500..599 -> ServerErrorException()
@@ -61,8 +63,8 @@ class AuthRepositoryImpl @Inject constructor(
         password: String
     ) = withContext(IO) {
         try {
-            if (!retrofitClient.isOnline()) throw NoConnectionException()
-
+            if (!networkUtils.networkStateChangeListener.value) throw NoConnectionException()
+            Timber.d(birthDate)
             val registerResponse = authService.register(
                 firstName,
                 lastName,
@@ -75,20 +77,28 @@ class AuthRepositoryImpl @Inject constructor(
             val responseBody = registerResponse.body()
 
             if (registerResponse.isSuccessful && responseBody != null) {
-                if (responseBody.message == RegistrationResponse.usernameExistsErrorMessage) {
-                    throw AlreadyExistsException()
-                }
                 authenticate(login, password)
             } else {
+                val errorMessage =
+                    if (registerResponse.errorBody().isNotNull())
+                        Gson().fromJson(
+                            registerResponse.errorBody()?.charStream(),
+                            ErrorResponse::class.java
+                        ).message
+                    else null
+
                 throw when (registerResponse.code()) {
                     HTTP_CLIENT_TIMEOUT, HTTP_GATEWAY_TIMEOUT -> TimeoutException()
                     HTTP_BAD_REQUEST -> BadRequestException()
-                    in 500..599 -> ServerErrorException()
+                    HTTP_INTERNAL_ERROR ->
+                        if (errorMessage == RegistrationResponse.usernameExistsErrorMessage) AlreadyExistsException()
+                        else ServerErrorException()
+                    in 501..599 -> ServerErrorException()
                     else -> NetworkException()
                 }
             }
         } catch (e: Exception) {
-            Timber.tag("AuthRepository").w(e)
+            Timber.tag(logTag).w(e)
             throw e
         }
     }
@@ -99,6 +109,8 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     companion object {
+        private const val logTag = "AuthRepository"
+
         private const val defaultAvatarUrl = "min/j.png"
     }
 }
