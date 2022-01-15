@@ -68,10 +68,11 @@ android {
 dependencies {
     def koin_version = "3.1.2"
     def nav_version = "2.3.5"
-    def room_version = "2.3.0"
+    def room_version = "2.4.1"
     def livedata_version = "2.4.0"
     def coroutines_version = "1.5.2"
     def dagger_version = "2.40.4"
+    def moxy_version = "2.2.2"
 
     // KTX
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -83,18 +84,18 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
     // AndroidX
-    implementation "androidx.appcompat:appcompat:1.4.0"
+    implementation "androidx.appcompat:appcompat:1.4.1"
     implementation "androidx.constraintlayout:constraintlayout:2.1.2"
     implementation "androidx.preference:preference-ktx:1.1.1"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation "com.android.support:multidex:1.0.3"
-    implementation "com.google.android.material:material:1.4.0"
+    implementation "com.google.android.material:material:1.5.0"
 
     // MVP
-    kapt "tech.schoolhelper:moxy-x-compiler:1.7.0"
-    implementation "tech.schoolhelper:moxy-x-material:1.7.0"
-    implementation "tech.schoolhelper:moxy-x:1.7.0"
-    implementation "tech.schoolhelper:moxy-x-androidx:1.7.0"
+    kapt "com.github.moxy-community:moxy-compiler:$moxy_version"
+    implementation "com.github.moxy-community:moxy:$moxy_version"
+    implementation "com.github.moxy-community:moxy-androidx:$moxy_version"
+    implementation "com.github.moxy-community:moxy-ktx:$moxy_version"
 
     // Adapter delegates
     implementation 'com.hannesdorfmann:adapterdelegates4:4.3.0'

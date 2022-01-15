@@ -1,35 +1,35 @@
 package ru.maxim.barybians.ui.fragment.feed
 
-import com.arellomobile.mvp.InjectViewState
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
+import moxy.InjectViewState
+import moxy.presenterScope
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.ui.fragment.base.BaseWallPresenter
+import javax.inject.Inject
 
 @InjectViewState
-open class FeedPresenter : BaseWallPresenter<FeedView>() {
-    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
+open class FeedPresenter @Inject constructor(private val retrofitClient: RetrofitClient) :
+    BaseWallPresenter<FeedView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         loadFeed()
     }
 
-    fun loadFeed() {
+    fun loadFeed() = presenterScope.launch {
         if (!retrofitClient.isOnline()) {
-            return viewState.showNoInternet()
+            return@launch viewState.showNoInternet()
         }
-        launch {
-            try {
-                val loadFeedResponse = postService.getFeed()
-                if (loadFeedResponse.isSuccessful && loadFeedResponse.body() != null) {
-                    viewState.showFeed(loadFeedResponse.body()!!)
-                } else {
-                    viewState.onFeedLoadError()
-                }
-            } catch (e: Exception) {
+        try {
+            val loadFeedResponse = postService.getFeed()
+            if (loadFeedResponse.isSuccessful && loadFeedResponse.body() != null) {
+                viewState.showFeed(loadFeedResponse.body()!!)
+            } else {
                 viewState.onFeedLoadError()
             }
+        } catch (e: Exception) {
+            viewState.onFeedLoadError()
         }
+
     }
 }

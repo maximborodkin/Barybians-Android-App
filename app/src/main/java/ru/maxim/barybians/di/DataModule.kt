@@ -20,7 +20,7 @@ val dataModule = module {
     single { get<RetrofitClient>().commentService }
 
 // Repository
-    single { AuthRepositoryImpl(get(), get(), get()) } bind AuthRepository::class
+
     single { PostRepositoryImpl(get(), get()) } bind PostRepository::class
 
 // Persistence

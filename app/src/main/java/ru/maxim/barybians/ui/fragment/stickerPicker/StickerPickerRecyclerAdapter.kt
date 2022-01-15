@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import com.bumptech.glide.Glide
 import ru.maxim.barybians.ui.fragment.stickerPicker.StickerPickerRecyclerAdapter.StickerViewHolder
 
-class StickerPickerRecyclerAdapter(private val stickers: ArrayList<String>,
-                                   private val onStickerClick: (position: Int) -> Unit
+class StickerPickerRecyclerAdapter(
+    private val stickers: ArrayList<String>,
+    private val onStickerClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<StickerViewHolder>() {
 
     class StickerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -19,9 +20,9 @@ class StickerPickerRecyclerAdapter(private val stickers: ArrayList<String>,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StickerViewHolder {
         val imageView = ImageView(parent.context)
-        val imageSize = parent.width/4
+        val imageSize = parent.width / 4
         imageView.layoutParams = LayoutParams(imageSize, imageSize)
-        imageView.setPadding(imageSize/20)
+        imageView.setPadding(imageSize / 20)
         return StickerViewHolder(imageView)
     }
 

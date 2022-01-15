@@ -2,31 +2,35 @@ package ru.maxim.barybians.data.network.service
 
 import retrofit2.Response
 import retrofit2.http.*
-import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.data.network.response.LikeResponse
+import ru.maxim.barybians.domain.model.Post
 
 interface PostService {
 
-    @GET("/api/posts")
+    @GET("/v2/posts")
     suspend fun getFeed(): Response<ArrayList<Post>>
 
     @FormUrlEncoded
-    @POST("/api/posts")
-    suspend fun createPost(@Field("title") title: String?,
-                           @Field("text") text: String): Response<Post>
+    @POST("/v2/posts")
+    suspend fun createPost(
+        @Field("title") title: String?,
+        @Field("text") text: String
+    ): Response<Post>
 
     @FormUrlEncoded
-    @PUT("/api/posts/{postId}")
-    suspend fun updatePost(@Path("postId") postId: Int,
-                   @Field("title") newText: String?,
-                   @Field("text") newText1: String): Response<Post>
+    @PUT("/v2/posts/{postId}")
+    suspend fun updatePost(
+        @Path("postId") postId: Int,
+        @Field("title") newText: String?,
+        @Field("text") newText1: String
+    ): Response<Post>
 
-    @DELETE("/api/posts/{postId}")
+    @DELETE("/v2/posts/{postId}")
     suspend fun deletePost(@Path("postId") postId: Int): Response<String>
 
-    @POST("/api/posts/{postId}/like")
+    @POST("/v2/posts/{postId}/like")
     suspend fun addLike(@Path("postId") postId: Int): Response<LikeResponse>
 
-    @DELETE("/api/posts/{postId}/like")
+    @DELETE("/v2/posts/{postId}/like")
     suspend fun removeLike(@Path("postId") postId: Int): Response<LikeResponse>
 }

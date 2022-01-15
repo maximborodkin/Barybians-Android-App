@@ -12,8 +12,9 @@ import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.fragment.feed.LikedUsersRecyclerAdapter.UserViewHolder
 import ru.maxim.barybians.ui.view.AvatarView
 
-class LikedUsersRecyclerAdapter(private val users: ArrayList<PostItem.UserItem>,
-                                private val onUserClick: (userId: Int) -> Unit
+class LikedUsersRecyclerAdapter(
+    private val users: ArrayList<PostItem.UserItem>,
+    private val onUserClick: (userId: Int) -> Unit
 ) : RecyclerView.Adapter<UserViewHolder>() {
 
     class UserViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -22,7 +23,9 @@ class LikedUsersRecyclerAdapter(private val users: ArrayList<PostItem.UserItem>,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder =
-        UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false))
+        UserViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
+        )
 
     override fun getItemCount(): Int = users.size
 

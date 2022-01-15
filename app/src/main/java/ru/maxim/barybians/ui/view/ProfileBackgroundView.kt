@@ -12,8 +12,11 @@ import androidx.core.graphics.drawable.toBitmap
 import ru.maxim.barybians.R
 
 
-class ProfileBackgroundView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : AppCompatImageView(context, attrs, defStyleAttr) {
+class ProfileBackgroundView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : AppCompatImageView(context, attrs, defStyleAttr) {
 
     var hasBlur: Boolean = true
     var blurRadius: Float = 18F
@@ -21,11 +24,18 @@ class ProfileBackgroundView @JvmOverloads constructor(context: Context, attrs: A
     var foregroundTransparency: Int = 160
 
     init {
-        getContext().obtainStyledAttributes(attrs, R.styleable.ProfileBackgroundView, defStyleAttr, 0).apply {
+        getContext().obtainStyledAttributes(
+            attrs,
+            R.styleable.ProfileBackgroundView,
+            defStyleAttr,
+            0
+        ).apply {
             hasBlur = getBoolean(R.styleable.ProfileBackgroundView_hasBlur, true)
             blurRadius = getFloat(R.styleable.ProfileBackgroundView_blurRadius, 18F)
-            hasDarkForeground = getBoolean(R.styleable.ProfileBackgroundView_hasDarkForeground, true)
-            foregroundTransparency = getInt(R.styleable.ProfileBackgroundView_foregroundTransparency, 160)
+            hasDarkForeground =
+                getBoolean(R.styleable.ProfileBackgroundView_hasDarkForeground, true)
+            foregroundTransparency =
+                getInt(R.styleable.ProfileBackgroundView_foregroundTransparency, 160)
             recycle()
         }
     }
@@ -49,7 +59,12 @@ class ProfileBackgroundView @JvmOverloads constructor(context: Context, attrs: A
             if (blurRadius < 0) blurRadius = 0F
             if (blurRadius > 25) blurRadius = 25F
             if (hasBlur)
-                canvas?.drawBitmap(blurRenderScript(context, drawable.toBitmap()), imageRect, imageRect, null)
+                canvas?.drawBitmap(
+                    blurRenderScript(context, drawable.toBitmap()),
+                    imageRect,
+                    imageRect,
+                    null
+                )
             else
                 canvas?.drawBitmap(drawable.toBitmap(), imageRect, imageRect, null)
             if (hasDarkForeground)
@@ -58,7 +73,11 @@ class ProfileBackgroundView @JvmOverloads constructor(context: Context, attrs: A
     }
 
     private fun blurRenderScript(context: Context?, smallBitmap: Bitmap): Bitmap {
-        val bitmap = Bitmap.createBitmap(smallBitmap.width, smallBitmap.height+translationY.toInt(), Bitmap.Config.ARGB_8888)
+        val bitmap = Bitmap.createBitmap(
+            smallBitmap.width,
+            smallBitmap.height + translationY.toInt(),
+            Bitmap.Config.ARGB_8888
+        )
         val renderScript = RenderScript.create(context)
         val blurInput = Allocation.createFromBitmap(renderScript, smallBitmap)
         val blurOutput = Allocation.createFromBitmap(renderScript, bitmap)

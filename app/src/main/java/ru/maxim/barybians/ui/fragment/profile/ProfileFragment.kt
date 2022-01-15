@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui.fragment.profile
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,32 +11,40 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.arellomobile.mvp.MvpAppCompatFragment
-import com.arellomobile.mvp.presenter.InjectPresenter
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import org.koin.android.ext.android.inject
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.network.response.CommentResponse
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentProfileBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.data.network.response.CommentResponse
-import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.*
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.*
 import ru.maxim.barybians.utils.*
+import javax.inject.Inject
+import javax.inject.Provider
 
 class ProfileFragment :
     MvpAppCompatFragment(),
     ProfileView,
     ProfileItemsListener {
-    private val preferencesManager: PreferencesManager by inject()
-    private val dateFormatUtils: DateFormatUtils by inject()
 
-    @InjectPresenter
-    lateinit var profilePresenter: ProfilePresenter
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
+
+    @Inject
+    lateinit var dateFormatUtils: DateFormatUtils
+
+    @Inject
+    lateinit var presenterProvider: Provider<ProfilePresenter>
+
+    private val profilePresenter by moxyPresenter { presenterProvider.get() }
+
     private val args: ProfileFragmentArgs by navArgs()
     private val userId: Int by lazy {
         if (args.userId != 0) args.userId else preferencesManager.userId
@@ -48,6 +57,11 @@ class ProfileFragment :
     private var isEditStatusDialogShown = false
     private var currentEditableStatus: String? = null
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.appComponent.inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +70,6 @@ class ProfileFragment :
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -243,7 +256,7 @@ class ProfileFragment :
     }
 
     override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
-        val postComments = (profileItems[postPosition] as? PostItem)?.comments?:return
+        val postComments = (profileItems[postPosition] as? PostItem)?.comments ?: return
 
         val author = UserItem(
             preferencesManager.userId,
@@ -274,7 +287,7 @@ class ProfileFragment :
     }
 
     override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
-        val postComments = (profileItems[postPosition] as? PostItem)?.comments?:return
+        val postComments = (profileItems[postPosition] as? PostItem)?.comments ?: return
         if (postComments[commentPosition].id == commentId) postComments.removeAt(commentPosition)
         // TODO: migrate to flow
 //        currentCommentsListDialog?.let {
@@ -328,13 +341,13 @@ class ProfileFragment :
     override fun openImage(drawable: Drawable) {
         ImageViewerFragment
             .newInstance(drawable = drawable)
-            .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
+            .show(activity?.supportFragmentManager ?: return, "ImageViewerFragment")
     }
 
     override fun openImage(imageUrl: String) {
         ImageViewerFragment
             .newInstance(imageUrl = imageUrl)
-            .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
+            .show(activity?.supportFragmentManager ?: return, "ImageViewerFragment")
     }
 
     override fun openDialog(userId: Int, userAvatar: String?, userName: String) {
@@ -350,7 +363,7 @@ class ProfileFragment :
 
     override fun showEditStatusDialog(status: String?) {
         var currentStatus = status
-        editStatusDialog = DialogFactory.createEditStatusDialog(context?:return, currentStatus,
+        editStatusDialog = DialogFactory.createEditStatusDialog(context ?: return, currentStatus,
             onStatusEdited = {
                 currentStatus = it
             }, onStatusEditConfirmed = {
@@ -394,12 +407,18 @@ class ProfileFragment :
         profilePresenter.currentPostPosition = postPosition
         val commentsListDialog = DialogFactory.createCommentsListDialog(
             requireContext(),
-            (profileItems[postPosition] as? PostItem)?.comments?:ArrayList(),
+            (profileItems[postPosition] as? PostItem)?.comments ?: ArrayList(),
             HtmlParser(lifecycleScope, resources, Glide.with(requireContext())),
             { userId: Int -> openUserProfile(userId) },
             { drawable: Drawable -> openImage(drawable) },
             { text: String -> addComment(postPosition, postId, text) },
-            { commentPosition: Int, commentId: Int -> deleteComment(postPosition, commentId, commentPosition) }
+            { commentPosition: Int, commentId: Int ->
+                deleteComment(
+                    postPosition,
+                    commentId,
+                    commentPosition
+                )
+            }
         )
         commentsListDialog.setOnDismissListener {
             profilePresenter.currentPostId = -1

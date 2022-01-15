@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui.fragment.feed
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,41 +10,55 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.MvpAppCompatFragment
-import com.arellomobile.mvp.presenter.InjectPresenter
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_comments_bottom_sheet.*
 import kotlinx.android.synthetic.main.fragment_feed.*
-import org.koin.android.ext.android.inject
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
-import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.data.network.response.CommentResponse
 import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
 import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
 import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
-import ru.maxim.barybians.utils.DateFormatUtils
-import ru.maxim.barybians.utils.DialogFactory
-import ru.maxim.barybians.utils.HtmlParser
-import ru.maxim.barybians.utils.toast
+import ru.maxim.barybians.utils.*
+import javax.inject.Inject
+import javax.inject.Provider
 
 class FeedFragment :
     MvpAppCompatFragment(),
     FeedView,
     FeedItemsListener {
 
-    @InjectPresenter
-    lateinit var feedPresenter: FeedPresenter
+    @Inject
+    lateinit var presenterProvider: Provider<FeedPresenter>
+
+    private val feedPresenter by moxyPresenter { presenterProvider.get() }
+
     private val feedItems = ArrayList<FeedItem>()
     private var currentCommentsListDialog: BottomSheetDialog? = null
-    private val dateFormatUtils: DateFormatUtils by inject()
-    private val preferencesManager: PreferencesManager by inject()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    @Inject
+    lateinit var dateFormatUtils: DateFormatUtils
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.appComponent.inject(this)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_feed, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,16 +91,16 @@ class FeedFragment :
                     comment.author.avatarMin
                 )
                 val date =
-                    dateFormatUtils.getSimplifiedDate(comment.date*1000)
+                    dateFormatUtils.getSimplifiedDate(comment.date * 1000)
                 CommentItem(comment.id, comment.text, date, author)
             })
 
-            val date = dateFormatUtils.getSimplifiedDate(post.date*1000)
+            val date = dateFormatUtils.getSimplifiedDate(post.date * 1000)
             feedItems.add(
                 PostItem(
                     post.id,
                     user?.id == preferencesManager.userId,
-                    user?.id?:preferencesManager.userId,
+                    user?.id ?: preferencesManager.userId,
                     user?.avatarMin,
                     "${user?.firstName} ${user?.lastName}",
                     date,
@@ -128,7 +143,7 @@ class FeedFragment :
     }
 
     override fun onPostUpdated(itemPosition: Int, post: Post) {
-        val date = dateFormatUtils.getSimplifiedDate(post.date*1000)
+        val date = dateFormatUtils.getSimplifiedDate(post.date * 1000)
         (feedItems[itemPosition] as? PostItem)?.let {
             it.title = post.title
             it.text = post.text
@@ -151,7 +166,7 @@ class FeedFragment :
     }
 
     override fun onCommentAdded(postPosition: Int, comment: CommentResponse) {
-        val postComments = (feedItems[postPosition] as? PostItem)?.comments?:return
+        val postComments = (feedItems[postPosition] as? PostItem)?.comments ?: return
 
         val author = UserItem(
             preferencesManager.userId,
@@ -181,12 +196,16 @@ class FeedFragment :
     }
 
     override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
-        val postComments = (feedItems[postPosition] as? PostItem)?.comments?:return
+        val postComments = (feedItems[postPosition] as? PostItem)?.comments ?: return
         if (postComments[commentPosition].id == commentId) postComments.removeAt(commentPosition)
         currentCommentsListDialog?.let {
             it.commentsBottomSheetTitle?.text =
                 if (postComments.size > 0)
-                    resources.getQuantityString(R.plurals.comment_plurals, postComments.size, postComments.size)
+                    resources.getQuantityString(
+                        R.plurals.comment_plurals,
+                        postComments.size,
+                        postComments.size
+                    )
                 else
                     getString(R.string.no_comments_yet)
             it.commentsBottomSheetRecyclerView?.adapter?.notifyItemRemoved(commentPosition)
@@ -224,19 +243,19 @@ class FeedFragment :
     }
 
     override fun showDialog(dialogFragment: DialogFragment, tag: String) {
-        dialogFragment.show(activity?.supportFragmentManager?:return, tag)
+        dialogFragment.show(activity?.supportFragmentManager ?: return, tag)
     }
 
     override fun openImage(drawable: Drawable) {
         ImageViewerFragment
             .newInstance(drawable = drawable)
-            .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
+            .show(activity?.supportFragmentManager ?: return, "ImageViewerFragment")
     }
 
     override fun openImage(imageUrl: String) {
         ImageViewerFragment
             .newInstance(imageUrl = imageUrl)
-            .show(activity?.supportFragmentManager?:return, "ImageViewerFragment")
+            .show(activity?.supportFragmentManager ?: return, "ImageViewerFragment")
     }
 
     override fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String) {
@@ -261,12 +280,18 @@ class FeedFragment :
         feedPresenter.currentPostPosition = postPosition
         val commentsListDialog = DialogFactory.createCommentsListDialog(
             requireContext(),
-            (feedItems[postPosition] as? PostItem)?.comments?:ArrayList(),
+            (feedItems[postPosition] as? PostItem)?.comments ?: ArrayList(),
             HtmlParser(lifecycleScope, resources, Glide.with(requireContext())),
             { userId: Int -> openUserProfile(userId) },
             { drawable: Drawable -> openImage(drawable) },
             { text: String -> addComment(postPosition, postId, text) },
-            { commentPosition: Int, commentId: Int -> deleteComment(postPosition, commentId, commentPosition) }
+            { commentPosition: Int, commentId: Int ->
+                deleteComment(
+                    postPosition,
+                    commentId,
+                    commentPosition
+                )
+            }
         )
         commentsListDialog.setOnDismissListener {
             feedPresenter.currentPostId = -1

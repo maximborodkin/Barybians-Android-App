@@ -12,20 +12,19 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_dialog.view.*
-import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.domain.model.Chat
-import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListRecyclerAdapter.DialogViewHolder
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.DateFormatUtils
 
 class DialogsListRecyclerAdapter(
     private val chats: ArrayList<Chat>,
+    private val currentUserId: Int,
+    private val dateFormatUtils: DateFormatUtils,
     private val onDialogClick: (userId: Int) -> Unit
 ) : RecyclerView.Adapter<DialogViewHolder>() {
-    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
-    private val dateFormatUtils: DateFormatUtils by inject(DateFormatUtils::class.java)
+
 
     class DialogViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val avatarView: AvatarView = view.itemDialogAvatar
@@ -35,7 +34,9 @@ class DialogsListRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DialogViewHolder =
-        DialogViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_dialog, parent, false))
+        DialogViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_dialog, parent, false)
+        )
 
     override fun getItemCount(): Int = chats.size
 
@@ -45,8 +46,8 @@ class DialogsListRecyclerAdapter(
         Glide.with(context).load(dialog.secondUser.avatarMin).into(holder.avatarView)
         val interlocutorName = "${dialog.secondUser.firstName} ${dialog.secondUser.lastName}"
         holder.nameView.text = interlocutorName
-        val lastMessageSpan =  SpannableStringBuilder()
-        if (dialog.lastMessage.senderId == preferencesManager.userId){
+        val lastMessageSpan = SpannableStringBuilder()
+        if (dialog.lastMessage.senderId == currentUserId) {
             val youString = context.getString(R.string.you)
             lastMessageSpan.append(youString)
             lastMessageSpan.setSpan(
@@ -55,7 +56,7 @@ class DialogsListRecyclerAdapter(
                 youString.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-        } else{
+        } else {
             val interlocutorFirstName = dialog.secondUser.firstName
             lastMessageSpan.append(interlocutorFirstName)
             lastMessageSpan.setSpan(
@@ -68,7 +69,7 @@ class DialogsListRecyclerAdapter(
         lastMessageSpan.append(": ${dialog.lastMessage.text}")
         val messagePreviewText = lastMessageSpan.toString()
         holder.messageView.text = messagePreviewText
-        holder.dateView.text = dateFormatUtils.getSimplifiedDate(dialog.lastMessage.time*1000)
-        holder.itemView.setOnClickListener { onDialogClick(dialog.secondUser.id,) }
+        holder.dateView.text = dateFormatUtils.getSimplifiedDate(dialog.lastMessage.time * 1000)
+        holder.itemView.setOnClickListener { onDialogClick(dialog.secondUser.id) }
     }
 }

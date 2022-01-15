@@ -2,7 +2,6 @@ package ru.maxim.barybians.utils
 
 import android.content.Context
 import android.os.Build
-import android.text.format.DateUtils
 import dagger.Reusable
 import ru.maxim.barybians.R
 import java.text.SimpleDateFormat

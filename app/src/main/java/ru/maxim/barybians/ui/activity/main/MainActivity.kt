@@ -8,20 +8,24 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.databinding.ActivityMainBinding
 import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.databinding.ActivityMainBinding
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
+import ru.maxim.barybians.utils.appComponent
+import javax.inject.Inject
 
 // Hihi hehe haha
 class MainActivity : AppCompatActivity() {
-    private val preferencesManager: PreferencesManager by inject()
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        appComponent.inject(this)
         super.onCreate(savedInstanceState)
 
-        if (preferencesManager.token.isNullOrEmpty() || preferencesManager.userId == 0) {
+        if (preferencesManager.token.isNullOrBlank() || preferencesManager.userId == 0) {
             val loginActivityIntent = Intent(this, LoginActivity::class.java)
             loginActivityIntent.flags = FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
             startActivity(loginActivityIntent)
@@ -32,10 +36,14 @@ class MainActivity : AppCompatActivity() {
             with(findNavController(R.id.mainFragmentHost)) {
                 addOnDestinationChangedListener { _, _, arguments ->
                     binding.mainNavigationBottom.isVisible =
-                        arguments != null && arguments.getBoolean("hasBottomNavigation", false)
+                        arguments != null && arguments.getBoolean(hasBottomNavigationKey, false)
                 }
                 binding.mainNavigationBottom.setupWithNavController(this)
             }
         }
+    }
+
+    companion object {
+        const val hasBottomNavigationKey = "hasBottomNavigation"
     }
 }

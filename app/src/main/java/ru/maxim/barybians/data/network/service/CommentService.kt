@@ -7,10 +7,12 @@ import ru.maxim.barybians.data.network.response.CommentResponse
 interface CommentService {
 
     @FormUrlEncoded
-    @POST("/api/comments")
-    suspend fun addComment(@Field("postId") postId: Int,
-                           @Field("text") text: String): Response<CommentResponse>
-    
-    @DELETE("/api/comments/{commentId}")
+    @POST("/v2/comments")
+    suspend fun addComment(
+        @Field("postId") postId: Int,
+        @Field("text") text: String
+    ): Response<CommentResponse>
+
+    @DELETE("/v2/comments/{commentId}")
     suspend fun deleteComment(@Path("commentId") commentId: Int): Response<String>
 }

@@ -1,7 +1,9 @@
 package ru.maxim.barybians.ui.activity.auth.login
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
+import kotlinx.coroutines.launch
+import moxy.InjectViewState
+import moxy.MvpPresenter
+import moxy.presenterScope
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.InvalidCredentialsException
 import ru.maxim.barybians.data.network.exception.ServerErrorException
@@ -13,7 +15,7 @@ import javax.inject.Inject
 class LoginPresenter @Inject constructor(private val authRepository: AuthRepository) :
     MvpPresenter<LoginView>() {
 
-    suspend fun login(login: String, password: String) {
+    fun login(login: String, password: String) = presenterScope.launch {
         try {
             authRepository.authenticate(login, password)
             viewState.openMainActivity()

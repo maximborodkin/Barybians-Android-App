@@ -4,7 +4,9 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -29,7 +31,6 @@ class ImageViewerFragment : AppCompatDialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        retainInstance = true
         dialog?.window?.setLayout(MATCH_PARENT, MATCH_PARENT)
     }
 
@@ -58,20 +59,22 @@ class ImageViewerFragment : AppCompatDialogFragment() {
                     .load(imageUrl)
                     .listener(object : RequestListener<Drawable> {
 
-                        override fun onLoadFailed(e: GlideException?,
-                                                  model: Any?,
-                                                  target: Target<Drawable>?,
-                                                  isFirstResource: Boolean
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
                         ): Boolean {
                             progressBar.visibility = View.GONE
                             return false
                         }
 
-                        override fun onResourceReady(resource: Drawable?,
-                                                     model: Any?,
-                                                     target: Target<Drawable>?,
-                                                     dataSource: DataSource?,
-                                                     isFirstResource: Boolean
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
                         ): Boolean {
                             drawable = resource
                             progressBar.visibility = View.GONE

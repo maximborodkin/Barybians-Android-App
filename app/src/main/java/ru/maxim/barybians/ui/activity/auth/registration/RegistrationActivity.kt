@@ -5,25 +5,36 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.DatePicker
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
+import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.arellomobile.mvp.MvpAppCompatActivity
-import com.arellomobile.mvp.presenter.InjectPresenter
+import kotlinx.coroutines.launch
+import moxy.MvpAppCompatActivity
+import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.ActivityRegistrationBinding
 import ru.maxim.barybians.ui.activity.main.MainActivity
+import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Provider
 
 class RegistrationActivity : MvpAppCompatActivity(), RegistrationView,
     DatePickerDialog.OnDateSetListener {
 
-    @InjectPresenter
-    lateinit var registrationPresenter: RegistrationPresenter
+    @Inject
+    lateinit var presenterProvider: Provider<RegistrationPresenter>
+
+    private val registrationPresenter by moxyPresenter { presenterProvider.get() }
+
     private val binding by viewBinding(ActivityRegistrationBinding::bind)
     private val model by viewModels<RegistrationViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        appComponent.inject(this)
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_registration)
         binding.lifecycleOwner = this
         supportActionBar?.hide()
@@ -42,19 +53,19 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView,
                     model.today.get(Calendar.DAY_OF_MONTH)
                 ).show()
             }
-            registrationMaleBtn.setOnClickListener { model.sex.postValue(true) }
-            registrationFemaleBtn.setOnClickListener { model.sex.postValue(false) }
+            registrationMaleBtn.setOnClickListener { model.sex.postValue(false) }
+            registrationFemaleBtn.setOnClickListener { model.sex.postValue(true) }
 
             registrationBtn.setOnClickListener {
                 with(model) {
                     if (validateFields()) {
                         register(
-                            firstName.value!!.trim(),
-                            lastName.value!!.trim(),
-                            birthDateString.value!!,
+                            firstName.value?.trim().toString(),
+                            lastName.value?.trim().toString(),
+                            birthDateString.value.toString(),
                             sex.value == true,
-                            login.value!!.trim(),
-                            password.value!!.trim()
+                            login.value?.trim().toString(),
+                            password.value?.trim().toString()
                         )
                     }
                 }
@@ -78,9 +89,13 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView,
         sex: Boolean,
         login: String,
         password: String
-    ) = registrationPresenter.register(firstName, lastName, birthDate, sex, login, password)
+    ) {
+        lifecycleScope.launch {
+            registrationPresenter.register(firstName, lastName, birthDate, sex, login, password)
+        }
+    }
 
-    override fun showError(messageRes: Int) = toast(messageRes)
+    override fun showError(@StringRes messageRes: Int) = toast(messageRes)
 
     override fun showUsernameExistsError() {
         binding.registrationLoginLayout.error = getText(R.string.login_already_exists)

@@ -31,24 +31,32 @@ class ChatRecyclerAdapter(
         val timeView: TextView = view.itemOutgoingMessageTime
         private val messageLabel: AppCompatImageView = view.itemOutgoingMessageLabel
 
-        init { clearLabel() }
+        init {
+            clearLabel()
+        }
 
         fun setSendingProcessLabel() {
             messageLabel.setBackgroundResource(R.drawable.ic_sending_process_animated)
             (messageLabel.background as Animatable).start()
         }
 
-        fun setErrorLabel() { messageLabel.setBackgroundResource(R.drawable.ic_error) }
+        fun setErrorLabel() {
+            messageLabel.setBackgroundResource(R.drawable.ic_error)
+        }
 
-        fun setUnreadLabel() { messageLabel.setBackgroundResource(R.drawable.unread_circle) }
+        fun setUnreadLabel() {
+            messageLabel.setBackgroundResource(R.drawable.unread_circle)
+        }
 
-        fun clearLabel() { messageLabel.background = null }
+        fun clearLabel() {
+            messageLabel.background = null
+        }
     }
 
     override fun getItemId(position: Int) = messages[position].viewId
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType) {
+        return when (viewType) {
             MessageType.IncomingMessage.viewType -> IncomingMessageViewHolder(
                 LayoutInflater
                     .from(parent.context)
@@ -65,7 +73,7 @@ class ChatRecyclerAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
-        when(getItemViewType(position)) {
+        when (getItemViewType(position)) {
             MessageType.IncomingMessage.viewType -> {
                 val incomingMessage = message as? IncomingMessage
                 (holder as? IncomingMessageViewHolder)?.let {
@@ -78,7 +86,7 @@ class ChatRecyclerAdapter(
                 (holder as? OutgoingMessageViewHolder)?.let {
                     it.textView.text = outgoingMessage.text
                     it.timeView.text = outgoingMessage.time
-                    when(outgoingMessage.status) {
+                    when (outgoingMessage.status) {
                         Sending -> holder.setSendingProcessLabel()
                         Unread -> holder.setUnreadLabel()
                         Read -> holder.clearLabel()

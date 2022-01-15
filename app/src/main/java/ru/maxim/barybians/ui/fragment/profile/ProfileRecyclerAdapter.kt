@@ -46,7 +46,13 @@ class ProfileRecyclerAdapter(
             }
             headerViewHolder.openChatBtn.apply {
                 visibility = VISIBLE
-                setOnClickListener { profileItemsListener.openDialog(header.userId, header.avatarSmall, header.name) }
+                setOnClickListener {
+                    profileItemsListener.openDialog(
+                        header.userId,
+                        header.avatarSmall,
+                        header.name
+                    )
+                }
             }
             headerViewHolder.preferencesBtn.visibility = GONE
             headerViewHolder.editBtn.visibility = GONE
@@ -73,8 +79,10 @@ class ProfileRecyclerAdapter(
             })
         }
 
-        val age = ((Date().time / 1000 - Date(header.birthDate).time) / (60 * 60 * 24 * 365)).toInt()
-        headerViewHolder.ageView.text = context.resources.getQuantityString(R.plurals.age_plurals, age, age)
+        val age =
+            ((Date().time / 1000 - Date(header.birthDate).time) / (60 * 60 * 24 * 365)).toInt()
+        headerViewHolder.ageView.text =
+            context.resources.getQuantityString(R.plurals.age_plurals, age, age)
 
         if (!header.isPersonal && header.status.isNullOrBlank()) {
             headerViewHolder.statusView.visibility = GONE
@@ -127,14 +135,17 @@ class ProfileRecyclerAdapter(
         }
 
         postCreatorViewHolder.textView.addTextChangedListener {
-            if (it.toString().isNotBlank()) { postCreatorViewHolder.textLayoutView.error = null }
+            if (it.toString().isNotBlank()) {
+                postCreatorViewHolder.textLayoutView.error = null
+            }
         }
 
         postCreatorViewHolder.okBtn.setOnClickListener {
             val title = postCreatorViewHolder.titleView.text.toString()
             val text = postCreatorViewHolder.textView.text.toString()
             if (text.isBlank()) {
-                postCreatorViewHolder.textLayoutView.error = context.getString(R.string.this_field_is_required)
+                postCreatorViewHolder.textLayoutView.error =
+                    context.getString(R.string.this_field_is_required)
             } else {
                 postCreatorViewHolder.textLayoutView.error = null
                 profileItemsListener.addPost(title, text)

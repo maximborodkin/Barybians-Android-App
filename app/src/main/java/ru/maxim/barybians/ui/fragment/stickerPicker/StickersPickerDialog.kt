@@ -1,10 +1,11 @@
 package ru.maxim.barybians.ui.fragment.stickerPicker
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.*
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,18 +15,33 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_stickers_picker.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.network.service.ChatService
+import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
+import javax.inject.Inject
 
 
 class StickersPickerDialog : BottomSheetDialogFragment() {
-    private val chatService: ChatService by inject()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+    @Inject
+    lateinit var chatService: ChatService
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.appComponent.inject(this)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
         layoutInflater.inflate(R.layout.fragment_stickers_picker, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,13 +55,16 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
             CoroutineScope(Dispatchers.Main).launch {
                 if (packs.isSuccessful && packs.body() != null) {
                     packs.body()?.forEach { pack ->
-                        val imageUrl = "${RetrofitClient.BASE_URL}img/stickers-png/${pack.pack}/${pack.icon}"
-                        val tab = stickersPickerTabLayout.newTab().setCustomView(createTabItemView(imageUrl))
+                        val imageUrl =
+                            "${RetrofitClient.BASE_URL}img/stickers-png/${pack.pack}/${pack.icon}"
+                        val tab = stickersPickerTabLayout.newTab()
+                            .setCustomView(createTabItemView(imageUrl))
                         tab.tag = pack.pack
                         stickersPickerTabLayout.addTab(tab)
                     }
                     stickersPickerTabLayout.tabGravity = TabLayout.GRAVITY_FILL
-                    stickersPickerTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    stickersPickerTabLayout.addOnTabSelectedListener(object :
+                        TabLayout.OnTabSelectedListener {
                         override fun onTabSelected(tab: TabLayout.Tab) {
                             loadStickerPack(tab.tag.toString())
                         }
@@ -54,17 +73,21 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
                         override fun onTabReselected(tab: TabLayout.Tab?) {}
                     })
                     loadStickerPack(stickersPickerTabLayout.getTabAt(0)?.tag.toString())
-                }   else { context?.toast("Unable to load stickers") }
+                } else {
+                    context?.toast("Unable to load stickers")
+                }
             }
         }
     }
 
     private fun loadStickerPack(packName: String) {
         val stickers = ArrayList<String>()
-        for (i in 1..20) { stickers.add("${RetrofitClient.BASE_URL}img/stickers-png/${packName}/${i}.png") }
+        for (i in 1..20) {
+            stickers.add("${RetrofitClient.BASE_URL}img/stickers-png/${packName}/${i}.png")
+        }
         stickersPickerRecycler.layoutManager = GridLayoutManager(context, 4)
         stickersPickerRecycler.adapter = StickerPickerRecyclerAdapter(stickers) { position ->
-            onStickerClick("${RetrofitClient.BASE_URL}img/stickers-png/${packName}/${position+1}.png")
+            onStickerClick("${RetrofitClient.BASE_URL}img/stickers-png/${packName}/${position + 1}.png")
         }
     }
 

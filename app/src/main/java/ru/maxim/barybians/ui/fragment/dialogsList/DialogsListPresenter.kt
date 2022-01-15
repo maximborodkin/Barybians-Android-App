@@ -1,46 +1,44 @@
 package ru.maxim.barybians.ui.fragment.dialogsList
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
-import ru.maxim.barybians.domain.model.Chat
+import moxy.InjectViewState
+import moxy.MvpPresenter
+import moxy.presenterScope
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.network.service.ChatService
+import ru.maxim.barybians.domain.model.Chat
+import javax.inject.Inject
 
 @InjectViewState
-class DialogsListPresenter : MvpPresenter<DialogsListView>(), CoroutineScope by MainScope() {
-
-    private val dialogService: ChatService by inject(ChatService::class.java)
-    private val retrofitClient: RetrofitClient by inject(RetrofitClient::class.java)
+class DialogsListPresenter @Inject constructor(
+    private val chatService: ChatService,
+    private val retrofitClient: RetrofitClient
+) : MvpPresenter<DialogsListView>() {
 
     override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
         loadDialogsList()
     }
 
-    fun loadDialogsList() {
-        if (!retrofitClient.isOnline()){
-            return viewState.showNoInternet()
+    fun loadDialogsList() = presenterScope.launch {
+        if (!retrofitClient.isOnline()) {
+            return@launch viewState.showNoInternet()
         }
-        launch {
-            try {
-                val dialogs = dialogService.getChatsList()
-                if (dialogs.isSuccessful && dialogs.body() != null) {
-                    val dialogList = ArrayList<Chat>()
-                    dialogs.body()?.forEach {
-                        dialogList.add(it)
-                    }
-                    dialogList.sortByDescending { dialog -> dialog.lastMessage.time }
-                    viewState.showDialogsList(dialogList)
-                } else {
-                    viewState.onDialogsListLoadError()
+        try {
+            val dialogs = chatService.getChatsList()
+            if (dialogs.isSuccessful && dialogs.body() != null) {
+                val dialogList = ArrayList<Chat>()
+                dialogs.body()?.forEach {
+                    dialogList.add(it)
                 }
-            } catch (e: Exception) {
+                dialogList.sortByDescending { dialog -> dialog.lastMessage.time }
+                viewState.showDialogsList(dialogList)
+            } else {
                 viewState.onDialogsListLoadError()
             }
+        } catch (e: Exception) {
+            viewState.onDialogsListLoadError()
         }
     }
 }

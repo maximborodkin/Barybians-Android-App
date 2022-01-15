@@ -4,12 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.core.widget.doAfterTextChanged
-import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.arellomobile.mvp.MvpAppCompatActivity
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
-import kotlinx.coroutines.launch
+import moxy.MvpAppCompatActivity
+import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.ActivityLoginBinding
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
@@ -17,15 +14,14 @@ import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.longToast
 import javax.inject.Inject
+import javax.inject.Provider
 
-class LoginActivity : MvpAppCompatActivity(), LoginView {
+class LoginActivity : MvpAppCompatActivity(R.layout.activity_login), LoginView {
 
     @Inject
-    @InjectPresenter
-    lateinit var loginPresenter: LoginPresenter
+    lateinit var presenterProvider: Provider<LoginPresenter>
 
-    @ProvidePresenter
-    fun providePresenter(): LoginPresenter = loginPresenter
+    private val loginPresenter by moxyPresenter { presenterProvider.get() }
 
     private val binding by viewBinding(ActivityLoginBinding::bind)
 
@@ -33,7 +29,6 @@ class LoginActivity : MvpAppCompatActivity(), LoginView {
         appComponent.inject(this)
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_login)
         supportActionBar?.hide()
         with(binding) {
             loginBtn.setOnClickListener {
@@ -61,10 +56,7 @@ class LoginActivity : MvpAppCompatActivity(), LoginView {
         }
     }
 
-    private fun login(login: String, password: String) =
-        lifecycleScope.launch {
-            loginPresenter.login(login, password)
-        }
+    private fun login(login: String, password: String) = loginPresenter.login(login, password)
 
     override fun showError(@StringRes messageRes: Int) = longToast(messageRes)
 

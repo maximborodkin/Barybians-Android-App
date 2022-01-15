@@ -2,7 +2,6 @@ package ru.maxim.barybians.ui.activity.auth.registration
 
 import androidx.lifecycle.*
 import ru.maxim.barybians.R
-import ru.maxim.barybians.utils.isNotNull
 import ru.maxim.barybians.utils.isNull
 import java.util.*
 import java.util.Calendar.*
@@ -12,17 +11,17 @@ class RegistrationViewModel : ViewModel() {
     // and to false when the user starts editing data in fields
     private val isErrorsShown = MutableLiveData(false)
 
-    val firstName = MutableLiveData<String>()
-    val lastName = MutableLiveData<String>()
-    val birthDate = MutableLiveData<Calendar>()
+    val firstName = MutableLiveData(String())
+    val lastName = MutableLiveData(String())
+    val birthDate = MutableLiveData(getInstance())
     val birthDateString = Transformations.map(birthDate) { calendar ->
         // Format for dates given by API
         "${calendar.get(YEAR)}-${calendar.get(MONTH)}-${calendar.get(DAY_OF_MONTH)}"
     }
-    val sex = MutableLiveData(true) // true == female, false == male
-    val login = MutableLiveData<String>()
-    val password = MutableLiveData<String>()
-    val repeatPassword = MutableLiveData<String>()
+    val sex = MutableLiveData(false) // true == female, false == male
+    val login = MutableLiveData(String())
+    val password = MutableLiveData(String())
+    val repeatPassword = MutableLiveData(String())
 
     val today: Calendar = getInstance().apply {
         set(HOUR_OF_DAY, 0)
@@ -107,7 +106,7 @@ class RegistrationViewModel : ViewModel() {
             postValue(
                 when {
                     it && repeatPassword.value.isNullOrBlank() -> R.string.this_field_is_required
-                    it && repeatPassword.value!!.trim() != password.value!!.trim() -> R.string.passwords_didn_t_match
+                    it && repeatPassword.value?.trim() != password.value?.trim() -> R.string.passwords_didn_t_match
                     else -> null
                 }
             )

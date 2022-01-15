@@ -25,12 +25,13 @@ import kotlinx.android.synthetic.main.item_profile_header.view.*
 import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
-import ru.maxim.barybians.ui.fragment.base.*
+import ru.maxim.barybians.ui.fragment.base.FeedItem
+import ru.maxim.barybians.ui.fragment.base.FeedItemType
+import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.DialogFactory
 import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.weak
-
 
 open class FeedRecyclerAdapter(
     private val feedItems: ArrayList<FeedItem>,
@@ -173,9 +174,19 @@ open class FeedRecyclerAdapter(
         }
     }
 
-    open fun bindHeaderViewHolder(headerViewHolder: HeaderViewHolder, position: Int, context: Context) {}
+    open fun bindHeaderViewHolder(
+        headerViewHolder: HeaderViewHolder,
+        position: Int,
+        context: Context
+    ) {
+    }
 
-    open fun bindPostCreatorViewHolder(postCreatorViewHolder: PostCreatorViewHolder, position: Int, context: Context) {}
+    open fun bindPostCreatorViewHolder(
+        postCreatorViewHolder: PostCreatorViewHolder,
+        position: Int,
+        context: Context
+    ) {
+    }
 
     open fun bindPostViewHolder(postViewHolder: PostViewHolder, position: Int, context: Context) {
         val post = feedItems[position] as PostItem

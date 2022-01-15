@@ -6,10 +6,10 @@ import ru.maxim.barybians.domain.model.User
 
 interface UserService {
 
-    @GET("/api/users/{userId}")
+    @GET("/v2/users/{userId}")
     suspend fun getUser(@Path("userId") UserId: Int): Response<User>
 
     @FormUrlEncoded
-    @POST("/api/status")
+    @POST("/v2/status")
     suspend fun editStatus(@Field("text") newStatus: String?): Response<String>
 }

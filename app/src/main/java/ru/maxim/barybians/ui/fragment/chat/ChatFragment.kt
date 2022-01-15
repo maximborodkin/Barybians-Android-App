@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui.fragment.chat
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,42 +10,54 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.MvpAppCompatFragment
-import com.arellomobile.mvp.presenter.InjectPresenter
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatBinding
 import ru.maxim.barybians.domain.model.Message
 import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.chat.ChatRecyclerAdapter.OutgoingMessageViewHolder
 import ru.maxim.barybians.ui.fragment.chat.OutgoingMessage.MessageStatus.*
 import ru.maxim.barybians.ui.fragment.stickerPicker.StickersPickerDialog
-import ru.maxim.barybians.utils.DateFormatUtils
-import ru.maxim.barybians.utils.isNotNullOrBlank
-import ru.maxim.barybians.utils.isNull
-import ru.maxim.barybians.utils.toast
+import ru.maxim.barybians.utils.*
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Provider
 import kotlin.collections.ArrayList
 
 class ChatFragment : MvpAppCompatFragment(), ChatView {
 
-    @InjectPresenter
-    lateinit var chatPresenter: ChatPresenter
+    @Inject
+    lateinit var presenterProvider: Provider<ChatPresenter>
+
+    private val chatPresenter by moxyPresenter { presenterProvider.get() }
+
     private lateinit var binding: FragmentChatBinding
+
     private val args by navArgs<ChatFragmentArgs>()
-    private val preferencesManager: PreferencesManager by inject()
-    private val dateFormatUtils: DateFormatUtils by inject()
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
+
+    @Inject
+    lateinit var dateFormatUtils: DateFormatUtils
 
     private val interlocutorId by lazy { args.userId }
     private val messageItems = ArrayList<MessageItem>()
     private val message = MutableLiveData<String?>()
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.appComponent.inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         binding = FragmentChatBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -74,7 +87,9 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
             chatBackBtn.setOnClickListener { findNavController().popBackStack() }
         }
 
-        if (savedInstanceState.isNull()) { chatPresenter.loadMessages(interlocutorId) }
+        if (savedInstanceState.isNull()) {
+            chatPresenter.loadMessages(interlocutorId)
+        }
     }
 
     override fun showMessages(messages: ArrayList<Message>, interlocutor: User) {

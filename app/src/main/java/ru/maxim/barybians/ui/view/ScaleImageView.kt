@@ -57,7 +57,9 @@ class ScaleImageView @JvmOverloads constructor(
     private val gestureListener: GestureDetector.OnGestureListener =
         object : SimpleOnGestureListener() {
             override fun onDoubleTapEvent(e: MotionEvent): Boolean {
-                if (e.action == ACTION_UP) { doubleTapDetected = true }
+                if (e.action == ACTION_UP) {
+                    doubleTapDetected = true
+                }
                 singleTapDetected = false
                 return false
             }
@@ -87,11 +89,11 @@ class ScaleImageView @JvmOverloads constructor(
     }
 
     private val currentDisplayedWidth: Float
-        get() = drawable?.intrinsicWidth?.times(matrixValues[MSCALE_X])?:0F
+        get() = drawable?.intrinsicWidth?.times(matrixValues[MSCALE_X]) ?: 0F
 
 
     private val currentDisplayedHeight: Float
-        get() = drawable?.intrinsicHeight?.times(matrixValues[MSCALE_Y])?:0F
+        get() = drawable?.intrinsicHeight?.times(matrixValues[MSCALE_Y]) ?: 0F
 
     private fun setStartValues() {
         startValues = FloatArray(9)
@@ -103,10 +105,6 @@ class ScaleImageView @JvmOverloads constructor(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        Log.d("JOPAJOPA", "Image bounds. left: ${bounds.left}, right: ${bounds.right}, top: ${bounds.top}, bottom: ${bounds.bottom}")
-        Log.d("JOPAJOPA", "TouchEvent. x: ${event.x}, y: ${event.y}, rawX: ${event.rawX}, rawY: ${event.rawY}")
-
-
         if (scaleType != ScaleType.MATRIX) {
             super.setScaleType(ScaleType.MATRIX)
         }
@@ -123,7 +121,7 @@ class ScaleImageView @JvmOverloads constructor(
         scaleDetector.onTouchEvent(event)
         gestureDetector.onTouchEvent(event)
 
-        if (event.y !in bounds.top..bounds.bottom || event.x !in bounds.left..bounds.right){
+        if (event.y !in bounds.top..bounds.bottom || event.x !in bounds.left..bounds.right) {
 //            if (event.actionMasked == MotionEvent.ACTION_UP) dismissView()
             return true
         }
@@ -155,7 +153,7 @@ class ScaleImageView @JvmOverloads constructor(
             } else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
                 val focusX = scaleDetector.focusX
                 val focusY = scaleDetector.focusY
-                    //calculate the distance for translation
+                //calculate the distance for translation
                 val xDistance = getXDistance(focusX, last.x)
                 val yDistance = getYDistance(focusY, last.y)
                 currentMatrix.postTranslate(xDistance, yDistance)
@@ -182,14 +180,14 @@ class ScaleImageView @JvmOverloads constructor(
         /*currentPointerCount > 1 || */currentScaleFactor > 1.0f || isAnimating
 
     private val isAnimating: Boolean
-        get() = resetAnimator?.isRunning?:false
+        get() = resetAnimator?.isRunning ?: false
 
     private fun resetImage() {
-       if (matrixValues[MSCALE_X] <= startValues!![MSCALE_X]) {
-           animateToStartMatrix()
+        if (matrixValues[MSCALE_X] <= startValues!![MSCALE_X]) {
+            animateToStartMatrix()
         } else {
-           animateTranslationX()
-           animateTranslationY()
+            animateTranslationX()
+            animateTranslationY()
         }
     }
 
@@ -250,7 +248,10 @@ class ScaleImageView @JvmOverloads constructor(
         })
         resetAnimator?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {}
-            override fun onAnimationEnd(animation: Animator) { imageMatrix = targetMatrix }
+            override fun onAnimationEnd(animation: Animator) {
+                imageMatrix = targetMatrix
+            }
+
             override fun onAnimationCancel(p0: Animator?) {}
             override fun onAnimationRepeat(p0: Animator?) {}
         })
@@ -373,7 +374,7 @@ class ScaleImageView @JvmOverloads constructor(
     private fun getYDistance(toY: Float, fromY: Float): Float {
         var yDistance = toY - fromY
 
-            yDistance = getRestrictedYDistance(yDistance)
+        yDistance = getRestrictedYDistance(yDistance)
 
         //prevents image from translating an infinite distance offscreen
         if (bounds.bottom + yDistance < 0) {

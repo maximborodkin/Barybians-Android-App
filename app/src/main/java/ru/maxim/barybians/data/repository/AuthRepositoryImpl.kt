@@ -94,7 +94,8 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun logout() {
-        TODO("Implement logout method")
+        preferencesManager.userId = 0
+        preferencesManager.token = null
     }
 
     companion object {

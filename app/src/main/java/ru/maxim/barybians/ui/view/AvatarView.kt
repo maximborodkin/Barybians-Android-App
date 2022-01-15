@@ -8,15 +8,18 @@ import androidx.core.content.ContextCompat
 import ru.maxim.barybians.R
 
 
-class AvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : AppCompatImageView(context, attrs, defStyleAttr) {
+class AvatarView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : AppCompatImageView(context, attrs, defStyleAttr) {
 
     private var hasOnlineStatus: Boolean = true
     private var isOnline: Boolean = false
 
     private var maskPath: Path? = null
     private val maskPaint = Paint()
-    private var cornerRadius = width/2
+    private var cornerRadius = width / 2
 
     init {
         getContext().obtainStyledAttributes(attrs, R.styleable.AvatarView, defStyleAttr, 0).apply {
@@ -38,16 +41,23 @@ class AvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     }
 
     override fun onDraw(canvas: Canvas?) {
-        if(canvas?.isOpaque != false) {
-            canvas?.saveLayerAlpha(0F, 0F, width.toFloat(), height.toFloat(), 255, Canvas.ALL_SAVE_FLAG)
+        if (canvas?.isOpaque != false) {
+            canvas?.saveLayerAlpha(
+                0F,
+                0F,
+                width.toFloat(),
+                height.toFloat(),
+                255,
+                Canvas.ALL_SAVE_FLAG
+            )
         }
         super.onDraw(canvas)
-        if(maskPath != null) {
+        if (maskPath != null) {
             canvas?.drawPath(maskPath!!, maskPaint)
         }
         if (hasOnlineStatus and isOnline) {
-            val radius = width/8.toFloat()
-            canvas?.drawCircle(width-radius, height-radius, radius, onlineStatusPaint)
+            val radius = width / 8.toFloat()
+            canvas?.drawCircle(width - radius, height - radius, radius, onlineStatusPaint)
         }
     }
 
@@ -60,7 +70,7 @@ class AvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     override fun onSizeChanged(w: Int, h: Int, oldW: Int, oldH: Int) {
         super.onSizeChanged(w, h, oldW, oldH)
         if (w != oldW || h != oldH) {
-            setCornerRadius(w/2)
+            setCornerRadius(w / 2)
             generateMaskPath(w, h)
         }
     }

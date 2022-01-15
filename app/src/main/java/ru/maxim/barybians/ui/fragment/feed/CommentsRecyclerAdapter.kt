@@ -14,23 +14,24 @@ import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.item_comment.view.*
-import org.koin.java.KoinJavaComponent.inject
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.ui.fragment.base.PostItem
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.weak
 
-class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentItem>,
-                              private val onUserClick: (userId: Int) -> Unit,
-                              private val onImageClick: (drawable: Drawable) -> Unit,
-                              private val deleteCommentCallback: (commentPosition: Int,
-                                                                  commentId: Int) -> Unit,
-                              private val htmlParser: HtmlParser
+class CommentsRecyclerAdapter(
+    private val comments: ArrayList<PostItem.CommentItem>,
+    private val currentUserId: Int,
+    private val onUserClick: (userId: Int) -> Unit,
+    private val onImageClick: (drawable: Drawable) -> Unit,
+    private val deleteCommentCallback: (
+        commentPosition: Int,
+        commentId: Int
+    ) -> Unit,
+    private val htmlParser: HtmlParser
 ) : RecyclerView.Adapter<CommentsRecyclerAdapter.CommentViewHolder>() {
 
-    private val preferencesManager: PreferencesManager by inject(PreferencesManager::class.java)
     private lateinit var swipeBackground: ColorDrawable
     private lateinit var deleteIcon: Drawable
 
@@ -49,12 +50,13 @@ class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentIt
             )
         }
 
-        override fun getSwipeDirs(recyclerView: RecyclerView,
-                                  viewHolder: RecyclerView.ViewHolder
+        override fun getSwipeDirs(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
         ): Int {
             val authorId = comments[viewHolder.adapterPosition].author.id
-            val isPersonal = authorId == preferencesManager.userId
-            return if(isPersonal) Callback.makeMovementFlags(0, LEFT or RIGHT) else 0
+            val isPersonal = authorId == currentUserId
+            return if (isPersonal) Callback.makeMovementFlags(0, LEFT or RIGHT) else 0
         }
 
         override fun onChildDraw(
@@ -67,7 +69,7 @@ class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentIt
             isCurrentlyActive: Boolean
         ) {
             val itemView = viewHolder.itemView
-            val iconMargin = (itemView.height - deleteIcon.intrinsicHeight)/2
+            val iconMargin = (itemView.height - deleteIcon.intrinsicHeight) / 2
 
             if (dX > 0) {
                 swipeBackground.setBounds(
@@ -82,7 +84,7 @@ class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentIt
                     itemView.left + iconMargin + deleteIcon.intrinsicWidth,
                     itemView.bottom - iconMargin
                 )
-            }else{
+            } else {
                 swipeBackground.setBounds(
                     itemView.right + dX.toInt(),
                     itemView.top,
@@ -106,7 +108,12 @@ class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentIt
         super.onAttachedToRecyclerView(recyclerView)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView)
         swipeBackground =
-            ColorDrawable(ContextCompat.getColor(recyclerView.context, R.color.delete_swipe_background))
+            ColorDrawable(
+                ContextCompat.getColor(
+                    recyclerView.context,
+                    R.color.delete_swipe_background
+                )
+            )
         deleteIcon = ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_delete_white)!!
     }
 
@@ -119,7 +126,9 @@ class CommentsRecyclerAdapter(private val comments: ArrayList<PostItem.CommentIt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder =
-        CommentViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false))
+        CommentViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
+        )
 
     override fun getItemCount(): Int = comments.size
 

@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui.fragment.dialogsList
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,22 +9,41 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arellomobile.mvp.MvpAppCompatFragment
-import com.arellomobile.mvp.presenter.InjectPresenter
 import kotlinx.android.synthetic.main.fragment_dialogs_list.*
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.domain.model.Chat
+import ru.maxim.barybians.utils.DateFormatUtils
+import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
+import javax.inject.Inject
+import javax.inject.Provider
 
 class DialogsListFragment : MvpAppCompatFragment(), DialogsListView {
 
-    @InjectPresenter
-    lateinit var dialogsListPresenter: DialogsListPresenter
+    @Inject
+    lateinit var presenterProvider: Provider<DialogsListPresenter>
+
+    private val dialogsListPresenter by moxyPresenter { presenterProvider.get() }
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
+
+    @Inject
+    lateinit var dateFormatUtils: DateFormatUtils
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.appComponent.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?): View? =
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_dialogs_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,7 +56,11 @@ class DialogsListFragment : MvpAppCompatFragment(), DialogsListView {
         dialogsListRefreshLayout.isRefreshing = false
         dialogsListRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = DialogsListRecyclerAdapter(dialogsList) { userId ->
+            adapter = DialogsListRecyclerAdapter(
+                dialogsList,
+                preferencesManager.userId,
+                dateFormatUtils
+            ) { userId ->
                 findNavController().navigate(DialogsListFragmentDirections.toChat(userId))
             }
         }

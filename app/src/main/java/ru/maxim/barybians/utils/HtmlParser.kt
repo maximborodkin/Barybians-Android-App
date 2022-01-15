@@ -17,9 +17,10 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.data.network.RetrofitClient
 import java.lang.ref.WeakReference
 
-class HtmlParser(private val scope: CoroutineScope,
-                 private val resources: Resources,
-                 private val requestManager: RequestManager
+class HtmlParser(
+    private val scope: CoroutineScope,
+    private val resources: Resources,
+    private val requestManager: RequestManager
 ) {
 
     fun provideFormattedText(
@@ -58,9 +59,11 @@ class HtmlParser(private val scope: CoroutineScope,
                 }
                 textWithoutImages = textWithoutImages.replace(image.tag, "")
             }
-            targetTextView.get()?.text = HtmlCompat.fromHtml(textWithoutImages, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            targetTextView.get()?.text =
+                HtmlCompat.fromHtml(textWithoutImages, HtmlCompat.FROM_HTML_MODE_COMPACT)
         } else {
-            targetTextView.get()?.text = HtmlCompat.fromHtml(rawHtml, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            targetTextView.get()?.text =
+                HtmlCompat.fromHtml(rawHtml, HtmlCompat.FROM_HTML_MODE_COMPACT)
         }
     }
 

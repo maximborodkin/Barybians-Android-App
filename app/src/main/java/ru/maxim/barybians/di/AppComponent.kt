@@ -10,10 +10,13 @@ import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.data.repository.AuthRepository
 import ru.maxim.barybians.data.repository.AuthRepositoryImpl
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
+import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.ui.fragment.dialogsList.DialogsListFragment
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
+import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
+import ru.maxim.barybians.ui.fragment.stickerPicker.StickersPickerDialog
 import ru.maxim.barybians.utils.DateFormatUtils
 import javax.inject.Singleton
 
@@ -34,8 +37,10 @@ interface AppComponent {
     fun inject(chatFragment: ChatFragment)
     fun inject(dialogsListFragment: DialogsListFragment)
     fun inject(feedFragment: FeedFragment)
+    fun inject(registrationActivity: RegistrationActivity)
+    fun inject(profileFragment: ProfileFragment)
+    fun inject(stickersPickerDialog: StickersPickerDialog)
 }
-
 
 @Module(includes = [UtilModule::class, DataModule::class])
 object AppModule {

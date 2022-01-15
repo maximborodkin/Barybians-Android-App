@@ -234,6 +234,7 @@ object DialogFactory {
                 it.layoutManager = LinearLayoutManager(context)
                 it.adapter = CommentsRecyclerAdapter(
                     comments,
+                    preferencesManager.userId,
                     onUserClick,
                     onImageClick,
                     onCommentDelete,
