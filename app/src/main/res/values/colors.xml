@@ -13,6 +13,7 @@
     <color name="error_message_circle_color">#B51A1A</color>
     <color name="send_btn_enabled_color">#448AFF</color>
     <color name="send_btn_disabled_color">@color/grey</color>
+    <color name="like_red">#B0003A</color>
 
 <!--  Light Theme  -->
     <color name="light_colorPrimaryLight">#83B9FF</color>

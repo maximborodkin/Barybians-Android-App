@@ -8,6 +8,7 @@ import ru.maxim.barybians.data.repository.*
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
+import ru.maxim.barybians.ui.dialog.CommentsListDialog
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.ui.fragment.chatsList.ChatsListFragment
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
@@ -40,6 +41,7 @@ interface AppComponent {
     fun inject(profileFragment: ProfileFragment)
     fun inject(stickersPickerDialog: StickersPickerDialog)
     fun inject(preferencesFragment: PreferencesFragment)
+    fun inject(commentsListDialog: CommentsListDialog)
 }
 
 @Module(includes = [DataModuleBindings::class])

@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/fragmentPostMenuBottomSheetEdit"
+        android:id="@+id/fragmentPostMenuEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -29,7 +29,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/fragmentPostMenuBottomSheetDelete"
+        android:id="@+id/fragmentPostMenuDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"

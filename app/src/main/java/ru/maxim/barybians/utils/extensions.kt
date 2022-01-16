@@ -53,7 +53,8 @@ fun Context.longToast(text: String) = Toast.makeText(this, text, LENGTH_LONG).sh
 fun Context.longToast(resource: Int) = longToast(getString(resource))
 
 @SuppressLint("CheckResult")
-fun ImageView.load(url: String, @DrawableRes placeholder: Int? = null, thumbnail: String? = null) {
+fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnail: String? = null) {
+    if (url.isNullOrBlank()) return
     val requestBuilder = Glide.with(context).load(url)
 
     when {
@@ -72,6 +73,22 @@ fun ImageView.load(url: String, @DrawableRes placeholder: Int? = null, thumbnail
         .error(R.drawable.ic_broken_image)
         .diskCacheStrategy(DiskCacheStrategy.NONE)
         .into(this)
+}
+
+inline fun <T> List<T>.indexOrNull(predicate: (T) -> Boolean): Int? {
+    for ((index, item) in this.withIndex()) {
+        if (predicate(item))
+            return index
+    }
+    return null
+}
+
+inline fun <T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
+    for (item in this) {
+        if (predicate(item))
+            return true
+    }
+    return false
 }
 
 fun MutableLiveData<String>.isEmpty() = value?.length ?: 0 == 0

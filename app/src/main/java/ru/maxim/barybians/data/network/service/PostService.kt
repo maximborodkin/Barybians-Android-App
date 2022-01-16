@@ -8,7 +8,7 @@ import ru.maxim.barybians.domain.model.Post
 interface PostService {
 
     @GET("/v2/posts")
-    suspend fun getFeed(): Response<ArrayList<Post>>
+    suspend fun getFeed(): Response<List<Post>>
 
     @FormUrlEncoded
     @POST("/v2/posts")

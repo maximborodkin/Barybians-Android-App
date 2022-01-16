@@ -16,8 +16,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.data.network.RetrofitClient
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 
-class HtmlParser(
+class HtmlParser @Inject constructor(
     private val scope: CoroutineScope,
     private val resources: Resources,
     private val requestManager: RequestManager

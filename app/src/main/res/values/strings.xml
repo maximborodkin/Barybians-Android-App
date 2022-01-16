@@ -69,6 +69,7 @@
         <string name="unable_to_update_post">Unable to update post</string>
         <string name="unable_to_delete_post">Unable to delete post</string>
         <string name="nobody_like_this">Nobody like this</string>
+        <string name="unable_to_update_like">Unable to update like</string>
         <string name="no_comments_yet">No comments yet</string>
         <string name="add_comment">Add comment</string>
         <string name="enter_your_status">Enter your status </string>
@@ -185,5 +186,6 @@
     <string name="invalid_registration_data">Invalid registration data</string>
     <string name="new_chat_label">There is no dialogs. Start new by clicking + button below</string>
     <string name="add_chat">Add dialog</string>
+    <string name="unable_to_update_comment">Unable to update comment</string>
 
 </resources>

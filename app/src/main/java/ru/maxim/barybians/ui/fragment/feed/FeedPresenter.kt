@@ -21,12 +21,14 @@ open class FeedPresenter @Inject constructor(
         loadFeed()
     }
 
-    fun loadFeed() = presenterScope.launch {
-        try {
-            val loadFeedResponse = postRepository.getFeed()
-            viewState.showFeed(loadFeedResponse)
-        } catch (e: Exception) {
-            viewState.onFeedLoadError()
+    fun loadFeed() {
+        presenterScope.launch {
+            try {
+                val loadFeedResponse = postRepository.getFeed()
+                viewState.showFeed(loadFeedResponse)
+            } catch (e: Exception) {
+                viewState.onFeedLoadError()
+            }
         }
     }
 }

@@ -8,11 +8,11 @@ data class Post (
     val id: Int,
     val userId: Int,
     val author: User?,
-    val title: String?,
-    val text: String,
+    var title: String?,
+    var text: String,
     @SerializedName("utime")
-    val date: Long,
+    var date: Long,
     val likedUsers: ArrayList<User>,
-    val likesCount: Int,
+    var likesCount: Int,
     val comments: ArrayList<Comment>
 )

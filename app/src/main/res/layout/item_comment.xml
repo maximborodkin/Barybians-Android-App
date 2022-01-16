@@ -46,7 +46,7 @@
         tools:text="Comment body" />
 
     <LinearLayout
-        android:id="@+id/itemCommentImagesHolder"
+        android:id="@+id/itemCommentAttachmentsHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

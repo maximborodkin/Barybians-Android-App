@@ -17,19 +17,19 @@ interface BaseWallView : MvpView {
     fun showLoading()
 
     @AddToEnd
-    fun onPostUpdated(itemPosition: Int, post: Post)
+    fun onPostUpdated(post: Post)
 
     @OneExecution
     fun onPostUpdateError()
 
     @AddToEnd
-    fun onPostDeleted(itemPosition: Int)
+    fun onPostDeleted(postId: Int)
 
     @OneExecution
     fun onPostDeleteError()
 
     @AddToEnd
-    fun onCommentAdded(postPosition: Int, comment: Comment)
+    fun onCommentAdded(postId: Int, comment: Comment)
 
     @OneExecution
     fun onCommentAddError()
@@ -41,13 +41,13 @@ interface BaseWallView : MvpView {
     fun onCommentEditError()
 
     @AddToEnd
-    fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int)
+    fun onCommentDeleted(commentId: Int)
 
     @OneExecution
     fun onCommentDeleteError()
 
     @AddToEnd
-    fun onLikeEdited(postPosition: Int, likedUsers: List<User>)
+    fun onLikeEdited(postId: Int, likedUsers: List<User>)
 
     @OneExecution
     fun onLikeEditError()

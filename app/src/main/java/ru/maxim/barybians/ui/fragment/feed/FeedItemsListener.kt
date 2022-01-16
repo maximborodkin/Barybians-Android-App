@@ -4,12 +4,11 @@ import android.graphics.drawable.Drawable
 import androidx.fragment.app.DialogFragment
 
 interface FeedItemsListener {
-    fun openUserProfile(userId: Int)
-    fun showDialog(dialogFragment: DialogFragment, tag: String)
-    fun openImage(drawable: Drawable)
-    fun openImage(imageUrl: String)
-    fun editPost(itemPosition: Int, postId: Int, newTitle: String?, newText: String)
-    fun deletePost(itemPosition: Int, postId: Int)
-    fun showCommentsList(postId: Int, postPosition: Int)
-    fun editLike(itemPosition: Int, postId: Int, setLike: Boolean)
+    fun onProfileClick(userId: Int)
+    fun onImageClick(drawable: Drawable)
+    fun onImageClick(imageUrl: String)
+    fun onPostMenuClick(postId: Int)
+    fun onCommentsClick(postId: Int)
+    fun onLikeClick(postId: Int, hasPersonalLike: Boolean)
+    fun onLikeLongClick(postId: Int)
 }
