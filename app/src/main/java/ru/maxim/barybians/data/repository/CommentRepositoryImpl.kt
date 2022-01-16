@@ -11,16 +11,12 @@ class CommentRepositoryImpl @Inject constructor(
     private val repositoryBound: RepositoryBound
 ): CommentRepository {
 
-    override fun createComment(postId: Int, text: String): Comment {
-        TODO("Not yet implemented")
-    }
+    override suspend fun createComment(uuid: String, postId: Int, text: String): Comment =
+        repositoryBound.wrapRequest { commentService.addComment(uuid, postId, text) }
 
-    override fun editComment(commentId: Int, text: String): Comment {
-        TODO("Not yet implemented")
-    }
+    override suspend fun editComment(commentId: Int, text: String): Comment =
+        repositoryBound.wrapRequest { commentService.editComment(commentId, text) }
 
-    override fun deleteComment(commentId: Int): Boolean {
-        TODO("Not yet implemented")
-    }
-
+    override suspend fun deleteComment(commentId: Int): Boolean =
+        repositoryBound.wrapRequest { commentService.deleteComment(commentId) }
 }

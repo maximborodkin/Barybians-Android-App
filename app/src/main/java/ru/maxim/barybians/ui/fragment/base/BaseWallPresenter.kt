@@ -8,6 +8,7 @@ import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.data.repository.UserRepository
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
+import java.util.*
 
 abstract class BaseWallPresenter<T : BaseWallView>(
     private val postRepository: PostRepository,
@@ -56,7 +57,8 @@ abstract class BaseWallPresenter<T : BaseWallView>(
     fun createComment(postId: Int, text: String) {
         presenterScope.launch {
             try {
-                val comment = commentRepository.createComment(postId, text)
+                val uuid = UUID.randomUUID().toString()
+                val comment = commentRepository.createComment(uuid, postId, text)
                 viewState.onCommentAdded(postId, comment)
             } catch (e: Exception) {
                 when (e) {

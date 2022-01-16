@@ -1,7 +1,5 @@
 package ru.maxim.barybians.data.network
 
-import android.content.Context
-import android.net.ConnectivityManager
 import com.google.gson.GsonBuilder
 import dagger.Reusable
 import okhttp3.*
@@ -13,11 +11,6 @@ import ru.maxim.barybians.data.network.service.*
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import java.util.*
 import javax.inject.Inject
-
-/**
- * Singleton object for access to SharedPreferences
- *  @property context uses applicationContext sets from [ru.maxim.barybians.App] class
- */
 
 @Reusable
 class RetrofitClient @Inject constructor(
@@ -56,7 +49,7 @@ class RetrofitClient @Inject constructor(
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor { authorizationInterceptor.intercept(it) }
         .addInterceptor(HttpLoggingInterceptor().apply { level = BODY })
-        .connectionSpecs(connectionSpec)
+//        .connectionSpecs(connectionSpec)
         .build()
 
     private val retrofit: Retrofit = Retrofit.Builder()

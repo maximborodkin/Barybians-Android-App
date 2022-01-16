@@ -8,7 +8,7 @@
     android:paddingBottom="12dp">
 
     <TextView
-        android:id="@+id/likesBottomSheetTitle"
+        android:id="@+id/likesListTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -17,17 +17,9 @@
         android:textSize="20sp"
         tools:text="3 likes" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/likesBottomSheetMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        tools:text="Nobody like this" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/likesBottomSheetRecyclerView"
+        android:id="@+id/likesListRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

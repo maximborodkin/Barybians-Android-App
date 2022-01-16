@@ -16,7 +16,9 @@ import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.CommentsListDialog
+import ru.maxim.barybians.ui.dialog.LikesListDialog
 import ru.maxim.barybians.ui.dialog.PostMenuDialog
+import ru.maxim.barybians.ui.dialog.Refreshable
 import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
 import ru.maxim.barybians.utils.*
 import javax.inject.Inject
@@ -30,6 +32,8 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
 
     private val binding by viewBinding(FragmentFeedBinding::bind)
     private var recyclerAdapter by autoCleared<FeedRecyclerAdapter>()
+
+    private var currentListDialog: Refreshable? = null
 
     @Inject
     lateinit var dateFormatUtils: DateFormatUtils
@@ -179,29 +183,31 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onPostMenuClick(postId: Int) {
-//        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
-//            PostMenuDialog.newInstance(
-//                title = post.title,
-//                text = post.text,
-//                onDelete = { feedPresenter.deletePost(post.id) },
-//                onEdit = { title, text ->
-//                    feedPresenter.editPost(postId, title, text)
-//                }
-//            ).show(childFragmentManager, PostMenuDialog::class.simpleName)
-//        }
+        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
+            PostMenuDialog.newInstance(
+                title = post.title,
+                text = post.text,
+                onDelete = { feedPresenter.deletePost(post.id) },
+                onEdit = { title, text ->
+                    feedPresenter.editPost(postId, title, text)
+                }
+            ).show(childFragmentManager, PostMenuDialog::class.simpleName)
+        }
     }
 
     override fun onCommentsClick(postId: Int) {
-//        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
-//            CommentsListDialog.newInstance(
-//                comments = post.comments,
-//                onUserClick = ::onProfileClick,
-//                onImageClick = ::onImageClick,
-//                onCommentAdd = { text -> feedPresenter.createComment(post.id, text) },
-//                onCommentEdit = feedPresenter::editComment,
-//                onCommentDelete = feedPresenter::deleteComment
-//            ).show(childFragmentManager, CommentsListDialog::class.simpleName)
-//        }
+        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
+            val commentsListDialog = CommentsListDialog.newInstance(
+                comments = post.comments,
+                onUserClick = ::onProfileClick,
+                onImageClick = ::onImageClick,
+                onCommentAdd = { text -> feedPresenter.createComment(post.id, text) },
+                onCommentEdit = feedPresenter::editComment,
+                onCommentDelete = feedPresenter::deleteComment
+            )
+            currentListDialog = commentsListDialog
+            commentsListDialog.show(childFragmentManager, CommentsListDialog::class.simpleName)
+        }
     }
 
     override fun onLikeClick(postId: Int, hasPersonalLike: Boolean) {
@@ -209,6 +215,13 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onLikeLongClick(postId: Int) {
-        TODO("Not yet implemented")
+        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
+            val likesListDialog = LikesListDialog.newInstance(
+                likes = post.likedUsers,
+                onUserClick = ::onProfileClick
+            )
+            currentListDialog = likesListDialog
+            likesListDialog.show(childFragmentManager, LikesListDialog::class.simpleName)
+        }
     }
 }

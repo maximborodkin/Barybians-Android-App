@@ -2,6 +2,7 @@ package ru.maxim.barybians.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -9,6 +10,8 @@ import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -89,6 +92,14 @@ inline fun <T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
             return true
     }
     return false
+}
+
+fun View.show() {
+    this.isVisible = true
+}
+
+fun View.hide() {
+    this.isGone = true
 }
 
 fun MutableLiveData<String>.isEmpty() = value?.length ?: 0 == 0

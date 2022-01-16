@@ -5,32 +5,20 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.fragment_likes_bottom_sheet.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
-import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
-import ru.maxim.barybians.ui.fragment.feed.LikedUsersRecyclerAdapter
 
 /**
  * Singleton class for create dialogs
  */
 object DialogFactory {
-
-    fun createLikesListDialog(
-        likes: ArrayList<UserItem>,
-        onUserClick: (userId: Int) -> Unit
-    ) = LikesBottomSheetFragment.newInstance(likes, onUserClick)
 
     fun createEditStatusDialog(
         context: Context,
@@ -66,51 +54,7 @@ object DialogFactory {
         }
     }.create()
 
-    class LikesBottomSheetFragment : BottomSheetDialogFragment() {
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View? = inflater.inflate(R.layout.fragment_likes_bottom_sheet, container, false)
 
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-            val likesCount = likes.size
-            if (likesCount == 0) {
-                likesBottomSheetTitle.visibility = View.GONE
-                likesBottomSheetMessage.text = context?.getString(R.string.nobody_like_this)
-            } else {
-                likesBottomSheetMessage.visibility = View.GONE
-                likesBottomSheetTitle.text =
-                    context?.resources?.getQuantityString(
-                        R.plurals.like_plurals,
-                        likesCount,
-                        likesCount
-                    )
-            }
-            likesBottomSheetRecyclerView.let {
-                it.layoutManager = LinearLayoutManager(context)
-                it.adapter = LikedUsersRecyclerAdapter(likes) { userId ->
-                    onUserClick(userId)
-                    dismiss()
-                }
-            }
-        }
-
-        companion object {
-            private lateinit var likes: ArrayList<UserItem>
-            private lateinit var onUserClick: (userId: Int) -> Unit
-
-            fun newInstance(
-                likes: ArrayList<UserItem>,
-                onUserClick: (userId: Int) -> Unit
-            ): LikesBottomSheetFragment {
-                this.likes = likes
-                this.onUserClick = onUserClick
-                return LikesBottomSheetFragment()
-            }
-        }
-    }
 
 //    fun createPostMenu(
 //        title: String?,

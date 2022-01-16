@@ -34,7 +34,7 @@ class ChatsListRecyclerAdapter(
 
         fun bind(chat: Chat) = with(binding) {
             avatar.load(chat.secondUser.avatarMin)
-            avatar.isOnline = chat.secondUser.lastVisit >= Date().time - 5 * 60
+            avatar.isOnline = chat.secondUser.lastVisit >= Date().time / 1000 - 5 * 60
             name.text = chat.secondUser.fullName
             date.text = dateFormatUtils.getSimplifiedDate(chat.lastMessage.time * 1000)
 

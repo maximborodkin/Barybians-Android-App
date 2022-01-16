@@ -14,8 +14,8 @@ import ru.maxim.barybians.databinding.FragmentCommentsListBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.fragment.feed.CommentsRecyclerAdapter
 import ru.maxim.barybians.utils.DateFormatUtils
-import ru.maxim.barybians.utils.HtmlParser
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.autoCleared
 import javax.inject.Inject
 
 class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
@@ -29,8 +29,9 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
     @Inject
     lateinit var dateFormatUtils: DateFormatUtils
 
-
     private var binding: FragmentCommentsListBinding? = null
+
+    private var recyclerAdapter: CommentsRecyclerAdapter by autoCleared()
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
@@ -43,6 +44,21 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCommentsListBinding.inflate(inflater, container, false)
+        recyclerAdapter = CommentsRecyclerAdapter(
+            currentUserId = preferencesManager.userId,
+            onUserClick = { userId ->
+                dismiss()
+                onUserClick(userId)
+            },
+            onImageClick = { drawable ->
+                dismiss()
+                onImageClick (drawable)
+            },
+            onCommentSwipe = onCommentDelete,
+//            htmlParser = htmlParser,
+            dateFormatUtils = dateFormatUtils
+        )
+        binding?.commentsListRecycler?.adapter = recyclerAdapter
         return binding?.root
     }
 
@@ -60,14 +76,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
             )
         }
 
-        binding?.commentsListRecycler?.adapter = CommentsRecyclerAdapter(
-            currentUserId = preferencesManager.userId,
-            onUserClick = onUserClick,
-            onImageClick = onImageClick,
-            onCommentSwipe = onCommentDelete,
-//            htmlParser = htmlParser,
-            dateFormatUtils = dateFormatUtils
-        )
+        refresh()
 
         binding?.commentsListTextEditor?.addTextChangedListener {
             val buttonTintResource =
@@ -84,7 +93,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
     }
 
     override fun refresh() {
-        binding?.commentsListRecycler
+        recyclerAdapter.submitList(comments)
     }
 
     companion object {
