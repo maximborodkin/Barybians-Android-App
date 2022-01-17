@@ -2,6 +2,7 @@ package ru.maxim.barybians.ui.activity.auth.registration
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.widget.DatePicker
 import androidx.activity.viewModels
@@ -13,6 +14,8 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.ActivityRegistrationBinding
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.clearDrawables
+import ru.maxim.barybians.utils.setDrawableStart
 import ru.maxim.barybians.utils.toast
 import java.util.*
 import javax.inject.Inject
@@ -88,12 +91,23 @@ class RegistrationActivity : MvpAppCompatActivity(), RegistrationView,
         login: String,
         password: String
     ) {
+        binding.registrationBtn.apply {
+            setDrawableStart(R.drawable.ic_timer_animated)
+            compoundDrawablesRelative.firstOrNull()?.let {
+                it.setTint(currentTextColor)
+                (it as? Animatable)?.start()
+            }
+        }
         registrationPresenter.register(firstName, lastName, birthDate, sex, login, password)
     }
 
-    override fun showError(@StringRes messageRes: Int) = toast(messageRes)
+    override fun showError(@StringRes messageRes: Int) {
+        binding.registrationBtn.clearDrawables()
+        toast(messageRes)
+    }
 
     override fun showUsernameExistsError() {
+        binding.registrationBtn.clearDrawables()
         binding.registrationLoginLayout.error = getText(R.string.login_already_exists)
     }
 

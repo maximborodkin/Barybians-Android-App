@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.activity.auth.login
 
 import android.content.Intent
+import android.graphics.drawable.Animatable
 import android.os.Bundle
 import androidx.annotation.StringRes
 import androidx.core.widget.doAfterTextChanged
@@ -11,8 +12,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.ActivityLoginBinding
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
-import ru.maxim.barybians.utils.appComponent
-import ru.maxim.barybians.utils.longToast
+import ru.maxim.barybians.utils.*
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -43,7 +43,9 @@ class LoginActivity : MvpAppCompatActivity(R.layout.activity_login), LoginView {
                     if (password.isBlank()) getString(R.string.this_field_is_required)
                     else null
 
-                login(login.trim(), password.trim())
+                if (loginMessage.isNull() && passwordMessage.isNull()){
+                    login(login.trim(), password.trim())
+                }
             }
 
             // Clear error messages after any changes
@@ -56,11 +58,24 @@ class LoginActivity : MvpAppCompatActivity(R.layout.activity_login), LoginView {
         }
     }
 
-    private fun login(login: String, password: String) = loginPresenter.login(login, password)
+    private fun login(login: String, password: String) {
+        binding.loginBtn.apply {
+            setDrawableStart(R.drawable.ic_timer_animated)
+            compoundDrawablesRelative.firstOrNull()?.let {
+                it.setTint(currentTextColor)
+                (it as? Animatable)?.start()
+            }
+        }
+        loginPresenter.login(login, password)
+    }
 
-    override fun showError(@StringRes messageRes: Int) = longToast(messageRes)
+    override fun showError(@StringRes messageRes: Int) {
+        binding.loginBtn.clearDrawables()
+        longToast(messageRes)
+    }
 
     override fun showInvalidCredentialsError() {
+        binding.loginBtn.clearDrawables()
         binding.errorMessage = getString(R.string.invalid_login_or_password)
     }
 

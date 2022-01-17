@@ -36,7 +36,7 @@
             android:strokeColor="@color/unread_message_circle_color"
             android:strokeLineCap="round"
             android:strokeWidth="2"
-            android:pathData="M10,10 L10,4" />
+            android:pathData="M10,10 L14,14" />
     </group>
 
 </vector>

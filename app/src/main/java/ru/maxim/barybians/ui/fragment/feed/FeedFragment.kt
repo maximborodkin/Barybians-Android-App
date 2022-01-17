@@ -33,7 +33,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     private val binding by viewBinding(FragmentFeedBinding::bind)
     private var recyclerAdapter by autoCleared<FeedRecyclerAdapter>()
 
-    private var currentListDialog: Refreshable? = null
+    private var currentListDialog by autoCleared<Refreshable?>()
 
     @Inject
     lateinit var dateFormatUtils: DateFormatUtils

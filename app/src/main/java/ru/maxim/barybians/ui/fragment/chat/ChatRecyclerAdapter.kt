@@ -36,7 +36,7 @@ class ChatRecyclerAdapter(
         }
 
         fun setSendingProcessLabel() {
-            messageLabel.setBackgroundResource(R.drawable.ic_sending_process_animated)
+            messageLabel.setBackgroundResource(R.drawable.ic_timer_animated)
             (messageLabel.background as Animatable).start()
         }
 

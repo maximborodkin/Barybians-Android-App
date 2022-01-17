@@ -31,7 +31,7 @@ fun Any?.isNotNull() = !this.isNull()
 fun CharSequence?.isNotNullOrEmpty(): Boolean = !this.isNullOrEmpty()
 fun CharSequence?.isNotNullOrBlank(): Boolean = !this.isNullOrBlank()
 
-fun TextView.setDrawableStart(drawableResource: Int) =
+fun TextView.setDrawableStart(@DrawableRes drawableResource: Int) =
     setCompoundDrawablesRelativeWithIntrinsicBounds(
         AppCompatResources.getDrawable(context, drawableResource), //start
         compoundDrawablesRelative[1],                              //top
@@ -39,7 +39,7 @@ fun TextView.setDrawableStart(drawableResource: Int) =
         compoundDrawablesRelative[3]                               //bottom
     )
 
-fun TextView.setDrawableEnd(drawableResource: Int) =
+fun TextView.setDrawableEnd(@DrawableRes drawableResource: Int) =
     setCompoundDrawablesRelativeWithIntrinsicBounds(
         this.compoundDrawablesRelative[0],                         //start
         this.compoundDrawablesRelative[1],                         //top

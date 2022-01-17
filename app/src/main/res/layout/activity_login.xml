@@ -61,7 +61,6 @@
                     android:id="@+id/loginLogin"
                     style="@style/WhiteEditText"
                     android:layout_width="match_parent"
-                    android:text="maxon228"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,7 +79,6 @@
                     style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="123456789"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -92,6 +90,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="48dp"
+                android:textSize="14sp"
                 android:text="@string/login" />
 
             <Space
