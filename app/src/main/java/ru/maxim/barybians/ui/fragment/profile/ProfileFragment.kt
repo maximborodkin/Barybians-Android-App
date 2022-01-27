@@ -1,38 +1,89 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-import android.content.Context
-import android.graphics.drawable.Drawable
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
-import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
-import ru.maxim.barybians.databinding.FragmentProfileBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.fragment.base.*
-import ru.maxim.barybians.ui.fragment.base.PostItem.CommentItem
-import ru.maxim.barybians.ui.fragment.base.PostItem.UserItem
-import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.*
-import ru.maxim.barybians.utils.*
-import javax.inject.Inject
-import javax.inject.Provider
 
 class ProfileFragment :
-    MvpAppCompatFragment()
-//    ,ProfileView,
-//    ProfileItemsListener {
+    MvpAppCompatFragment(), ProfileView {
+    override fun showUserProfile(user: User) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onUserLoadError() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onStatusEdited(newStatus: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPostCreated(post: Post) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPostCreateError() {
+        TODO("Not yet implemented")
+    }
+
+    override fun showNoInternet() {
+        TODO("Not yet implemented")
+    }
+
+    override fun showLoading() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPostUpdated(post: Post) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPostUpdateError() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPostDeleted(postId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPostDeleteError() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCommentAdded(postId: Int, comment: Comment) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCommentAddError() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCommentEdit(comment: Comment) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCommentEditError() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCommentDeleted(commentId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCommentDeleteError() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLikeEdited(postId: Int, likedUsers: List<User>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLikeEditError() {
+        TODO("Not yet implemented")
+    }
+}
+//    , ProfileItemsListener {
 //
 //    @Inject
 //    lateinit var preferencesManager: PreferencesManager

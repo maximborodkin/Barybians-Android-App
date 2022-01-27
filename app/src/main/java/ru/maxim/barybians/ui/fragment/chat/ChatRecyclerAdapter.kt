@@ -2,15 +2,11 @@ package ru.maxim.barybians.ui.fragment.chat
 
 import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_incoming_message.view.*
-import kotlinx.android.synthetic.main.item_outgoing_message.view.*
 import ru.maxim.barybians.R
+import ru.maxim.barybians.databinding.ItemIncomingMessageBinding
+import ru.maxim.barybians.databinding.ItemOutgoingMessageBinding
 import ru.maxim.barybians.ui.fragment.chat.OutgoingMessage.MessageStatus.*
 
 class ChatRecyclerAdapter(
@@ -21,51 +17,57 @@ class ChatRecyclerAdapter(
         setHasStableIds(true)
     }
 
-    class IncomingMessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textView: AppCompatTextView = view.itemIncomingMessageText
-        val timeView: TextView = view.itemIncomingMessageTime
+    class IncomingMessageViewHolder(private val binding: ItemIncomingMessageBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: IncomingMessage) = with(binding) {
+            itemIncomingMessageText.text = message.text
+            itemIncomingMessageTime.text = message.time
+        }
     }
 
-    class OutgoingMessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textView: AppCompatTextView = view.itemOutgoingMessageText
-        val timeView: TextView = view.itemOutgoingMessageTime
-        private val messageLabel: AppCompatImageView = view.itemOutgoingMessageLabel
+    class OutgoingMessageViewHolder(private val binding: ItemOutgoingMessageBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            clearLabel()
+        fun bind(message: OutgoingMessage) = with(binding) {
+            itemOutgoingMessageLabel.background = null
+            itemOutgoingMessageText.text = message.text
+            itemOutgoingMessageTime.text = message.time
+            when (message.status) {
+                Sending -> setSendingProcessLabel()
+                Unread -> setUnreadLabel()
+                Read -> clearLabel()
+                Error -> setErrorLabel()
+            }
         }
 
-        fun setSendingProcessLabel() {
-            messageLabel.setBackgroundResource(R.drawable.ic_timer_animated)
-            (messageLabel.background as Animatable).start()
+        private fun setSendingProcessLabel() = with(binding.itemOutgoingMessageLabel) {
+            setBackgroundResource(R.drawable.ic_timer_animated)
+            (background as? Animatable)?.start()
         }
 
-        fun setErrorLabel() {
-            messageLabel.setBackgroundResource(R.drawable.ic_error)
+        fun setErrorLabel() = with(binding.itemOutgoingMessageLabel) {
+            setBackgroundResource(R.drawable.ic_error)
         }
 
-        fun setUnreadLabel() {
-            messageLabel.setBackgroundResource(R.drawable.unread_circle)
+        fun setUnreadLabel() = with(binding.itemOutgoingMessageLabel) {
+            setBackgroundResource(R.drawable.unread_circle)
         }
 
-        fun clearLabel() {
-            messageLabel.background = null
+        private fun clearLabel() = with(binding.itemOutgoingMessageLabel) {
+            background = null
         }
     }
 
     override fun getItemId(position: Int) = messages[position].viewId
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             MessageType.IncomingMessage.viewType -> IncomingMessageViewHolder(
-                LayoutInflater
-                    .from(parent.context)
-                    .inflate(R.layout.item_incoming_message, parent, false)
+                ItemIncomingMessageBinding.inflate(layoutInflater, parent, false)
             )
             MessageType.OutgoingMessage.viewType -> OutgoingMessageViewHolder(
-                LayoutInflater
-                    .from(parent.context)
-                    .inflate(R.layout.item_outgoing_message, parent, false)
+                ItemOutgoingMessageBinding.inflate(layoutInflater, parent, false)
             )
             else -> throw IllegalStateException("Unknown view type")
         }
@@ -75,22 +77,16 @@ class ChatRecyclerAdapter(
         val message = messages[position]
         when (getItemViewType(position)) {
             MessageType.IncomingMessage.viewType -> {
-                val incomingMessage = message as? IncomingMessage
                 (holder as? IncomingMessageViewHolder)?.let {
-                    it.textView.text = incomingMessage?.text
-                    it.timeView.text = incomingMessage?.time
+                    (message as? IncomingMessage)?.let {
+                        holder.bind(message)
+                    }
                 }
             }
             MessageType.OutgoingMessage.viewType -> {
-                val outgoingMessage = message as? OutgoingMessage ?: return
                 (holder as? OutgoingMessageViewHolder)?.let {
-                    it.textView.text = outgoingMessage.text
-                    it.timeView.text = outgoingMessage.time
-                    when (outgoingMessage.status) {
-                        Sending -> holder.setSendingProcessLabel()
-                        Unread -> holder.setUnreadLabel()
-                        Read -> holder.clearLabel()
-                        Error -> holder.setErrorLabel()
+                    (message as? OutgoingMessage)?.let {
+                        holder.bind(message)
                     }
                 }
             }

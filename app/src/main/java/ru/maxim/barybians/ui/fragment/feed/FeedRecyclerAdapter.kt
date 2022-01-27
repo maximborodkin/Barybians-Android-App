@@ -6,9 +6,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_post.view.*
-import kotlinx.android.synthetic.main.item_post_creator.view.*
-import kotlinx.android.synthetic.main.item_profile_header.view.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
@@ -59,7 +56,7 @@ open class FeedRecyclerAdapter(
 //            htmlUtils.provideFormattedText(
 //                post.text,
 //                weak(context),
-//                weak(postViewHolder.textView),
+//                weak(postViewHolder.text),
 //                weak(postViewHolder.imagesViewGroup)
 //            ) { onImageClick(it) }
 

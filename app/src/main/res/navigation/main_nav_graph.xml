@@ -9,11 +9,12 @@
         android:id="@+id/feedFragment"
         android:name="ru.maxim.barybians.ui.fragment.feed.FeedFragment"
         android:label="FeedFragment"
-        tools:layout="@layout/fragment_feed" >
+        tools:layout="@layout/fragment_feed">
+
         <argument
             android:name="hasBottomNavigation"
-            app:argType="boolean"
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -21,10 +22,11 @@
         android:name="ru.maxim.barybians.ui.fragment.chatsList.ChatsListFragment"
         android:label="DialogsListFragment"
         tools:layout="@layout/fragment_chats_list">
+
         <argument
             android:name="hasBottomNavigation"
-            app:argType="boolean"
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -35,8 +37,8 @@
 
         <argument
             android:name="userId"
-            app:argType="integer"
-            android:defaultValue="0" />
+            android:defaultValue="0"
+            app:argType="integer" />
 
         <action
             android:id="@+id/profileToSettings"
@@ -44,10 +46,11 @@
             app:launchSingleTop="false"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="false" />
+
         <argument
             android:name="hasBottomNavigation"
-            app:argType="boolean"
-            android:defaultValue="true" />
+            android:defaultValue="true"
+            app:argType="boolean" />
     </fragment>
 
     <fragment
@@ -64,16 +67,18 @@
 
         <argument
             android:name="userId"
-            app:argType="integer"/>
+            app:argType="integer" />
     </fragment>
 
     <action
         android:id="@+id/toProfile"
         app:destination="@id/profileFragment"
         app:launchSingleTop="false">
+
         <argument
             android:name="userId"
             android:defaultValue="0" />
+
         <argument
             android:name="hasBottomNavigation"
             android:defaultValue="false" />

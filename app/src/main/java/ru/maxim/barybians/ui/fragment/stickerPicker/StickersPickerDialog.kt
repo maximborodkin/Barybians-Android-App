@@ -9,27 +9,31 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_stickers_picker.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.network.service.ChatService
+import ru.maxim.barybians.databinding.FragmentStickersPickerBinding
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
+import kotlin.properties.Delegates.notNull
 
 
 class StickersPickerDialog : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var chatService: ChatService
+
+    private var binding: FragmentStickersPickerBinding by notNull()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,8 +44,10 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View =
-        layoutInflater.inflate(R.layout.fragment_stickers_picker, container, false)
+    ): View {
+        binding = FragmentStickersPickerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,13 +62,13 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
                     packs.body()?.forEach { pack ->
                         val imageUrl =
                             "${RetrofitClient.BASE_URL}img/stickers-png/${pack.pack}/${pack.icon}"
-                        val tab = stickersPickerTabLayout.newTab()
+                        val tab = binding.stickersPickerTabLayout.newTab()
                             .setCustomView(createTabItemView(imageUrl))
                         tab.tag = pack.pack
-                        stickersPickerTabLayout.addTab(tab)
+                        binding.stickersPickerTabLayout.addTab(tab)
                     }
-                    stickersPickerTabLayout.tabGravity = TabLayout.GRAVITY_FILL
-                    stickersPickerTabLayout.addOnTabSelectedListener(object :
+                    binding.stickersPickerTabLayout.tabGravity = TabLayout.GRAVITY_FILL
+                    binding.stickersPickerTabLayout.addOnTabSelectedListener(object :
                         TabLayout.OnTabSelectedListener {
                         override fun onTabSelected(tab: TabLayout.Tab) {
                             loadStickerPack(tab.tag.toString())
@@ -71,7 +77,7 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
                         override fun onTabUnselected(tab: TabLayout.Tab?) {}
                         override fun onTabReselected(tab: TabLayout.Tab?) {}
                     })
-                    loadStickerPack(stickersPickerTabLayout.getTabAt(0)?.tag.toString())
+                    loadStickerPack(binding.stickersPickerTabLayout.getTabAt(0)?.tag.toString())
                 } else {
                     context?.toast("Unable to load stickers")
                 }
@@ -84,8 +90,8 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
         for (i in 1..20) {
             stickers.add("${RetrofitClient.BASE_URL}img/stickers-png/${packName}/${i}.png")
         }
-        stickersPickerRecycler.layoutManager = GridLayoutManager(context, 4)
-        stickersPickerRecycler.adapter = StickerPickerRecyclerAdapter(stickers) { position ->
+        binding.stickersPickerRecycler.layoutManager = GridLayoutManager(context, 4)
+        binding.stickersPickerRecycler.adapter = StickerPickerRecyclerAdapter(stickers) { position ->
             onStickerClick("${RetrofitClient.BASE_URL}img/stickers-png/${packName}/${position + 1}.png")
         }
     }

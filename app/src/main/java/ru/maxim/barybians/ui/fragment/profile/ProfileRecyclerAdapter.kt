@@ -20,8 +20,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.android.synthetic.main.item_post_creator.view.*
-import kotlinx.android.synthetic.main.item_profile_header.view.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.ui.fragment.base.FeedItem
 import ru.maxim.barybians.ui.fragment.base.HeaderItem
@@ -57,7 +55,7 @@ class ProfileRecyclerAdapter(
 //        val cameraBtn: AppCompatImageView = view.itemPostCreatorCameraBtn
 //        val titleView: TextInputEditText = view.itemPostCreatorTitle
 //        private val titleLayoutView: TextInputLayout = view.itemPostCreatorTitleLayout
-//        val textView: TextInputEditText = view.itemPostCreatorText
+//        val text: TextInputEditText = view.itemPostCreatorText
 //        val textLayoutView: TextInputLayout = view.itemPostCreatorTextLayout
 //        private val buttonsLayout: LinearLayout = view.itemPostCreatorButtonsLayout
 //        val cancelBtn: MaterialButton = view.itemPostCreatorCancelBtn
@@ -82,8 +80,8 @@ class ProfileRecyclerAdapter(
 //            reduce()
 //            titleView.clearFocus()
 //            titleView.text = null
-//            textView.clearFocus()
-//            textView.text = null
+//            text.clearFocus()
+//            text.text = null
 //            val inputMethodManager =
 //                itemView.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
 //            inputMethodManager.hideSoftInputFromWindow(itemView.windowToken, 0)
@@ -201,7 +199,7 @@ class ProfileRecyclerAdapter(
 //            }
 //        }
 //
-//        postCreatorViewHolder.textView.addTextChangedListener {
+//        postCreatorViewHolder.text.addTextChangedListener {
 //            if (it.toString().isNotBlank()) {
 //                postCreatorViewHolder.textLayoutView.error = null
 //            }
@@ -209,7 +207,7 @@ class ProfileRecyclerAdapter(
 //
 //        postCreatorViewHolder.okBtn.setOnClickListener {
 //            val title = postCreatorViewHolder.titleView.text.toString()
-//            val text = postCreatorViewHolder.textView.text.toString()
+//            val text = postCreatorViewHolder.text.text.toString()
 //            if (text.isBlank()) {
 //                postCreatorViewHolder.textLayoutView.error =
 //                    context.getString(R.string.this_field_is_required)
