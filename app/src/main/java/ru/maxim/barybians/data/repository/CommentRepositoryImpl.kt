@@ -1,5 +1,8 @@
 package ru.maxim.barybians.data.repository
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import ru.maxim.barybians.data.network.service.CommentService
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.domain.model.Comment
@@ -10,6 +13,10 @@ class CommentRepositoryImpl @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val repositoryBound: RepositoryBound
 ): CommentRepository {
+
+    override suspend fun getComments(postId: Int): List<Comment> =
+        repositoryBound.wrapRequest { commentService.getCommentsByPostId(postId) }
+            .filter { it.postId == postId }
 
     override suspend fun createComment(uuid: String, postId: Int, text: String): Comment =
         repositoryBound.wrapRequest { commentService.addComment(uuid, postId, text) }

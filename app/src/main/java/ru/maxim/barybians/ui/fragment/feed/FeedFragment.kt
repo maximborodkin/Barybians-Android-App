@@ -15,10 +15,11 @@ import ru.maxim.barybians.databinding.FragmentFeedBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.dialog.CommentsListDialog
+import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialogFragment
 import ru.maxim.barybians.ui.dialog.LikesListDialog
 import ru.maxim.barybians.ui.dialog.PostMenuDialog
 import ru.maxim.barybians.ui.dialog.Refreshable
+import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
 import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
 import ru.maxim.barybians.utils.*
 import timber.log.Timber
@@ -199,19 +200,21 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onCommentsClick(postId: Int) {
-        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
-            val commentsListDialog = CommentsListDialog.newInstance(
-                comments = post.comments,
-                onUserClick = ::onProfileClick,
-                onImageClick = ::onImageClick,
-                onCommentAdd = { text -> feedPresenter.createComment(post.id, text) },
-                onCommentEdit = feedPresenter::editComment,
-                onCommentDelete = feedPresenter::deleteComment
-            )
-            Timber.d("FeedFragment:${hashCode()}, commentsListDialog: ${commentsListDialog.hashCode()}")
-            currentListDialog = commentsListDialog
-            commentsListDialog.show(childFragmentManager, CommentsListDialog::class.simpleName)
-        }
+        val action = FeedFragmentDirections.feedToCommentsList(postId)
+        findNavController().navigate(action)
+//        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
+//            val commentsListDialog = CommentsListDialogFragment.newInstance(
+//                comments = post.comments,
+//                onUserClick = ::onProfileClick,
+//                onImageClick = ::onImageClick,
+//                onCommentAdd = { text -> feedPresenter.createComment(post.id, text) },
+//                onCommentEdit = feedPresenter::editComment,
+//                onCommentDelete = feedPresenter::deleteComment
+//            )
+//            Timber.d("FeedFragment:${hashCode()}, commentsListDialog: ${commentsListDialog.hashCode()}")
+//            currentListDialog = commentsListDialog
+//            commentsListDialog.show(childFragmentManager, CommentsListDialogFragment::class.simpleName)
+//        }
     }
 
     override fun onLikeClick(postId: Int, hasPersonalLike: Boolean) {

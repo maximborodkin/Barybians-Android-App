@@ -50,6 +50,7 @@
     <string name="an_error_occurred_while_loading_messages">An error occurred while loading messages</string>
     <!--  Profile  -->
         <string name="an_error_occurred_while_loading_profile">An error occurred while loading profile</string>
+        <string name="unable_to_load_comments">Unable to load comments</string>
         <string name="unable_to_create_comment">Unable to create comment</string>
         <string name="unable_to_delete_comment">Unable to delete comment</string>
         <string name="unable_to_load_image">Unable to load image</string>

@@ -1,5 +1,6 @@
 package ru.maxim.barybians.di
 
+import android.app.Application
 import android.content.Context
 import dagger.*
 import kotlinx.coroutines.CoroutineScope
@@ -8,7 +9,8 @@ import ru.maxim.barybians.data.repository.*
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
-import ru.maxim.barybians.ui.dialog.CommentsListDialog
+import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
+import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialogFragment
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.ui.fragment.chatsList.ChatsListFragment
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
@@ -23,6 +25,9 @@ interface AppComponent {
 
     @Component.Builder
     interface Builder {
+        @BindsInstance
+        fun application(application: Application): Builder
+
         @BindsInstance
         fun applicationContext(context: Context): Builder
 
@@ -42,6 +47,7 @@ interface AppComponent {
     fun inject(stickersPickerDialog: StickersPickerDialog)
     fun inject(preferencesFragment: PreferencesFragment)
     fun inject(commentsListDialog: CommentsListDialog)
+    fun inject(commentsListDialogFragment: CommentsListDialogFragment)
 }
 
 @Module(includes = [DataModuleBindings::class])

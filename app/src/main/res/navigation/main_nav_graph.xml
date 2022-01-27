@@ -15,6 +15,10 @@
             android:name="hasBottomNavigation"
             android:defaultValue="true"
             app:argType="boolean" />
+
+        <action
+            android:id="@+id/feedToCommentsList"
+            app:destination="@id/commentsListDialog" />
     </fragment>
 
     <fragment
@@ -89,4 +93,14 @@
         app:destination="@id/chatFragment"
         app:launchSingleTop="false" />
 
+    <dialog
+        android:id="@+id/commentsListDialog"
+        android:name="ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog"
+        android:label="CommentsListDialog"
+        tools:layout="@layout/fragment_comments_list">
+
+        <argument
+            android:name="postId"
+            app:argType="integer" />
+    </dialog>
 </navigation>

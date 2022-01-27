@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.dialog
+package ru.maxim.barybians.ui.dialog.commentsList
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -10,15 +10,18 @@ import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.databinding.FragmentCommentsListBinding
 import ru.maxim.barybians.domain.model.Comment
+import ru.maxim.barybians.ui.dialog.Refreshable
 import ru.maxim.barybians.ui.fragment.feed.CommentsRecyclerAdapter
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.autoCleared
 import javax.inject.Inject
+import kotlin.properties.Delegates.notNull
 
-class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
+class CommentsListDialogFragment : BottomSheetDialogFragment(), Refreshable {
 
     @Inject
     lateinit var preferencesManager: PreferencesManager
@@ -27,9 +30,12 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
 //    lateinit var htmlParser: HtmlParser
 
     @Inject
+    lateinit var commentRepository: CommentRepository
+
+    @Inject
     lateinit var dateFormatUtils: DateFormatUtils
 
-    private var binding: FragmentCommentsListBinding? = null
+    private var binding: FragmentCommentsListBinding by notNull()
 
     private var recyclerAdapter: CommentsRecyclerAdapter by autoCleared()
 
@@ -42,7 +48,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCommentsListBinding.inflate(inflater, container, false)
         recyclerAdapter = CommentsRecyclerAdapter(
             currentUserId = preferencesManager.userId,
@@ -58,15 +64,15 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
 //            htmlParser = htmlParser,
             dateFormatUtils = dateFormatUtils
         )
-        binding?.commentsListRecycler?.adapter = recyclerAdapter
-        return binding?.root
+        binding.commentsListRecycler.adapter = recyclerAdapter
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val commentsCount = comments.size
 
-        binding?.commentsListTitle?.text = if (commentsCount == 0) {
+        binding.commentsListTitle.text = if (commentsCount == 0) {
             context?.getString(R.string.no_comments_yet)
         } else {
             context?.resources?.getQuantityString(
@@ -78,14 +84,14 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
 
         refresh()
 
-        binding?.commentsListTextEditor?.addTextChangedListener {
+        binding.commentsListTextEditor.addTextChangedListener {
             val buttonTintResource =
                 if (it.isNullOrBlank()) R.color.send_btn_disabled_color
                 else R.color.send_btn_enabled_color
-            binding?.commentsListSendBtn?.setColorFilter(buttonTintResource)
+            binding.commentsListSendBtn.setColorFilter(buttonTintResource)
         }
-        binding?.commentsListSendBtn?.setOnClickListener {
-            val commentText = binding?.commentsListTextEditor?.text.toString()
+        binding.commentsListSendBtn.setOnClickListener {
+            val commentText = binding.commentsListTextEditor.text.toString()
             if (commentText.isNotBlank()) {
                 onCommentAdd(commentText)
             }
@@ -111,14 +117,14 @@ class CommentsListDialog : BottomSheetDialogFragment(), Refreshable {
             onCommentAdd: (text: String) -> Unit,
             onCommentEdit: (commentId: Int, text: String) -> Unit,
             onCommentDelete: (commentId: Int) -> Unit
-        ): CommentsListDialog {
-            this.comments = comments
-            this.onUserClick = onUserClick
-            this.onImageClick = onImageClick
-            this.onCommentAdd = onCommentAdd
-            this.onCommentEdit = onCommentEdit
-            this.onCommentDelete = onCommentDelete
-            return CommentsListDialog()
+        ): CommentsListDialogFragment {
+            Companion.comments = comments
+            Companion.onUserClick = onUserClick
+            Companion.onImageClick = onImageClick
+            Companion.onCommentAdd = onCommentAdd
+            Companion.onCommentEdit = onCommentEdit
+            Companion.onCommentDelete = onCommentDelete
+            return CommentsListDialogFragment()
         }
     }
 }

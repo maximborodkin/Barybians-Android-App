@@ -7,6 +7,9 @@ import ru.maxim.barybians.domain.model.Comment
 
 interface CommentService {
 
+    @GET("/v2/comments")
+    suspend fun getCommentsByPostId(postId: Int): Response<List<Comment>>
+
     @FormUrlEncoded
     @POST("/v2/comments")
     suspend fun addComment(

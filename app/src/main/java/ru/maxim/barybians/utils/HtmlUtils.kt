@@ -18,7 +18,7 @@ import ru.maxim.barybians.data.network.RetrofitClient
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
-class HtmlParser @Inject constructor(
+class HtmlUtils @Inject constructor(
     private val scope: CoroutineScope,
     private val resources: Resources,
     private val requestManager: RequestManager

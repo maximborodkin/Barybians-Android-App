@@ -21,6 +21,7 @@ class App : MultiDexApplication() {
         }
 
         appComponent = DaggerAppComponent.builder()
+            .application(this)
             .applicationContext(applicationContext)
             .applicationScope(applicationScope)
             .build()
