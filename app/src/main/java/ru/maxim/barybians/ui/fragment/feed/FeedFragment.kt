@@ -21,6 +21,7 @@ import ru.maxim.barybians.ui.dialog.PostMenuDialog
 import ru.maxim.barybians.ui.dialog.Refreshable
 import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
 import ru.maxim.barybians.utils.*
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -47,6 +48,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Timber.d("FeedFragment:${this.hashCode()} onViewCreated:${view.hashCode()}")
         super.onViewCreated(view, savedInstanceState)
         binding.feedRefreshLayout.setOnRefreshListener { feedPresenter.loadFeed() }
         recyclerAdapter = FeedRecyclerAdapter(
@@ -84,7 +86,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         recyclerAdapter.currentList.indexOrNull { it.id == post.id }?.let { index ->
             recyclerAdapter.currentList[index] = post
             recyclerAdapter.notifyItemChanged(index)
-            // TODO Update all opened dialogs for this post
+            currentListDialog?.refresh()
         }
     }
 
@@ -96,7 +98,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         recyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
             recyclerAdapter.currentList.removeAt(postIndex)
             recyclerAdapter.notifyItemRemoved(postIndex)
-            // TODO Close all opened dialogs for this post
+            currentListDialog?.refresh()
         }
     }
 
@@ -109,7 +111,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
             val postComments = recyclerAdapter.currentList[postIndex].comments
             postComments.add(comment)
             recyclerAdapter.notifyItemChanged(postIndex)
-            // TODO Update opened dialog with comments
+            currentListDialog?.refresh()
         }
     }
 
@@ -125,7 +127,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
             postComments.indexOrNull { it.id == comment.id }?.let { commentIndex ->
                 postComments[commentIndex] = comment
                 recyclerAdapter.notifyItemChanged(postIndex)
-                // TODO Update opened dialog with comments
+                currentListDialog?.refresh()
             }
         }
     }
@@ -142,7 +144,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
             postComments.indexOrNull { it.id == commentId }?.let { commentIndex ->
                 postComments.removeAt(commentIndex)
                 recyclerAdapter.notifyItemChanged(postIndex)
-                // TODO Update opened dialog with comments
+                currentListDialog?.refresh()
             }
         }
     }
@@ -158,7 +160,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
                 addAll(likedUsers)
             }
             recyclerAdapter.notifyItemChanged(postIndex)
-            // TODO Update opened dialog with liked users
+            currentListDialog?.refresh()
         }
     }
 
@@ -167,6 +169,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onProfileClick(userId: Int) {
+        Timber.d("FeedFragment:${hashCode()}, onProfileClick")
         findNavController().navigate(FeedFragmentDirections.toProfile(userId))
     }
 
@@ -205,6 +208,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
                 onCommentEdit = feedPresenter::editComment,
                 onCommentDelete = feedPresenter::deleteComment
             )
+            Timber.d("FeedFragment:${hashCode()}, commentsListDialog: ${commentsListDialog.hashCode()}")
             currentListDialog = commentsListDialog
             commentsListDialog.show(childFragmentManager, CommentsListDialog::class.simpleName)
         }
