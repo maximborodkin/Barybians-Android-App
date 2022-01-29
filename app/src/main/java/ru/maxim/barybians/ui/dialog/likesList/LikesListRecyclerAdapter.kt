@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.feed
+package ru.maxim.barybians.ui.dialog.likesList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,24 +7,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.databinding.ItemUserBinding
 import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.fragment.feed.LikesListRecyclerAdapter.UserViewHolder
+import ru.maxim.barybians.ui.dialog.likesList.LikesListRecyclerAdapter.UserViewHolder
 import ru.maxim.barybians.utils.load
 import java.util.*
+import javax.inject.Inject
 
-class LikesListRecyclerAdapter(
-    private val likes: List<User>,
-    private val onUserClick: (userId: Int) -> Unit
-) : ListAdapter<User, UserViewHolder>(UserDiffUtils) {
+class LikesListRecyclerAdapter @Inject constructor() :
+    ListAdapter<User, UserViewHolder>(UserDiffUtils) {
 
-    inner class UserViewHolder(private val binding: ItemUserBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    private var onUserClick: ((userId: Int) -> Unit)? = null
 
-        fun bind(user: User) = with(binding) {
-            itemUserAvatar.load(user.avatarMin)
-            itemUserAvatar.isOnline = user.lastVisit > Date().time / 1000 - 5 * 60
-            itemUserName.text = user.fullName
-            root.setOnClickListener { onUserClick(user.id) }
-        }
+    fun setOnUserClickListener(listener: ((userId: Int) -> Unit)?) {
+        onUserClick = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
@@ -37,7 +31,18 @@ class LikesListRecyclerAdapter(
         holder.bind(getItem(position))
     }
 
-    object UserDiffUtils : DiffUtil.ItemCallback<User>() {
+    inner class UserViewHolder(private val binding: ItemUserBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(user: User) = with(binding) {
+            itemUserAvatar.load(user.avatarMin)
+            itemUserAvatar.isOnline = user.lastVisit > Date().time / 1000 - 5 * 60
+            itemUserName.text = user.fullName
+            root.setOnClickListener { onUserClick?.invoke(user.id) }
+        }
+    }
+
+    private object UserDiffUtils : DiffUtil.ItemCallback<User>() {
         override fun areItemsTheSame(oldItem: User, newItem: User): Boolean =
             oldItem.id == newItem.id
 

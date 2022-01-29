@@ -14,13 +14,13 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.ItemCommentBinding
 import ru.maxim.barybians.domain.model.Comment
-import ru.maxim.barybians.ui.dialog.commentsList.CommentsRecyclerAdapter.CommentViewHolder
+import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.CommentViewHolder
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.SwipeDismissCallback
 import ru.maxim.barybians.utils.load
 import javax.inject.Inject
 
-class CommentsRecyclerAdapter @Inject constructor(
+class CommentsListRecyclerAdapter @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val dateFormatUtils: DateFormatUtils,
 ) : ListAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {

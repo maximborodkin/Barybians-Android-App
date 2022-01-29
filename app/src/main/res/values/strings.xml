@@ -195,5 +195,6 @@
     <string name="string_too_long">String too long</string>
     <string name="this_string_is_required">This string is required</string>
     <string name="edit_comment">Edit comment</string>
+    <string name="no_likes_yet">No likes yet</string>
 
 </resources>

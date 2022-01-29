@@ -16,9 +16,6 @@
             android:defaultValue="true"
             app:argType="boolean" />
 
-        <action
-            android:id="@+id/feedToCommentsList"
-            app:destination="@id/commentsListDialog" />
     </fragment>
 
     <fragment
@@ -57,6 +54,20 @@
             app:argType="boolean" />
     </fragment>
 
+    <action
+        android:id="@+id/toProfile"
+        app:destination="@id/profileFragment"
+        app:launchSingleTop="false">
+
+        <argument
+            android:name="userId"
+            android:defaultValue="0" />
+
+        <argument
+            android:name="hasBottomNavigation"
+            android:defaultValue="false" />
+    </action>
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment"
@@ -75,20 +86,6 @@
     </fragment>
 
     <action
-        android:id="@+id/toProfile"
-        app:destination="@id/profileFragment"
-        app:launchSingleTop="false">
-
-        <argument
-            android:name="userId"
-            android:defaultValue="0" />
-
-        <argument
-            android:name="hasBottomNavigation"
-            android:defaultValue="false" />
-    </action>
-
-    <action
         android:id="@+id/toChat"
         app:destination="@id/chatFragment"
         app:launchSingleTop="false" />
@@ -103,4 +100,8 @@
             android:name="postId"
             app:argType="integer" />
     </dialog>
+
+    <action
+        android:id="@+id/toCommentsList"
+        app:destination="@id/commentsListDialog" />
 </navigation>

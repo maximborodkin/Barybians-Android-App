@@ -15,7 +15,7 @@ import ru.maxim.barybians.databinding.FragmentFeedBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.dialog.LikesListDialog
+import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
 import ru.maxim.barybians.ui.dialog.PostMenuDialog
 import ru.maxim.barybians.ui.dialog.Refreshable
 import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
@@ -195,7 +195,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onCommentsClick(postId: Int) {
-        val action = FeedFragmentDirections.feedToCommentsList(postId)
+        val action = FeedFragmentDirections.toCommentsList(postId)
         findNavController().navigate(action)
 //        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
 //            val commentsListDialog = CommentsListDialogFragment.newInstance(

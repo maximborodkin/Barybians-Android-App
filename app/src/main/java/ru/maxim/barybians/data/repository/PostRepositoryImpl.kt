@@ -2,6 +2,7 @@ package ru.maxim.barybians.data.repository
 
 import dagger.Reusable
 import ru.maxim.barybians.data.network.service.PostService
+import ru.maxim.barybians.domain.model.Post
 import javax.inject.Inject
 
 @Reusable
@@ -11,6 +12,9 @@ class PostRepositoryImpl @Inject constructor(
 ) : PostRepository {
 
     override suspend fun getFeed() = repositoryBound.wrapRequest(postService::getFeed)
+
+    override suspend fun getPostById(postId: Int): Post? =
+        repositoryBound.wrapRequest { postService.getById(postId) }.firstOrNull { it.id == postId }
 
     override suspend fun createPost(title: String?, text: String) =
         repositoryBound.wrapRequest { postService.createPost(title, text) }

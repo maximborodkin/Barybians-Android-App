@@ -43,7 +43,7 @@
             tools:listitem="@layout/item_comment" />
 
         <ProgressBar
-            android:id="@+id/commentsListRecyclerProgressBar"
+            android:id="@+id/commentsListProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:indeterminate="true"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="24dp"
             android:textSize="16sp"
-            android:visibility="@{viewModel.isLoading ? View.GONE : View.VISIBLE}"
+            android:visibility="@{viewModel.isLoading || viewModel.comments.size > 0 ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="@id/commentsListRecycler"
             app:layout_constraintEnd_toEndOf="@id/commentsListRecycler"
             app:layout_constraintStart_toStartOf="@id/commentsListRecycler"

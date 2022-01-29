@@ -1,28 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="12dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/likesListTitle"
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="ru.maxim.barybians.ui.dialog.likesList.LikesListDialogViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="6dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        tools:text="3 likes" />
+        android:paddingHorizontal="8dp"
+        android:paddingBottom="12dp">
+
+        <TextView
+            android:id="@+id/likesListTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="3 likes" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/likesListRecycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_user" />
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/likesListRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/likesListTitle"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_user" />
+
+        <ProgressBar
+            android:id="@+id/likesListProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/likesListRecycler"
+            app:layout_constraintEnd_toEndOf="@id/likesListRecycler"
+            app:layout_constraintStart_toStartOf="@id/likesListRecycler"
+            app:layout_constraintTop_toTopOf="@id/likesListRecycler" />
+
+        <TextView
+            android:id="@+id/likesListMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="24dp"
+            android:textSize="16sp"
+            android:visibility="@{viewModel.isLoading || viewModel.likes.size > 0 ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@id/likesListRecycler"
+            app:layout_constraintEnd_toEndOf="@id/likesListRecycler"
+            app:layout_constraintStart_toStartOf="@id/likesListRecycler"
+            app:layout_constraintTop_toTopOf="@id/likesListRecycler"
+            tools:text="Unable to load likes. Please try later" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

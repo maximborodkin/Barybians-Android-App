@@ -34,7 +34,7 @@ class CommentsListDialog : BottomSheetDialogFragment() {
     lateinit var dateFormatUtils: DateFormatUtils
 
     @Inject
-    lateinit var recyclerAdapter: CommentsRecyclerAdapter
+    lateinit var recyclerAdapter: CommentsListRecyclerAdapter
 
     @Inject
     lateinit var factory: CommentsListDialogViewModel.CommentsListDialogViewModelFactory.Factory
@@ -104,8 +104,12 @@ class CommentsListDialog : BottomSheetDialogFragment() {
         }
 
         recyclerAdapter.apply {
-            setOnUserClickListener { }
-            setOnImageClickListener { }
+            setOnUserClickListener { userId ->
+
+            }
+            setOnImageClickListener { imageDrawable ->
+
+            }
             setOnCommentSwipeListener { commentId, viewHolderPosition ->
                 val deleteConfirmationDialog = MaterialAlertDialogBuilder(view.context).apply {
                     setTitle(R.string.delete_this_comment)
