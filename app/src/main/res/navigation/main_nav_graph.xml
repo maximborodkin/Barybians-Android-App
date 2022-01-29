@@ -104,4 +104,19 @@
     <action
         android:id="@+id/toCommentsList"
         app:destination="@id/commentsListDialog" />
+
+    <dialog
+        android:id="@+id/likesListDialog"
+        android:name="ru.maxim.barybians.ui.dialog.likesList.LikesListDialog"
+        android:label="LikesListDialog"
+        tools:layout="@layout/fragment_likes_list">
+
+        <argument
+            android:name="postId"
+            app:argType="integer" />
+    </dialog>
+
+    <action
+        android:id="@+id/toLikesList"
+        app:destination="@id/likesListDialog" />
 </navigation>

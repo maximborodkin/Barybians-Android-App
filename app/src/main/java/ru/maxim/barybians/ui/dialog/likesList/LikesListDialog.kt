@@ -1,12 +1,10 @@
 package ru.maxim.barybians.ui.dialog.likesList
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,17 +14,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentLikesListBinding
-import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialogArgs
 import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
-import kotlin.properties.Delegates
 import kotlin.properties.Delegates.notNull
 
 class LikesListDialog : BottomSheetDialogFragment() {
 
-    private val args: CommentsListDialogArgs by navArgs()
+    private val args: LikesListDialogArgs by navArgs()
     private var binding: FragmentLikesListBinding by notNull()
 
     @Inject

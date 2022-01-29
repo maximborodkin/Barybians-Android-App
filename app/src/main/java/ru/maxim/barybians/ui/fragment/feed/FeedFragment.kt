@@ -17,7 +17,6 @@ import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
 import ru.maxim.barybians.ui.dialog.PostMenuDialog
-import ru.maxim.barybians.ui.dialog.Refreshable
 import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
 import ru.maxim.barybians.utils.*
 import timber.log.Timber
@@ -32,8 +31,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
 
     private val binding by viewBinding(FragmentFeedBinding::bind)
     private var recyclerAdapter by autoCleared<FeedRecyclerAdapter>()
-
-    private var currentListDialog by autoCleared<Refreshable?>()
 
     @Inject
     lateinit var dateFormatUtils: DateFormatUtils
@@ -85,7 +82,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         recyclerAdapter.currentList.indexOrNull { it.id == post.id }?.let { index ->
             recyclerAdapter.currentList[index] = post
             recyclerAdapter.notifyItemChanged(index)
-            currentListDialog?.refresh()
         }
     }
 
@@ -97,7 +93,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         recyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
             recyclerAdapter.currentList.removeAt(postIndex)
             recyclerAdapter.notifyItemRemoved(postIndex)
-            currentListDialog?.refresh()
         }
     }
 
@@ -110,7 +105,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
             val postComments = recyclerAdapter.currentList[postIndex].comments
             postComments.add(comment)
             recyclerAdapter.notifyItemChanged(postIndex)
-            currentListDialog?.refresh()
         }
     }
 
@@ -126,7 +120,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
             postComments.indexOrNull { it.id == comment.id }?.let { commentIndex ->
                 postComments[commentIndex] = comment
                 recyclerAdapter.notifyItemChanged(postIndex)
-                currentListDialog?.refresh()
             }
         }
     }
@@ -143,7 +136,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
             postComments.indexOrNull { it.id == commentId }?.let { commentIndex ->
                 postComments.removeAt(commentIndex)
                 recyclerAdapter.notifyItemChanged(postIndex)
-                currentListDialog?.refresh()
             }
         }
     }
@@ -156,7 +148,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         recyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
             recyclerAdapter.currentList[postIndex].likedUsers = likedUsers
             recyclerAdapter.notifyItemChanged(postIndex)
-            currentListDialog?.refresh()
         }
     }
 
@@ -217,13 +208,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onLikeLongClick(postId: Int) {
-        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
-            val likesListDialog = LikesListDialog.newInstance(
-                likes = post.likedUsers,
-                onUserClick = ::onProfileClick
-            )
-            currentListDialog = likesListDialog
-            likesListDialog.show(childFragmentManager, LikesListDialog::class.simpleName)
-        }
+        val action = FeedFragmentDirections.toLikesList(postId)
+        findNavController().navigate(action)
     }
 }
