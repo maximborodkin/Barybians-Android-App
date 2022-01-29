@@ -20,7 +20,7 @@ data class User (
     @SerializedName("ulastVisit")
     val lastVisit: Long,
     val roleId: Int?,
-    val posts: ArrayList<Post>
+    val posts: ArrayList<Post>?
 ) {
     val fullName: String
         get() = getFullName(firstName, lastName)

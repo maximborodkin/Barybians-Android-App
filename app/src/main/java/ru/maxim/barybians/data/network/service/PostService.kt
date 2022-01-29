@@ -7,6 +7,9 @@ import ru.maxim.barybians.domain.model.Post
 
 interface PostService {
 
+    @GET("/v2/posts/{postId}")
+    suspend fun getById(@Path("postId") postId: Int): Response<List<Post>>
+
     @GET("/v2/posts")
     suspend fun getFeed(): Response<List<Post>>
 

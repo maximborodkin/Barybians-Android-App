@@ -11,7 +11,7 @@
     <color name="transparent">#00000000</color>
     <color name="unread_message_circle_color">#516BFF</color>
     <color name="error_message_circle_color">#B51A1A</color>
-    <color name="send_btn_enabled_color">#448AFF</color>
+    <color name="send_btn_color">#448AFF</color>
     <color name="send_btn_disabled_color">@color/grey</color>
     <color name="like_red">#B0003A</color>
 

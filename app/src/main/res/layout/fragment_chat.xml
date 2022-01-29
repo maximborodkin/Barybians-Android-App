@@ -93,7 +93,7 @@
             android:layout_height="48dp"
             android:padding="8dp"
             android:src="@drawable/ic_send"
-            android:tint="@{ExtensionsKt.isEmpty(messageText) ? @color/grey : @color/send_btn_enabled_color}"
+            android:tint="@{ExtensionsKt.isEmpty(messageText) ? @color/grey : @color/send_btn_color}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/chatMessageInput" />

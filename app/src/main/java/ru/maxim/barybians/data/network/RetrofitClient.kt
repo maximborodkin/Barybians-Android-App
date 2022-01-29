@@ -49,7 +49,7 @@ class RetrofitClient @Inject constructor(
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor { authorizationInterceptor.intercept(it) }
         .addInterceptor(HttpLoggingInterceptor().apply { level = BODY })
-//        .connectionSpecs(connectionSpec)
+        .connectionSpecs(connectionSpec)
         .build()
 
     private val retrofit: Retrofit = Retrofit.Builder()

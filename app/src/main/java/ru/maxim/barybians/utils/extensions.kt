@@ -102,7 +102,7 @@ fun View.hide() {
     this.isGone = true
 }
 
-fun MutableLiveData<String>.isEmpty() = value?.length ?: 0 == 0
+fun MutableLiveData<String>.isEmpty() = value?.isEmpty()
 
 val Context.appComponent: AppComponent
     get() = when (this) {

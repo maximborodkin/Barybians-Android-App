@@ -2,13 +2,9 @@ package ru.maxim.barybians.data.network.service
 
 import retrofit2.Response
 import retrofit2.http.*
-import ru.maxim.barybians.data.network.response.CommentResponse
 import ru.maxim.barybians.domain.model.Comment
 
 interface CommentService {
-
-    @GET("/v2/comments")
-    suspend fun getCommentsByPostId(postId: Int): Response<List<Comment>>
 
     @FormUrlEncoded
     @POST("/v2/comments")
@@ -16,7 +12,7 @@ interface CommentService {
         @Header("request") uuid: String,
         @Field("postId") postId: Int,
         @Field("text") text: String
-    ): Response<Comment>
+    ): Response<Int>
 
     @FormUrlEncoded
     @PUT("/v2/comments/{commentId}")

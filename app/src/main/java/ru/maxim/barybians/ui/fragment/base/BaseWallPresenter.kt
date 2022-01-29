@@ -58,8 +58,8 @@ abstract class BaseWallPresenter<T : BaseWallView>(
         presenterScope.launch {
             try {
                 val uuid = UUID.randomUUID().toString()
-                val comment = commentRepository.createComment(uuid, postId, text)
-                viewState.onCommentAdded(postId, comment)
+                val commentId = commentRepository.createComment(uuid, postId, text)
+//                viewState.onCommentAdded(postId, comment)
             } catch (e: Exception) {
                 when (e) {
                     is NoConnectionException -> viewState.showNoInternet()

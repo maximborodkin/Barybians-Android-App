@@ -28,11 +28,20 @@ class CommentsListDialogViewModel private constructor(
     private val _errorMessageId: MutableLiveData<Int?> = MutableLiveData(null)
     val errorMessageId: LiveData<Int?> = _errorMessageId
 
+    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _isSending: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isSending: LiveData<Boolean> = _isSending
+
+    val commentText: MutableLiveData<String> = MutableLiveData(String())
+
     init {
         update()
     }
 
     private fun update() = viewModelScope.launch {
+        _isLoading.postValue(true)
         try {
             _comments.emit(commentRepository.getComments(postId))
         } catch (e: Exception) {
@@ -42,10 +51,13 @@ class CommentsListDialogViewModel private constructor(
                 else -> R.string.unable_to_load_comments
             }
             _errorMessageId.postValue(error)
+        } finally {
+            _isLoading.postValue(false)
         }
     }
 
     fun editComment(commentId: Int, text: String) = viewModelScope.launch {
+        _isSending.postValue(true)
         try {
             commentRepository.editComment(commentId, text)
             update()
@@ -56,13 +68,19 @@ class CommentsListDialogViewModel private constructor(
                 else -> R.string.unable_to_update_comment
             }
             _errorMessageId.postValue(error)
+        } finally {
+            _isSending.postValue(false)
         }
     }
 
-    fun createComment(text: String) = viewModelScope.launch {
+    fun createComment() = viewModelScope.launch {
+        if (commentText.value.isNullOrBlank()) return@launch
+        _isSending.postValue(true)
         try {
             val uuid = UUID.randomUUID().toString()
-            commentRepository.createComment(uuid, postId, text)
+            commentRepository.createComment(uuid, postId, requireNotNull(commentText.value))
+            update()
+            commentText.postValue(String())
         } catch (e: Exception) {
             val error = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection
@@ -70,6 +88,8 @@ class CommentsListDialogViewModel private constructor(
                 else -> R.string.unable_to_create_comment
             }
             _errorMessageId.postValue(error)
+        } finally {
+            _isSending.postValue(false)
         }
     }
 
@@ -77,6 +97,8 @@ class CommentsListDialogViewModel private constructor(
     fun deleteComment(commentId: Int) = viewModelScope.launch {
         try {
             commentRepository.deleteComment(commentId)
+            val updatedComments = comments.value.filterNot { it.id == commentId }
+            _comments.emit(updatedComments)
         } catch (e: Exception) {
             val error = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection

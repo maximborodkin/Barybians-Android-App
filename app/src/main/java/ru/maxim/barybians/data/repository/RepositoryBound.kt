@@ -8,6 +8,7 @@ import ru.maxim.barybians.data.network.exception.*
 import ru.maxim.barybians.utils.NetworkUtils
 import timber.log.Timber
 import java.net.HttpURLConnection.*
+import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
@@ -38,6 +39,7 @@ class RepositoryBound @Inject constructor(private val networkUtils: NetworkUtils
         } catch (e: Exception) {
             Timber.w(e)
             if (e is UnknownHostException) throw NoConnectionException()
+            if (e is SocketTimeoutException) throw TimeoutException()
             throw e
         }
     }
