@@ -45,6 +45,14 @@
         app:layout_constraintTop_toBottomOf="@id/itemCommentUserAvatar"
         tools:text="Comment body" />
 
+    <ImageView
+        android:id="@+id/itemCommentImage"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:src="@drawable/ic_timer"
+        app:layout_constraintTop_toBottomOf="@id/itemCommentAttachmentsHolder"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <LinearLayout
         android:id="@+id/itemCommentAttachmentsHolder"
         android:layout_width="match_parent"

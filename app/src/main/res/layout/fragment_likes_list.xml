@@ -28,12 +28,12 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="3 likes" />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/likesListRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:minHeight="48dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

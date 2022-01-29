@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -15,9 +16,8 @@ import ru.maxim.barybians.databinding.FragmentFeedBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
 import ru.maxim.barybians.ui.dialog.PostMenuDialog
-import ru.maxim.barybians.ui.fragment.base.ImageViewerFragment
+import ru.maxim.barybians.ui.dialog.ImageViewerDialog
 import ru.maxim.barybians.utils.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -156,20 +156,17 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onProfileClick(userId: Int) {
-        Timber.d("FeedFragment:${hashCode()}, onProfileClick")
         findNavController().navigate(FeedFragmentDirections.toProfile(userId))
     }
 
     override fun onImageClick(drawable: Drawable) {
-        ImageViewerFragment
-            .newInstance(drawable = drawable)
-            .show(childFragmentManager, "ImageViewerFragment")
+        val action = FeedFragmentDirections.toImageViewer(imageBitmap = drawable.toBitmap())
+        findNavController().navigate(action)
     }
 
     override fun onImageClick(imageUrl: String) {
-        ImageViewerFragment
-            .newInstance(imageUrl = imageUrl)
-            .show(childFragmentManager, "ImageViewerFragment")
+        val action = FeedFragmentDirections.toImageViewer(imageUrl = imageUrl)
+        findNavController().navigate(action)
     }
 
     override fun onPostMenuClick(postId: Int) {
@@ -188,19 +185,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     override fun onCommentsClick(postId: Int) {
         val action = FeedFragmentDirections.toCommentsList(postId)
         findNavController().navigate(action)
-//        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
-//            val commentsListDialog = CommentsListDialogFragment.newInstance(
-//                comments = post.comments,
-//                onUserClick = ::onProfileClick,
-//                onImageClick = ::onImageClick,
-//                onCommentAdd = { text -> feedPresenter.createComment(post.id, text) },
-//                onCommentEdit = feedPresenter::editComment,
-//                onCommentDelete = feedPresenter::deleteComment
-//            )
-//            Timber.d("FeedFragment:${hashCode()}, commentsListDialog: ${commentsListDialog.hashCode()}")
-//            currentListDialog = commentsListDialog
-//            commentsListDialog.show(childFragmentManager, CommentsListDialogFragment::class.simpleName)
-//        }
     }
 
     override fun onLikeClick(postId: Int, hasPersonalLike: Boolean) {

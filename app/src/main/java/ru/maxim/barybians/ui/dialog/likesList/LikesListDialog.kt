@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.dialog.likesList
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentLikesListBinding
 import ru.maxim.barybians.utils.DateFormatUtils
+import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
@@ -34,6 +37,11 @@ class LikesListDialog : BottomSheetDialogFragment() {
     lateinit var factory: LikesListDialogViewModel.LikesListDialogViewModelFactory.Factory
     private val model: LikesListDialogViewModel by viewModels { factory.create(args.postId) }
 
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,6 +49,8 @@ class LikesListDialog : BottomSheetDialogFragment() {
     ): View {
         binding = FragmentLikesListBinding.inflate(inflater, container, false)
         binding.apply {
+            binding.lifecycleOwner = viewLifecycleOwner
+            binding.viewModel = model
             binding.likesListRecycler.adapter = recyclerAdapter
         }
         return binding.root
@@ -81,7 +91,8 @@ class LikesListDialog : BottomSheetDialogFragment() {
         }
 
         recyclerAdapter.setOnUserClickListener { userId ->
-
+            val action = LikesListDialogDirections.toProfile(userId)
+            findNavController().navigate(action)
         }
     }
 }

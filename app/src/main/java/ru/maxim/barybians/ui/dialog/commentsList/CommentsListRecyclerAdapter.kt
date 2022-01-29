@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -92,6 +93,7 @@ class CommentsListRecyclerAdapter @Inject constructor(
             itemCommentAttachmentsHolder.removeAllViews()
             // TODO: place attachments in holder
 
+            itemCommentImage.setOnClickListener { view -> onImageClick?.invoke((view as ImageView).drawable) }
             itemCommentUserAvatar.setOnClickListener { onUserClick?.invoke(comment.author.id) }
             itemCommentUserName.setOnClickListener { onUserClick?.invoke(comment.author.id) }
             root.setOnLongClickListener {

@@ -2,16 +2,19 @@ package ru.maxim.barybians.ui.dialog.commentsList
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -105,10 +108,12 @@ class CommentsListDialog : BottomSheetDialogFragment() {
 
         recyclerAdapter.apply {
             setOnUserClickListener { userId ->
-
+                val action = CommentsListDialogDirections.toProfile(userId)
+                findNavController().navigate(action)
             }
             setOnImageClickListener { imageDrawable ->
-
+                val action = CommentsListDialogDirections.toImageViewer(imageBitmap = imageDrawable.toBitmap())
+                findNavController().navigate(action)
             }
             setOnCommentSwipeListener { commentId, viewHolderPosition ->
                 val deleteConfirmationDialog = MaterialAlertDialogBuilder(view.context).apply {

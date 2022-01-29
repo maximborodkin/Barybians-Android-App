@@ -119,4 +119,26 @@
     <action
         android:id="@+id/toLikesList"
         app:destination="@id/likesListDialog" />
+
+    <dialog
+        android:id="@+id/imageViewerDialog"
+        android:name="ru.maxim.barybians.ui.dialog.ImageViewerDialog"
+        android:label="ImageViewerDialog">
+
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+
+        <argument
+            android:name="imageBitmap"
+            app:argType="android.graphics.Bitmap"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+    </dialog>
+
+    <action
+        android:id="@+id/toImageViewer"
+        app:destination="@id/imageViewerDialog" />
 </navigation>
