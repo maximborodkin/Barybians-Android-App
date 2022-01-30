@@ -21,19 +21,17 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import ru.maxim.barybians.R
-import ru.maxim.barybians.ui.fragment.base.FeedItem
-import ru.maxim.barybians.ui.fragment.base.HeaderItem
-import ru.maxim.barybians.ui.fragment.base.PostCreatorItem
-import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter
+//import ru.maxim.barybians.ui.fragment.base.FeedItem
+
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.*
 import java.util.*
 
-class ProfileRecyclerAdapter(
-    private val feedItems: List<FeedItem>,
-    private val profileItemsListener: ProfileItemsListener,
-    currentUserId: Int,
-    lifecycleOwner: LifecycleOwner)
+class ProfileRecyclerAdapter()
+//    private val feedItems: List<FeedItem>,
+//    private val profileItemsListener: ProfileItemsListener,
+//    currentUserId: Int,
+//    lifecycleOwner: LifecycleOwner)
 // : FeedRecyclerAdapter(feedItems, currentUserId, profileItemsListener, lifecycleOwner) {
 //
 //    class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

@@ -124,6 +124,7 @@
             app:drawableTintColor="@{hasPersonalLike ? @color/like_red : @color/grey}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/itemPostAttachmentsHolder"
+            tools:drawableTint="@color/like_red"
             tools:text="4" />
 
         <androidx.appcompat.widget.AppCompatTextView

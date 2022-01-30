@@ -67,10 +67,10 @@
         <string name="unable_to_create_post">Unable to create post</string>
         <string name="delete_this_post">Delete this post?</string>
         <string name="edit_post">Edit post</string>
-        <string name="unable_to_update_post">Unable to update post</string>
+        <string name="unable_to_edit_post">Unable to edit post</string>
         <string name="unable_to_delete_post">Unable to delete post</string>
         <string name="nobody_like_this">Nobody like this</string>
-        <string name="unable_to_update_like">Unable to update like</string>
+        <string name="unable_to_change_like">Unable to change like</string>
         <string name="no_comments_yet">No comments yet</string>
         <string name="add_comment">Add comment</string>
         <string name="enter_your_status">Enter your status </string>

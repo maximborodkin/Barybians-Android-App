@@ -51,29 +51,29 @@ class ProfileFragment :
         TODO("Not yet implemented")
     }
 
-    override fun onCommentAdded(postId: Int, comment: Comment) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCommentAddError() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCommentEdit(comment: Comment) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCommentEditError() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCommentDeleted(commentId: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCommentDeleteError() {
-        TODO("Not yet implemented")
-    }
+//    override fun onCommentAdded(postId: Int, comment: Comment) {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun onCommentAddError() {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun onCommentEdit(comment: Comment) {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun onCommentEditError() {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun onCommentDeleted(commentId: Int) {
+//        TODO("Not yet implemented")
+//    }
+//
+//    override fun onCommentDeleteError() {
+//        TODO("Not yet implemented")
+//    }
 
     override fun onLikeEdited(postId: Int, likedUsers: List<User>) {
         TODO("Not yet implemented")

@@ -44,7 +44,7 @@ open class FeedRecyclerAdapter @Inject constructor(
 
             itemPostAttachmentsHolder.removeAllViews()
 
-            itemPostLikeBtn.setOnClickListener { feedItemsListener?.onLikeClick(post.id, hasPersonalLike) }
+            itemPostLikeBtn.setOnClickListener { feedItemsListener?.onLikeClick(post.id) }
             itemPostLikeBtn.setOnLongClickListener { feedItemsListener?.onLikeLongClick(post.id); true }
 
             itemPostCommentBtn.setOnClickListener { feedItemsListener?.onCommentsClick(post.id) }

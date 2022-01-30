@@ -4,24 +4,28 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
+import kotlinx.coroutines.launch
 import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentFeedBinding
-import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.PostMenuDialog
-import ru.maxim.barybians.utils.*
+import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.hide
+import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
-import javax.inject.Provider
 
-class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, FeedItemsListener {
+class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsListener {
 
     @Inject
-    lateinit var presenterProvider: Provider<FeedPresenter>
-    private val feedPresenter by moxyPresenter { presenterProvider.get() }
+    lateinit var viewModelFactory: FeedViewModel.FeedViewModelFactory
+    private val model: FeedViewModel by viewModels { viewModelFactory }
 
     private val binding by viewBinding(FragmentFeedBinding::bind)
 
@@ -33,111 +37,39 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         super.onAttach(context)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        binding.feedRefreshLayout.setOnRefreshListener { feedPresenter.loadFeed() }
-        binding.feedRecyclerView.adapter = commentsRecyclerAdapter
-        commentsRecyclerAdapter.setFeedItemsListener(this)
-    }
+        feedRefreshLayout.setOnRefreshListener { model.refresh() }
+        feedRecyclerView.adapter = commentsRecyclerAdapter
+        commentsRecyclerAdapter.setFeedItemsListener(this@FeedFragment)
 
-    override fun showFeed(posts: List<Post>) = with(binding) {
-        feedLoading.hide()
-        feedRefreshLayout.isRefreshing = false
-        commentsRecyclerAdapter.submitList(posts)
-    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            model.isLoading.observe(viewLifecycleOwner) { isLoading ->
+                if (isLoading) {
+                    feedProgressBar.isVisible =
+                        !feedRefreshLayout.isRefreshing &&
+                                commentsRecyclerAdapter.currentList.isEmpty()
+                } else {
+                    feedProgressBar.hide()
+                    feedRefreshLayout.isRefreshing = false
+                }
+            }
 
-    override fun showNoInternet() = with(binding) {
-        context?.toast(R.string.no_internet_connection)
-        feedLoading.hide()
-        feedRefreshLayout.isRefreshing = false
-    }
+            model.messageRes.observe(viewLifecycleOwner) { messageRes ->
+                if (commentsRecyclerAdapter.currentList.isEmpty()) {
+                    feedMessage.text = messageRes?.let { getString(it) }
+                } else {
+                    messageRes?.let { context?.toast(it) }
+                }
+            }
 
-    override fun showLoading() = with(binding) {
-        if (!feedRefreshLayout.isRefreshing)
-            feedLoading.show()
-    }
-
-    override fun onFeedLoadError() = with(binding) {
-        context?.toast(R.string.an_error_occurred_while_loading_feed)
-        feedLoading.hide()
-        feedRefreshLayout.isRefreshing = false
-    }
-
-    override fun onPostUpdated(post: Post) {
-        commentsRecyclerAdapter.currentList.indexOrNull { it.id == post.id }?.let { index ->
-            commentsRecyclerAdapter.currentList[index] = post
-            commentsRecyclerAdapter.notifyItemChanged(index)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.feed.collect { posts ->
+                    feedMessage.isVisible = posts.isEmpty()
+                    commentsRecyclerAdapter.submitList(posts)
+                }
+            }
         }
-    }
-
-    override fun onPostUpdateError() {
-        context?.toast(R.string.unable_to_update_post)
-    }
-
-    override fun onPostDeleted(postId: Int) {
-        commentsRecyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
-            commentsRecyclerAdapter.currentList.removeAt(postIndex)
-            commentsRecyclerAdapter.notifyItemRemoved(postIndex)
-        }
-    }
-
-    override fun onPostDeleteError() {
-        context?.toast(R.string.unable_to_delete_post)
-    }
-
-//    override fun onCommentAdded(postId: Int, comment: Comment) {
-//        commentsRecyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
-//            val postComments = commentsRecyclerAdapter.currentList[postIndex].comments
-//            postComments.add(comment)
-//            commentsRecyclerAdapter.notifyItemChanged(postIndex)
-//        }
-//    }
-//
-//    override fun onCommentAddError() {
-//        context?.toast(R.string.unable_to_create_comment)
-//    }
-//
-//    override fun onCommentEdit(comment: Comment) {
-//        commentsRecyclerAdapter.currentList.indexOrNull { post ->
-//            post.comments.contains { it.id == comment.id }
-//        }?.let { postIndex ->
-//            val postComments = commentsRecyclerAdapter.currentList[postIndex].comments
-//            postComments.indexOrNull { it.id == comment.id }?.let { commentIndex ->
-//                postComments[commentIndex] = comment
-//                commentsRecyclerAdapter.notifyItemChanged(postIndex)
-//            }
-//        }
-//    }
-//
-//    override fun onCommentEditError() {
-//        context?.toast(R.string.unable_to_update_comment)
-//    }
-//
-//    override fun onCommentDeleted(commentId: Int) {
-//        commentsRecyclerAdapter.currentList.indexOrNull { post ->
-//            post.comments.contains { it.id == commentId }
-//        }?.let { postIndex ->
-//            val postComments = commentsRecyclerAdapter.currentList[postIndex].comments
-//            postComments.indexOrNull { it.id == commentId }?.let { commentIndex ->
-//                postComments.removeAt(commentIndex)
-//                commentsRecyclerAdapter.notifyItemChanged(postIndex)
-//            }
-//        }
-//    }
-//
-//    override fun onCommentDeleteError() {
-//        context?.toast(R.string.unable_to_delete_comment)
-//    }
-
-    override fun onLikeEdited(postId: Int, likedUsers: List<User>) {
-        commentsRecyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
-            commentsRecyclerAdapter.currentList[postIndex].likedUsers = likedUsers
-            commentsRecyclerAdapter.notifyItemChanged(postIndex)
-        }
-    }
-
-    override fun onLikeEditError() {
-        context?.toast(R.string.unable_to_update_like)
     }
 
     override fun onProfileClick(userId: Int) {
@@ -159,9 +91,11 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
             PostMenuDialog.newInstance(
                 title = post.title,
                 text = post.text,
-                onDelete = { feedPresenter.deletePost(post.id) },
+                onDelete = {
+                    model.deletePost(post.id)
+                },
                 onEdit = { title, text ->
-                    feedPresenter.editPost(postId, title, text)
+                    model.editPost(postId, title, text)
                 }
             ).show(childFragmentManager, PostMenuDialog::class.simpleName)
         }
@@ -172,8 +106,8 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         findNavController().navigate(action)
     }
 
-    override fun onLikeClick(postId: Int, hasPersonalLike: Boolean) {
-        feedPresenter.editLike(postId, !hasPersonalLike)
+    override fun onLikeClick(postId: Int) {
+        model.changeLike(postId)
     }
 
     override fun onLikeLongClick(postId: Int) {

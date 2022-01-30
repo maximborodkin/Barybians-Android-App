@@ -21,7 +21,7 @@ class NetworkUtils @Inject constructor(
         registerNetworkStateChangesListener()
     }
 
-    private val _networkStateChangeListener = MutableStateFlow(false)
+    private val _networkStateChangeListener = MutableStateFlow(true)
 
     val networkStateChangeListener: StateFlow<Boolean> = _networkStateChangeListener.asStateFlow()
 

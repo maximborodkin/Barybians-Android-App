@@ -8,6 +8,6 @@ interface FeedItemsListener {
     fun onImageClick(imageUrl: String)
     fun onPostMenuClick(postId: Int)
     fun onCommentsClick(postId: Int)
-    fun onLikeClick(postId: Int, hasPersonalLike: Boolean)
+    fun onLikeClick(postId: Int)
     fun onLikeLongClick(postId: Int)
 }

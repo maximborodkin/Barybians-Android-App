@@ -16,7 +16,7 @@ class ProfilePresenter @Inject constructor(
     commentRepository: CommentRepository
 ) : BaseWallPresenter<ProfileView>(postRepository, userRepository, commentRepository) {
 
-    fun loadUser(userId: Int) = presenterScope.launch {
+//    fun loadUser(userId: Int) = presenterScope.launch {
 //        try {
 //            val loadUserResponse = userService.getUser(userId)
 //            if (loadUserResponse.isSuccessful && loadUserResponse.body() != null) {
@@ -28,24 +28,24 @@ class ProfilePresenter @Inject constructor(
 //            viewState.onUserLoadError()
 //        }
 
-    }
+//    }
 
-    fun createPost(title: String?, text: String) = presenterScope.launch {
-        try {
-            val createPostResponse = postRepository.createPost(title, text)
-            viewState.onPostCreated(createPostResponse)
-        } catch (e: Exception) {
-            viewState.onPostCreateError()
-        }
-    }
-
-    fun editStatus(newStatus: String?) = presenterScope.launch {
+//    fun createPost(title: String?, text: String) = presenterScope.launch {
 //        try {
-//            val status = userService.editStatus(newStatus)
-//            if (status.isSuccessful && status.body() == "true") {
-//                viewState.onStatusEdited(newStatus)
-//            }
+//            val createPostResponse = postRepository.createPost(title, text)
+//            viewState.onPostCreated(createPostResponse)
 //        } catch (e: Exception) {
+//            viewState.onPostCreateError()
 //        }
-    }
+//    }
+//
+//    fun editStatus(newStatus: String?) = presenterScope.launch {
+////        try {
+////            val status = userService.editStatus(newStatus)
+////            if (status.isSuccessful && status.body() == "true") {
+////                viewState.onStatusEdited(newStatus)
+////            }
+////        } catch (e: Exception) {
+////        }
+//    }
 }
