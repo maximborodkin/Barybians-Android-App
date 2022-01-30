@@ -3,10 +3,10 @@ package ru.maxim.barybians.ui.fragment.profile
 import ru.maxim.barybians.ui.fragment.feed.FeedItemsListener
 
 interface ProfileItemsListener : FeedItemsListener {
-    //fun popBackStack()
-    fun openPreferences()
-    fun showEditStatusDialog(status: String?)
-    fun openDialog(userId: Int, userAvatar: String?, userName: String)
-    fun editUserInfo() {}
-    fun addPost(title: String?, text: String)
+
+    fun onBackButtonClick()
+    fun onPreferencesButtonClick()
+    fun onStatusClick()
+    fun onOpenChatButtonClick(userId: Int)
+    fun onCreatePost(title: String?, text: String)
 }

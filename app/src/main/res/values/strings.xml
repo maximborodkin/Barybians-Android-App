@@ -54,7 +54,7 @@
         <string name="unable_to_create_comment">Unable to create comment</string>
         <string name="unable_to_delete_comment">Unable to delete comment</string>
         <string name="unable_to_load_image">Unable to load image</string>
-        <string name="open_dialog">Open dialog</string>
+        <string name="open_chat">Open chat</string>
         <string name="administrator">Administrator</string>
         <string name="barybian">Barybian</string>
         <string name="verified">Verified</string>
@@ -196,5 +196,6 @@
     <string name="this_string_is_required">This string is required</string>
     <string name="edit_comment">Edit comment</string>
     <string name="no_likes_yet">No likes yet</string>
+    <string name="unable_to_edit_status">Unable to edit status</string>
 
 </resources>

@@ -39,7 +39,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        feedRefreshLayout.setOnRefreshListener { model.refresh() }
+        feedRefreshLayout.setOnRefreshListener { model.loadFeed() }
         feedRecyclerView.adapter = commentsRecyclerAdapter
         commentsRecyclerAdapter.setFeedItemsListener(this@FeedFragment)
 
@@ -64,7 +64,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsList
             }
 
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.feed.collect { posts ->
+                model.posts.collect { posts ->
                     feedMessage.isVisible = posts.isEmpty()
                     commentsRecyclerAdapter.submitList(posts)
                 }

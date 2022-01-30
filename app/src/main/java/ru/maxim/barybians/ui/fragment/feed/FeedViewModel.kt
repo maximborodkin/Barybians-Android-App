@@ -9,36 +9,40 @@ import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.PostRepository
 import javax.inject.Inject
 
-class FeedViewModel private constructor(
+open class FeedViewModel constructor(
     application: Application,
-    private val postRepository: PostRepository
+    protected val postRepository: PostRepository
 ) : AndroidViewModel(application) {
 
-    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
+    protected val internalIsLoading: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = internalIsLoading
 
-    private val _messageRes: MutableLiveData<Int?> = MutableLiveData(null)
-    val messageRes: LiveData<Int?> = _messageRes
+    protected val internalMessageRes: MutableLiveData<Int?> = MutableLiveData(null)
+    val messageRes: LiveData<Int?> = internalMessageRes
 
-    val feed = postRepository.feedPosts
+    val posts = postRepository.posts
 
     init {
-        refresh()
+        initialLoading()
     }
 
-    fun refresh() = viewModelScope.launch {
-        _isLoading.postValue(true)
+    protected open fun initialLoading() {
+        loadFeed()
+    }
+
+    fun loadFeed() = viewModelScope.launch {
+        internalIsLoading.postValue(true)
         try {
-            postRepository.updateFeed()
+            postRepository.loadPosts()
         } catch (e: Exception) {
             val errorMessageRes = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.an_error_occurred_while_loading_feed
             }
-            _messageRes.postValue(errorMessageRes)
+            internalMessageRes.postValue(errorMessageRes)
         } finally {
-            _isLoading.postValue(false)
+            internalIsLoading.postValue(false)
         }
     }
 
@@ -51,7 +55,7 @@ class FeedViewModel private constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_edit_post
             }
-            _messageRes.postValue(errorMessageRes)
+            internalMessageRes.postValue(errorMessageRes)
         }
     }
 
@@ -64,7 +68,7 @@ class FeedViewModel private constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_delete_post
             }
-            _messageRes.postValue(errorMessageRes)
+            internalMessageRes.postValue(errorMessageRes)
         }
     }
 
@@ -77,7 +81,7 @@ class FeedViewModel private constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_change_like
             }
-            _messageRes.postValue(errorMessageRes)
+            internalMessageRes.postValue(errorMessageRes)
         }
     }
 

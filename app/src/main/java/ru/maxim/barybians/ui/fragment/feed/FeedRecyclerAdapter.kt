@@ -23,11 +23,6 @@ open class FeedRecyclerAdapter @Inject constructor(
         feedItemsListener = listener
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.setItemViewCacheSize(20)
-    }
-
     inner class PostViewHolder(private val binding: ItemPostBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -49,6 +44,11 @@ open class FeedRecyclerAdapter @Inject constructor(
 
             itemPostCommentBtn.setOnClickListener { feedItemsListener?.onCommentsClick(post.id) }
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.setItemViewCacheSize(20)
     }
 
     override fun onCreateViewHolder(

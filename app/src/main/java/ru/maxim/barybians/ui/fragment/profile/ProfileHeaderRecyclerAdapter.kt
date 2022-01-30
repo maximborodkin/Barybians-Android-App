@@ -1,62 +1,52 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-import android.app.Activity
-import android.content.Context
-import android.view.MotionEvent
-import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
-import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
-import ru.maxim.barybians.R
 //import ru.maxim.barybians.ui.fragment.base.FeedItem
 
-import ru.maxim.barybians.ui.view.AvatarView
-import ru.maxim.barybians.utils.*
-import java.util.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import ru.maxim.barybians.databinding.ItemProfileHeaderBinding
+import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.ui.fragment.profile.ProfileHeaderRecyclerAdapter.ProfileHeaderViewHolder
+import javax.inject.Inject
 
-class ProfileRecyclerAdapter()
-//    private val feedItems: List<FeedItem>,
-//    private val profileItemsListener: ProfileItemsListener,
-//    currentUserId: Int,
-//    lifecycleOwner: LifecycleOwner)
-// : FeedRecyclerAdapter(feedItems, currentUserId, profileItemsListener, lifecycleOwner) {
-//
-//    class HeaderViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-//        var isBinded = false
-//        val backgroundView: ImageView = view.itemProfileHeaderImageBackground
-//        val backBtn: AppCompatImageView = view.itemProfileHeaderBack
-//        val preferencesBtn: AppCompatImageView = view.itemProfileHeaderPreferences
-//        val editBtn: AppCompatImageView = view.itemProfileHeaderEdit
-//        val avatarView: AvatarView = view.itemProfileHeaderAvatar
-//        val nameView: AppCompatTextView = view.itemProfileHeaderName
-//        val ageView: TextView = view.itemProfileHeaderAge
-//        val statusView: TextView = view.itemProfileHeaderStatus
-//        val openChatBtn: MaterialButton = view.itemProfileHeaderDialogBtn
-//    }
-//
-//    class PostCreatorViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-//        val avatarView: AvatarView = view.itemPostCreatorAvatar
-//        private val labelView: TextView = view.itemPostCreatorLabel
-//        val cameraBtn: AppCompatImageView = view.itemPostCreatorCameraBtn
-//        val titleView: TextInputEditText = view.itemPostCreatorTitle
-//        private val titleLayoutView: TextInputLayout = view.itemPostCreatorTitleLayout
-//        val text: TextInputEditText = view.itemPostCreatorText
-//        val textLayoutView: TextInputLayout = view.itemPostCreatorTextLayout
-//        private val buttonsLayout: LinearLayout = view.itemPostCreatorButtonsLayout
-//        val cancelBtn: MaterialButton = view.itemPostCreatorCancelBtn
+class ProfileHeaderRecyclerAdapter @Inject constructor() :
+    ListAdapter<User, ProfileHeaderViewHolder>(ProfileHeaderDiffUtil) {
+
+    private var profileItemsListener: ProfileItemsListener? = null
+
+    fun setProfileItemsListener(listener: ProfileItemsListener?) {
+        profileItemsListener = listener
+    }
+
+    inner class ProfileHeaderViewHolder(
+        private val binding: ItemProfileHeaderBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(user: User) = with(binding) {
+            binding.user = user
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileHeaderViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemProfileHeaderBinding.inflate(layoutInflater, parent, false)
+        return ProfileHeaderViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ProfileHeaderViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    private object ProfileHeaderDiffUtil : DiffUtil.ItemCallback<User>() {
+        override fun areItemsTheSame(oldItem: User, newItem: User): Boolean = true
+
+        override fun areContentsTheSame(oldItem: User, newItem: User): Boolean = oldItem == newItem
+    }
+}
+
 //        val okBtn: MaterialButton = view.itemPostCreatorOkBtn
 //        fun expand() {
 //            labelView.visibility = View.GONE
