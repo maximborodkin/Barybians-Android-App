@@ -49,9 +49,9 @@ class LikesListDialog : BottomSheetDialogFragment() {
     ): View {
         binding = FragmentLikesListBinding.inflate(inflater, container, false)
         binding.apply {
-            binding.lifecycleOwner = viewLifecycleOwner
-            binding.viewModel = model
-            binding.likesListRecycler.adapter = recyclerAdapter
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = model
+            likesListRecycler.adapter = recyclerAdapter
         }
         return binding.root
     }
@@ -94,5 +94,10 @@ class LikesListDialog : BottomSheetDialogFragment() {
             val action = LikesListDialogDirections.toProfile(userId)
             findNavController().navigate(action)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        recyclerAdapter.setOnUserClickListener(null)
     }
 }

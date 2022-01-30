@@ -122,7 +122,7 @@
 
     <dialog
         android:id="@+id/imageViewerDialog"
-        android:name="ru.maxim.barybians.ui.dialog.ImageViewerDialog"
+        android:name="ru.maxim.barybians.ui.dialog.imageViewer.ImageViewerDialog"
         android:label="ImageViewerDialog">
 
         <argument

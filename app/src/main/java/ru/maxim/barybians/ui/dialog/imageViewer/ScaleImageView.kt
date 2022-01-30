@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.view
+package ru.maxim.barybians.ui.dialog.imageViewer
 
 import android.animation.Animator
 import android.animation.ValueAnimator
@@ -10,19 +10,17 @@ import android.graphics.Matrix.*
 import android.graphics.PointF
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
-import android.view.MotionEvent.ACTION_CANCEL
-import android.view.MotionEvent.ACTION_UP
+import android.view.MotionEvent.*
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.ScaleGestureDetectorCompat
 
 /**
- * ScaleImageView is a extension of [AppCompatImageView], providing a pinch-to-zoom and
+ * ScaleImageView is an extension of the [AppCompatImageView], providing a pinch-to-zoom and
  * double tap gestures to scaling image and swipe to top or bottom to dismiss.
  */
 class ScaleImageView @JvmOverloads constructor(
@@ -64,6 +62,7 @@ class ScaleImageView @JvmOverloads constructor(
                 return false
             }
 
+            // Dismiss view if user clicks outside of the image bounds
             override fun onSingleTapUp(event: MotionEvent): Boolean {
                 if (event.x !in bounds.left..bounds.right || event.y !in bounds.top..bounds.bottom)
                     dismissView()
@@ -122,7 +121,6 @@ class ScaleImageView @JvmOverloads constructor(
         gestureDetector.onTouchEvent(event)
 
         if (event.y !in bounds.top..bounds.bottom || event.x !in bounds.left..bounds.right) {
-//            if (event.actionMasked == MotionEvent.ACTION_UP) dismissView()
             return true
         }
 
@@ -143,17 +141,16 @@ class ScaleImageView @JvmOverloads constructor(
             }
             return true
         } else if (!singleTapDetected) {
-            /* if the event is a down touch, or if the number of touch points changed,
+            /** If the event is a down touch, or if the number of touch points changed,
              * we should reset our start point, as event origins have likely shifted to a
-             * different part of the screen*/
-            if (event.actionMasked == MotionEvent.ACTION_DOWN ||
-                currentPointerCount != previousPointerCount
-            ) {
+             * different part of the screen
+             * */
+            if (event.actionMasked == ACTION_DOWN || currentPointerCount != previousPointerCount) {
                 last[scaleDetector.focusX] = scaleDetector.focusY
-            } else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
+            } else if (event.actionMasked == ACTION_MOVE) {
                 val focusX = scaleDetector.focusX
                 val focusY = scaleDetector.focusY
-                //calculate the distance for translation
+                // Calculate the distance for translation
                 val xDistance = getXDistance(focusX, last.x)
                 val yDistance = getYDistance(focusY, last.y)
                 currentMatrix.postTranslate(xDistance, yDistance)
@@ -170,14 +167,13 @@ class ScaleImageView @JvmOverloads constructor(
         }
         parent.requestDisallowInterceptTouchEvent(disallowParentTouch())
 
-        //this tracks whether they have changed the number of fingers down
+        // This tracks whether they have changed the number of fingers down
         previousPointerCount = currentPointerCount
         performClick()
         return true
     }
 
-    private fun disallowParentTouch() =
-        /*currentPointerCount > 1 || */currentScaleFactor > 1.0f || isAnimating
+    private fun disallowParentTouch() = currentScaleFactor > 1.0f || isAnimating
 
     private val isAnimating: Boolean
         get() = resetAnimator?.isRunning ?: false
@@ -190,21 +186,6 @@ class ScaleImageView @JvmOverloads constructor(
             animateTranslationY()
         }
     }
-
-    /**
-     * This helps to keep the image on-screen by animating the translation to the nearest
-     * edge, both vertically and horizontally.
-     */
-
-    /**
-     * Reset image back to its starting size. If `animate` is false, image
-     * will snap back to its original size.
-     *
-     */
-    /**
-     * Reset image back to its original size. Will snap back to original size
-     * if animation on reset is disabled via [.setAnimateOnReset].
-     */
 
     /**
      * Animate the matrix back to its original position after the user stopped interacting with it.
@@ -225,7 +206,7 @@ class ScaleImageView @JvmOverloads constructor(
         val beginMatrix = Matrix(imageMatrix)
         beginMatrix.getValues(matrixValues)
 
-        //difference in current and original values
+        // Difference in current and original values
         val xSDiff = targetValues[MSCALE_X] - matrixValues[MSCALE_X]
         val ySDiff = targetValues[MSCALE_Y] - matrixValues[MSCALE_Y]
         val xTDiff = targetValues[MTRANS_X] - matrixValues[MTRANS_X]
@@ -261,14 +242,14 @@ class ScaleImageView @JvmOverloads constructor(
 
     private fun animateTranslationX() {
         if (currentDisplayedWidth > width) {
-            //the left edge is too far to the interior
+            // The left edge is too far to the interior
             if (bounds.left > 0) {
                 animateMatrixIndex(MTRANS_X, 0f)
             } else if (bounds.right < width) {
                 animateMatrixIndex(MTRANS_X, bounds.left + width - bounds.right)
             }
         } else {
-            //left edge needs to be pulled in, and should be considered before the right edge
+            // Left edge needs to be pulled in, and should be considered before the right edge
             if (bounds.left < 0) {
                 animateMatrixIndex(MTRANS_X, 0f)
             } else if (bounds.right > width) {
@@ -279,14 +260,14 @@ class ScaleImageView @JvmOverloads constructor(
 
     private fun animateTranslationY() {
         if (currentDisplayedHeight > height) {
-            //the top edge is too far to the interior
+            // The top edge is too far to the interior
             if (bounds.top > 0) {
                 animateMatrixIndex(MTRANS_Y, 0f)
             } else if (bounds.bottom < height) {
                 animateMatrixIndex(MTRANS_Y, bounds.top + height - bounds.bottom)
             }
         } else {
-            //top needs to be pulled in, and needs to be considered before the bottom edge
+            // Top needs to be pulled in, and needs to be considered before the bottom edge
             if (bounds.top < 0) {
                 animateMatrixIndex(MTRANS_Y, 0f)
             } else if (bounds.bottom > height) {
@@ -376,7 +357,7 @@ class ScaleImageView @JvmOverloads constructor(
 
         yDistance = getRestrictedYDistance(yDistance)
 
-        //prevents image from translating an infinite distance offscreen
+        // Prevents image from translating an infinite distance offscreen
         if (bounds.bottom + yDistance < 0) {
             yDistance = -bounds.bottom
         } else if (bounds.top + yDistance > height) {
@@ -420,14 +401,13 @@ class ScaleImageView @JvmOverloads constructor(
     }
 
     override fun onScale(detector: ScaleGestureDetector): Boolean {
-
-        //calculate value we should scale by, ultimately the scale will be startScale*scaleFactor
+        // Calculate value we should scale by, ultimately the scale will be startScale*scaleFactor
         scaleBy = startScale * detector.scaleFactor / matrixValues[MSCALE_X]
 
-        //what the scaling should end up at after the transformation
+        // What the scaling should end up at after the transformation
         val projectedScale = scaleBy * matrixValues[MSCALE_X]
 
-        //clamp to the min/max if it's going over
+        // Clamp to the min/max if it's going over
         if (projectedScale < calculatedMinScale) {
             scaleBy = calculatedMinScale / matrixValues[MSCALE_X]
         } else if (projectedScale > calculatedMaxScale) {

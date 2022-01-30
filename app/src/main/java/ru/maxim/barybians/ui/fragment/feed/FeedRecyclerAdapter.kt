@@ -26,7 +26,7 @@ open class FeedRecyclerAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post) = with(binding) {
-            post.author?.let {
+            post.author.let {
                 itemPostAvatar.apply {
                     load(post.author.avatarMin)
                     itemPostAvatar.setOnClickListener { feedItemsListener.onProfileClick(post.author.id) }

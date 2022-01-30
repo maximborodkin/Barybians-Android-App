@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.fragment.feed
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -17,7 +18,6 @@ import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.PostMenuDialog
-import ru.maxim.barybians.ui.dialog.ImageViewerDialog
 import ru.maxim.barybians.utils.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -159,8 +159,8 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         findNavController().navigate(FeedFragmentDirections.toProfile(userId))
     }
 
-    override fun onImageClick(drawable: Drawable) {
-        val action = FeedFragmentDirections.toImageViewer(imageBitmap = drawable.toBitmap())
+    override fun onImageClick(bitmap: Bitmap) {
+        val action = FeedFragmentDirections.toImageViewer(imageBitmap = bitmap)
         findNavController().navigate(action)
     }
 
