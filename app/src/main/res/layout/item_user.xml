@@ -11,7 +11,7 @@
         android:id="@+id/itemUserAvatar"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        app:hasOnlineStatus="true"
+        app:enableOnlineStatus="true"
         tools:src="@tools:sample/avatars"/>
 
     <TextView

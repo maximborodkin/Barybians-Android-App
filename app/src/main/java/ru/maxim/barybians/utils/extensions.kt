@@ -20,15 +20,14 @@ import ru.maxim.barybians.App
 import ru.maxim.barybians.R
 import ru.maxim.barybians.di.AppComponent
 import java.lang.ref.WeakReference
-
-fun <T> weak(obj: T) = WeakReference(obj)
-fun <T> WeakReference<T>.isNull() = this.get() == null
-fun <T> WeakReference<T>.isNotNull() = !this.isNull()
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.Calendar.DATE
+import java.util.Calendar.YEAR
 
 fun Any?.isNull() = this == null
 fun Any?.isNotNull() = !this.isNull()
 
-fun CharSequence?.isNotNullOrEmpty(): Boolean = !this.isNullOrEmpty()
 fun CharSequence?.isNotNullOrBlank(): Boolean = !this.isNullOrBlank()
 
 fun TextView.setDrawableStart(@DrawableRes drawableResource: Int) =
@@ -103,6 +102,24 @@ fun View.hide() {
 }
 
 fun MutableLiveData<String>.isEmpty() = value?.isEmpty()
+
+fun Date.simple(hasTime: Boolean = true): String {
+    val today = Calendar.getInstance()
+    val date = Calendar.getInstance().also { it.timeInMillis = this.time }
+    return when {
+        date[DATE] == today[DATE] -> SimpleDateFormat("HH:mm", Locale.getDefault())
+        date[YEAR] == today[YEAR] -> SimpleDateFormat("dd MMM${if (hasTime) " HH:mm" else ""}", Locale.getDefault())
+        else -> SimpleDateFormat("dd MMM yyyy${if (hasTime) " HH:mm" else ""}", Locale.getDefault())
+    }.format(this)
+}
+
+fun Date.date(): String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(this)
+
+fun Date.time(): String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(this)
+
+fun simpleDate(timestamp: Long, hasTime: Boolean = true) = Date(timestamp).simple(hasTime)
+fun date(timestamp: Long) = Date(timestamp).date()
+fun time(timestamp: Long) = Date(timestamp).time()
 
 val Context.appComponent: AppComponent
     get() = when (this) {

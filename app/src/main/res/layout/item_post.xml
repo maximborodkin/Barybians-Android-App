@@ -1,123 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:background="?cardBackground"
-    android:paddingTop="16dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ru.maxim.barybians.ui.view.AvatarView
-        android:id="@+id/itemPostAvatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        app:hasOnlineStatus="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+    <data>
+        <import type="android.view.View" />
+        <import type="androidx.core.content.ContextCompat" />
+        <import type="ru.maxim.barybians.utils.ExtensionsKt" />
+        <import type="kotlin.text.StringsKt" />
+        <import type="ru.maxim.barybians.R" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemPostName"
-        style="?accentTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/full_names" />
+        <variable
+            name="post"
+            type="ru.maxim.barybians.domain.model.Post" />
 
-    <TextView
-        android:id="@+id/itemPostDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
-        app:layout_constraintTop_toBottomOf="@id/itemPostName"
-        tools:text="@tools:sample/date/ddmmyy" />
+        <variable
+            name="isPersonal"
+            type="Boolean" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/itemPostMenuBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_menu_vertical_grey" />
+        <variable
+            name="hasPersonalLike"
+            type="Boolean" />
+    </data>
 
-    <TextView
-        android:id="@+id/itemPostTitle"
-        style="?accentTextStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="6dp"
-        android:fontFamily="@font/roboto_regular"
-        android:maxLines="2"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemPostAvatar"
-        tools:text="Сессия сдана" />
-
-    <TextView
-        android:id="@+id/itemPostText"
-        style="?accentTextStyle"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="6dp"
-        android:fontFamily="@font/roboto_regular"
-        android:textAlignment="viewStart"
-        app:layout_constraintHorizontal_weight="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemPostTitle"
-        tools:text="Не без проблем, но я её закрыл. В целом неплохо. Даже без троек. Теперь появилось много свободного времени и мобильное приложение барыбинцев продолжит развиваться и обрастать функционалом. Пока API ещё не доделано, в приложении будет работать демо-режим." />
+        android:layout_marginBottom="8dp"
+        android:background="?cardBackground"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp">
 
-    <LinearLayout
-        android:id="@+id/itemPostImagesHolder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemPostText" />
+        <ru.maxim.barybians.ui.view.AvatarView
+            android:id="@+id/itemPostAvatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:enableOnlineStatus="true"
+            app:image="@{post.author.avatarMin}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:isOnline="true"
+            tools:src="@tools:sample/avatars" />
 
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="48dp"
-        app:layout_constraintBottom_toBottomOf="@id/itemPostText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/itemPostText" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemPostName"
+            style="?accentTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@{post.author.fullName}"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemPostLikeBtn"
-        android:layout_width="64dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="16dp"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemPostImagesHolder"
-        tools:drawableStart="@drawable/ic_like_red"
-        tools:text="4" />
+        <TextView
+            android:id="@+id/itemPostDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="@{ExtensionsKt.simpleDate(post.date * 1000, true)}"
+            app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
+            app:layout_constraintTop_toBottomOf="@id/itemPostName"
+            tools:text="@tools:sample/date/ddmmyy" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemPostCommentBtn"
-        android:layout_width="64dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="68dp"
-        android:drawableStart="@drawable/ic_comment_grey"
-        android:paddingTop="12dp"
-        android:paddingBottom="16dp"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/itemPostLikeBtn"
-        app:layout_constraintTop_toBottomOf="@id/itemPostImagesHolder"
-        tools:text="4" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/itemPostMenuBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:visibility="@{isPersonal ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_menu_vertical_grey" />
+
+        <TextView
+            android:id="@+id/itemPostTitle"
+            style="?accentTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@{post.title}"
+            android:textSize="18sp"
+            android:visibility="@{StringsKt.isBlank(post.title) ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemPostAvatar"
+            tools:text="@tools:sample/lorem[4]" />
+
+        <TextView
+            android:id="@+id/itemPostText"
+            style="?accentTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/roboto_regular"
+            android:textAlignment="viewStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemPostTitle"
+            tools:text="@tools:sample/lorem[50]" />
+
+        <LinearLayout
+            android:id="@+id/itemPostAttachmentsHolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemPostText" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemPostLikeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:drawableStart="@drawable/ic_like"
+            android:paddingVertical="12dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="12dp"
+            android:text="@{post.likedUsers.empty ? `` :String.valueOf(post.likedUsers.size)}"
+            android:textSize="18sp"
+            app:drawableTintColor="@{hasPersonalLike ? @color/like_red : @color/grey}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemPostAttachmentsHolder"
+            tools:text="4" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemPostCommentBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_comment_grey"
+            android:padding="12dp"
+            android:text="@{post.comments.empty ? `` : String.valueOf(post.comments.size)}"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@id/itemPostLikeBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/itemPostLikeBtn"
+            tools:text="4" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

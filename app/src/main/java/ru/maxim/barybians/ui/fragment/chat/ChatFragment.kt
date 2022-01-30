@@ -41,9 +41,6 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
     @Inject
     lateinit var preferencesManager: PreferencesManager
 
-    @Inject
-    lateinit var dateFormatUtils: DateFormatUtils
-
     private val interlocutorId by lazy { args.userId }
     private val messageItems = ArrayList<MessageItem>()
     private val message = MutableLiveData<String?>()
@@ -101,7 +98,7 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
         val currentUserId = preferencesManager.userId
         messageItems.clear()
         messageItems.addAll(messages.map {
-            val time = dateFormatUtils.getTime(it.time * 1000)
+            val time = simpleDate(it.time * 1000)
             val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
             val status = if (it.unread == 1) Unread else Read
             return@map if (it.senderId == currentUserId)
@@ -117,7 +114,7 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
 
     private fun sendMessage(text: String) {
         val timestamp = Date().time
-        val time = dateFormatUtils.getTime(timestamp)
+        val time = time(timestamp)
         val viewHolderId = "${text}${timestamp}".hashCode().toLong()
         messageItems.add(OutgoingMessage(viewHolderId, text, time, Sending))
         binding.chatRecyclerView.apply {
@@ -152,13 +149,13 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
         messages.forEach {
             when (it.senderId) {
                 interlocutorId -> {
-                    val time = dateFormatUtils.getTime(it.time)
+                    val time = time(it.time)
                     val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
                     messageItems.add(IncomingMessage(viewHolderId, it.text, time, it.senderId))
                     binding.chatRecyclerView.adapter?.notifyItemInserted(messageItems.size)
                 }
                 preferencesManager.userId -> {
-                    val time = dateFormatUtils.getTime(it.time)
+                    val time = time(it.time)
                     val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
                     messageItems.add(OutgoingMessage(viewHolderId, it.text, time, Unread))
                     binding.chatRecyclerView.adapter?.notifyItemInserted(messageItems.size)

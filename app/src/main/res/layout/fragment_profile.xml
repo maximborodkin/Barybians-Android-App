@@ -12,9 +12,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <include layout="@layout/item_profile_header"/>
-            <include layout="@layout/item_post_creator"/>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/profileRecyclerView"
                 android:layout_width="match_parent"
@@ -25,7 +22,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:itemCount="1"
+                tools:itemCount="3"
                 tools:listitem="@layout/item_post" />
 
             <ProgressBar

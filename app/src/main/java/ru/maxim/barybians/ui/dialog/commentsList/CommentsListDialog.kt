@@ -21,7 +21,6 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentCommentsListBinding
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
-import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
@@ -31,9 +30,6 @@ class CommentsListDialog : BottomSheetDialogFragment() {
 
     private val args: CommentsListDialogArgs by navArgs()
     private var binding: FragmentCommentsListBinding by notNull()
-
-    @Inject
-    lateinit var dateFormatUtils: DateFormatUtils
 
     @Inject
     lateinit var recyclerAdapter: CommentsListRecyclerAdapter

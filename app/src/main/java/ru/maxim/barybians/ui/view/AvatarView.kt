@@ -23,7 +23,7 @@ class AvatarView @JvmOverloads constructor(
 
     init {
         getContext().obtainStyledAttributes(attrs, R.styleable.AvatarView, defStyleAttr, 0).apply {
-            hasOnlineStatus = getBoolean(R.styleable.AvatarView_hasOnlineStatus, true)
+            hasOnlineStatus = getBoolean(R.styleable.AvatarView_enableOnlineStatus, true)
             isOnline = getBoolean(R.styleable.AvatarView_isOnline, false)
             recycle()
         }

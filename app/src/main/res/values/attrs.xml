@@ -8,7 +8,7 @@
     </declare-styleable>
 
     <declare-styleable name="AvatarView">
-        <attr name="hasOnlineStatus" format="boolean" />
+        <attr name="enableOnlineStatus" format="boolean" />
         <attr name="isOnline" format="boolean"/>
     </declare-styleable>
 

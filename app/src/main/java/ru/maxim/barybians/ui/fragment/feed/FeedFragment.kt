@@ -2,24 +2,18 @@ package ru.maxim.barybians.ui.fragment.feed
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentFeedBinding
-import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.PostMenuDialog
 import ru.maxim.barybians.utils.*
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -30,58 +24,49 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     private val feedPresenter by moxyPresenter { presenterProvider.get() }
 
     private val binding by viewBinding(FragmentFeedBinding::bind)
-    private var recyclerAdapter by autoCleared<FeedRecyclerAdapter>()
 
     @Inject
-    lateinit var dateFormatUtils: DateFormatUtils
-
-    @Inject
-    lateinit var preferencesManager: PreferencesManager
+    lateinit var commentsRecyclerAdapter: FeedRecyclerAdapter
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
         context.appComponent.inject(this)
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Timber.d("FeedFragment:${this.hashCode()} onViewCreated:${view.hashCode()}")
         super.onViewCreated(view, savedInstanceState)
         binding.feedRefreshLayout.setOnRefreshListener { feedPresenter.loadFeed() }
-        recyclerAdapter = FeedRecyclerAdapter(
-            currentUserId = preferencesManager.userId,
-            feedItemsListener = this,
-            dateFormatUtils = dateFormatUtils
-        )
-        binding.feedRecyclerView.adapter = recyclerAdapter
+        binding.feedRecyclerView.adapter = commentsRecyclerAdapter
+        commentsRecyclerAdapter.setFeedItemsListener(this)
     }
 
     override fun showFeed(posts: List<Post>) = with(binding) {
-        feedLoading.isVisible = false
+        feedLoading.hide()
         feedRefreshLayout.isRefreshing = false
-        recyclerAdapter.submitList(posts)
+        commentsRecyclerAdapter.submitList(posts)
     }
 
     override fun showNoInternet() = with(binding) {
         context?.toast(R.string.no_internet_connection)
-        feedLoading.visibility = View.GONE
+        feedLoading.hide()
         feedRefreshLayout.isRefreshing = false
     }
 
     override fun showLoading() = with(binding) {
         if (!feedRefreshLayout.isRefreshing)
-            feedLoading.visibility = View.VISIBLE
+            feedLoading.show()
     }
 
     override fun onFeedLoadError() = with(binding) {
         context?.toast(R.string.an_error_occurred_while_loading_feed)
-        feedLoading.visibility = View.GONE
+        feedLoading.hide()
         feedRefreshLayout.isRefreshing = false
     }
 
     override fun onPostUpdated(post: Post) {
-        recyclerAdapter.currentList.indexOrNull { it.id == post.id }?.let { index ->
-            recyclerAdapter.currentList[index] = post
-            recyclerAdapter.notifyItemChanged(index)
+        commentsRecyclerAdapter.currentList.indexOrNull { it.id == post.id }?.let { index ->
+            commentsRecyclerAdapter.currentList[index] = post
+            commentsRecyclerAdapter.notifyItemChanged(index)
         }
     }
 
@@ -90,9 +75,9 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onPostDeleted(postId: Int) {
-        recyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
-            recyclerAdapter.currentList.removeAt(postIndex)
-            recyclerAdapter.notifyItemRemoved(postIndex)
+        commentsRecyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
+            commentsRecyclerAdapter.currentList.removeAt(postIndex)
+            commentsRecyclerAdapter.notifyItemRemoved(postIndex)
         }
     }
 
@@ -100,54 +85,54 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
         context?.toast(R.string.unable_to_delete_post)
     }
 
-    override fun onCommentAdded(postId: Int, comment: Comment) {
-        recyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
-            val postComments = recyclerAdapter.currentList[postIndex].comments
-            postComments.add(comment)
-            recyclerAdapter.notifyItemChanged(postIndex)
-        }
-    }
-
-    override fun onCommentAddError() {
-        context?.toast(R.string.unable_to_create_comment)
-    }
-
-    override fun onCommentEdit(comment: Comment) {
-        recyclerAdapter.currentList.indexOrNull { post ->
-            post.comments.contains { it.id == comment.id }
-        }?.let { postIndex ->
-            val postComments = recyclerAdapter.currentList[postIndex].comments
-            postComments.indexOrNull { it.id == comment.id }?.let { commentIndex ->
-                postComments[commentIndex] = comment
-                recyclerAdapter.notifyItemChanged(postIndex)
-            }
-        }
-    }
-
-    override fun onCommentEditError() {
-        context?.toast(R.string.unable_to_update_comment)
-    }
-
-    override fun onCommentDeleted(commentId: Int) {
-        recyclerAdapter.currentList.indexOrNull { post ->
-            post.comments.contains { it.id == commentId }
-        }?.let { postIndex ->
-            val postComments = recyclerAdapter.currentList[postIndex].comments
-            postComments.indexOrNull { it.id == commentId }?.let { commentIndex ->
-                postComments.removeAt(commentIndex)
-                recyclerAdapter.notifyItemChanged(postIndex)
-            }
-        }
-    }
-
-    override fun onCommentDeleteError() {
-        context?.toast(R.string.unable_to_delete_comment)
-    }
+//    override fun onCommentAdded(postId: Int, comment: Comment) {
+//        commentsRecyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
+//            val postComments = commentsRecyclerAdapter.currentList[postIndex].comments
+//            postComments.add(comment)
+//            commentsRecyclerAdapter.notifyItemChanged(postIndex)
+//        }
+//    }
+//
+//    override fun onCommentAddError() {
+//        context?.toast(R.string.unable_to_create_comment)
+//    }
+//
+//    override fun onCommentEdit(comment: Comment) {
+//        commentsRecyclerAdapter.currentList.indexOrNull { post ->
+//            post.comments.contains { it.id == comment.id }
+//        }?.let { postIndex ->
+//            val postComments = commentsRecyclerAdapter.currentList[postIndex].comments
+//            postComments.indexOrNull { it.id == comment.id }?.let { commentIndex ->
+//                postComments[commentIndex] = comment
+//                commentsRecyclerAdapter.notifyItemChanged(postIndex)
+//            }
+//        }
+//    }
+//
+//    override fun onCommentEditError() {
+//        context?.toast(R.string.unable_to_update_comment)
+//    }
+//
+//    override fun onCommentDeleted(commentId: Int) {
+//        commentsRecyclerAdapter.currentList.indexOrNull { post ->
+//            post.comments.contains { it.id == commentId }
+//        }?.let { postIndex ->
+//            val postComments = commentsRecyclerAdapter.currentList[postIndex].comments
+//            postComments.indexOrNull { it.id == commentId }?.let { commentIndex ->
+//                postComments.removeAt(commentIndex)
+//                commentsRecyclerAdapter.notifyItemChanged(postIndex)
+//            }
+//        }
+//    }
+//
+//    override fun onCommentDeleteError() {
+//        context?.toast(R.string.unable_to_delete_comment)
+//    }
 
     override fun onLikeEdited(postId: Int, likedUsers: List<User>) {
-        recyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
-            recyclerAdapter.currentList[postIndex].likedUsers = likedUsers
-            recyclerAdapter.notifyItemChanged(postIndex)
+        commentsRecyclerAdapter.currentList.indexOrNull { it.id == postId }?.let { postIndex ->
+            commentsRecyclerAdapter.currentList[postIndex].likedUsers = likedUsers
+            commentsRecyclerAdapter.notifyItemChanged(postIndex)
         }
     }
 
@@ -170,7 +155,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     }
 
     override fun onPostMenuClick(postId: Int) {
-        recyclerAdapter.currentList.find { it.id == postId }?.let { post ->
+        commentsRecyclerAdapter.currentList.find { it.id == postId }?.let { post ->
             PostMenuDialog.newInstance(
                 title = post.title,
                 text = post.text,
@@ -194,5 +179,10 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedView, Fee
     override fun onLikeLongClick(postId: Int) {
         val action = FeedFragmentDirections.toLikesList(postId)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        commentsRecyclerAdapter.setFeedItemsListener(null)
     }
 }

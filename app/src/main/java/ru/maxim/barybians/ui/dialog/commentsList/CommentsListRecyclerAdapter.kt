@@ -16,14 +16,13 @@ import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.ItemCommentBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.CommentViewHolder
-import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.SwipeDismissCallback
 import ru.maxim.barybians.utils.load
+import ru.maxim.barybians.utils.simpleDate
 import javax.inject.Inject
 
 class CommentsListRecyclerAdapter @Inject constructor(
-    private val preferencesManager: PreferencesManager,
-    private val dateFormatUtils: DateFormatUtils,
+    private val preferencesManager: PreferencesManager
 ) : ListAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {
 
     private var onUserClick: ((userId: Int) -> Unit)? = null
@@ -86,7 +85,7 @@ class CommentsListRecyclerAdapter @Inject constructor(
         fun bind(comment: Comment) = with(binding) {
             itemCommentUserAvatar.load(comment.author.avatarMin)
             itemCommentUserName.text = comment.author.fullName
-            itemCommentDate.text = dateFormatUtils.getSimplifiedDate(comment.date * 1000)
+            itemCommentDate.text = simpleDate(comment.date * 1000)
 
             itemCommentText.text =
                 HtmlCompat.fromHtml(comment.text, HtmlCompat.FROM_HTML_MODE_COMPACT)

@@ -29,24 +29,6 @@ interface BaseWallView : MvpView {
     fun onPostDeleteError()
 
     @AddToEnd
-    fun onCommentAdded(postId: Int, comment: Comment)
-
-    @OneExecution
-    fun onCommentAddError()
-
-    @AddToEnd
-    fun onCommentEdit(comment: Comment)
-
-    @OneExecution
-    fun onCommentEditError()
-
-    @AddToEnd
-    fun onCommentDeleted(commentId: Int)
-
-    @OneExecution
-    fun onCommentDeleteError()
-
-    @AddToEnd
     fun onLikeEdited(postId: Int, likedUsers: List<User>)
 
     @OneExecution

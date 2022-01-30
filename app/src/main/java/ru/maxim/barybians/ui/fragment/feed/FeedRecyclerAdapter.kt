@@ -2,20 +2,26 @@ package ru.maxim.barybians.ui.fragment.feed
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.maxim.barybians.R
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.utils.*
+import ru.maxim.barybians.utils.HtmlUtils
+import ru.maxim.barybians.utils.contains
+import javax.inject.Inject
 
-open class FeedRecyclerAdapter(
-    private val currentUserId: Int,
-    private val feedItemsListener: FeedItemsListener,
-    private val dateFormatUtils: DateFormatUtils
+open class FeedRecyclerAdapter @Inject constructor(
+    private val preferencesManager: PreferencesManager,
+    private val htmlUtils: HtmlUtils
 ) : ListAdapter<Post, FeedRecyclerAdapter.PostViewHolder>(PostsDiffUtil) {
+
+    private var feedItemsListener: FeedItemsListener? = null
+
+    fun setFeedItemsListener(listener: FeedItemsListener?) {
+        feedItemsListener = listener
+    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -26,58 +32,22 @@ open class FeedRecyclerAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post) = with(binding) {
-            post.author.let {
-                itemPostAvatar.apply {
-                    load(post.author.avatarMin)
-                    itemPostAvatar.setOnClickListener { feedItemsListener.onProfileClick(post.author.id) }
-                }
+            val hasPersonalLike = post.likedUsers.contains { it.id == preferencesManager.userId }
+            binding.post = post
+            binding.isPersonal = post.userId == preferencesManager.userId
+            binding.hasPersonalLike = hasPersonalLike
 
-                itemPostName.apply {
-                    text = post.author.fullName
-                    itemPostName.setOnClickListener { feedItemsListener.onProfileClick(post.author.id) }
-                }
-            }
+            itemPostAvatar.setOnClickListener { feedItemsListener?.onProfileClick(post.userId) }
+            itemPostName.setOnClickListener { feedItemsListener?.onProfileClick(post.userId) }
+            itemPostMenuBtn.setOnClickListener { feedItemsListener?.onPostMenuClick(post.id) }
+            itemPostText.text = htmlUtils.createSpannableString(post.text)
 
-            itemPostDate.text = dateFormatUtils.getSimplifiedDate(post.date)
+            itemPostAttachmentsHolder.removeAllViews()
 
-            itemPostMenuBtn.apply {
-                isVisible = post.userId == currentUserId
-                setOnClickListener { feedItemsListener.onPostMenuClick(post.id) }
-            }
+            itemPostLikeBtn.setOnClickListener { feedItemsListener?.onLikeClick(post.id, hasPersonalLike) }
+            itemPostLikeBtn.setOnLongClickListener { feedItemsListener?.onLikeLongClick(post.id); true }
 
-            itemPostTitle.apply {
-                text = post.title
-                isVisible = post.title.isNotNullOrBlank()
-            }
-
-            itemPostImagesHolder.removeAllViews()
-//            val htmlUtils =
-//                HtmlParser(lifecycleOwner.lifecycleScope, context.resources, Glide.with(context))
-//            htmlUtils.provideFormattedText(
-//                post.text,
-//                weak(context),
-//                weak(postViewHolder.text),
-//                weak(postViewHolder.imagesViewGroup)
-//            ) { onImageClick(it) }
-
-            itemPostLikeBtn.apply {
-                val hasPersonalLike = post.likedUsers.find { it.id == currentUserId }.isNotNull()
-                text = if (post.likedUsers.isEmpty()) null else post.likedUsers.size.toString()
-                val likeDrawable =
-                    if (hasPersonalLike) R.drawable.ic_like_red
-                    else R.drawable.ic_like_grey
-                setDrawableStart(likeDrawable)
-                setOnClickListener { feedItemsListener.onLikeClick(post.id, hasPersonalLike) }
-                setOnLongClickListener {
-                    feedItemsListener.onLikeLongClick(post.id)
-                    return@setOnLongClickListener true
-                }
-            }
-
-            with(itemPostCommentBtn) {
-                text = if (post.comments.isEmpty()) null else post.comments.size.toString()
-                setOnClickListener { feedItemsListener.onCommentsClick(post.id) }
-            }
+            itemPostCommentBtn.setOnClickListener { feedItemsListener?.onCommentsClick(post.id) }
         }
     }
 
@@ -93,8 +63,6 @@ open class FeedRecyclerAdapter(
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
-//    override fun getItemId(position: Int) = getItem(position).id.toLong()
 
     object PostsDiffUtil : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean =

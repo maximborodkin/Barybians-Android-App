@@ -22,7 +22,7 @@
             android:layout_marginStart="6dp"
             android:layout_gravity="center_vertical"
             tools:src="@tools:sample/avatars"
-            app:hasOnlineStatus="false"/>
+            app:enableOnlineStatus="false"/>
 
         <TextView
             android:id="@+id/itemPostCreatorLabel"

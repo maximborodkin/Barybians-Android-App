@@ -12,7 +12,6 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatsListBinding
 import ru.maxim.barybians.domain.model.Chat
-import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
@@ -26,9 +25,6 @@ class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), Ch
 
     @Inject
     lateinit var preferencesManager: PreferencesManager
-
-    @Inject
-    lateinit var dateFormatUtils: DateFormatUtils
 
     private val binding by viewBinding(FragmentChatsListBinding::bind)
 
@@ -59,7 +55,6 @@ class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), Ch
                 adapter = ChatsListRecyclerAdapter(
                     chats = chatsList,
                     currentUserId = preferencesManager.userId,
-                    dateFormatUtils = dateFormatUtils,
                     onChatClick = { userId ->
                         findNavController().navigate(ChatsListFragmentDirections.toChat(userId))
                     }

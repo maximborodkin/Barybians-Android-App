@@ -16,7 +16,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentLikesListBinding
-import ru.maxim.barybians.utils.DateFormatUtils
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
@@ -26,9 +25,6 @@ class LikesListDialog : BottomSheetDialogFragment() {
 
     private val args: LikesListDialogArgs by navArgs()
     private var binding: FragmentLikesListBinding by notNull()
-
-    @Inject
-    lateinit var dateFormatUtils: DateFormatUtils
 
     @Inject
     lateinit var recyclerAdapter: LikesListRecyclerAdapter
