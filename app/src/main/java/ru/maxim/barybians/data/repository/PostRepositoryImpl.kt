@@ -33,7 +33,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPostById(postId: Int): Post? =
-        repositoryBound.wrapRequest { postService.getById(postId) }.firstOrNull { it.id == postId }
+        repositoryBound.wrapRequest { postService.getById(postId) }
 
     override suspend fun createPost(title: String?, text: String) {
         val post = repositoryBound.wrapRequest { postService.createPost(title, text) }
