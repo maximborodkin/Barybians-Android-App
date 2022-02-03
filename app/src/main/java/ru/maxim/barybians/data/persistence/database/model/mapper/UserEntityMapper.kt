@@ -1,0 +1,35 @@
+package ru.maxim.barybians.data.persistence.database.model.mapper
+
+import ru.maxim.barybians.data.DomainMapper
+import ru.maxim.barybians.data.persistence.database.model.UserEntity
+import ru.maxim.barybians.domain.model.User
+import javax.inject.Inject
+
+class UserEntityMapper @Inject constructor() : DomainMapper<UserEntity, User>() {
+
+    override suspend fun toDomainModel(model: UserEntity): User =
+        User(
+            id = model.userId,
+            firstName = model.firstName,
+            lastName = model.lastName,
+            photo = model.photo,
+            status = model.status,
+            birthDate = model.birthDate,
+            sex = model.sex,
+            lastVisit = model.lastVisit,
+            roleId = model.roleId
+        )
+
+    override suspend fun fromDomainModel(domainModel: User): UserEntity =
+        UserEntity(
+            userId = domainModel.id,
+            firstName = domainModel.firstName,
+            lastName = domainModel.lastName,
+            photo = domainModel.photo,
+            status = domainModel.status,
+            birthDate = domainModel.birthDate,
+            sex = domainModel.sex,
+            lastVisit = domainModel.lastVisit,
+            roleId = domainModel.roleId
+        )
+}

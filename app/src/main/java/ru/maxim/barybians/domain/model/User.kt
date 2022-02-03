@@ -10,14 +10,14 @@ data class User(
     val id: Int,
     val firstName: String,
     val lastName: String,
-    private val photo: String?,
+    val photo: String?,
     val status: String?,
     @SerializedName("ubirthDate")
     val birthDate: Long,
-    private val sex: String,
+    val sex: String,
     @SerializedName("ulastVisit")
     val lastVisit: Long,
-    private val roleId: Int?,
+    val roleId: Int?,
 ) {
     val fullName: String = "$firstName $lastName"
 

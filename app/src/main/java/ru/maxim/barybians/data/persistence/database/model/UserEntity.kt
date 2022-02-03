@@ -9,8 +9,8 @@ import ru.maxim.barybians.data.persistence.database.model.UserEntity.Contract.ta
 data class UserEntity(
 
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = Columns.id)
-    val id: Int,
+    @ColumnInfo(name = Columns.userId)
+    val userId: Int,
 
     @ColumnInfo(name = Columns.firstName)
     val firstName: String,
@@ -40,7 +40,7 @@ data class UserEntity(
         const val tableName = "users"
 
         object Columns {
-            const val id = "id"
+            const val userId = "user_id"
             const val firstName = "first_name"
             const val lastName = "lastName"
             const val photo = "photo"

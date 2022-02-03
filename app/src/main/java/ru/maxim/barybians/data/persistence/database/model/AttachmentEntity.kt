@@ -3,10 +3,10 @@ package ru.maxim.barybians.data.persistence.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.maxim.barybians.data.persistence.database.model.MessageAttachmentEntity.Contract.tableName
+import ru.maxim.barybians.data.persistence.database.model.AttachmentEntity.Contract.tableName
 
 @Entity(tableName = tableName)
-data class MessageAttachmentEntity (
+data class AttachmentEntity (
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = Columns.attachmentId)
