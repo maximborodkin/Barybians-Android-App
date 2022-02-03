@@ -10,5 +10,5 @@ data class Message (
     @SerializedName("utime")
     val time: Long,
     val unread: Int,
-    val attachments: ArrayList<MessageAttachment>?
+    val attachments: List<MessageAttachment>?
 )

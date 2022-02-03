@@ -24,12 +24,12 @@ class PostRepositoryImpl @Inject constructor(
     override val posts: StateFlow<List<Post>> = _posts.asStateFlow()
 
     override suspend fun loadPosts(userId: Int?) {
-        if (userId == null) {
-            _posts.emit(repositoryBound.wrapRequest(postService::getFeed))
-        } else {
-            val user = repositoryBound.wrapRequest { userService.getUser(userId) }
-            user?.posts?.let { _posts.emit(it) }
-        }
+//        if (userId == null) {
+//            _posts.emit(repositoryBound.wrapRequest(postService::getFeed))
+//        } else {
+//            val user = repositoryBound.wrapRequest { userService.getUser(userId) }
+//            user?.posts?.let { _posts.emit(it) }
+//        }
     }
 
     override suspend fun getPostById(postId: Int): Post? =

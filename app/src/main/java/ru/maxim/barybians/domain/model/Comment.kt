@@ -4,7 +4,6 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 data class Comment (
-    @PrimaryKey
     val id: Int,
     val postId: Int,
     val userId: Int,
