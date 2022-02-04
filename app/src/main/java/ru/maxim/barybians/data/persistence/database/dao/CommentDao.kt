@@ -1,7 +1,6 @@
 package ru.maxim.barybians.data.persistence.database.dao
 
-import androidx.room.Dao
-import androidx.room.Query
+import androidx.room.*
 import ru.maxim.barybians.data.persistence.database.model.CommentEntity
 import ru.maxim.barybians.data.persistence.database.model.CommentEntity.Contract.Columns
 
@@ -9,5 +8,14 @@ import ru.maxim.barybians.data.persistence.database.model.CommentEntity.Contract
 interface CommentDao {
 
     @Query("SELECT * FROM ${CommentEntity.tableName} WHERE ${Columns.postId}=:postId")
-    fun getByPostId(postId: Int): List<CommentEntity>
+    suspend fun getByPostId(postId: Int): List<CommentEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(commentEntity: CommentEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(commentEntities: List<CommentEntity>)
+
+    @Delete
+    suspend fun delete(commentEntity: CommentEntity)
 }

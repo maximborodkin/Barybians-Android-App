@@ -91,6 +91,4 @@ interface DataModuleBindings {
 
     @Binds
     fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
-
-
 }

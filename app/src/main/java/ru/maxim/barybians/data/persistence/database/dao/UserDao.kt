@@ -1,7 +1,6 @@
 package ru.maxim.barybians.data.persistence.database.dao
 
-import androidx.room.Dao
-import androidx.room.Query
+import androidx.room.*
 import ru.maxim.barybians.data.persistence.database.model.UserEntity
 import ru.maxim.barybians.data.persistence.database.model.UserEntity.Contract.Columns
 
@@ -14,4 +13,12 @@ interface UserDao {
     @Query("SELECT * FROM ${UserEntity.tableName} WHERE ${Columns.userId}=:userId")
     suspend fun getById(userId: Int): UserEntity?
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(userEntity: UserEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(userEntities: List<UserEntity>)
+
+    @Delete
+    suspend fun delete(userEntity: UserEntity)
 }
