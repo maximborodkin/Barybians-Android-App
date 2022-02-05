@@ -2,7 +2,6 @@ package ru.maxim.barybians.ui.dialog.commentsList
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.view.LayoutInflater

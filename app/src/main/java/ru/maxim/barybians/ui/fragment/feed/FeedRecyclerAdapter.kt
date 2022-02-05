@@ -2,15 +2,20 @@ package ru.maxim.barybians.ui.fragment.feed
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.PostViewHolder
 import ru.maxim.barybians.utils.HtmlUtils
 import ru.maxim.barybians.utils.contains
+import ru.maxim.barybians.utils.load
 import javax.inject.Inject
 
 class FeedRecyclerAdapter @Inject constructor(
@@ -18,10 +23,10 @@ class FeedRecyclerAdapter @Inject constructor(
     private val htmlUtils: HtmlUtils
 ) : PagingDataAdapter<Post, PostViewHolder>(PostsDiffUtil) {
 
-    private var feedItemsListener: FeedItemsListener? = null
+    private var feedAdapterListener: FeedAdapterListener? = null
 
-    fun setFeedItemsListener(listener: FeedItemsListener?) {
-        feedItemsListener = listener
+    fun setFeedItemsListener(listener: FeedAdapterListener?) {
+        feedAdapterListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -34,27 +39,40 @@ class FeedRecyclerAdapter @Inject constructor(
         holder.bind(getItem(position))
     }
 
-    inner class PostViewHolder(private val binding: ItemPostBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class PostViewHolder(private val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post?) = with(binding) {
+            val context = itemView.context
             binding.post = post
             if (post == null) return@with
             val hasPersonalLike = post.likedUsers.contains { it.id == preferencesManager.userId }
             binding.isPersonal = post.userId == preferencesManager.userId
             binding.hasPersonalLike = hasPersonalLike
 
-            itemPostAvatar.setOnClickListener { feedItemsListener?.onProfileClick(post.userId) }
-            itemPostName.setOnClickListener { feedItemsListener?.onProfileClick(post.userId) }
-            itemPostMenuBtn.setOnClickListener { feedItemsListener?.onPostMenuClick(post.id) }
-            itemPostText.text = htmlUtils.parseHtml(post.text).first
+            itemPostAvatar.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
+            itemPostName.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
+            itemPostMenuBtn.setOnClickListener { feedAdapterListener?.onPostMenuClick(post.id) }
 
+            val postBody = htmlUtils.parseHtml(post.text)
+            itemPostText.text = postBody.first
             itemPostAttachmentsHolder.removeAllViews()
+            postBody.second.forEach { attachment ->
+                val imageView = ImageView(context).apply {
+                    layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).also { params ->
+                        params.width = context.resources.getDimension(R.dimen.image_attachment_size).toInt()
+                        params.height = params.width
+                        params.marginEnd = context.resources.getDimension(R.dimen.attachment_space).toInt()
+                        setOnClickListener { feedAdapterListener?.onImageClick(attachment.url) }
+                    }
+                }
+                imageView.load(url = attachment.url)
+                itemPostAttachmentsHolder.addView(imageView)
+            }
 
-            itemPostLikeBtn.setOnClickListener { feedItemsListener?.onLikeClick(post.id) }
-            itemPostLikeBtn.setOnLongClickListener { feedItemsListener?.onLikeLongClick(post.id); true }
+            itemPostLikeBtn.setOnClickListener { feedAdapterListener?.onLikeClick(post.id) }
+            itemPostLikeBtn.setOnLongClickListener { feedAdapterListener?.onLikeLongClick(post.id); true }
 
-            itemPostCommentBtn.setOnClickListener { feedItemsListener?.onCommentsClick(post.id) }
+            itemPostCommentBtn.setOnClickListener { feedAdapterListener?.onCommentsClick(post.id) }
         }
     }
 

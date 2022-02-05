@@ -1,7 +1,6 @@
 package ru.maxim.barybians.ui.fragment.feed
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -20,7 +19,7 @@ import ru.maxim.barybians.utils.hide
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
-class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsListener {
+class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: FeedViewModel.FeedViewModelFactory

@@ -109,14 +109,24 @@
             app:layout_constraintTop_toBottomOf="@id/itemPostTitle"
             tools:text="@tools:sample/lorem[50]" />
 
-        <LinearLayout
-            android:id="@+id/itemPostAttachmentsHolder"
+        <HorizontalScrollView
+            android:id="@+id/itemPostAttachmentsScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemPostText" />
+            app:layout_constraintTop_toBottomOf="@id/itemPostText"
+            android:scrollbars="horizontal"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbarSize="2dp">
+
+            <LinearLayout
+                android:id="@+id/itemPostAttachmentsHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/itemPostLikeBtn"
@@ -131,7 +141,7 @@
             android:textSize="18sp"
             app:drawableTintColor="@{hasPersonalLike ? @color/like_red : @color/grey}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemPostAttachmentsHolder"
+            app:layout_constraintTop_toBottomOf="@id/itemPostAttachmentsScrollView"
             tools:drawableTint="@color/like_red"
             tools:text="4" />
 
