@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import moxy.MvpAppCompatFragment
@@ -16,6 +17,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentFeedBinding
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.hide
+import ru.maxim.barybians.utils.show
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
@@ -42,29 +44,37 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
         feedRecyclerAdapter.setFeedItemsListener(this@FeedFragment)
 
         viewLifecycleOwner.lifecycleScope.launch {
-            model.isLoading.observe(viewLifecycleOwner) { isLoading ->
-                if (isLoading) {
-                    feedProgressBar.isVisible =
-                        !feedRefreshLayout.isRefreshing &&
-                                feedRecyclerAdapter.itemCount == 0
-                } else {
-                    feedProgressBar.hide()
-                    feedRefreshLayout.isRefreshing = false
-                }
-            }
-
-            model.messageRes.observe(viewLifecycleOwner) { messageRes ->
-                if (feedRecyclerAdapter.itemCount == 0) {
-                    feedMessage.text = messageRes?.let { getString(it) }
-                } else {
-                    messageRes?.let { context?.toast(it) }
-                }
-            }
-
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.feed.collect { posts ->
-                    feedRecyclerAdapter.submitData(posts)
+                feedRecyclerAdapter.loadStateFlow.collect { state ->
+                    when (state.refresh) {
+                        is LoadState.Loading -> {
+                            feedProgressBar.isVisible = feedRecyclerAdapter.itemCount == 0
+                            feedMessage.hide()
+                        }
+                        is LoadState.NotLoading -> {
+                            feedProgressBar.hide()
+                            if (feedRecyclerAdapter.itemCount > 0) feedMessage.hide()
+                            feedRefreshLayout.isRefreshing = false
+                        }
+                        is LoadState.Error -> {
+                            feedProgressBar.hide()
+                            feedRefreshLayout.isRefreshing = false
+                            val errorMessage = getString(R.string.an_error_occurred_while_loading_feed)
+                            if (feedRecyclerAdapter.itemCount == 0) {
+                                feedMessage.show()
+                                feedMessage.text = errorMessage
+                            } else {
+                                context?.toast(errorMessage)
+                            }
+                        }
+                    }
                 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.feed.collect(feedRecyclerAdapter::submitData)
             }
         }
     }

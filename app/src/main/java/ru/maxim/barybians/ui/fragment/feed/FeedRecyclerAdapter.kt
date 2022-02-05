@@ -23,6 +23,11 @@ class FeedRecyclerAdapter @Inject constructor(
     private val htmlUtils: HtmlUtils
 ) : PagingDataAdapter<Post, PostViewHolder>(PostsDiffUtil) {
 
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.itemAnimator = null
+    }
+
     private var feedAdapterListener: FeedAdapterListener? = null
 
     fun setFeedItemsListener(listener: FeedAdapterListener?) {
