@@ -2,13 +2,13 @@ package ru.maxim.barybians.ui.dialog.commentsList
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -26,7 +26,7 @@ import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
 
-class CommentsListDialog : BottomSheetDialogFragment() {
+class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener {
 
     private val args: CommentsListDialogArgs by navArgs()
     private var binding: FragmentCommentsListBinding by notNull()
@@ -51,6 +51,7 @@ class CommentsListDialog : BottomSheetDialogFragment() {
         binding = FragmentCommentsListBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = model
+            recyclerAdapter.setAdapterListener(this@CommentsListDialog)
             commentsListRecycler.adapter = recyclerAdapter
         }
         return binding.root
@@ -101,56 +102,50 @@ class CommentsListDialog : BottomSheetDialogFragment() {
             }
         }
 
-        recyclerAdapter.apply {
-            setOnUserClickListener { userId ->
-                val action = CommentsListDialogDirections.toProfile(userId)
-                findNavController().navigate(action)
-            }
-            setOnImageClickListener { imageDrawable ->
-                val action = CommentsListDialogDirections.toImageViewer(imageBitmap = imageDrawable.toBitmap())
-                findNavController().navigate(action)
-            }
-            setOnCommentSwipeListener { commentId, viewHolderPosition ->
-                val deleteConfirmationDialog = MaterialAlertDialogBuilder(view.context).apply {
-                    setTitle(R.string.delete_this_comment)
-                    setIcon(R.drawable.ic_delete_grey)
-                    setMessage(R.string.this_action_cannot_be_undone)
-                    setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                        recyclerAdapter.notifyItemChanged(viewHolderPosition)
-                        dialog.dismiss()
-                    }
-                    setPositiveButton(android.R.string.ok) { dialog, _ ->
-                        model.deleteComment(commentId)
-                        dialog.dismiss()
-                    }
-                }
-                deleteConfirmationDialog.setOnCancelListener {
-                    recyclerAdapter.notifyItemChanged(viewHolderPosition)
-                }
-                deleteConfirmationDialog.show()
-            }
-            setOnCommentLongClickListener { commentId, commentText ->
-                EditTextDialog(
-                    context = view.context,
-                    title = getString(R.string.edit_comment),
-                    text = commentText,
-                    onPositiveButtonClicked = { newText ->
-                        model.editComment(commentId, newText)
-                    }
-                )
-            }
-        }
-
         binding.commentsListSendBtn.setOnClickListener {
             model.createComment()
         }
     }
 
+    override fun onUserClick(userId: Int) = findNavController().navigate(CommentsListDialogDirections.toProfile(userId))
+
+    override fun onImageClick(url: String) {
+        findNavController().navigate(CommentsListDialogDirections.toImageViewer(imageUrl = url))
+    }
+
+    override fun onCommentSwipe(commentId: Int, viewHolderPosition: Int) {
+        val deleteConfirmationDialog = MaterialAlertDialogBuilder(context ?: return).apply {
+            setTitle(R.string.delete_this_comment)
+            setIcon(R.drawable.ic_delete_grey)
+            setMessage(R.string.this_action_cannot_be_undone)
+            setNegativeButton(android.R.string.cancel) { dialog, _ ->
+                recyclerAdapter.notifyItemChanged(viewHolderPosition)
+                dialog.dismiss()
+            }
+            setPositiveButton(android.R.string.ok) { dialog, _ ->
+                model.deleteComment(commentId)
+                dialog.dismiss()
+            }
+        }
+        deleteConfirmationDialog.setOnCancelListener {
+            recyclerAdapter.notifyItemChanged(viewHolderPosition)
+        }
+        deleteConfirmationDialog.show()
+    }
+
+    override fun onCommentLongClick(commentId: Int, commentText: String) {
+        EditTextDialog(
+            context = context ?: return,
+            title = getString(R.string.edit_comment),
+            text = commentText,
+            onPositiveButtonClicked = { newText ->
+                model.editComment(commentId, newText)
+            }
+        )
+    }
+
     override fun onDestroyView() {
+        recyclerAdapter.setAdapterListener(null)
         super.onDestroyView()
-        recyclerAdapter.setOnUserClickListener(null)
-        recyclerAdapter.setOnImageClickListener(null)
-        recyclerAdapter.setOnCommentSwipeListener(null)
-        recyclerAdapter.setOnCommentLongClickListener(null)
     }
 }

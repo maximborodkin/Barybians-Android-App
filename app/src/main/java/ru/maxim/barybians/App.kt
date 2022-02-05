@@ -1,6 +1,5 @@
 package ru.maxim.barybians
 
-import android.content.Context
 import androidx.multidex.MultiDexApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

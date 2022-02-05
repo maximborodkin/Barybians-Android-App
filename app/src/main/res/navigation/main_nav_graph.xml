@@ -128,14 +128,7 @@
         <argument
             android:name="imageUrl"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null"/>
-
-        <argument
-            android:name="imageBitmap"
-            app:argType="android.graphics.Bitmap"
-            app:nullable="true"
-            android:defaultValue="@null"/>
+            app:nullable="false" />
     </dialog>
 
     <action

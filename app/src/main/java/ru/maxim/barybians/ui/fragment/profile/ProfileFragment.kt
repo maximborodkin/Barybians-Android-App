@@ -1,23 +1,11 @@
 package ru.maxim.barybians.ui.fragment.profile
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ConcatAdapter
 import by.kirich1409.viewbindingdelegate.viewBinding
-import kotlinx.coroutines.launch
 import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentProfileBinding
-import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
-import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter
 import ru.maxim.barybians.utils.appComponent
 import javax.inject.Inject
 

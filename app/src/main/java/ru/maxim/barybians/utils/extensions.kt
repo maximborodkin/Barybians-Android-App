@@ -2,6 +2,7 @@ package ru.maxim.barybians.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,6 +11,7 @@ import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
@@ -67,6 +69,7 @@ fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnai
         placeholder != null -> requestBuilder.placeholder(placeholder)
         else -> {
             requestBuilder.placeholder(CircularProgressDrawable(context).apply {
+                setColorSchemeColors(ContextCompat.getColor(context, R.color.color_on_primary))
                 strokeWidth = 3F
                 centerRadius = 64F
                 start()
@@ -76,7 +79,6 @@ fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnai
 
     requestBuilder
         .error(R.drawable.ic_broken_image)
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
         .into(this)
 }
 

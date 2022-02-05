@@ -1,12 +1,12 @@
 package ru.maxim.barybians.ui.dialog.commentsList
 
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
@@ -16,34 +16,21 @@ import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.ItemCommentBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.CommentViewHolder
+import ru.maxim.barybians.utils.HtmlUtils
 import ru.maxim.barybians.utils.SwipeDismissCallback
 import ru.maxim.barybians.utils.load
 import ru.maxim.barybians.utils.simpleDate
 import javax.inject.Inject
 
 class CommentsListRecyclerAdapter @Inject constructor(
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val htmlUtils: HtmlUtils
 ) : ListAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {
 
-    private var onUserClick: ((userId: Int) -> Unit)? = null
-    private var onImageClick: ((drawable: Drawable) -> Unit)? = null
-    private var onCommentSwipe: ((commentId: Int, viewHolderPosition: Int) -> Unit)? = null
-    private var onCommentLongClick: ((commentId: Int, commentText: String) -> Unit)? = null
+    private var commentsAdapterListener: CommentsAdapterListener? = null
 
-    fun setOnUserClickListener(listener: ((userId: Int) -> Unit)?) {
-        onUserClick = listener
-    }
-
-    fun setOnImageClickListener(listener: ((drawable: Drawable) -> Unit)?) {
-        onImageClick = listener
-    }
-
-    fun setOnCommentSwipeListener(listener: ((commentId: Int, viewHolderPosition: Int) -> Unit)?) {
-        onCommentSwipe = listener
-    }
-
-    fun setOnCommentLongClickListener(listener: ((commentId: Int, commentText: String) -> Unit)?) {
-        onCommentLongClick = listener
+    fun setAdapterListener(listener: CommentsAdapterListener?) {
+        commentsAdapterListener = listener
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -63,7 +50,7 @@ class CommentsListRecyclerAdapter @Inject constructor(
             },
             onSwiped = { viewHolder ->
                 val position = viewHolder.bindingAdapterPosition
-                onCommentSwipe?.invoke(getItem(position).id, position)
+                commentsAdapterListener?.onCommentSwipe(getItem(position).id, position)
             }
         )
 
@@ -80,23 +67,40 @@ class CommentsListRecyclerAdapter @Inject constructor(
         holder.bind(getItem(position))
     }
 
-    inner class CommentViewHolder(private val binding: ItemCommentBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class CommentViewHolder(private val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(comment: Comment) = with(binding) {
+            val context = itemView.context
             itemCommentUserAvatar.load(comment.author.avatarMin)
             itemCommentUserName.text = comment.author.fullName
             itemCommentDate.text = simpleDate(comment.date * 1000)
 
-            itemCommentText.text =
-                HtmlCompat.fromHtml(comment.text, HtmlCompat.FROM_HTML_MODE_COMPACT)
+            val commentBody = htmlUtils.parseHtml(comment.text)
+            itemCommentText.text = commentBody.first
             itemCommentAttachmentsHolder.removeAllViews()
-            // TODO: place attachments in holder
+            commentBody.second.forEach { attachment ->
+                val imageView = ImageView(context).apply {
+                    layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).also { params ->
+                        if (attachment.isSticker) {
+                            params.width = context.resources.getDimension(R.dimen.sticker_size).toInt()
+                            params.height = params.width
+                        } else {
+                            params.width = context.resources.getDimension(R.dimen.image_attachment_size).toInt()
+                            params.height = params.width
+                            params.marginEnd = context.resources.getDimension(R.dimen.attachment_space).toInt()
+                            setOnClickListener { commentsAdapterListener?.onImageClick(attachment.url) }
+                        }
+                    }
+                }
+                imageView.load(url = attachment.url)
+                itemCommentAttachmentsHolder.addView(imageView)
+            }
 
-            itemCommentUserAvatar.setOnClickListener { onUserClick?.invoke(comment.author.id) }
-            itemCommentUserName.setOnClickListener { onUserClick?.invoke(comment.author.id) }
+            itemCommentUserAvatar.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.id) }
+            itemCommentUserName.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.id) }
             root.setOnLongClickListener {
                 if (comment.author.id == preferencesManager.userId) {
-                    onCommentLongClick?.invoke(comment.id, comment.text)
+                    commentsAdapterListener?.onCommentLongClick(comment.id, comment.text)
                 }
                 true
             }

@@ -28,7 +28,6 @@
     <color name="light_colorTertiaryText">@color/grey</color>
     <color name="light_incoming_message_background">#D1DBFF</color>
     <color name="light_outgoing_message_background">#E0E0E0</color>
-    <color name="color_on_primary">#000000</color>
 
 <!--  Dark Theme  -->
     <color name="dark_colorPrimaryLight">#121212</color>
@@ -45,4 +44,5 @@
     <color name="delete_swipe_background">#FF0000</color>
     <color name="dark_incoming_message_background">#383838</color>
     <color name="dark_outgoing_message_background">#242323</color>
+    <color name="color_on_primary">#FFFFFF</color>
 </resources>

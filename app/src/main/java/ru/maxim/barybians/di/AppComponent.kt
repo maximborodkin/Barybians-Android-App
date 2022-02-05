@@ -6,6 +6,7 @@ import androidx.paging.PagingSource
 import dagger.*
 import kotlinx.coroutines.CoroutineScope
 import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.paging.FeedPagingSource
 import ru.maxim.barybians.data.repository.*
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
@@ -97,7 +98,7 @@ interface RepositoryBindings {
 
 @Module
 interface PagingSourceBindings {
-
-    @Binds
-    fun bindFeedPagingSource(feedPagingSource: FeedPagingSource): PagingSource<Int, Post>
+//
+//    @Binds
+//    fun bindFeedPagingSource(feedPagingSource: FeedPagingSource): PagingSource<Int, Post>
 }

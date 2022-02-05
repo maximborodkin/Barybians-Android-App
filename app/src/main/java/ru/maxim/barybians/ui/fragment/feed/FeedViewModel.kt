@@ -8,6 +8,8 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
+import ru.maxim.barybians.data.paging.FeedPagingSource
+import ru.maxim.barybians.data.paging.FeedPagingSource.FeedPagingSourceFactory
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.domain.model.Post
 import javax.inject.Inject
@@ -15,7 +17,7 @@ import javax.inject.Inject
 open class FeedViewModel constructor(
     application: Application,
     protected val postRepository: PostRepository,
-    private val feedPagingSource: PagingSource<Int, Post>
+    private val feedPagingSourceFactory: FeedPagingSourceFactory
 ) : AndroidViewModel(application) {
 
     val feed: StateFlow<PagingData<Post>> = Pager(
@@ -25,12 +27,11 @@ open class FeedViewModel constructor(
             prefetchDistance = PostRepository.prefetchDistance,
             enablePlaceholders = true
         ),
-        pagingSourceFactory = { feedPagingSource }
+        pagingSourceFactory = feedPagingSourceFactory::create
     )
         .flow
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
-
 
     protected val internalIsLoading: MutableLiveData<Boolean> = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = internalIsLoading
@@ -106,12 +107,12 @@ open class FeedViewModel constructor(
     class FeedViewModelFactory @Inject constructor(
         private val application: Application,
         private val postRepository: PostRepository,
-        private val feedPagingSource: PagingSource<Int, Post>
+        private val feedPagingSourceFactory: FeedPagingSourceFactory
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(FeedViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return FeedViewModel(application, postRepository, feedPagingSource) as T
+                return FeedViewModel(application, postRepository, feedPagingSourceFactory) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }
