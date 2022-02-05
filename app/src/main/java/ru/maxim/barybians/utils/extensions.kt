@@ -12,6 +12,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -31,7 +32,8 @@ fun Any?.isNotNull() = !this.isNull()
 fun CharSequence?.isNotNullOrBlank(): Boolean = !this.isNullOrBlank()
 
 fun TextView.setDrawableStart(@DrawableRes drawableResource: Int) =
-    setCompoundDrawablesRelativeWithIntrinsicBounds(
+    TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(
+        this,
         AppCompatResources.getDrawable(context, drawableResource), //start
         compoundDrawablesRelative[1],                              //top
         compoundDrawablesRelative[2],                              //end
@@ -39,7 +41,8 @@ fun TextView.setDrawableStart(@DrawableRes drawableResource: Int) =
     )
 
 fun TextView.setDrawableEnd(@DrawableRes drawableResource: Int) =
-    setCompoundDrawablesRelativeWithIntrinsicBounds(
+    TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(
+        this,
         this.compoundDrawablesRelative[0],                         //start
         this.compoundDrawablesRelative[1],                         //top
         AppCompatResources.getDrawable(context, drawableResource), //end
@@ -47,7 +50,7 @@ fun TextView.setDrawableEnd(@DrawableRes drawableResource: Int) =
     )
 
 fun TextView.clearDrawables() =
-    setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+    TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, 0, 0, 0, 0)
 
 fun Context.toast(text: String) = Toast.makeText(this, text, LENGTH_SHORT).show()
 fun Context.toast(resource: Int) = toast(getString(resource))
@@ -107,6 +110,7 @@ fun Date.simple(hasTime: Boolean = true): String {
     val today = Calendar.getInstance()
     val date = Calendar.getInstance().also { it.timeInMillis = this.time }
     return when {
+        // Compare by year, month, day
         date[DATE] == today[DATE] -> SimpleDateFormat("HH:mm", Locale.getDefault())
         date[YEAR] == today[YEAR] -> SimpleDateFormat("dd MMM${if (hasTime) " HH:mm" else ""}", Locale.getDefault())
         else -> SimpleDateFormat("dd MMM yyyy${if (hasTime) " HH:mm" else ""}", Locale.getDefault())

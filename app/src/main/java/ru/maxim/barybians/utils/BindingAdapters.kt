@@ -1,18 +1,16 @@
 package ru.maxim.barybians.utils
 
 import android.content.res.ColorStateList
-import android.graphics.ColorFilter
-import android.os.Build
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
+import ru.maxim.barybians.ui.view.AvatarView
 
 @BindingAdapter("errorText")
 fun setErrorText(view: TextInputLayout, errorMessage: String?) {
@@ -21,11 +19,7 @@ fun setErrorText(view: TextInputLayout, errorMessage: String?) {
 
 @BindingAdapter("errorText")
 fun setErrorText(view: TextInputLayout, @StringRes errorMessage: Int?) {
-    view.error = if (errorMessage != null) {
-        view.context.getString(errorMessage)
-    } else {
-        null
-    }
+    view.error = if (errorMessage != null) view.context.getString(errorMessage) else null
 }
 
 @BindingAdapter(value = ["image", "placeholder", "thumbnail"], requireAll = false)
@@ -47,4 +41,21 @@ fun ImageView.setTintColor(@ColorRes color: Int) {
 @BindingAdapter("drawableTintColor")
 fun TextView.drawableTintColor(@ColorInt tintColor: Int) {
     TextViewCompat.setCompoundDrawableTintList(this, ColorStateList.valueOf(tintColor))
+}
+
+@BindingAdapter("iconEnd")
+fun TextView.drawableEnd(@DrawableRes drawableResId: Int) {
+    if (drawableResId <= 0x0) return
+    this.setDrawableEnd(drawableResId)
+}
+
+@BindingAdapter("startEnd")
+fun TextView.drawableStart(@DrawableRes drawableResId: Int) {
+    if (drawableResId <= 0x0) return
+    this.setDrawableStart(drawableResId)
+}
+
+@BindingAdapter("isOnline")
+fun AvatarView.isOnline(isOnline: Boolean) {
+    this.isOnline = isOnline
 }

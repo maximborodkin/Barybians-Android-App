@@ -15,6 +15,7 @@ interface LikeDao {
                 ON ${UserEntity.tableName}.${User.userId}=${LikeEntity.tableName}.${Like.userId}
             WHERE ${Like.postId}=:postId"""
     )
+    @RewriteQueriesToDropUnusedColumns
     suspend fun getByPostId(postId: Int): List<UserEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

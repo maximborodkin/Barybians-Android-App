@@ -10,7 +10,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.paging.flatMap
+import androidx.paging.map
 import by.kirich1409.viewbindingdelegate.viewBinding
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
@@ -19,6 +22,7 @@ import ru.maxim.barybians.ui.dialog.PostMenuDialog
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.hide
 import ru.maxim.barybians.utils.toast
+import timber.log.Timber
 import javax.inject.Inject
 
 class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsListener {
@@ -30,7 +34,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsList
     private val binding by viewBinding(FragmentFeedBinding::bind)
 
     @Inject
-    lateinit var commentsRecyclerAdapter: FeedRecyclerAdapter
+    lateinit var pagingRecyclerAdapter: PagingFeedRecyclerAdapter
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
@@ -39,16 +43,16 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        feedRefreshLayout.setOnRefreshListener { model.loadFeed() }
-        feedRecyclerView.adapter = commentsRecyclerAdapter
-        commentsRecyclerAdapter.setFeedItemsListener(this@FeedFragment)
+//        feedRefreshLayout.setOnRefreshListener { model.loadFeed() }
+        feedRecyclerView.adapter = pagingRecyclerAdapter
+        pagingRecyclerAdapter.setFeedItemsListener(this@FeedFragment)
 
         viewLifecycleOwner.lifecycleScope.launch {
             model.isLoading.observe(viewLifecycleOwner) { isLoading ->
                 if (isLoading) {
                     feedProgressBar.isVisible =
                         !feedRefreshLayout.isRefreshing &&
-                                commentsRecyclerAdapter.currentList.isEmpty()
+                                pagingRecyclerAdapter.itemCount == 0
                 } else {
                     feedProgressBar.hide()
                     feedRefreshLayout.isRefreshing = false
@@ -56,7 +60,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsList
             }
 
             model.messageRes.observe(viewLifecycleOwner) { messageRes ->
-                if (commentsRecyclerAdapter.currentList.isEmpty()) {
+                if (pagingRecyclerAdapter.itemCount == 0) {
                     feedMessage.text = messageRes?.let { getString(it) }
                 } else {
                     messageRes?.let { context?.toast(it) }
@@ -64,9 +68,8 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsList
             }
 
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.posts.collect { posts ->
-                    feedMessage.isVisible = posts.isEmpty()
-                    commentsRecyclerAdapter.submitList(posts)
+                model.feed.collect { posts ->
+                    pagingRecyclerAdapter.submitData(posts)
                 }
             }
         }
@@ -87,18 +90,18 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsList
     }
 
     override fun onPostMenuClick(postId: Int) {
-        commentsRecyclerAdapter.currentList.find { it.id == postId }?.let { post ->
-            PostMenuDialog.newInstance(
-                title = post.title,
-                text = post.text,
-                onDelete = {
-                    model.deletePost(post.id)
-                },
-                onEdit = { title, text ->
-                    model.editPost(postId, title, text)
-                }
-            ).show(childFragmentManager, PostMenuDialog::class.simpleName)
-        }
+//        commentsRecyclerAdapter.currentList.find { it.id == postId }?.let { post ->
+//            PostMenuDialog.newInstance(
+//                title = post.title,
+//                text = post.text,
+//                onDelete = {
+//                    model.deletePost(post.id)
+//                },
+//                onEdit = { title, text ->
+//                    model.editPost(postId, title, text)
+//                }
+//            ).show(childFragmentManager, PostMenuDialog::class.simpleName)
+//        }
     }
 
     override fun onCommentsClick(postId: Int) {
@@ -117,6 +120,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedItemsList
 
     override fun onDestroyView() {
         super.onDestroyView()
-        commentsRecyclerAdapter.setFeedItemsListener(null)
+        pagingRecyclerAdapter.setFeedItemsListener(null)
     }
 }

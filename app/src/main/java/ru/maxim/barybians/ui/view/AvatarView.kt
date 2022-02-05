@@ -7,7 +7,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import ru.maxim.barybians.R
 
-
 class AvatarView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -24,7 +23,6 @@ class AvatarView @JvmOverloads constructor(
     init {
         getContext().obtainStyledAttributes(attrs, R.styleable.AvatarView, defStyleAttr, 0).apply {
             hasOnlineStatus = getBoolean(R.styleable.AvatarView_enableOnlineStatus, true)
-            isOnline = getBoolean(R.styleable.AvatarView_isOnline, false)
             recycle()
         }
 
@@ -47,8 +45,7 @@ class AvatarView @JvmOverloads constructor(
                 0F,
                 width.toFloat(),
                 height.toFloat(),
-                255,
-                Canvas.ALL_SAVE_FLAG
+                255
             )
         }
         super.onDraw(canvas)
