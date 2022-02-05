@@ -1,10 +1,8 @@
 package ru.maxim.barybians.domain.model
 
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-data class Post (
-    @PrimaryKey
+data class Post(
     val id: Int,
     val userId: Int,
     var title: String?,
@@ -14,5 +12,5 @@ data class Post (
     val edited: Int,
     val author: User,
     var likedUsers: List<User>,
-    var comments: ArrayList<Comment>
+    var comments: List<Comment>
 )

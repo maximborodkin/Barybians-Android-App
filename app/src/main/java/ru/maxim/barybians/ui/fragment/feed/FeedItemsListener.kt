@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 
 interface FeedItemsListener {
     fun onProfileClick(userId: Int)
-    fun onImageClick(bitmap: Bitmap)
     fun onImageClick(imageUrl: String)
     fun onPostMenuClick(postId: Int)
     fun onCommentsClick(postId: Int)

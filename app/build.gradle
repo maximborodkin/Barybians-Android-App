@@ -71,6 +71,7 @@ dependencies {
     def coroutines_version = '1.6.0-native-mt'
     def dagger_version = '2.40.5'
     def moxy_version = "2.2.2"
+    def paging_version = "3.1.0"
 
     // KTX
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -86,6 +87,9 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation "com.android.support:multidex:1.0.3"
     implementation "com.google.android.material:material:1.5.0"
+
+    // Paging 3
+    implementation "androidx.paging:paging-runtime:$paging_version"
 
     // MVP
     kapt "com.github.moxy-community:moxy-compiler:$moxy_version"

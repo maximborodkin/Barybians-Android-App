@@ -1,5 +1,6 @@
 package ru.maxim.barybians.data.repository
 
+import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.network.service.CommentService
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.persistence.PreferencesManager
@@ -13,8 +14,8 @@ class CommentRepositoryImpl @Inject constructor(
     private val repositoryBound: RepositoryBound
 ) : CommentRepository {
 
-    override suspend fun getComments(postId: Int): List<Comment> =
-        repositoryBound.wrapRequest { postService.getById(postId) }.find { it.id == postId }!!.comments
+    override suspend fun getComments(postId: Int): List<Comment>? =
+        repositoryBound.wrapRequest { postService.getById(postId) }?.comments
 
     override suspend fun createComment(uuid: String, postId: Int, text: String): Int =
         repositoryBound.wrapRequest { commentService.addComment(uuid, postId, text) }

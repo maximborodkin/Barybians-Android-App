@@ -2,10 +2,13 @@ package ru.maxim.barybians.di
 
 import android.app.Application
 import android.content.Context
+import androidx.paging.PagingSource
 import dagger.*
 import kotlinx.coroutines.CoroutineScope
 import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.paging.FeedPagingSource
 import ru.maxim.barybians.data.repository.*
+import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
@@ -50,7 +53,7 @@ interface AppComponent {
     fun inject(likesListDialog: LikesListDialog)
 }
 
-@Module(includes = [DataModuleBindings::class])
+@Module(includes = [RepositoryBindings::class, PagingSourceBindings::class])
 object DataModule {
 
     @Reusable
@@ -75,7 +78,7 @@ object DataModule {
 }
 
 @Module
-interface DataModuleBindings {
+interface RepositoryBindings {
 
     @Binds
     fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
@@ -91,6 +94,11 @@ interface DataModuleBindings {
 
     @Binds
     fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
+}
 
-
+@Module
+interface PagingSourceBindings {
+//
+//    @Binds
+//    fun bindFeedPagingSource(feedPagingSource: FeedPagingSource): PagingSource<Int, Post>
 }

@@ -4,10 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <import type="androidx.core.content.ContextCompat" />
+
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
+
         <import type="kotlin.text.StringsKt" />
+
         <import type="ru.maxim.barybians.R" />
 
         <variable
@@ -37,6 +42,7 @@
             android:layout_height="48dp"
             app:enableOnlineStatus="true"
             app:image="@{post.author.avatarMin}"
+            app:isOnline="@{post.author.isOnline}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:isOnline="true"
@@ -50,8 +56,10 @@
             android:layout_marginStart="12dp"
             android:text="@{post.author.fullName}"
             android:textSize="18sp"
+            app:iconEnd="@{post.author.role.iconResource}"
             app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
             app:layout_constraintTop_toTopOf="parent"
+            tools:drawableEnd="@drawable/ic_role_verified"
             tools:text="@tools:sample/full_names" />
 
         <TextView

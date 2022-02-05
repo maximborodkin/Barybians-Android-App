@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
+import ru.maxim.barybians.data.network.exception.NotFoundException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.domain.model.Comment
@@ -43,7 +44,9 @@ class CommentsListDialogViewModel private constructor(
     private fun update() = viewModelScope.launch {
         _isLoading.postValue(true)
         try {
-            _comments.emit(commentRepository.getComments(postId))
+            val comments = commentRepository.getComments(postId)
+            if (comments != null) _comments.emit(comments)
+            else throw NotFoundException()
         } catch (e: Exception) {
             val error = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection
@@ -96,9 +99,10 @@ class CommentsListDialogViewModel private constructor(
 
     fun deleteComment(commentId: Int) = viewModelScope.launch {
         try {
-            commentRepository.deleteComment(commentId)
-            val updatedComments = comments.value.filterNot { it.id == commentId }
-            _comments.emit(updatedComments)
+            if (commentRepository.deleteComment(commentId)) {
+                val updatedComments = comments.value.filterNot { it.id == commentId }
+                _comments.emit(updatedComments)
+            } else _errorMessageId.postValue(R.string.unable_to_update_comment)
         } catch (e: Exception) {
             val error = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection

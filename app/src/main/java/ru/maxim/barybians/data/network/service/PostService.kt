@@ -8,10 +8,16 @@ import ru.maxim.barybians.domain.model.Post
 interface PostService {
 
     @GET("/v2/posts/{postId}")
-    suspend fun getById(@Path("postId") postId: Int): Response<List<Post>>
+    suspend fun getById(@Path("postId") postId: Int): Response<Post?>
 
     @GET("/v2/posts")
-    suspend fun getFeed(): Response<List<Post>>
+    suspend fun loadFeed(): Response<List<Post>>
+
+    @GET("/v2/posts")
+    suspend fun loadFeedPage(
+        @Query("start") startIndex: Int,
+        @Query("end") count: Int
+    ): Response<List<Post>>
 
     @FormUrlEncoded
     @POST("/v2/posts")

@@ -9,7 +9,6 @@
 
     <declare-styleable name="AvatarView">
         <attr name="enableOnlineStatus" format="boolean" />
-        <attr name="isOnline" format="boolean"/>
     </declare-styleable>
 
     <attr name="recyclerViewBackground" format="reference" />

@@ -16,14 +16,14 @@ class NetworkUtils @Inject constructor(
     private val applicationContext: Context,
     private val applicationScope: CoroutineScope
 ) {
-
     init {
         registerNetworkStateChangesListener()
     }
 
     private val _networkStateChangeListener = MutableStateFlow(true)
-
     val networkStateChangeListener: StateFlow<Boolean> = _networkStateChangeListener.asStateFlow()
+
+    fun isOnline(): Boolean = networkStateChangeListener.value
 
     private fun registerNetworkStateChangesListener() {
         val connectivityManager =

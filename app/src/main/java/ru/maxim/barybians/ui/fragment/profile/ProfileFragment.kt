@@ -1,133 +1,121 @@
 package ru.maxim.barybians.ui.fragment.profile
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ConcatAdapter
 import by.kirich1409.viewbindingdelegate.viewBinding
-import kotlinx.coroutines.launch
 import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentProfileBinding
-import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
-import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter
 import ru.maxim.barybians.utils.appComponent
 import javax.inject.Inject
 
-class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile), ProfileItemsListener {
+class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, ProfileItemsListener*/ {
 
     private val args: ProfileFragmentArgs by navArgs()
     val binding: FragmentProfileBinding by viewBinding(FragmentProfileBinding::bind)
 
-    @Inject
-    lateinit var viewModelFactory: ProfileViewModel.ProfileViewModelFactory.Factory
-    private val model: ProfileViewModel by viewModels { viewModelFactory.create(args.userId) }
+//    @Inject
+//    lateinit var viewModelFactory: ProfileViewModel.ProfileViewModelFactory.Factory
+//    private val model: ProfileViewModel by viewModels { viewModelFactory.create(args.userId) }
 
     @Inject
     lateinit var headerRecyclerAdapter: ProfileHeaderRecyclerAdapter
 
-    @Inject
-    lateinit var feedRecyclerAdapter: FeedRecyclerAdapter
+//    @Inject
+//    lateinit var feedRecyclerAdapter: FeedRecyclerAdapter
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        headerRecyclerAdapter.setProfileItemsListener(this)
-
-        binding.profileRecyclerView.adapter =
-            ConcatAdapter(headerRecyclerAdapter, feedRecyclerAdapter)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.user.collect { user ->
-                    user?.let {
-                        headerRecyclerAdapter.submitList(listOf(user))
-                    }
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.posts.collect { posts ->
-                    feedRecyclerAdapter.submitList(posts)
-                }
-            }
-        }
-    }
-
-    override fun onBackButtonClick() {
-        findNavController().popBackStack()
-    }
-
-    override fun onPreferencesButtonClick() {
-        findNavController().navigate(ProfileFragmentDirections.profileToSettings())
-    }
-
-    override fun onStatusClick() {
-        EditTextDialog(
-            context = requireContext(),
-            title = getString(R.string.edit_status),
-            text = model.user.value?.status,
-            onPositiveButtonClicked = model::editStatus,
-            maxCharactersCount = 60,
-            hint = getString(R.string.new_status)
-        )
-    }
-
-    override fun onOpenChatButtonClick(userId: Int) {
-        findNavController().navigate(ProfileFragmentDirections.toChat(userId))
-    }
-
-    override fun onCreatePost(title: String?, text: String) {
-        //TODO("Not yet implemented")
-    }
-
-    override fun onProfileClick(userId: Int) {
-        if (model.userId != userId) {
-            findNavController().navigate(ProfileFragmentDirections.toProfile(userId))
-        }
-    }
-
-    override fun onImageClick(bitmap: Bitmap) {
-        findNavController().navigate(ProfileFragmentDirections.toImageViewer(imageBitmap = bitmap))
-    }
-
-    override fun onImageClick(imageUrl: String) {
-        findNavController().navigate(ProfileFragmentDirections.toImageViewer(imageUrl = imageUrl))
-    }
-
-    override fun onPostMenuClick(postId: Int) {
-        // TODO("open post menu")
-    }
-
-    override fun onCommentsClick(postId: Int) {
-        findNavController().navigate(ProfileFragmentDirections.toCommentsList(postId))
-    }
-
-    override fun onLikeClick(postId: Int) {
-        model.changeLike(postId)
-    }
-
-    override fun onLikeLongClick(postId: Int) {
-        findNavController().navigate(ProfileFragmentDirections.toLikesList(postId))
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        headerRecyclerAdapter.setProfileItemsListener(null)
-    }
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        headerRecyclerAdapter.setProfileItemsListener(this)
+//
+//        binding.profileRecyclerView.adapter =
+//            ConcatAdapter(headerRecyclerAdapter, feedRecyclerAdapter)
+//
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                model.user.collect { user ->
+//                    user?.let {
+//                        headerRecyclerAdapter.submitList(listOf(user))
+//                    }
+//                }
+//            }
+//        }
+//
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                model.posts.collect { posts ->
+//                    feedRecyclerAdapter.submitList(posts)
+//                }
+//            }
+//        }
+//    }
+//
+//    override fun onBackButtonClick() {
+//        findNavController().popBackStack()
+//    }
+//
+//    override fun onPreferencesButtonClick() {
+//        findNavController().navigate(ProfileFragmentDirections.profileToSettings())
+//    }
+//
+//    override fun onStatusClick() {
+//        EditTextDialog(
+//            context = requireContext(),
+//            title = getString(R.string.edit_status),
+//            text = model.user.value?.status,
+//            onPositiveButtonClicked = model::editStatus,
+//            maxCharactersCount = 60,
+//            hint = getString(R.string.new_status)
+//        )
+//    }
+//
+//    override fun onOpenChatButtonClick(userId: Int) {
+//        findNavController().navigate(ProfileFragmentDirections.toChat(userId))
+//    }
+//
+//    override fun onCreatePost(title: String?, text: String) {
+//        //TODO("Not yet implemented")
+//    }
+//
+//    override fun onProfileClick(userId: Int) {
+//        if (model.userId != userId) {
+//            findNavController().navigate(ProfileFragmentDirections.toProfile(userId))
+//        }
+//    }
+//
+//    override fun onImageClick(bitmap: Bitmap) {
+//        findNavController().navigate(ProfileFragmentDirections.toImageViewer(imageBitmap = bitmap))
+//    }
+//
+//    override fun onImageClick(imageUrl: String) {
+//        findNavController().navigate(ProfileFragmentDirections.toImageViewer(imageUrl = imageUrl))
+//    }
+//
+//    override fun onPostMenuClick(postId: Int) {
+//        // TODO("open post menu")
+//    }
+//
+//    override fun onCommentsClick(postId: Int) {
+//        findNavController().navigate(ProfileFragmentDirections.toCommentsList(postId))
+//    }
+//
+//    override fun onLikeClick(postId: Int) {
+//        model.changeLike(postId)
+//    }
+//
+//    override fun onLikeLongClick(postId: Int) {
+//        findNavController().navigate(ProfileFragmentDirections.toLikesList(postId))
+//    }
+//
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        headerRecyclerAdapter.setProfileItemsListener(null)
+//    }
 }
 //    , ProfileItemsListener {
 //

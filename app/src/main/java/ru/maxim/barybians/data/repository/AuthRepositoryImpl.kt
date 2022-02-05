@@ -9,7 +9,6 @@ import ru.maxim.barybians.data.network.response.ErrorResponse
 import ru.maxim.barybians.data.network.response.RegistrationResponse
 import ru.maxim.barybians.data.network.service.AuthService
 import ru.maxim.barybians.data.persistence.PreferencesManager
-import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.utils.NetworkUtils
 import ru.maxim.barybians.utils.isNotNull
 import timber.log.Timber
@@ -37,8 +36,7 @@ class AuthRepositoryImpl @Inject constructor(
                 with(preferencesManager) {
                     token = responseBody.token
                     userId = responseBody.user.id
-                    userName =
-                        User.getFullName(responseBody.user.firstName, responseBody.user.lastName)
+                    userName = "${responseBody.user.firstName} ${responseBody.user.lastName}"
                     userAvatar = responseBody.user.photo.orEmpty()
                 }
             } else {
