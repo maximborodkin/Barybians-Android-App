@@ -1,5 +1,6 @@
 package ru.maxim.barybians.data.repository
 
+import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.network.service.UserService
 import ru.maxim.barybians.domain.model.User
 import javax.inject.Inject

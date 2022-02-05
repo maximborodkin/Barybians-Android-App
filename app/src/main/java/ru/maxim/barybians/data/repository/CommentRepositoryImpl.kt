@@ -1,5 +1,6 @@
 package ru.maxim.barybians.data.repository
 
+import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.network.service.CommentService
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.persistence.PreferencesManager

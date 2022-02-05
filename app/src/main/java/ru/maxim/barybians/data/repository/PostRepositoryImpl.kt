@@ -3,6 +3,7 @@ package ru.maxim.barybians.data.repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.network.service.UserService
 import ru.maxim.barybians.data.persistence.PreferencesManager

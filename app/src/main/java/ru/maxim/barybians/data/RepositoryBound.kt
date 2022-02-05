@@ -1,4 +1,4 @@
-package ru.maxim.barybians.data.repository
+package ru.maxim.barybians.data
 
 import dagger.Reusable
 import kotlinx.coroutines.Dispatchers.IO

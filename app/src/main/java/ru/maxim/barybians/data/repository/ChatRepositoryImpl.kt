@@ -1,5 +1,6 @@
 package ru.maxim.barybians.data.repository
 
+import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.network.response.ChatResponse
 import ru.maxim.barybians.data.network.response.SendMessageResponse
 import ru.maxim.barybians.data.network.service.ChatService
