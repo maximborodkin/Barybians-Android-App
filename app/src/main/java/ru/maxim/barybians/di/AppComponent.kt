@@ -10,9 +10,9 @@ import ru.maxim.barybians.App
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.data.repository.*
-import ru.maxim.barybians.ui.activity.auth.login.LoginFragment
+import ru.maxim.barybians.ui.fragment.login.LoginFragment
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationFragment
-import ru.maxim.barybians.ui.activity.main.MainActivity
+import ru.maxim.barybians.ui.MainActivity
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
 import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment

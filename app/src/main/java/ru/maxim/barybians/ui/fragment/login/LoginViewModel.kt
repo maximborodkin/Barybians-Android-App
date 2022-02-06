@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.activity.auth.login
+package ru.maxim.barybians.ui.fragment.login
 
 import android.app.Application
 import androidx.lifecycle.*
