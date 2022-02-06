@@ -44,7 +44,7 @@
                 android:layout_marginVertical="30dp"
                 android:text="@{errorMessage}"
                 android:textAlignment="center"
-                android:textColor="@color/light_colorSecondaryDark"
+                android:textColor="@color/colorOnPrimary"
                 android:textSize="18sp"
                 tools:text="Network error" />
 

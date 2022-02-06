@@ -7,7 +7,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragmentPostEditorTitleLayout"
-        style="?postTitleLayoutStyle"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/title"
@@ -28,7 +28,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragmentPostEditorTextLayout"
-        style="?postTextLayoutStyle"
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"

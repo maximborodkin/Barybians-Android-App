@@ -14,7 +14,6 @@
             android:id="@+id/feedRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?recyclerViewBackground"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"

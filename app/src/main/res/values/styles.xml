@@ -47,7 +47,7 @@
     </style>
 
     <style name="LightTheme.AccentText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/light_colorPrimaryText</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
     </style>
 
     <style name="LightTheme.CommentEditText" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -78,45 +78,45 @@
     </style>
 
     <style name="DarkTheme.AccentText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/dark_colorPrimaryText</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
     </style>
 
     <style name="DarkTheme.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/dark_colorPrimaryText</item>
+        <item name="android:textColor">@color/colorOnPrimary</item>
         <item name="background">@color/transparent</item>
     </style>
 
-    <style name="DarkTheme.AlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-        <item name="android:colorBackground">@color/colorPrimary</item>
-        <item name="textColorAlertDialogListItem">@color/dark_colorPrimaryText</item>
-        <item name="android:textColor">@color/dark_colorPrimaryText</item>
-        <item name="colorControlNormal">@color/dark_colorTertiaryText</item>
-        <item name="colorAccent">@color/dark_colorSecondary</item>
-    </style>
+<!--    <style name="DarkTheme.AlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">-->
+<!--        <item name="android:colorBackground">@color/colorPrimary</item>-->
+<!--        <item name="textColorAlertDialogListItem">@color/dark_colorPrimaryText</item>-->
+<!--        <item name="android:textColor">@color/dark_colorPrimaryText</item>-->
+<!--        <item name="colorControlNormal">@color/dark_colorTertiaryText</item>-->
+<!--        <item name="colorAccent">@color/dark_colorSecondary</item>-->
+<!--    </style>-->
 
-    <style name="DarkTheme.MaterialAlertDialog.TitleTextStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textColor">@color/dark_colorPrimaryText</item>
-    </style>
+<!--    <style name="DarkTheme.MaterialAlertDialog.TitleTextStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">-->
+<!--        <item name="android:textColor">@color/dark_colorPrimaryText</item>-->
+<!--    </style>-->
 
-    <style name="DarkTheme.MaterialCardView" parent="CardView.Dark">
-        <item name="cardBackgroundColor">@color/colorPrimary</item>
-    </style>
+<!--    <style name="DarkTheme.MaterialCardView" parent="CardView.Dark">-->
+<!--        <item name="cardBackgroundColor">@color/colorPrimary</item>-->
+<!--    </style>-->
 
-    <style name="DarkTheme.BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
-        <item name="android:background">@color/dark_colorPrimaryLight</item>
-    </style>
+<!--    <style name="DarkTheme.BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView.Colored">-->
+<!--        <item name="android:background">@color/dark_colorPrimaryLight</item>-->
+<!--    </style>-->
 
-    <style name="DarkTheme.BottomSheet" parent="Theme.MaterialComponents.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/BottomSheetShape</item>
-<!--        <item name="android:windowAnimationStyle">@style/Animation.MaterialComponents.BottomSheetDialog</item>-->
-    </style>
+<!--    <style name="DarkTheme.BottomSheet" parent="Theme.MaterialComponents.BottomSheetDialog">-->
+<!--        <item name="bottomSheetStyle">@style/BottomSheetShape</item>-->
+<!--&lt;!&ndash;        <item name="android:windowAnimationStyle">@style/Animation.MaterialComponents.BottomSheetDialog</item>&ndash;&gt;-->
+<!--    </style>-->
 
-    <style name="DarkTheme.CommentEditText" parent="LightTheme.CommentEditText">
-        <item name="colorControlNormal">@color/dark_colorSecondary</item>
-        <item name="colorControlActivated">@color/dark_colorSecondary</item>
-        <item name="colorControlHighlight">@color/dark_colorSecondary</item>
-        <item name="android:textColor">@color/dark_colorPrimaryText</item>
-        <item name="android:textColorHint">@color/dark_colorTertiaryText</item>
-    </style>
+<!--    <style name="DarkTheme.CommentEditText" parent="LightTheme.CommentEditText">-->
+<!--        <item name="colorControlNormal">@color/dark_colorSecondary</item>-->
+<!--        <item name="colorControlActivated">@color/dark_colorSecondary</item>-->
+<!--        <item name="colorControlHighlight">@color/dark_colorSecondary</item>-->
+<!--        <item name="android:textColor">@color/dark_colorPrimaryText</item>-->
+<!--        <item name="android:textColorHint">@color/dark_colorTertiaryText</item>-->
+<!--    </style>-->
 
 </resources>
