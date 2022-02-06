@@ -1,21 +1,35 @@
 package ru.maxim.barybians.ui.activity.auth.registration
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.network.exception.AlreadyExistsException
+import ru.maxim.barybians.data.network.exception.BadRequestException
+import ru.maxim.barybians.data.network.exception.NoConnectionException
+import ru.maxim.barybians.data.network.exception.TimeoutException
+import ru.maxim.barybians.data.repository.AuthRepository
 import ru.maxim.barybians.utils.isNull
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
+import javax.inject.Inject
 
-class RegistrationViewModel : ViewModel() {
+class RegistrationViewModel @Inject constructor(
+    application: Application,
+    private val authRepository: AuthRepository
+) : AndroidViewModel(application) {
     // Turning to true when the registration button was pressed
     // and to false when the user starts editing data in fields
     private val isErrorsShown = MutableLiveData(false)
     private val uiDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    private val _errorMessageRes = MutableLiveData<Int?>()
+    val errorMessageRes: LiveData<Int?> = _errorMessageRes
+
+    private val _isRegistrationSuccess = MutableLiveData(false)
+    val isRegistrationSuccess: LiveData<Boolean> = _isRegistrationSuccess
 
     val firstName = MutableLiveData(String())
     val lastName = MutableLiveData(String())
@@ -123,7 +137,7 @@ class RegistrationViewModel : ViewModel() {
     }
     val repeatPasswordMessage: LiveData<Int?> = _repeatPasswordMessage
 
-    fun validateFields(): Boolean {
+    private fun validateFields(): Boolean {
         isErrorsShown.postValue(true)
 
         return firstNameMessage.value.isNull() &&
@@ -132,5 +146,42 @@ class RegistrationViewModel : ViewModel() {
                 loginMessage.value.isNull() &&
                 passwordMessage.value.isNull() &&
                 repeatPasswordMessage.value.isNull()
+    }
+
+    fun register() = viewModelScope.launch {
+        try {
+            if (validateFields()) {
+                authRepository.register(
+                    firstName = requireNotNull(firstName.value).trim(),
+                    lastName = requireNotNull(lastName.value).trim(),
+                    birthDate = requireNotNull(birthDateApiString.value),
+                    sex = sex.value == true,
+                    login = requireNotNull(login.value).trim(),
+                    password = requireNotNull(password.value).trim()
+                )
+                _isRegistrationSuccess.postValue(true)
+            }
+        } catch (e: Exception) {
+            when (e) {
+                is NoConnectionException -> _errorMessageRes.postValue(R.string.no_internet_connection)
+                is AlreadyExistsException -> _errorMessageRes.postValue(R.string.login_already_exists)
+                is BadRequestException -> _errorMessageRes.postValue(R.string.invalid_registration_data)
+                is TimeoutException -> _errorMessageRes.postValue(R.string.request_timeout)
+                else -> _errorMessageRes.postValue(R.string.common_network_error)
+            }
+        }
+    }
+
+    class RegistrationViewModelFactory @Inject constructor(
+        private val application: Application,
+        private val authRepository: AuthRepository
+    ) : ViewModelProvider.AndroidViewModelFactory(application) {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return RegistrationViewModel(application, authRepository) as T
+            }
+            throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
+        }
     }
 }

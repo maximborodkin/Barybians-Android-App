@@ -62,7 +62,6 @@ class AuthRepositoryImpl @Inject constructor(
     ) = withContext(IO) {
         try {
             if (!networkUtils.networkStateChangeListener.value) throw NoConnectionException()
-            Timber.d(birthDate)
             val registerResponse = authService.register(
                 firstName,
                 lastName,

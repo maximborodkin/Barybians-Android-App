@@ -14,37 +14,34 @@
     <color name="send_btn_color">#448AFF</color>
     <color name="like_color">#B0003A</color>
     <color name="delete_swipe_background">#C62828</color>
-    <color name="seed">#448AFF</color>
-    <color name="error">#BA1B1B</color>
 
     <!--  Light Theme  -->
-    <color name="colorPrimary">#005AC5</color>
+    <color name="colorPrimary">#6750A4</color>
     <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorPrimaryContainer">#D6E2FF</color>
-    <color name="colorOnPrimaryContainer">#001A43</color>
-    <color name="colorSecondary">#575E71</color>
+    <color name="colorPrimaryContainer">#EADDFF</color>
+    <color name="colorOnPrimaryContainer">#21005D</color>
+    <color name="colorSecondary">#625B71</color>
     <color name="colorOnSecondary">#FFFFFF</color>
-    <color name="colorSecondaryContainer">#DBE2F9</color>
-    <color name="colorOnSecondaryContainer">#141B2C</color>
-    <color name="colorTertiary">#715573</color>
+    <color name="colorSecondaryContainer">#E8DEF8</color>
+    <color name="colorOnSecondaryContainer">#1D192B</color>
+    <color name="colorTertiary">#7D5260</color>
     <color name="colorOnTertiary">#FFFFFF</color>
-    <color name="colorTertiaryContainer">#FBD7FB</color>
-    <color name="colorOnTertiaryContainer">#29132D</color>
-    <color name="colorError">#BA1B1B</color>
-    <color name="colorErrorContainer">#FFDAD4</color>
+    <color name="colorTertiaryContainer">#FFD8E4</color>
+    <color name="colorOnTertiaryContainer">#31111D</color>
+    <color name="colorError">#B3261E</color>
+    <color name="colorErrorContainer">#F9DEDC</color>
     <color name="colorOnError">#FFFFFF</color>
-    <color name="colorOnErrorContainer">#410001</color>
-    <color name="colorBackground">#FDFBFF</color>
-    <color name="colorOnBackground">#1B1B1E</color>
-    <color name="colorSurface">#FDFBFF</color>
-    <color name="colorOnSurface">#1B1B1E</color>
-    <color name="colorSurfaceVariant">#E1E2EC</color>
-    <color name="colorOnSurfaceVariant">#44474F</color>
-    <color name="colorOutline">#74777F</color>
-    <color name="colorInverseOnSurface">#F2F0F4</color>
-    <color name="colorInverseSurface">#303033</color>
-    <color name="colorPrimaryInverse">#ACC6FF</color>
-
+    <color name="colorOnErrorContainer">#410E0B</color>
+    <color name="colorBackground">#FFFBFE</color>
+    <color name="colorOnBackground">#1C1B1F</color>
+    <color name="colorSurface">#FFFBFE</color>
+    <color name="colorOnSurface">#1C1B1F</color>
+    <color name="colorSurfaceVariant">#E7E0EC</color>
+    <color name="colorOnSurfaceVariant">#49454F</color>
+    <color name="colorOutline">#79747E</color>
+    <color name="colorInverseOnSurface">#F4EFF4</color>
+    <color name="colorInverseSurface">#313033</color>
+    <color name="colorPrimaryInverse">#D0BCFF</color>
 
 
     <!--    <color name="light_colorPrimaryLight">#83B9FF</color>-->

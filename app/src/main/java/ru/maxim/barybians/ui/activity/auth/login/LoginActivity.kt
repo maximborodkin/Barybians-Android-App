@@ -10,7 +10,6 @@ import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.ActivityLoginBinding
-import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.utils.*
 import javax.inject.Inject
@@ -53,7 +52,7 @@ class LoginActivity : MvpAppCompatActivity(R.layout.activity_login), LoginView {
             loginPassword.doAfterTextChanged { passwordMessage = null }
 
             loginRegisterLink.setOnClickListener {
-                startActivity(Intent(this@LoginActivity, RegistrationActivity::class.java))
+                //startActivity(Intent(this@LoginActivity, RegistrationActivity::class.java))
             }
         }
     }

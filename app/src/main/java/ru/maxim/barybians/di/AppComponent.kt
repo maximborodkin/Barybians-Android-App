@@ -11,7 +11,7 @@ import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.data.repository.*
 import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
-import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
+import ru.maxim.barybians.ui.activity.auth.registration.RegistrationFragment
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
 import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
@@ -49,7 +49,7 @@ interface AppComponent {
     fun inject(chatFragment: ChatFragment)
     fun inject(chatsListFragment: ChatsListFragment)
     fun inject(feedFragment: FeedFragment)
-    fun inject(registrationActivity: RegistrationActivity)
+    fun inject(registrationFragment: RegistrationFragment)
     fun inject(profileFragment: ProfileFragment)
     fun inject(stickersPickerDialog: StickersPickerDialog)
     fun inject(preferencesFragment: PreferencesFragment)

@@ -19,7 +19,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
         android:fillViewport="true">
 
         <LinearLayout
@@ -29,54 +28,49 @@
             android:paddingHorizontal="48dp"
             android:paddingVertical="56dp">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/log_in"
                 android:textAlignment="center"
-                android:textColor="@color/white"
                 android:textSize="28sp" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="30dp"
                 android:text="@{errorMessage}"
                 android:textAlignment="center"
-                android:textColor="@color/colorOnPrimary"
+                android:textColor="@color/colorError"
                 android:textSize="18sp"
                 tools:text="Network error" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/loginLoginLayout"
-                style="@style/WhiteEditTextLayout"
+                app:errorText="@{loginMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login"
-                app:endIconMode="clear_text"
-                errorText="@{loginMessage}">
+                app:endIconMode="clear_text">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/loginLogin"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/loginPasswordLayout"
-                style="@style/WhiteEditTextLayout"
+                app:errorText="@{passwordMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="@string/password"
-                app:endIconMode="password_toggle"
-                errorText="@{passwordMessage}">
+                app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/loginPassword"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword" />
@@ -84,21 +78,20 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginBtn"
-                style="@style/WhiteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="48dp"
-                android:textSize="14sp"
-                android:text="@string/login" />
+                android:text="@string/login"
+                android:textSize="14sp" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/loginRegisterLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,7 +99,6 @@
                 android:padding="8dp"
                 android:text="@string/haven_t_account_register_now"
                 android:textAlignment="center"
-                android:textColor="@color/white"
                 android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>
