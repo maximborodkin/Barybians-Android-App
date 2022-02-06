@@ -1,6 +1,8 @@
 package ru.maxim.barybians.ui.fragment.chatsList
 
+import android.app.TaskStackBuilder
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -12,10 +14,12 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatsListBinding
 import ru.maxim.barybians.domain.model.Chat
+import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 import javax.inject.Provider
+
 
 class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), ChatsListView {
 
@@ -29,17 +33,17 @@ class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), Ch
     private val binding by viewBinding(FragmentChatsListBinding::bind)
 
     override fun onAttach(context: Context) {
-        super.onAttach(context)
         context.appComponent.inject(this)
+        super.onAttach(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
-            chatsListRefreshLayout.setOnRefreshListener {
-                dialogsListPresenter.loadDialogsList()
-            }
+            chatsListRefreshLayout.setOnRefreshListener(dialogsListPresenter::loadDialogsList)
             chatsListAddNewBtn.setOnClickListener {
+                preferencesManager.isDarkMode = !preferencesManager.isDarkMode
+                activity?.recreate()
                 context?.toast("Create chat dialog #NotImplemented")
                 // TODO: Add chat creation dialog
             }

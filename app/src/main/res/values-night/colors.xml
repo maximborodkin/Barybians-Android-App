@@ -17,7 +17,6 @@
 
 <!--  Light Theme  -->
     <color name="light_colorPrimaryLight">#83B9FF</color>
-    <color name="light_colorPrimary">#448AFF</color>
     <color name="light_colorPrimaryDark">#18459C</color>
     <color name="light_colorPrimaryText">#000000</color>
     <color name="light_colorSecondaryLight">#FF6090</color>
@@ -31,7 +30,7 @@
 
 <!--  Dark Theme  -->
     <color name="dark_colorPrimaryLight">#121212</color>
-    <color name="dark_colorPrimary">#1E1E1E</color>
+    <color name="colorPrimary">#1E1E1E</color>
     <color name="dark_colorPrimaryDark">#000000</color>
     <color name="dark_colorPrimaryText">#FFFFFF</color>
     <color name="dark_colorSecondaryLight">#4f5b62</color>

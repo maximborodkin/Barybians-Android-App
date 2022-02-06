@@ -2,72 +2,72 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="colorPrimary">#FFFFFF</item>
-        <item name="colorOnPrimary">#000000</item>
-<!--        <item name="colorPrimary">@color/light_colorPrimary</item>-->
-<!--        <item name="colorPrimaryDark">@color/light_colorPrimaryDark</item>-->
-<!--        <item name="android:textColorPrimary">@color/light_colorPrimaryText</item>-->
-<!--        <item name="colorSecondary">@color/light_colorSecondary</item>-->
-<!--        <item name="colorAccent">@color/light_colorSecondary</item>-->
-<!--        <item name="android:textColorSecondary">@color/light_colorSecondaryText</item>-->
-<!--        <item name="bottomSheetDialogTheme">@style/LightTheme.BottomSheet</item>-->
-<!--        <item name="android:textColorTertiary">@color/light_colorTertiaryText</item>-->
-<!--        <item name="materialAlertDialogTheme">@style/LightTheme.MaterialAlertDialog</item>-->
-<!--        <item name="profileHeaderStyle">@style/LightTheme.TopRoundedCard</item>-->
-<!--        <item name="accentTextStyle">@style/LightTheme.AccentText</item>-->
-<!--        <item name="recyclerViewBackground">@color/light_recyclerBackgroundColor</item>-->
-<!--        <item name="postTitleLayoutStyle">@style/LightTheme.PostTitleLayout</item>-->
-<!--        <item name="postTitleInputStyle">@null</item>-->
-<!--        <item name="postTextLayoutStyle">@style/LightTheme.PostTextLayout</item>-->
-<!--        <item name="postTextInputStyle">@null</item>-->
-<!--        <item name="textButtonStyle">@style/Widget.MaterialComponents.Button.TextButton</item>-->
-<!--        <item name="commentInputStyle">@style/LightTheme.CommentEditText</item>-->
-<!--        <item name="cardBackground">@color/white</item>-->
-<!--        <item name="incomingMessageBackgroundColor">@color/light_incoming_message_background</item>-->
-<!--        <item name="outgoingMessageBackgroundColor">@color/light_outgoing_message_background</item>-->
+<!--        <item name="colorPrimary">#FFFFFF</item>-->
+<!--        <item name="colorOnPrimary">#000000</item>-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/light_colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/light_colorPrimaryText</item>
+        <item name="colorSecondary">@color/light_colorSecondary</item>
+        <item name="colorAccent">@color/light_colorSecondary</item>
+        <item name="android:textColorSecondary">@color/light_colorSecondaryText</item>
+        <item name="bottomSheetDialogTheme">@style/LightTheme.BottomSheet</item>
+        <item name="android:textColorTertiary">@color/light_colorTertiaryText</item>
+        <item name="materialAlertDialogTheme">@style/LightTheme.MaterialAlertDialog</item>
+        <item name="profileHeaderStyle">@style/LightTheme.TopRoundedCard</item>
+        <item name="accentTextStyle">@style/LightTheme.AccentText</item>
+        <item name="recyclerViewBackground">@color/light_recyclerBackgroundColor</item>
+        <item name="postTitleLayoutStyle">@style/LightTheme.PostTitleLayout</item>
+        <item name="postTitleInputStyle">@null</item>
+        <item name="postTextLayoutStyle">@style/LightTheme.PostTextLayout</item>
+        <item name="postTextInputStyle">@null</item>
+        <item name="textButtonStyle">@style/Widget.MaterialComponents.Button.TextButton</item>
+        <item name="commentInputStyle">@style/LightTheme.CommentEditText</item>
+        <item name="cardBackground">@color/colorPrimary</item>
+        <item name="incomingMessageBackgroundColor">@color/light_incoming_message_background</item>
+        <item name="outgoingMessageBackgroundColor">@color/light_outgoing_message_background</item>
 
 
     </style>
 
     <style name="LightTheme.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="colorPrimary">@color/light_colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorSecondary">@color/light_colorSecondary</item>
     </style>
 
-<!--  Dark Theme  -->
-    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorPrimary">@color/dark_colorPrimary</item>
-        <item name="colorPrimaryDark">@color/dark_colorPrimaryDark</item>
-        <item name="android:textColorPrimary">@color/dark_colorPrimaryText</item>
-        <item name="colorSecondary">@color/dark_colorSecondary</item>
-        <item name="colorAccent">@color/dark_colorSecondary</item>
-        <item name="android:textColorSecondary">@color/dark_colorSecondaryText</item>
-        <item name="android:textColorTertiary">@color/dark_colorTertiaryText</item>
-        <item name="android:windowBackground">@color/dark_colorPrimaryLight</item>
-        <item name="android:colorBackground">@color/dark_colorPrimaryLight</item>
-        <item name="alertDialogTheme">@style/DarkTheme.AlertDialog</item>
-        <item name="materialAlertDialogTheme">@style/DarkTheme.MaterialAlertDialog</item>
-        <item name="materialCardViewStyle">@style/DarkTheme.MaterialCardView</item>
-        <item name="profileHeaderStyle">@style/DarkTheme.TopRoundedCard</item>
-        <item name="accentTextStyle">@style/DarkTheme.AccentText</item>
-        <item name="bottomNavigationStyle">@style/DarkTheme.BottomNavigation</item>
-        <item name="recyclerViewBackground">@color/dark_recyclerBackgroundColor</item>
-        <item name="postTitleLayoutStyle">@style/WhiteEditTextLayout</item>
-        <item name="postTitleInputStyle">@style/WhiteEditText</item>
-        <item name="postTextLayoutStyle">@style/WhiteEditTextLayout</item>
-        <item name="postTextInputStyle">@style/WhiteEditText</item>
-        <item name="textButtonStyle">@style/DarkTheme.TextButton</item>
-        <item name="bottomSheetDialogTheme">@style/DarkTheme.BottomSheet</item>
-        <item name="commentInputStyle">@style/DarkTheme.CommentEditText</item>
-        <item name="cardBackground">@color/dark_colorPrimary</item>
-        <item name="incomingMessageBackgroundColor">@color/dark_incoming_message_background</item>
-        <item name="outgoingMessageBackgroundColor">@color/dark_outgoing_message_background</item>
-    </style>
+<!--&lt;!&ndash;  Dark Theme  &ndash;&gt;-->
+<!--    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">-->
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/dark_colorPrimaryDark</item>-->
+<!--        <item name="android:textColorPrimary">@color/dark_colorPrimaryText</item>-->
+<!--        <item name="colorSecondary">@color/dark_colorSecondary</item>-->
+<!--        <item name="colorAccent">@color/dark_colorSecondary</item>-->
+<!--        <item name="android:textColorSecondary">@color/dark_colorSecondaryText</item>-->
+<!--        <item name="android:textColorTertiary">@color/dark_colorTertiaryText</item>-->
+<!--        <item name="android:windowBackground">@color/dark_colorPrimaryLight</item>-->
+<!--        <item name="android:colorBackground">@color/dark_colorPrimaryLight</item>-->
+<!--        <item name="alertDialogTheme">@style/DarkTheme.AlertDialog</item>-->
+<!--        <item name="materialAlertDialogTheme">@style/DarkTheme.MaterialAlertDialog</item>-->
+<!--        <item name="materialCardViewStyle">@style/DarkTheme.MaterialCardView</item>-->
+<!--        <item name="profileHeaderStyle">@style/DarkTheme.TopRoundedCard</item>-->
+<!--        <item name="accentTextStyle">@style/DarkTheme.AccentText</item>-->
+<!--        <item name="bottomNavigationStyle">@style/DarkTheme.BottomNavigation</item>-->
+<!--        <item name="recyclerViewBackground">@color/dark_recyclerBackgroundColor</item>-->
+<!--        <item name="postTitleLayoutStyle">@style/WhiteEditTextLayout</item>-->
+<!--        <item name="postTitleInputStyle">@style/WhiteEditText</item>-->
+<!--        <item name="postTextLayoutStyle">@style/WhiteEditTextLayout</item>-->
+<!--        <item name="postTextInputStyle">@style/WhiteEditText</item>-->
+<!--        <item name="textButtonStyle">@style/DarkTheme.TextButton</item>-->
+<!--        <item name="bottomSheetDialogTheme">@style/DarkTheme.BottomSheet</item>-->
+<!--        <item name="commentInputStyle">@style/DarkTheme.CommentEditText</item>-->
+<!--        <item name="cardBackground">@color/colorPrimary</item>-->
+<!--        <item name="incomingMessageBackgroundColor">@color/dark_incoming_message_background</item>-->
+<!--        <item name="outgoingMessageBackgroundColor">@color/dark_outgoing_message_background</item>-->
+<!--    </style>-->
 
-    <style name="DarkTheme.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="android:background">@color/dark_colorPrimary</item>
-        <item name="colorPrimary">@color/dark_colorSecondary</item>
-        <item name="materialAlertDialogTitleTextStyle">@style/DarkTheme.MaterialAlertDialog.TitleTextStyle</item>
-    </style>
+<!--    <style name="DarkTheme.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">-->
+<!--        <item name="android:background">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimary">@color/dark_colorSecondary</item>-->
+<!--        <item name="materialAlertDialogTitleTextStyle">@style/DarkTheme.MaterialAlertDialog.TitleTextStyle</item>-->
+<!--    </style>-->
 
 </resources>
