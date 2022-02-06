@@ -12,5 +12,5 @@ interface AuthRepository {
         password: String
     )
 
-    suspend fun logout()
+    fun logout()
 }

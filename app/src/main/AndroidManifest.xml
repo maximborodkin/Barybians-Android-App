@@ -10,13 +10,12 @@
     <application
         android:name="ru.maxim.barybians.App"
         android:allowBackup="true"
-        android:fullBackupContent="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/LightTheme">
+        android:theme="@style/AppTheme">
 
         <activity
             android:name="ru.maxim.barybians.ui.activity.main.MainActivity"

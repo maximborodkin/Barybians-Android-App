@@ -4,47 +4,13 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:title="@string/general" />
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:title="@string/notifications">
-
-        <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:iconSpaceReserved="false"
-            app:key="@string/enable_notifications_service_preference"
-            app:singleLineTitle="false"
-            app:summary="@string/enable_notifications_service_summary"
-            app:title="@string/enable_background_notifications_service" />
-
-        <MultiSelectListPreference
-            app:dependency="@string/enable_notifications_service_preference"
-            app:entries="@array/notification_effects_entries"
-            app:entryValues="@array/notification_effects_values"
-            app:iconSpaceReserved="false"
-            app:key="@string/notification_sound_effect_preference"
-            app:title="@string/notifications_sound_effects" />
-
-        <Preference
-            app:dependency="@string/enable_notifications_service_preference"
-            app:iconSpaceReserved="false"
-            app:key="@string/clear_notifications_pool_preference"
-            app:title="@string/clear_notification_pool" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
         app:title="@string/theme">
 
-        <ListPreference
-            app:defaultValue="@string/theme_light"
-            app:entries="@array/themes_entries"
-            app:entryValues="@array/themes_values"
+        <SwitchPreference
+            app:defaultValue="false"
             app:iconSpaceReserved="false"
-            app:key="@string/theme_preference"
-            app:title="@string/theme"
-            tools:summary="Light" />
+            app:key="dark_mode"
+            app:title="@string/dark_mode" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -53,12 +19,12 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="@string/clear_cache_preference"
+            app:key="clear_cache"
             app:title="@string/clear_cache" />
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="@string/logout_preference"
+            app:key="logout"
             app:title="@string/logout" />
     </PreferenceCategory>
 
@@ -68,7 +34,7 @@
 
         <Preference
             app:iconSpaceReserved="false"
-            app:key="@string/build_version_preference"
+            app:key="build_version"
             app:title="@string/build_version"
             tools:summary="1.0.0" />
     </PreferenceCategory>

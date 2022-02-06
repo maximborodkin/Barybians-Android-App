@@ -101,14 +101,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun logout() {
+    override fun logout() {
         preferencesManager.userId = 0
         preferencesManager.token = null
     }
 
     companion object {
         private const val logTag = "AuthRepository"
-
         private const val defaultAvatarUrl = "min/j.png"
     }
 }
