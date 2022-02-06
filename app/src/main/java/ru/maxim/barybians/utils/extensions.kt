@@ -67,7 +67,7 @@ fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnai
         placeholder != null -> requestBuilder.placeholder(placeholder)
         else -> {
             requestBuilder.placeholder(CircularProgressDrawable(context).apply {
-                setColorSchemeColors(ContextCompat.getColor(context, R.color.color_on_primary))
+                setColorSchemeColors(ContextCompat.getColor(context, R.color.colorOnPrimary))
                 strokeWidth = 3F
                 centerRadius = 64F
                 start()

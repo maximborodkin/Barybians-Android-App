@@ -32,7 +32,7 @@
                 android:id="@+id/chatBackBtn"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_arrow_back_white"
+                android:src="@drawable/ic_back"
                 android:tint="@color/grey"
                 android:padding="12dp" />
 

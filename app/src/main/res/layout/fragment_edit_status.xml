@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/fragmentEditStatusTitle"
-        style="?accentTextStyle"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -27,7 +27,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragmentEditStatusCancelBtn"
-        style="?textButtonStyle"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragmentEditStatusText"
@@ -36,7 +36,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragmentEditStatusOkBtn"
-        style="?textButtonStyle"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragmentEditStatusText"

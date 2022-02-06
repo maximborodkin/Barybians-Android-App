@@ -3,5 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <size android:width="64dp" android:height="64dp"/>
-    <solid android:color="@color/light_grey"/>
+    <solid android:color="@color/grey"/>
 </shape>

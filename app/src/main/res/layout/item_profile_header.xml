@@ -10,7 +10,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:background="?recyclerViewBackground"
+
     tools:layout_height="match_parent">
 
     <ru.maxim.barybians.ui.view.ProfileBackgroundView
@@ -34,7 +34,7 @@
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_back_white" />
+        app:srcCompat="@drawable/ic_back" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/itemProfileHeaderEditButton"
@@ -56,7 +56,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/itemProfileHeaderCardBackground"
-        style="?profileHeaderStyle"
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="102dp"
@@ -68,7 +68,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/itemProfileHeaderName"
-        style="?accentTextStyle"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -95,7 +95,7 @@
 
     <TextView
         android:id="@+id/itemProfileHeaderStatus"
-        style="?accentTextStyle"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -110,7 +110,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/itemProfileHeaderChatBtn"
-        style="?textButtonStyle"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

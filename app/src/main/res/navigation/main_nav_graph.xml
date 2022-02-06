@@ -6,6 +6,32 @@
     app:startDestination="@id/feedFragment">
 
     <fragment
+        android:id="@+id/loginFragment"
+        android:name="ru.maxim.barybians.ui.activity.auth.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/loginToFeed"
+            app:destination="@id/feedFragment" />
+
+        <action
+            android:id="@+id/loginToRegistration"
+            app:destination="@id/registrationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="ru.maxim.barybians.ui.activity.auth.registration.RegistrationFragment"
+        android:label="RegistrationFragment"
+        tools:layout="@layout/fragment_registration">
+
+        <action
+            android:id="@+id/registrationToFeed"
+            app:destination="@id/feedFragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/feedFragment"
         android:name="ru.maxim.barybians.ui.fragment.feed.FeedFragment"
         android:label="FeedFragment"

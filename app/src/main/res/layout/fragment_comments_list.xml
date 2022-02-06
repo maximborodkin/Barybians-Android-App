@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="kotlin.text.StringsKt" />
+
         <import type="android.view.View" />
 
         <variable
@@ -19,10 +21,9 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="48dp"
+            app:layout_constraintBottom_toTopOf="@id/commentsListTextEditor"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -82,13 +83,13 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/commentsListTextEditor"
-            style="?commentInputStyle"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:focusableInTouchMode="true"
             android:hint="@string/add_comment"
-            android:maxLines="3"
+            android:maxLines="8"
+            android:minHeight="48dp"
             android:text="@={viewModel.commentText}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/commentsListSendBtn"

@@ -5,6 +5,7 @@
     tools:context=".ui.activity.auth.registration.RegistrationActivity">
 
     <data>
+
         <variable
             name="viewModel"
             type="ru.maxim.barybians.ui.activity.auth.registration.RegistrationViewModel" />
@@ -13,7 +14,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_colorPrimary"
         android:fillViewport="true">
 
         <LinearLayout
@@ -29,31 +29,28 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:padding="12dp"
-                app:srcCompat="@drawable/ic_arrow_back_white" />
+                app:srcCompat="@drawable/ic_back" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
                 android:text="@string/registration"
                 android:textAlignment="center"
-                android:textColor="@color/white"
                 android:textSize="28sp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationFirstNameLayout"
-                style="@style/WhiteEditTextLayout"
-                errorText="@{viewModel.firstNameMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="48dp"
                 android:hint="@string/first_name"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:errorText="@{viewModel.firstNameMessage}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationFirstName"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@={viewModel.firstName}" />
@@ -61,18 +58,16 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationLastNameLayout"
-                style="@style/WhiteEditTextLayout"
-                errorText="@{viewModel.lastNameMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/last_name"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:errorText="@{viewModel.lastNameMessage}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationLastName"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@={viewModel.lastName}" />
@@ -80,18 +75,16 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationBirthDateLayout"
-                style="@style/WhiteEditTextLayout"
-                errorText="@{viewModel.birthDateMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/birth_date"
-                app:endIconMode="clear_text">
+                app:endIconMode="clear_text"
+                app:errorText="@{viewModel.birthDateMessage}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationBirthDate"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusableInTouchMode="false"
@@ -106,12 +99,11 @@
                 android:orientation="horizontal"
                 android:weightSum="3">
 
-                <TextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/sex"
-                    android:textColor="@color/white"
                     android:textSize="18sp" />
 
                 <Space
@@ -123,8 +115,9 @@
                     android:id="@+id/registrationMaleBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@{viewModel.sex ? @drawable/ic_male_unselected : @drawable/ic_male_selected}"
-                    tools:src="@drawable/ic_male_selected" />
+                    android:alpha="@{viewModel.sex ? 0.5F : 1F}"
+                    android:src="@drawable/ic_male"
+                    tools:src="@drawable/ic_male" />
 
                 <Space
                     android:layout_width="wrap_content"
@@ -135,13 +128,13 @@
                     android:id="@+id/registrationFemaleBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@{viewModel.sex ? @drawable/ic_female_selected : @drawable/ic_female_unselected}"
-                    tools:src="@drawable/ic_female_unselected" />
+                    android:alpha="@{viewModel.sex ? 1F : 0.5F}"
+                    android:src="@drawable/ic_female"
+                    tools:alpha="0.5" />
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationLoginLayout"
-                style="@style/WhiteEditTextLayout"
                 errorText="@{viewModel.loginMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,7 +145,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationLogin"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@={viewModel.login}" />
@@ -160,7 +152,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationPasswordLayout"
-                style="@style/WhiteEditTextLayout"
                 errorText="@{viewModel.passwordMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -171,7 +162,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationPassword"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
@@ -180,7 +170,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationPasswordRepeatLayout"
-                style="@style/WhiteEditTextLayout"
                 errorText="@{viewModel.repeatPasswordMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -191,7 +180,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationPasswordRepeat"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
@@ -200,7 +188,6 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/registrationBtn"
-                style="@style/WhiteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

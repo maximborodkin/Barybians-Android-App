@@ -2,24 +2,17 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.auth.login.LoginActivity">
+    tools:context=".ui.activity.auth.login.LoginFragment">
 
     <data>
         <variable
-            name="errorMessage"
-            type="String" />
-        <variable
-            name="loginMessage"
-            type="String" />
-        <variable
-            name="passwordMessage"
-            type="String" />
+            name="viewModel"
+            type="ru.maxim.barybians.ui.activity.auth.login.LoginViewModel" />
     </data>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_colorPrimary"
         android:fillViewport="true">
 
         <LinearLayout
@@ -29,76 +22,72 @@
             android:paddingHorizontal="48dp"
             android:paddingVertical="56dp">
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/log_in"
                 android:textAlignment="center"
-                android:textColor="@color/white"
                 android:textSize="28sp" />
 
-            <TextView
-                android:id="@+id/error"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/loginMessage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="30dp"
-                android:text="@{errorMessage}"
+                app:bindText="@{viewModel.errorMessageRes}"
                 android:textAlignment="center"
-                android:textColor="@color/light_colorSecondaryDark"
+                android:textColor="@color/colorError"
                 android:textSize="18sp"
                 tools:text="Network error" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/loginLoginLayout"
-                style="@style/WhiteEditTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/login"
                 app:endIconMode="clear_text"
-                errorText="@{loginMessage}">
+                app:errorText="@{viewModel.loginMessage}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/loginLogin"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@={viewModel.login}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/loginPasswordLayout"
-                style="@style/WhiteEditTextLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="@string/password"
                 app:endIconMode="password_toggle"
-                errorText="@{passwordMessage}">
+                app:errorText="@{viewModel.passwordMessage}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/loginPassword"
-                    style="@style/WhiteEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:text="@={viewModel.password}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/loginBtn"
-                style="@style/WhiteButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="48dp"
-                android:textSize="14sp"
-                android:text="@string/login" />
+                android:text="@string/login"
+                android:textSize="14sp" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/loginRegisterLink"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,7 +95,6 @@
                 android:padding="8dp"
                 android:text="@string/haven_t_account_register_now"
                 android:textAlignment="center"
-                android:textColor="@color/white"
                 android:textSize="16sp" />
         </LinearLayout>
     </ScrollView>

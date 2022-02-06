@@ -62,7 +62,6 @@ class AuthRepositoryImpl @Inject constructor(
     ) = withContext(IO) {
         try {
             if (!networkUtils.networkStateChangeListener.value) throw NoConnectionException()
-            Timber.d(birthDate)
             val registerResponse = authService.register(
                 firstName,
                 lastName,
@@ -101,14 +100,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun logout() {
+    override fun logout() {
         preferencesManager.userId = 0
         preferencesManager.token = null
     }
 
     companion object {
         private const val logTag = "AuthRepository"
-
         private const val defaultAvatarUrl = "min/j.png"
     }
 }

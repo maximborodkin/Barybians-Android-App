@@ -2,15 +2,16 @@ package ru.maxim.barybians.di
 
 import android.app.Application
 import android.content.Context
-import androidx.paging.PagingSource
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import dagger.*
 import kotlinx.coroutines.CoroutineScope
+import ru.maxim.barybians.App
 import ru.maxim.barybians.data.network.RetrofitClient
-import ru.maxim.barybians.data.paging.FeedPagingSource
+import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.data.repository.*
-import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.ui.activity.auth.login.LoginActivity
-import ru.maxim.barybians.ui.activity.auth.registration.RegistrationActivity
+import ru.maxim.barybians.ui.activity.auth.login.LoginFragment
+import ru.maxim.barybians.ui.activity.auth.registration.RegistrationFragment
 import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
 import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
@@ -37,24 +38,33 @@ interface AppComponent {
         @BindsInstance
         fun applicationScope(coroutineScope: CoroutineScope): Builder
 
+        @BindsInstance
+        fun preferencesManager(preferencesManager: PreferencesManager): Builder
+
         fun build(): AppComponent
     }
 
     fun inject(mainActivity: MainActivity)
-    fun inject(loginActivity: LoginActivity)
+    fun inject(loginFragment: LoginFragment)
     fun inject(chatFragment: ChatFragment)
     fun inject(chatsListFragment: ChatsListFragment)
     fun inject(feedFragment: FeedFragment)
-    fun inject(registrationActivity: RegistrationActivity)
+    fun inject(registrationFragment: RegistrationFragment)
     fun inject(profileFragment: ProfileFragment)
     fun inject(stickersPickerDialog: StickersPickerDialog)
     fun inject(preferencesFragment: PreferencesFragment)
     fun inject(commentsListDialog: CommentsListDialog)
     fun inject(likesListDialog: LikesListDialog)
+    fun inject(app: App)
 }
 
 @Module(includes = [RepositoryBindings::class, PagingSourceBindings::class])
 object DataModule {
+
+    @Provides
+    fun provideSharedPreferences(context: Context): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
     @Reusable
     @Provides

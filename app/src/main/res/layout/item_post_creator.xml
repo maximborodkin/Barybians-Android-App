@@ -14,7 +14,7 @@
     android:orientation="vertical"
     android:padding="8dp"
     android:layout_marginBottom="8dp"
-    android:background="?cardBackground"
+
     tools:showIn="@layout/item_profile_header">
 
     <LinearLayout
@@ -45,7 +45,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/itemPostCreatorTitleLayout"
             android:layout_width="0dp"
-            style="?postTitleLayoutStyle"
+
             android:layout_height="wrap_content"
             app:endIconMode="clear_text"
             android:layout_weight="1"
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:maxLines="1"
                 android:inputType="text"
-                style="?attr/postTitleInputStyle"
+
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,7 +73,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/itemPostCreatorTextLayout"
         android:layout_width="match_parent"
-        style="?postTextLayoutStyle"
+
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:endIconMode="clear_text"
@@ -83,7 +83,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/itemPostCreatorText"
             android:layout_width="match_parent"
-            style="?postTextInputStyle"
+
             android:lines="3"
             android:gravity="start|top"
             android:maxLines="10"
@@ -102,14 +102,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@android:string/cancel"
-            style="?textButtonStyle"/>
+            />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/itemPostCreatorOkBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@android:string/ok"
-            style="?textButtonStyle"/>
+            />
     </LinearLayout>
 </LinearLayout>
 </layout>

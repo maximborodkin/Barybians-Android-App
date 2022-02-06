@@ -147,6 +147,7 @@
         <string name="clear_notification_pool">Clear notification pool</string>
             <string name="clear_notifications_pool_preference">clear_notifications_pool</string>
         <string name="theme">Theme</string>
+        <string name="dark_mode">Dark mode</string>
             <string name="theme_preference" translatable="false">theme</string>
             <string name="dark">Dark</string>
             <string name="light">Light</string>

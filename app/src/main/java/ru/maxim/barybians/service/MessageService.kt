@@ -91,7 +91,7 @@ class MessageService : Service() {
     private fun startService() {
         if (isServiceStarted) return
         isServiceStarted = true
-        preferencesManager.serviceState = ServiceState.STARTED.name
+        //preferencesManager.serviceState = ServiceState.STARTED.name
         wakeLock =
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
                 newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MessageService::lock").apply {
@@ -116,7 +116,7 @@ class MessageService : Service() {
             Log.e(log_tag, "Service stopped without being started: ${e.message}")
         } finally {
             isServiceStarted = false
-            preferencesManager.serviceState = ServiceState.STOPPED.name
+            //preferencesManager.serviceState = ServiceState.STOPPED.name
         }
     }
 

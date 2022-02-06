@@ -1,11 +1,7 @@
 package ru.maxim.barybians.data.persistence
 
-import android.content.Context
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 import dagger.Reusable
-import ru.maxim.barybians.R
-import ru.maxim.barybians.service.ServiceState
 import javax.inject.Inject
 
 /**
@@ -13,56 +9,37 @@ import javax.inject.Inject
  *  @property context uses applicationContext sets from [ru.maxim.barybians.App] class
  */
 @Reusable
-class PreferencesManager @Inject constructor(val context: Context) {
+class PreferencesManager @Inject constructor(private val preferences: SharedPreferences) {
+//
+//    private val sharedPreferences: SharedPreferences by lazy {
+//        PreferenceManager.getDefaultSharedPreferences(context)
+//    }
 
-    private val sharedPreferences: SharedPreferences by lazy {
-        PreferenceManager.getDefaultSharedPreferences(context)
-    }
-
-    /**
-     * SharedPreferences keys
-     */
-    val isNotificationsEnabledKey by lazy { context.getString(R.string.enable_notifications_service_preference) }
-    val notificationSoundEffectKey by lazy { context.getString(R.string.notification_sound_effect_preference) }
-    val clearNotificationsPoolKey by lazy { context.getString(R.string.clear_notifications_pool_preference) }
-    val versionKey by lazy { context.getString(R.string.build_version_preference) }
-    val themeKey by lazy { context.getString(R.string.theme_preference) }
-    val tokenKey by lazy { context.getString(R.string.token_preference) }
-    val clearCacheKey by lazy { context.getString(R.string.clear_cache_preference) }
-    val userIdKey by lazy { context.getString(R.string.user_id_preference) }
-    val userNameKey by lazy { context.getString(R.string.user_name_preference) }
-    val userAvatarKey by lazy { context.getString(R.string.user_avatar_preference) }
-    val logoutKey by lazy { context.getString(R.string.logout_preference) }
-    val serviceStateKey by lazy { context.getString(R.string.service_state_preference) }
-
-    /**
-     * Preference access methods
-     */
-    var isNotificationsEnabled: Boolean
-        get() = sharedPreferences.getBoolean(isNotificationsEnabledKey, true)
-        set(value) { sharedPreferences.edit().putBoolean(isNotificationsEnabledKey, value).apply() }
-
-    var theme: String
-        get() = sharedPreferences.getString(themeKey, context.getString(R.string.theme_light))!!
-        set(value) { sharedPreferences.edit().putString(themeKey, value).apply() }
+    var isDarkMode: Boolean
+        get() = preferences.getBoolean(isDarkModeKey, false)
+        set(value) = preferences.edit().putBoolean(isDarkModeKey, value).apply()
 
     var token: String?
-        get() = sharedPreferences.getString(tokenKey, null)
-        set(value) { sharedPreferences.edit().putString(tokenKey, value).apply() }
+        get() = preferences.getString(tokenKey, null)
+        set(value) = preferences.edit().putString(tokenKey, value).apply()
 
     var userId: Int
-        get() = sharedPreferences.getInt(userIdKey, 0)
-        set(value) { sharedPreferences.edit().putInt(userIdKey, value).apply() }
+        get() = preferences.getInt(userIdKey, 0)
+        set(value) = preferences.edit().putInt(userIdKey, value).apply()
 
     var userName: String
-        get() = sharedPreferences.getString(userNameKey, "")!!
-        set(value) { sharedPreferences.edit().putString(userNameKey, value).apply() }
+        get() = preferences.getString(userNameKey, "") ?: ""
+        set(value) = preferences.edit().putString(userNameKey, value).apply()
 
     var userAvatar: String
-        get() = sharedPreferences.getString(userAvatarKey, "")!!
-        set(value) { sharedPreferences.edit().putString(userAvatarKey, value).apply() }
+        get() = preferences.getString(userAvatarKey, "") ?: ""
+        set(value) = preferences.edit().putString(userAvatarKey, value).apply()
 
-    var serviceState: String
-        get() = sharedPreferences.getString(serviceStateKey, ServiceState.STOPPED.name)!!
-        set(value) { sharedPreferences.edit().putString(serviceStateKey, value).apply() }
+    companion object PreferencesKeys {
+        const val isDarkModeKey = "dark_mode"
+        private const val tokenKey = "token"
+        private const val userIdKey = "user_id"
+        private const val userNameKey = "user_name"
+        private const val userAvatarKey = "user_avatar"
+    }
 }
