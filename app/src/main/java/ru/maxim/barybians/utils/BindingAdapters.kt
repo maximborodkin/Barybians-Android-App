@@ -43,6 +43,11 @@ fun TextView.drawableTintColor(@ColorInt tintColor: Int) {
     TextViewCompat.setCompoundDrawableTintList(this, ColorStateList.valueOf(tintColor))
 }
 
+@BindingAdapter("bindText")
+fun TextView.bindText(@StringRes stringRes: Int?) {
+    text = if (stringRes != null) context.getString(stringRes) else String()
+}
+
 @BindingAdapter("iconEnd")
 fun TextView.drawableEnd(@DrawableRes drawableResId: Int) {
     if (drawableResId <= 0x0) return

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainFragmentHost) as NavHostFragment
         val graph = navHostFragment.navController.navInflater.inflate(R.navigation.main_nav_graph)
         val startDestination =
-            if (preferencesManager.token.isNullOrBlank() || preferencesManager.userId <= 0) R.id.registrationFragment
+            if (preferencesManager.token.isNullOrBlank() || preferencesManager.userId <= 0) R.id.loginFragment
             else R.id.feedFragment
         graph.setStartDestination(startDestination)
         navHostFragment.navController.graph = graph
