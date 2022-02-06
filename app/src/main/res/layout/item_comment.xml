@@ -1,65 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ru.maxim.barybians.ui.view.AvatarView
-        android:id="@+id/itemCommentUserAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:enableOnlineStatus="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+    <data>
+        <import type="ru.maxim.barybians.utils.ExtensionsKt" />
 
-    <TextView
-        android:id="@+id/itemCommentUserName"
-        style="?accentTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@id/itemCommentUserAvatar"
-        app:layout_constraintTop_toTopOf="@id/itemCommentUserAvatar"
-        tools:text="@tools:sample/full_names" />
+        <variable
+            name="comment"
+            type="ru.maxim.barybians.domain.model.Comment" />
+    </data>
 
-    <TextView
-        android:id="@+id/itemCommentDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        app:layout_constraintStart_toEndOf="@id/itemCommentUserAvatar"
-        app:layout_constraintTop_toBottomOf="@id/itemCommentUserName"
-        tools:text="@tools:sample/date/ddmmyy" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemCommentText"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemCommentUserAvatar"
-        tools:text="Comment body" />
+        android:padding="10dp">
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:scrollbarSize="2dp"
-        android:scrollbarStyle="insideOverlay"
-        android:scrollbars="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemCommentText">
+        <ru.maxim.barybians.ui.view.AvatarView
+            android:id="@+id/itemCommentUserAvatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:enableOnlineStatus="true"
+            app:image="@{comment.author.avatarMin}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
 
-        <LinearLayout
-            android:id="@+id/itemCommentAttachmentsHolder"
+        <TextView
+            android:id="@+id/itemCommentUserName"
+            style="?accentTextStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:text="@{comment.author.fullName}"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@id/itemCommentUserAvatar"
+            app:layout_constraintTop_toTopOf="@id/itemCommentUserAvatar"
+            tools:text="@tools:sample/full_names" />
+
+        <TextView
+            android:id="@+id/itemCommentDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginStart="12dp"
+            android:text="@{ExtensionsKt.simpleDate(comment.date, true)}"
+            app:layout_constraintStart_toEndOf="@id/itemCommentUserAvatar"
+            app:layout_constraintTop_toBottomOf="@id/itemCommentUserName"
+            tools:text="@tools:sample/date/ddmmyy" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemCommentText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemCommentUserAvatar"
+            tools:text="Comment body" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:scrollbarSize="2dp"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemCommentText">
+
+            <LinearLayout
+                android:id="@+id/itemCommentAttachmentsHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -2,7 +2,6 @@ package ru.maxim.barybians.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -18,15 +17,14 @@ import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import ru.maxim.barybians.App
 import ru.maxim.barybians.R
 import ru.maxim.barybians.di.AppComponent
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.DATE
 import java.util.Calendar.YEAR
+import java.util.Calendar.MONTH
 
 fun Any?.isNull() = this == null
 fun Any?.isNotNull() = !this.isNull()
@@ -112,8 +110,8 @@ fun Date.simple(hasTime: Boolean = true): String {
     val today = Calendar.getInstance()
     val date = Calendar.getInstance().also { it.timeInMillis = this.time }
     return when {
-        // Compare by year, month, day
-        date[DATE] == today[DATE] -> SimpleDateFormat("HH:mm", Locale.getDefault())
+        date[YEAR] == today[YEAR] && date[MONTH] == date[MONTH] && date[DATE] == today[DATE] ->
+            SimpleDateFormat("HH:mm", Locale.getDefault())
         date[YEAR] == today[YEAR] -> SimpleDateFormat("dd MMM${if (hasTime) " HH:mm" else ""}", Locale.getDefault())
         else -> SimpleDateFormat("dd MMM yyyy${if (hasTime) " HH:mm" else ""}", Locale.getDefault())
     }.format(this)

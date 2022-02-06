@@ -17,7 +17,7 @@ import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.domain.model.Comment
 import java.util.*
 
-class CommentsListDialogViewModel private constructor(
+class CommentsListViewModel private constructor(
     application: Application,
     private val commentRepository: CommentRepository,
     private val postId: Int
@@ -113,22 +113,22 @@ class CommentsListDialogViewModel private constructor(
         }
     }
 
-    class CommentsListDialogViewModelFactory @AssistedInject constructor(
+    class CommentsListViewModelFactory @AssistedInject constructor(
         private val application: Application,
         private val commentRepository: CommentRepository,
         @Assisted("postId") private val postId: Int
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(CommentsListDialogViewModel::class.java)) {
+            if (modelClass.isAssignableFrom(CommentsListViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return CommentsListDialogViewModel(application, commentRepository, postId) as T
+                return CommentsListViewModel(application, commentRepository, postId) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }
 
         @AssistedFactory
         interface Factory {
-            fun create(@Assisted("postId") postId: Int): CommentsListDialogViewModelFactory
+            fun create(@Assisted("postId") postId: Int): CommentsListViewModelFactory
         }
     }
 }

@@ -9,7 +9,7 @@
 
         <variable
             name="viewModel"
-            type="ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialogViewModel" />
+            type="ru.maxim.barybians.ui.dialog.commentsList.CommentsListViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView

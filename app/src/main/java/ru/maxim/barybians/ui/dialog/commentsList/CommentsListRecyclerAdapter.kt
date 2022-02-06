@@ -19,7 +19,6 @@ import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.Com
 import ru.maxim.barybians.utils.HtmlUtils
 import ru.maxim.barybians.utils.SwipeDismissCallback
 import ru.maxim.barybians.utils.load
-import ru.maxim.barybians.utils.simpleDate
 import javax.inject.Inject
 
 class CommentsListRecyclerAdapter @Inject constructor(
@@ -71,9 +70,7 @@ class CommentsListRecyclerAdapter @Inject constructor(
 
         fun bind(comment: Comment) = with(binding) {
             val context = itemView.context
-            itemCommentUserAvatar.load(comment.author.avatarMin)
-            itemCommentUserName.text = comment.author.fullName
-            itemCommentDate.text = simpleDate(comment.date * 1000)
+            this.comment = comment
 
             val commentBody = htmlUtils.parseHtml(comment.text)
             itemCommentText.text = commentBody.first

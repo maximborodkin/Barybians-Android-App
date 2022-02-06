@@ -34,8 +34,8 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
     lateinit var recyclerAdapter: CommentsListRecyclerAdapter
 
     @Inject
-    lateinit var factory: CommentsListDialogViewModel.CommentsListDialogViewModelFactory.Factory
-    private val model: CommentsListDialogViewModel by viewModels { factory.create(args.postId) }
+    lateinit var factory: CommentsListViewModel.CommentsListViewModelFactory.Factory
+    private val model: CommentsListViewModel by viewModels { factory.create(args.postId) }
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)

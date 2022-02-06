@@ -50,9 +50,8 @@ class FeedRecyclerAdapter @Inject constructor(
             val context = itemView.context
             binding.post = post
             if (post == null) return@with
-            val hasPersonalLike = post.likedUsers.contains { it.id == preferencesManager.userId }
             binding.isPersonal = post.userId == preferencesManager.userId
-            binding.hasPersonalLike = hasPersonalLike
+            binding.hasPersonalLike = post.likedUsers.contains { it.id == preferencesManager.userId }
 
             itemPostAvatar.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
             itemPostName.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
@@ -76,7 +75,6 @@ class FeedRecyclerAdapter @Inject constructor(
 
             itemPostLikeBtn.setOnClickListener { feedAdapterListener?.onLikeClick(post.id) }
             itemPostLikeBtn.setOnLongClickListener { feedAdapterListener?.onLikeLongClick(post.id); true }
-
             itemPostCommentBtn.setOnClickListener { feedAdapterListener?.onCommentsClick(post.id) }
         }
     }

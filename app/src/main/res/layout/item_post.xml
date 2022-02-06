@@ -4,15 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
-
         <import type="androidx.core.content.ContextCompat" />
-
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
-
         <import type="kotlin.text.StringsKt" />
-
         <import type="ru.maxim.barybians.R" />
 
         <variable
@@ -67,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:text="@{ExtensionsKt.simpleDate(post.date * 1000, true)}"
+            android:text="@{ExtensionsKt.simpleDate(post.date, true)}"
             app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
             app:layout_constraintTop_toBottomOf="@id/itemPostName"
             tools:text="@tools:sample/date/ddmmyy" />
