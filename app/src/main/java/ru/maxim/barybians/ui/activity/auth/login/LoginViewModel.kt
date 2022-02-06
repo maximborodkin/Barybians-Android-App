@@ -59,7 +59,7 @@ class LoginViewModel private constructor(
 
                 authRepository.authenticate(
                     login = requireNotNull(login.value).trim(),
-                    password = requireNotNull(login.value).trim()
+                    password = requireNotNull(password.value).trim()
                 )
                 _isLoginSuccess.postValue(true)
             }
