@@ -98,8 +98,8 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
         val currentUserId = preferencesManager.userId
         messageItems.clear()
         messageItems.addAll(messages.map {
-            val time = simpleDate(it.time * 1000)
-            val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
+            val time = simpleDate(it.date)
+            val viewHolderId = "${it.text}${it.date}".hashCode().toLong()
             val status = if (it.unread == 1) Unread else Read
             return@map if (it.senderId == currentUserId)
                 OutgoingMessage(viewHolderId, it.text, time, status)
@@ -149,14 +149,14 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
         messages.forEach {
             when (it.senderId) {
                 interlocutorId -> {
-                    val time = time(it.time)
-                    val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
+                    val time = time(it.date)
+                    val viewHolderId = "${it.text}${it.date}".hashCode().toLong()
                     messageItems.add(IncomingMessage(viewHolderId, it.text, time, it.senderId))
                     binding.chatRecyclerView.adapter?.notifyItemInserted(messageItems.size)
                 }
                 preferencesManager.userId -> {
-                    val time = time(it.time)
-                    val viewHolderId = "${it.text}${it.time}".hashCode().toLong()
+                    val time = time(it.date)
+                    val viewHolderId = "${it.text}${it.date}".hashCode().toLong()
                     messageItems.add(OutgoingMessage(viewHolderId, it.text, time, Unread))
                     binding.chatRecyclerView.adapter?.notifyItemInserted(messageItems.size)
                 }

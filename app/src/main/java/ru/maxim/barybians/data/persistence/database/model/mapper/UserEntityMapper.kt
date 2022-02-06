@@ -14,9 +14,9 @@ class UserEntityMapper @Inject constructor() : DomainMapper<UserEntity, User>() 
             lastName = model.lastName,
             photo = model.photo,
             status = model.status,
-            birthDate = model.birthDate,
+            _birthDate = model.birthDate,
             sex = model.sex,
-            lastVisit = model.lastVisit,
+            _lastVisit = model.lastVisit,
             roleId = model.roleId
         )
 
@@ -27,9 +27,9 @@ class UserEntityMapper @Inject constructor() : DomainMapper<UserEntity, User>() 
             lastName = domainModel.lastName,
             photo = domainModel.photo,
             status = domainModel.status,
-            birthDate = domainModel.birthDate,
+            birthDate = domainModel._birthDate,
             sex = domainModel.sex,
-            lastVisit = domainModel.lastVisit,
+            lastVisit = domainModel._lastVisit,
             roleId = domainModel.roleId
         )
 }

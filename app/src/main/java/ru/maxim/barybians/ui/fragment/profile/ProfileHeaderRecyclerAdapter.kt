@@ -133,7 +133,7 @@ class ProfileHeaderRecyclerAdapter @Inject constructor() :
 //        }
 //
 //        val age =
-//            ((Date().time / 1000 - Date(header.birthDate).time) / (60 * 60 * 24 * 365)).toInt()
+//            ((Date().date / Date(header.birthDate).date) / (60 * 60 * 24 * 365)).toInt()
 //        headerViewHolder.ageView.text =
 //            context.resources.getQuantityString(R.plurals.age_plurals, age, age)
 //

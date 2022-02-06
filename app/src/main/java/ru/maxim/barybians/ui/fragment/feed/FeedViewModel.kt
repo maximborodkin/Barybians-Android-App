@@ -2,13 +2,17 @@ package ru.maxim.barybians.ui.fragment.feed
 
 import android.app.Application
 import androidx.lifecycle.*
-import androidx.paging.*
-import kotlinx.coroutines.flow.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.paging.FeedPagingSource
 import ru.maxim.barybians.data.paging.FeedPagingSource.FeedPagingSourceFactory
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.domain.model.Post
@@ -33,37 +37,8 @@ open class FeedViewModel constructor(
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
-    protected val internalIsLoading: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = internalIsLoading
-
-    protected val internalMessageRes: MutableLiveData<Int?> = MutableLiveData(null)
-    val messageRes: LiveData<Int?> = internalMessageRes
-
-//    val posts = postRepository.posts
-
-//    init {
-//        initialLoading()
-//    }
-//
-//    protected open fun initialLoading() {
-//        loadFeed()
-//    }
-//
-//    fun loadFeed() = viewModelScope.launch {
-//        internalIsLoading.postValue(true)
-//        try {
-//            postRepository.loadPosts()
-//        } catch (e: Exception) {
-//            val errorMessageRes = when (e) {
-//                is NoConnectionException -> R.string.no_internet_connection
-//                is TimeoutException -> R.string.request_timeout
-//                else -> R.string.an_error_occurred_while_loading_feed
-//            }
-//            internalMessageRes.postValue(errorMessageRes)
-//        } finally {
-//            internalIsLoading.postValue(false)
-//        }
-//    }
+    private val _messageRes: MutableLiveData<Int?> = MutableLiveData(null)
+    val messageRes: LiveData<Int?> = _messageRes
 
     fun editPost(postId: Int, title: String?, text: String) = viewModelScope.launch {
         try {
@@ -74,7 +49,7 @@ open class FeedViewModel constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_edit_post
             }
-            internalMessageRes.postValue(errorMessageRes)
+            _messageRes.postValue(errorMessageRes)
         }
     }
 
@@ -87,7 +62,7 @@ open class FeedViewModel constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_delete_post
             }
-            internalMessageRes.postValue(errorMessageRes)
+            _messageRes.postValue(errorMessageRes)
         }
     }
 
@@ -100,7 +75,7 @@ open class FeedViewModel constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_change_like
             }
-            internalMessageRes.postValue(errorMessageRes)
+            _messageRes.postValue(errorMessageRes)
         }
     }
 

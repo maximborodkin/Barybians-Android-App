@@ -16,7 +16,6 @@ import ru.maxim.barybians.ui.fragment.chatsList.ChatsListRecyclerAdapter.DialogV
 import ru.maxim.barybians.ui.view.AvatarView
 import ru.maxim.barybians.utils.load
 import ru.maxim.barybians.utils.simpleDate
-import java.util.Date
 
 class ChatsListRecyclerAdapter(
     private val chats: List<Chat>,
@@ -33,9 +32,9 @@ class ChatsListRecyclerAdapter(
 
         fun bind(chat: Chat) = with(binding) {
             avatar.load(chat.secondUser.avatarMin)
-            avatar.isOnline = chat.secondUser.lastVisit >= Date().time / 1000 - 5 * 60
+            avatar.isOnline = chat.secondUser.isOnline
             name.text = chat.secondUser.fullName
-            date.text = simpleDate(chat.lastMessage.time * 1000)
+            date.text = simpleDate(chat.lastMessage.date)
 
             val lastMessage = SpannableStringBuilder().apply {
                 if (chat.lastMessage.senderId == currentUserId) {

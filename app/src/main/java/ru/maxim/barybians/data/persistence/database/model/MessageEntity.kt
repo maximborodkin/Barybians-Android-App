@@ -22,7 +22,7 @@ data class MessageEntity(
     val text: String,
 
     @ColumnInfo(name = Columns.time)
-    val time: Long,
+    val date: Long,
 
     @ColumnInfo(name = Columns.unread)
     val unread: Int,
@@ -35,7 +35,7 @@ data class MessageEntity(
             const val senderId = "sender_id"
             const val receiverId = "receiver_id"
             const val text = "text"
-            const val time = "time"
+            const val time = "date"
             const val unread = "unread"
         }
     }

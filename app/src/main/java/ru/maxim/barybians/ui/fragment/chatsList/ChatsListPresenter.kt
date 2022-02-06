@@ -21,7 +21,7 @@ class ChatsListPresenter @Inject constructor(
         viewState.showLoading()
         try {
             val dialogs = chatRepository.getChatsList()
-            viewState.showChatsList(dialogs.sortedByDescending { it.lastMessage.time })
+            viewState.showChatsList(dialogs.sortedByDescending { it.lastMessage.date })
         } catch (e: Exception) {
             when (e) {
                 is NoConnectionException -> viewState.showNoInternet()

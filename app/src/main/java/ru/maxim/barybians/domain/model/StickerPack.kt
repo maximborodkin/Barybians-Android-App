@@ -2,7 +2,7 @@ package ru.maxim.barybians.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class StickerPack (
+data class StickerPack(
     @SerializedName("Name")
     val name: String,
     @SerializedName("Pack")

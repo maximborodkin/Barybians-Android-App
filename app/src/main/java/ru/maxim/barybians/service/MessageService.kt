@@ -165,7 +165,7 @@ class MessageService : Service() {
 
     private fun createNotification(message: MessageNotificationResponse) {
         // TODO("Make vibrate and sound for notification")
-        // TODO("Create preferences for notifications(disable, mute, mute for time range)")
+        // TODO("Create preferences for notifications(disable, mute, mute for date range)")
         Log.d("MESSAGES_SERVICE", "Created notification: ${newMessages.last().message.text}")
         val interlocutor = message.secondUser
         val interlocutorName = "${interlocutor.firstName} ${interlocutor.lastName}"

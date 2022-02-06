@@ -3,7 +3,7 @@ package ru.maxim.barybians.domain.model
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import ru.maxim.barybians.data.network.RetrofitClient
-import ru.maxim.barybians.domain.model.UserRole.*
+import ru.maxim.barybians.domain.model.UserRole.Unverified
 import java.util.*
 
 data class User(
@@ -14,10 +14,10 @@ data class User(
     val photo: String?,
     val status: String?,
     @SerializedName("ubirthDate")
-    val birthDate: Long,
+    val _birthDate: Long,
     val sex: String,
     @SerializedName("ulastVisit")
-    val lastVisit: Long,
+    val _lastVisit: Long,
     val roleId: Int?,
 ) {
     val fullName: String
@@ -29,9 +29,15 @@ data class User(
     val avatarMin: String
         get() = "${RetrofitClient.AVATARS_BASE_URL}/min/$photo"
 
+    val birthDate: Long
+        get() = _birthDate * 1000
+
+    val lastVisit: Long
+        get() = _lastVisit * 1000
+
     // User is online if the lastVisit less than five minutes ago
     val isOnline: Boolean
-        get() = lastVisit * 1000 >= Date().time - 5 * 60 * 1000
+        get() = lastVisit >= Date().time - 5 * 60 * 1000
 
     val role: UserRole
         get() = UserRole.values().firstOrNull { it.roleId == roleId } ?: Unverified

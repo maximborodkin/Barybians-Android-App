@@ -2,13 +2,16 @@ package ru.maxim.barybians.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Message (
+data class Message(
     val id: Int,
     val senderId: Int,
     val receiverId: Int,
     val text: String,
     @SerializedName("utime")
-    val time: Long,
+    val _date: Long,
     val unread: Int,
     val attachments: List<Attachment>?
-)
+) {
+    val date: Long
+        get() = _date * 1000
+}

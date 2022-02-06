@@ -235,11 +235,11 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //                    "${comment.author.firstName} ${comment.author.lastName}",
 //                    comment.author.avatarMin
 //                )
-//                val date = dateFormatUtils.getSimplifiedDate(comment.date * 1000)
+//                val date = dateFormatUtils.getSimplifiedDate(comment.date)
 //                CommentItem(comment.id, comment.text, date, author)
 //            })
 //
-//            val date = dateFormatUtils.getSimplifiedDate(post.date * 1000)
+//            val date = dateFormatUtils.getSimplifiedDate(post.date)
 //            profileItems.add(
 //                PostItem(
 //                    postId = post.id,
@@ -292,7 +292,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //    }
 //
 //    override fun onPostCreated(post: Post) {
-//        val date = dateFormatUtils.getSimplifiedDate(post.date * 1000)
+//        val date = dateFormatUtils.getSimplifiedDate(post.date)
 //        profileItems.add(
 //            2,
 //            PostItem(
@@ -319,7 +319,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //    }
 //
 //    override fun onPostUpdated(itemPosition: Int, post: Post) {
-//        val date = dateFormatUtils.getSimplifiedDate(post.date * 1000)
+//        val date = dateFormatUtils.getSimplifiedDate(post.date)
 //        (profileItems[itemPosition] as? PostItem)?.let {
 //            it.title = post.title
 //            it.text = post.text
@@ -349,7 +349,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //            preferencesManager.userName,
 //            User.getAvatarMin(preferencesManager.userAvatar)
 //        )
-//        val date = dateFormatUtils.getSimplifiedDate(comment.date * 1000)
+//        val date = dateFormatUtils.getSimplifiedDate(comment.date)
 //        val commentItem = CommentItem(comment.id, comment.text, date, author)
 //
 //        postComments.add(commentItem)

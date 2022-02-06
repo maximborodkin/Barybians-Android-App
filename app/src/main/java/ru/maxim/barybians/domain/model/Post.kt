@@ -5,12 +5,15 @@ import com.google.gson.annotations.SerializedName
 data class Post(
     val id: Int,
     val userId: Int,
-    var title: String?,
-    var text: String,
+    val title: String?,
+    val text: String,
     @SerializedName("utime")
-    var date: Long,
+    val _date: Long,
     val edited: Int,
     val author: User,
-    var likedUsers: List<User>,
-    var comments: List<Comment>
-)
+    val likedUsers: List<User>,
+    val comments: List<Comment>
+) {
+    val date: Long
+        get() = _date * 1000
+}

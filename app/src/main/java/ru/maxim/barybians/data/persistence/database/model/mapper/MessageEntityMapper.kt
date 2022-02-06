@@ -18,7 +18,7 @@ class MessageEntityMapper @Inject constructor(
             senderId = model.senderId,
             receiverId = model.receiverId,
             text = model.text,
-            time = model.time,
+            _date = model.date,
             unread = model.unread,
             attachments = attachmentEntityMapper.toDomainModelList(attachments)
         )
@@ -30,7 +30,7 @@ class MessageEntityMapper @Inject constructor(
             senderId = domainModel.senderId,
             receiverId = domainModel.receiverId,
             text = domainModel.text,
-            time = domainModel.time,
+            date = domainModel._date,
             unread = domainModel.unread
         )
 }

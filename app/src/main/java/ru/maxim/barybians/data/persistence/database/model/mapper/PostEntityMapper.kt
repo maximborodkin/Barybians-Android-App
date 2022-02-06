@@ -1,6 +1,5 @@
 package ru.maxim.barybians.data.persistence.database.model.mapper
 
-import androidx.room.PrimaryKey
 import ru.maxim.barybians.data.DomainMapper
 import ru.maxim.barybians.data.persistence.database.dao.CommentDao
 import ru.maxim.barybians.data.persistence.database.dao.LikeDao
@@ -27,7 +26,7 @@ class PostEntityMapper @Inject constructor(
             userId = model.userId,
             title = model.title,
             text = model.text,
-            date = model.date,
+            _date = model.date,
             edited = model.edited,
             author = userEntityMapper.toDomainModel(author),
             likedUsers = userEntityMapper.toDomainModelList(likedUsers),
@@ -35,7 +34,13 @@ class PostEntityMapper @Inject constructor(
         )
     }
 
-    override suspend fun fromDomainModel(domainModel: Post): PostEntity {
-        TODO("Not yet implemented")
-    }
+    override suspend fun fromDomainModel(domainModel: Post): PostEntity =
+        PostEntity(
+            postId = domainModel.id,
+            userId = domainModel.userId,
+            title = domainModel.title,
+            text = domainModel.text,
+            date = domainModel._date,
+            edited = domainModel.edited
+        )
 }

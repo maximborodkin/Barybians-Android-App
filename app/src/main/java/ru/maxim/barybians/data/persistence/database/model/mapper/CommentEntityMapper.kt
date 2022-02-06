@@ -18,7 +18,7 @@ class CommentEntityMapper @Inject constructor(
             postId = model.postId,
             userId = model.userId,
             text = model.text,
-            date = model.date,
+            _date = model.date,
             author = userEntityMapper.toDomainModel(author)
         )
     }
@@ -29,6 +29,6 @@ class CommentEntityMapper @Inject constructor(
             postId = domainModel.postId,
             userId = domainModel.userId,
             text = domainModel.text,
-            date = domainModel.date
+            date = domainModel._date
         )
 }
