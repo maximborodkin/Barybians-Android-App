@@ -24,10 +24,12 @@ abstract class BarybiansDatabase : RoomDatabase() {
     abstract fun chatDao(): ChatDao
     abstract fun commentDao(): CommentDao
     abstract fun likeDao(): LikeDao
+    abstract fun messageDao(): MessageDao
     abstract fun postDao(): PostDao
     abstract fun userDao(): UserDao
 
     companion object {
+        const val databaseName = "barybians-database"
         const val databaseVersion = 1
     }
 }
