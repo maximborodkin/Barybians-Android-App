@@ -12,8 +12,9 @@ import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.paging.FeedPagingSource.FeedPagingSourceFactory
 import ru.maxim.barybians.data.paging.FeedRemoteMediator
+import ru.maxim.barybians.data.persistence.database.dao.PostDao
+import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.data.repository.PostRepository
-import ru.maxim.barybians.domain.model.Post
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -21,18 +22,20 @@ open class FeedViewModel constructor(
     application: Application,
     protected val postRepository: PostRepository,
     private val feedPagingSourceFactory: FeedPagingSourceFactory,
-    private val remoteMediator: FeedRemoteMediator
+    remoteMediator: FeedRemoteMediator,
+    postDao: PostDao
 ) : AndroidViewModel(application) {
 
-    val feed: StateFlow<PagingData<Post>> = Pager(
+    // When your wings are burning, who keeps you from falling?
+    val feed: StateFlow<PagingData<PostEntity>> = Pager(
         config = PagingConfig(
             initialLoadSize = PostRepository.pageSize,
             pageSize = PostRepository.pageSize,
             prefetchDistance = PostRepository.prefetchDistance,
-            enablePlaceholders = true
+            enablePlaceholders = false
         ),
         remoteMediator = remoteMediator,
-        pagingSourceFactory = feedPagingSourceFactory::create
+        pagingSourceFactory = { postDao.pagingSource() }
     )
         .flow
         .cachedIn(viewModelScope)
@@ -84,12 +87,13 @@ open class FeedViewModel constructor(
         private val application: Application,
         private val postRepository: PostRepository,
         private val feedPagingSourceFactory: FeedPagingSourceFactory,
-        private val remoteMediator: FeedRemoteMediator
+        private val remoteMediator: FeedRemoteMediator,
+        private val postDao: PostDao
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(FeedViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return FeedViewModel(application, postRepository, feedPagingSourceFactory, remoteMediator) as T
+                return FeedViewModel(application, postRepository, feedPagingSourceFactory, remoteMediator, postDao) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }

@@ -7,7 +7,6 @@
         <import type="android.view.View" />
         <import type="androidx.core.content.ContextCompat" />
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
-        <import type="kotlin.text.StringsKt" />
         <import type="ru.maxim.barybians.R" />
 
         <variable
@@ -85,7 +84,6 @@
             android:layout_marginTop="6dp"
             android:text="@{post.title}"
             android:textSize="18sp"
-            android:visibility="@{StringsKt.isBlank(post.title) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/itemPostAvatar"

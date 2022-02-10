@@ -1,10 +1,13 @@
 package ru.maxim.barybians.data.persistence.database.dao
 
 import androidx.paging.PagingSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.data.persistence.database.model.PostEntity.Contract.Columns
-import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.data.persistence.database.model.PostPagingKey
 
 @Dao
 abstract class PostDao {
@@ -18,7 +21,7 @@ abstract class PostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(postEntity: PostEntity)
 
-    @Query("SELECT * FROM ${PostEntity.tableName}")
+    @Query("SELECT * FROM ${PostEntity.tableName} ORDER BY ${Columns.date} DESC")
     abstract fun pagingSource(): PagingSource<Int, PostEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -26,4 +29,13 @@ abstract class PostDao {
 
     @Query("DELETE FROM ${PostEntity.tableName}")
     abstract suspend fun clearAll()
+
+    @Query("SELECT * FROM post_paging_keys WHERE postId=:postId")
+    abstract fun keyByPostId(postId: Int): PostPagingKey?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertKeys(keys: List<PostPagingKey>)
+
+    @Query("DELETE FROM post_paging_keys")
+    abstract fun clearKeys()
 }
