@@ -14,10 +14,10 @@ import ru.maxim.barybians.data.persistence.database.model.*
         LikeEntity::class,
         MessageEntity::class,
         PostEntity::class,
-        PostPagingKey::class,
         UserEntity::class
     ],
-    version = databaseVersion
+    version = databaseVersion,
+    exportSchema = false
 )
 abstract class BarybiansDatabase : RoomDatabase() {
 

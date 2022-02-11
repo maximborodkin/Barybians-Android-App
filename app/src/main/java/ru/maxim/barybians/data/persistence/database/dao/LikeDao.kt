@@ -10,7 +10,7 @@ import ru.maxim.barybians.data.persistence.database.model.UserEntity
 interface LikeDao {
 
     @Query(
-        """SELECT * FROM 
+        """SELECT ${UserEntity.tableName}.* FROM 
             ${UserEntity.tableName} INNER JOIN ${LikeEntity.tableName}
                 ON ${UserEntity.tableName}.${User.userId}=${LikeEntity.tableName}.${Like.userId}
             WHERE ${Like.postId}=:postId"""

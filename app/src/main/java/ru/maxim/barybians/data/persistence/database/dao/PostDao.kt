@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.data.persistence.database.model.PostEntity.Contract.Columns
-import ru.maxim.barybians.data.persistence.database.model.PostPagingKey
 
 @Dao
 abstract class PostDao {
@@ -29,13 +28,4 @@ abstract class PostDao {
 
     @Query("DELETE FROM ${PostEntity.tableName}")
     abstract suspend fun clearAll()
-
-    @Query("SELECT * FROM post_paging_keys WHERE postId=:postId")
-    abstract fun keyByPostId(postId: Int): PostPagingKey?
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertKeys(keys: List<PostPagingKey>)
-
-    @Query("DELETE FROM post_paging_keys")
-    abstract fun clearKeys()
 }

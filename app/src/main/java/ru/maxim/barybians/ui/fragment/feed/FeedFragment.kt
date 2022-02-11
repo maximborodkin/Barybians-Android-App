@@ -9,14 +9,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
-import androidx.paging.map
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.databinding.FragmentFeedBinding
 import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
 import ru.maxim.barybians.utils.appComponent
@@ -32,9 +29,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
     private val model: FeedViewModel by viewModels { viewModelFactory }
 
     private val binding by viewBinding(FragmentFeedBinding::bind)
-
-    @Inject
-    lateinit var mapper: PostEntityMapper
 
     @Inject
     lateinit var feedRecyclerAdapter: FeedRecyclerAdapter
@@ -81,10 +75,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.feed.collect { entities ->
-                    val posts = entities.map { mapper.toDomainModel(it) }
-                    feedRecyclerAdapter.submitData(posts)
-                }
+                model.feed.collect(feedRecyclerAdapter::submitData)
             }
         }
     }

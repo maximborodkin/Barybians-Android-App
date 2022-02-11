@@ -18,7 +18,7 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context,
             BarybiansDatabase::class.java,
-            BarybiansDatabase.databaseName
+            BarybiansDatabase.databaseName,
         ).build()
     }
 

@@ -62,12 +62,18 @@ android {
         dataBinding true
         viewBinding true
     }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            freeCompilerArgs += ['-Xopt-in=kotlin.RequiresOptIn']
+        }
+    }
 }
 
 dependencies {
-    def nav_version = "2.4.0"
+    def nav_version = "2.4.1"
     def room_version = "2.4.1"
-    def livedata_version = "2.4.0"
+    def livedata_version = "2.4.1"
     def coroutines_version = '1.6.0-native-mt'
     def dagger_version = '2.40.5'
     def moxy_version = "2.2.2"
