@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="kotlin.text.StringsKt" />
-
         <import type="android.view.View" />
 
         <variable
@@ -88,7 +86,6 @@
             android:layout_marginStart="8dp"
             android:focusableInTouchMode="true"
             android:hint="@string/add_comment"
-            android:maxLines="8"
             android:minHeight="48dp"
             android:text="@={viewModel.commentText}"
             app:layout_constraintBottom_toBottomOf="parent"

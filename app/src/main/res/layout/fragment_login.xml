@@ -2,12 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.auth.login.LoginFragment">
+    tools:context=".ui.fragment.login.LoginFragment">
 
     <data>
         <variable
             name="viewModel"
-            type="ru.maxim.barybians.ui.activity.auth.login.LoginViewModel" />
+            type="ru.maxim.barybians.ui.fragment.login.LoginViewModel" />
     </data>
 
     <ScrollView

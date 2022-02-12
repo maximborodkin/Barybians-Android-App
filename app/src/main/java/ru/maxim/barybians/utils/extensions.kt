@@ -106,6 +106,11 @@ fun View.hide() {
 
 fun MutableLiveData<String>.isEmpty() = value?.isEmpty()
 
+fun <T> List<T>.transform(action: (T) -> Unit): List<T> {
+    this.forEach(action)
+    return this
+}
+
 fun Date.simple(hasTime: Boolean = true): String {
     val today = Calendar.getInstance()
     val date = Calendar.getInstance().also { it.timeInMillis = this.time }

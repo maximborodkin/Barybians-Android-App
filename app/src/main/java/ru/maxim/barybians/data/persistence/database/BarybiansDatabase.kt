@@ -16,7 +16,8 @@ import ru.maxim.barybians.data.persistence.database.model.*
         PostEntity::class,
         UserEntity::class
     ],
-    version = databaseVersion
+    version = databaseVersion,
+    exportSchema = false
 )
 abstract class BarybiansDatabase : RoomDatabase() {
 
@@ -24,10 +25,12 @@ abstract class BarybiansDatabase : RoomDatabase() {
     abstract fun chatDao(): ChatDao
     abstract fun commentDao(): CommentDao
     abstract fun likeDao(): LikeDao
+    abstract fun messageDao(): MessageDao
     abstract fun postDao(): PostDao
     abstract fun userDao(): UserDao
 
     companion object {
+        const val databaseName = "barybians-database"
         const val databaseVersion = 1
     }
 }

@@ -9,9 +9,6 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="today">Today</string>
-    <string name="yesterday">Yesterday</string>
-    <string name="tomorrow">Tomorrow</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="yes">Yes</string>
@@ -35,7 +32,6 @@
     <string name="sex">Sex</string>
     <string name="repeat_password">Repeat password</string>
     <string name="passwords_didn_t_match">Passwords didn\'t match</string>
-    <string name="birth_date_after_present">Birth date after present</string>
     <string name="unknown_error">Unknown error</string>
     <string name="invalid_login_or_password">Invalid login or password</string>
     <string name="must_be_at_least_3_characters">Must be at least 3 characters</string>
@@ -62,18 +58,14 @@
         <string name="new_post">New post</string>
         <string name="title">Title</string>
         <string name="text">Text</string>
-        <string name="edit_status">Edit status</string>
-        <string name="new_status">New status</string>
         <string name="unable_to_create_post">Unable to create post</string>
         <string name="delete_this_post">Delete this post?</string>
         <string name="edit_post">Edit post</string>
         <string name="unable_to_edit_post">Unable to edit post</string>
         <string name="unable_to_delete_post">Unable to delete post</string>
-        <string name="nobody_like_this">Nobody like this</string>
         <string name="unable_to_change_like">Unable to change like</string>
         <string name="no_comments_yet">No comments yet</string>
         <string name="add_comment">Add comment</string>
-        <string name="enter_your_status">Enter your status </string>
         <string name="age_plurals_zero">%1$d years</string>
         <string name="age_plurals_one">%1$d year</string>
         <string name="age_plurals_two">%1$d years</string>
@@ -120,65 +112,17 @@
         <string name="type_message">Type message&#8230;</string>
 
 <!--  PreferenceActivity  -->
-    <string name="preferences">Preferences</string>
-        <string name="general">General</string>
-        <string name="notifications">Notifications</string>
-        <string name="enable_background_notifications_service">Enable background notifications service</string>
-        <string name="enable_notifications_service_summary">Run or stop background service for receiving new messages and making notifications. Service starts on system boot and works always.</string>
-            <string name="enable_notifications_service_preference">enable_notifications_service</string>
-        <string name="notifications_sound_effects">Notification sound effects</string>
-            <string name="notification_sound_effect_preference">notification_sound_effect</string>
-                <string name="sound">Sound</string>
-                <string name="vibration">Vibration</string>
-                <string name="blink">Blink</string>
-                <string-array name="notification_effects_entries">
-                    <item>@string/sound</item>
-                    <item>@string/vibration</item>
-                    <item>@string/blink</item>
-                </string-array>
-                <string name="notification_effect_sound" translatable="false">sound</string>
-                <string name="notification_effect_vibration" translatable="false">vibration</string>
-                <string name="notification_effect_blink" translatable="false">blink</string>
-                <string-array name="notification_effects_values">
-                    <item>@string/notification_effect_sound</item>
-                    <item>@string/notification_effect_vibration</item>
-                    <item>@string/notification_effect_blink</item>
-                </string-array>
-        <string name="clear_notification_pool">Clear notification pool</string>
-            <string name="clear_notifications_pool_preference">clear_notifications_pool</string>
         <string name="theme">Theme</string>
         <string name="dark_mode">Dark mode</string>
-            <string name="theme_preference" translatable="false">theme</string>
-            <string name="dark">Dark</string>
-            <string name="light">Light</string>
-            <string-array name="themes_entries">
-                <item>@string/light</item>
-                <item>@string/dark</item>
-            </string-array>
-            <string name="theme_light" translatable="false">light</string>
-            <string name="theme_dark" translatable="false">dark</string>
-            <string-array name="themes_values">
-                <item>@string/theme_light</item>
-                <item>@string/theme_dark</item>
-            </string-array>
         <string name="application">Application</string>
         <string name="clear_cache">Clear cache</string>
-            <string name="clear_cache_preference" translatable="false">clear_cache</string>
-                <string name="bytes">%1$d bytes</string>
-                <string name="kbytes">%1$d KBytes</string>
-                <string name="mbytes">%1$d MBytes</string>
-                <string name="cache_cleared">Cache cleared</string>
+            <string name="bytes">%1$d bytes</string>
+            <string name="kbytes">%1$d KBytes</string>
+            <string name="mbytes">%1$d MBytes</string>
+            <string name="cache_cleared">Cache cleared</string>
         <string name="logout">Logout</string>
-            <string name="logout_preference" translatable="false">logout</string>
         <string name="about">About</string>
         <string name="build_version">Build version</string>
-            <string name="build_version_preference" translatable="false">version</string>
-        <!--  Invisible preference keys  -->
-            <string name="token_preference" translatable="false">token</string>
-            <string name="user_id_preference" translatable="false">user_id</string>
-            <string name="user_name_preference" translatable="false">user_name</string>
-            <string name="user_avatar_preference" translatable="false">user_avatar</string>
-            <string name="service_state_preference" translatable="false">service_state</string>
 
     <!--  Notifications  -->
     <string name="messages_notifications_channel_name">Messages notifications</string>
@@ -190,7 +134,6 @@
     <string name="add_chat">Add dialog</string>
     <string name="unable_to_update_comment">Unable to update comment</string>
     <string name="send">Send</string>
-    <string name="loading">Loading</string>
     <string name="delete_this_comment">Delete this comment?</string>
     <string name="this_action_cannot_be_undone">This action cannot be undone</string>
     <string name="string_too_long">String too long</string>

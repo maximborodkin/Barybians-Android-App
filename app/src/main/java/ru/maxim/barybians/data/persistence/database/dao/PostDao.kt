@@ -1,24 +1,34 @@
 package ru.maxim.barybians.data.persistence.database.dao
 
-import androidx.room.*
+import androidx.paging.PagingSource
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.data.persistence.database.model.PostEntity.Contract.Columns
 
 @Dao
 interface PostDao {
 
-    @Query("SELECT * FROM ${PostEntity.tableName} ORDER BY ${Columns.date}")
-    suspend fun getFeed(): List<PostEntity>
+    @Query("SELECT * FROM ${PostEntity.tableName}")
+    fun getFeed(): List<PostEntity>
+
+    @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.page}=:page")
+    fun getFeedPage(page: Int): List<PostEntity>
 
     @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.userId}=:userId")
-    suspend fun getByUserId(userId: Int): List<PostEntity>
+    fun getByUserId(userId: Int): List<PostEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(postEntity: PostEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(postEntities: List<PostEntity>)
+    @Query("SELECT * FROM ${PostEntity.tableName}")
+    fun pagingSource(): PagingSource<Int, PostEntity>
 
-    @Delete
-    suspend fun delete(postEntity: PostEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(postEntities: List<PostEntity>)
+
+    @Query("DELETE FROM ${PostEntity.tableName}")
+    suspend fun clearAll()
 }

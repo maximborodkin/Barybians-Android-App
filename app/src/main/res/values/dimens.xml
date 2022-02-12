@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="alert_dialog_margin">16dp</dimen>
     <dimen name="message_corner_radius">6dp</dimen>
     <dimen name="message_padding">6dp</dimen>
     <dimen name="space_between_messages">6dp</dimen>

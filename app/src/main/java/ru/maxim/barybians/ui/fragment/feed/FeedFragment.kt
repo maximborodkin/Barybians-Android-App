@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentFeedBinding
+import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.hide
 import ru.maxim.barybians.utils.show
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterListener {
 
     @Inject
-    lateinit var viewModelFactory: FeedViewModel.FeedViewModelFactory
+    lateinit var viewModelFactory: FeedViewModelFactory
     private val model: FeedViewModel by viewModels { viewModelFactory }
 
     private val binding by viewBinding(FragmentFeedBinding::bind)

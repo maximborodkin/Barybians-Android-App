@@ -13,6 +13,7 @@ class CommentEntityMapper @Inject constructor(
 
     override suspend fun toDomainModel(model: CommentEntity): Comment {
         val author = requireNotNull(userDao.getById(model.userId))
+
         return Comment(
             id = model.commentId,
             postId = model.postId,
@@ -23,12 +24,15 @@ class CommentEntityMapper @Inject constructor(
         )
     }
 
-    override suspend fun fromDomainModel(domainModel: Comment): CommentEntity =
-        CommentEntity(
+    override suspend fun fromDomainModel(domainModel: Comment): CommentEntity {
+        userDao.insert(userEntityMapper.fromDomainModel(domainModel.author))
+
+        return CommentEntity(
             commentId = domainModel.id,
             postId = domainModel.postId,
             userId = domainModel.userId,
             text = domainModel.text,
             date = domainModel._date
         )
+    }
 }

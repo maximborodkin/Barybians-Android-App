@@ -4,10 +4,6 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="grey">#666666</color>
-    <color name="transparent">#00000000</color>
-    <color name="black_transparent_80">#50000000</color>
-    <color name="white_transparent_100">#64FFFFFF</color>
-    <color name="white_transparent_60">#3CFFFFFF</color>
     <color name="online_circle_color">#32AD37</color>
     <color name="unread_message_circle_color">#516BFF</color>
     <color name="error_message_circle_color">#B51A1A</color>
@@ -16,46 +12,12 @@
     <color name="delete_swipe_background">#C62828</color>
 
     <!--  Light Theme  -->
-    <color name="colorPrimary">#6750A4</color>
+    <color name="colorPrimary">#5770CE</color>
     <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorPrimaryContainer">#EADDFF</color>
-    <color name="colorOnPrimaryContainer">#21005D</color>
-    <color name="colorSecondary">#625B71</color>
-    <color name="colorOnSecondary">#FFFFFF</color>
-    <color name="colorSecondaryContainer">#E8DEF8</color>
-    <color name="colorOnSecondaryContainer">#1D192B</color>
-    <color name="colorTertiary">#7D5260</color>
-    <color name="colorOnTertiary">#FFFFFF</color>
-    <color name="colorTertiaryContainer">#FFD8E4</color>
-    <color name="colorOnTertiaryContainer">#31111D</color>
-    <color name="colorError">#B3261E</color>
-    <color name="colorErrorContainer">#F9DEDC</color>
-    <color name="colorOnError">#FFFFFF</color>
-    <color name="colorOnErrorContainer">#410E0B</color>
-    <color name="colorBackground">#FFFBFE</color>
+    <color name="colorBackground">#F2F3F7</color>
     <color name="colorOnBackground">#1C1B1F</color>
-    <color name="colorSurface">#FFFBFE</color>
+    <color name="colorSurface">#FFFFFF</color>
     <color name="colorOnSurface">#1C1B1F</color>
-    <color name="colorSurfaceVariant">#E7E0EC</color>
-    <color name="colorOnSurfaceVariant">#49454F</color>
-    <color name="colorOutline">#79747E</color>
-    <color name="colorInverseOnSurface">#F4EFF4</color>
-    <color name="colorInverseSurface">#313033</color>
-    <color name="colorPrimaryInverse">#D0BCFF</color>
-
-
-    <!--    <color name="light_colorPrimaryLight">#83B9FF</color>-->
-    <!--    <color name="colorPrimary">#448AFF</color>-->
-    <!--    <color name="light_colorPrimaryDark">#18459C</color>-->
-    <!--    <color name="light_colorPrimaryText">#000000</color>-->
-    <!--    <color name="light_colorSecondaryLight">#FF6090</color>-->
-    <!--    <color name="light_colorSecondary">#E91E63</color>-->
-    <!--    <color name="light_colorSecondaryDark">#B0003A</color>-->
-    <!--    <color name="light_colorSecondaryText">#000000</color>-->
-    <!--    <color name="light_recyclerBackgroundColor">#F2F3F7</color>-->
-    <!--    <color name="light_colorTertiaryText">@color/grey</color>-->
-    <!--    <color name="light_incoming_message_background">#D1DBFF</color>-->
-    <!--    <color name="light_outgoing_message_background">#E0E0E0</color>-->
-    <!--    <color name="color_on_primary">#000000</color>-->
-
+    <color name="colorError">#B3261E</color>
+    <color name="colorOnError">#FFFFFF</color>
 </resources>

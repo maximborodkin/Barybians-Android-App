@@ -2,28 +2,30 @@ package ru.maxim.barybians.ui.fragment.feed
 
 import android.app.Application
 import androidx.lifecycle.*
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.paging.*
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.paging.FeedPagingSource.FeedPagingSourceFactory
+import ru.maxim.barybians.data.paging.FeedRemoteMediator
+import ru.maxim.barybians.data.persistence.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.domain.model.Post
 import javax.inject.Inject
 
+@OptIn(ExperimentalPagingApi::class)
 open class FeedViewModel constructor(
     application: Application,
     protected val postRepository: PostRepository,
-    private val feedPagingSourceFactory: FeedPagingSourceFactory
+    private val postEntityMapper: PostEntityMapper,
+    feedRemoteMediator: FeedRemoteMediator
 ) : AndroidViewModel(application) {
 
+    // When your wings are burning, who keeps you from falling?
     val feed: StateFlow<PagingData<Post>> = Pager(
         config = PagingConfig(
             initialLoadSize = PostRepository.pageSize,
@@ -31,9 +33,11 @@ open class FeedViewModel constructor(
             prefetchDistance = PostRepository.prefetchDistance,
             enablePlaceholders = true
         ),
-        pagingSourceFactory = feedPagingSourceFactory::create
+        remoteMediator = feedRemoteMediator,
+        pagingSourceFactory = { postRepository.pagingSource() }
     )
         .flow
+        .map { pagingData -> pagingData.map { entityModel -> postEntityMapper.toDomainModel(entityModel) } }
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
@@ -82,12 +86,13 @@ open class FeedViewModel constructor(
     class FeedViewModelFactory @Inject constructor(
         private val application: Application,
         private val postRepository: PostRepository,
-        private val feedPagingSourceFactory: FeedPagingSourceFactory
+        private val postEntityMapper: PostEntityMapper,
+        private val remoteMediator: FeedRemoteMediator,
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(FeedViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return FeedViewModel(application, postRepository, feedPagingSourceFactory) as T
+                return FeedViewModel(application, postRepository, postEntityMapper, remoteMediator) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }

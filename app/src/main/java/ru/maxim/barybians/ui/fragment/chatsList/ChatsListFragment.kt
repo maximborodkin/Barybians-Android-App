@@ -1,8 +1,6 @@
 package ru.maxim.barybians.ui.fragment.chatsList
 
-import android.app.TaskStackBuilder
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -14,7 +12,6 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.persistence.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatsListBinding
 import ru.maxim.barybians.domain.model.Chat
-import ru.maxim.barybians.ui.activity.main.MainActivity
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject

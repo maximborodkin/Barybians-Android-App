@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="ru.maxim.barybians.ui.activity.main.MainActivity"
+            android:name="ru.maxim.barybians.ui.MainActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>

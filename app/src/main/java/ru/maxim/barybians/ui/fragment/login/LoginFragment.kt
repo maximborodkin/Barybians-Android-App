@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.activity.auth.login
+package ru.maxim.barybians.ui.fragment.login
 
 import android.content.Context
 import android.graphics.drawable.Animatable
@@ -12,11 +12,10 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentLoginBinding
-import ru.maxim.barybians.ui.activity.auth.login.LoginViewModel.LoginViewModelFactory
+import ru.maxim.barybians.ui.fragment.login.LoginViewModel.LoginViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.clearDrawables
 import ru.maxim.barybians.utils.setDrawableStart
-import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
 class LoginFragment : Fragment(R.layout.fragment_login) {

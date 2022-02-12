@@ -1,5 +1,6 @@
 package ru.maxim.barybians.data.repository
 
+import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -7,9 +8,13 @@ import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.network.service.UserService
 import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.persistence.database.dao.PostDao
+import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.utils.contains
 import ru.maxim.barybians.utils.indexOrNull
+import timber.log.Timber
+import java.lang.StringBuilder
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,6 +22,7 @@ import javax.inject.Singleton
 class PostRepositoryImpl @Inject constructor(
     private val postService: PostService,
     private val userService: UserService,
+    private val postDao: PostDao,
     private val repositoryBound: RepositoryBound,
     private val preferencesManager: PreferencesManager
 ) : PostRepository {
@@ -27,13 +33,8 @@ class PostRepositoryImpl @Inject constructor(
     override suspend fun loadFeedPage(startIndex: Int, count: Int): List<Post> =
         repositoryBound.wrapRequest { postService.loadFeedPage(startIndex, count) }
 
-    override suspend fun loadPosts(userId: Int?) {
-//        if (userId == null) {
-//            _posts.emit(repositoryBound.wrapRequest(postService::getFeed))
-//        } else {
-//            val user = repositoryBound.wrapRequest { userService.getUser(userId) }
-//            user?.posts?.let { _posts.emit(it) }
-//        }
+    override fun pagingSource(): PagingSource<Int, PostEntity> {
+        return postDao.pagingSource()
     }
 
     override suspend fun getPostById(postId: Int): Post? =
