@@ -13,10 +13,9 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.PostViewHolder
-import ru.maxim.barybians.utils.HtmlUtils
-import ru.maxim.barybians.utils.contains
-import ru.maxim.barybians.utils.load
+import ru.maxim.barybians.utils.*
 import javax.inject.Inject
 
 class FeedRecyclerAdapter @Inject constructor(
@@ -26,7 +25,7 @@ class FeedRecyclerAdapter @Inject constructor(
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        recyclerView.itemAnimator = null
+//        recyclerView.itemAnimator = null
     }
 
     private var feedAdapterListener: FeedAdapterListener? = null
@@ -48,11 +47,12 @@ class FeedRecyclerAdapter @Inject constructor(
     inner class PostViewHolder(private val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post?) = with(binding) {
-            val context = itemView.context
             if (post == null) {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.like_color))
+                bindPlaceholder()
                 return@with
             }
+            val context = itemView.context
+            itemPostProgressBar.hide()
             itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSurface))
             this.post = post
             isDebug = preferencesManager.isDebug
@@ -82,6 +82,21 @@ class FeedRecyclerAdapter @Inject constructor(
             itemPostLikeBtn.setOnClickListener { feedAdapterListener?.onLikeClick(post.id) }
             itemPostLikeBtn.setOnLongClickListener { feedAdapterListener?.onLikeLongClick(post.id); true }
             itemPostCommentBtn.setOnClickListener { feedAdapterListener?.onCommentsClick(post.id) }
+        }
+
+        private fun bindPlaceholder() = with(binding) {
+            isPersonal = false
+            hasPersonalLike = false
+            itemPostAvatar.isOnline = false
+            itemPostAvatar.setImageDrawable(null)
+            itemPostName.text = null
+            itemPostDate.text = null
+            itemPostLikeBtn.text = null
+            itemPostCommentBtn.text = null
+            itemPostTitle.text = null
+            itemPostText.text = null
+            itemPostAttachmentsHolder.removeAllViews()
+            itemPostProgressBar.show()
         }
     }
 

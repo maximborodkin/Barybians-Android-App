@@ -16,9 +16,7 @@ import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemCommentBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.CommentViewHolder
-import ru.maxim.barybians.utils.HtmlUtils
-import ru.maxim.barybians.utils.SwipeDismissCallback
-import ru.maxim.barybians.utils.load
+import ru.maxim.barybians.utils.*
 import javax.inject.Inject
 
 class CommentsListRecyclerAdapter @Inject constructor(
@@ -70,13 +68,12 @@ class CommentsListRecyclerAdapter @Inject constructor(
     inner class CommentViewHolder(private val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(comment: Comment?) = with(binding) {
-            val context = itemView.context
             if (comment == null) {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.like_color))
+                bindPlaceholder()
                 return@with
             }
-            itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSurface))
-
+            val context = itemView.context
+            itemCommentProgressBar.hide()
             this.comment = comment
             val commentBody = htmlUtils.parseHtml(comment.text)
             itemCommentText.text = commentBody.first
@@ -107,6 +104,15 @@ class CommentsListRecyclerAdapter @Inject constructor(
                 }
                 true
             }
+        }
+
+        private fun bindPlaceholder() = with(binding) {
+            itemCommentUserAvatar.setImageDrawable(null)
+            itemCommentUserName.text = null
+            itemCommentDate.text = null
+            itemCommentText.text = null
+            itemCommentAttachmentsHolder.removeAllViews()
+            itemCommentProgressBar.show()
         }
     }
 

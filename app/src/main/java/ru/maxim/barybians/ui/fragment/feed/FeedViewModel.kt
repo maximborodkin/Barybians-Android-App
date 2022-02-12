@@ -3,10 +3,8 @@ package ru.maxim.barybians.ui.fragment.feed
 import android.app.Application
 import androidx.lifecycle.*
 import androidx.paging.*
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException

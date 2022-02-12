@@ -19,7 +19,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/commentsListTextEditor"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -35,8 +35,6 @@
                     android:layout_marginTop="6dp"
                     android:minHeight="48dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:itemCount="3"
@@ -63,32 +61,32 @@
                     app:layout_constraintStart_toStartOf="@id/commentsListRecycler"
                     app:layout_constraintTop_toTopOf="@id/commentsListRecycler"
                     tools:text="Unable to load comments. Please try later" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/commentsListTextEditor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/add_comment"
+                    android:minHeight="48dp"
+                    android:text="@={viewModel.commentText}"
+                    app:layout_constraintTop_toBottomOf="@id/commentsListRecycler"
+                    app:layout_constraintEnd_toStartOf="@id/commentsListSendBtn"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/commentsListSendBtn"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/send"
+                    android:enabled="@{!StringsKt.isBlank(viewModel.commentText) &amp;&amp; !viewModel.isSending}"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_send"
+                    app:layout_constraintBottom_toBottomOf="@id/commentsListTextEditor"
+                    app:layout_constraintEnd_toEndOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/commentsListTextEditor"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:focusableInTouchMode="true"
-            android:hint="@string/add_comment"
-            android:minHeight="48dp"
-            android:text="@={viewModel.commentText}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/commentsListSendBtn"
-            app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageView
-            android:id="@+id/commentsListSendBtn"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/send"
-            android:enabled="@{!StringsKt.isBlank(viewModel.commentText) &amp;&amp; !viewModel.isSending}"
-            android:padding="12dp"
-            android:src="@drawable/ic_send"
-            app:layout_constraintBottom_toBottomOf="@id/commentsListTextEditor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/commentsListTextEditor" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
