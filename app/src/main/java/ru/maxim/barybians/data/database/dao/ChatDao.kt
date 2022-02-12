@@ -1,8 +1,8 @@
-package ru.maxim.barybians.data.persistence.database.dao
+package ru.maxim.barybians.data.database.dao
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import ru.maxim.barybians.data.persistence.database.model.ChatEntity
+import ru.maxim.barybians.data.database.model.ChatEntity
 
 @Dao
 interface ChatDao {

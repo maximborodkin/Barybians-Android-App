@@ -1,8 +1,8 @@
-package ru.maxim.barybians.data.persistence.database.model.mapper
+package ru.maxim.barybians.data.database.model.mapper
 
 import ru.maxim.barybians.data.DomainMapper
-import ru.maxim.barybians.data.persistence.database.dao.AttachmentDao
-import ru.maxim.barybians.data.persistence.database.model.MessageEntity
+import ru.maxim.barybians.data.database.dao.AttachmentDao
+import ru.maxim.barybians.data.database.model.MessageEntity
 import ru.maxim.barybians.domain.model.Message
 import javax.inject.Inject
 

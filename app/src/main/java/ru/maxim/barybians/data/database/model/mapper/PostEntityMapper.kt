@@ -1,13 +1,13 @@
-package ru.maxim.barybians.data.persistence.database.model.mapper
+package ru.maxim.barybians.data.database.model.mapper
 
 import androidx.room.withTransaction
 import ru.maxim.barybians.data.DomainMapper
-import ru.maxim.barybians.data.persistence.database.BarybiansDatabase
-import ru.maxim.barybians.data.persistence.database.dao.CommentDao
-import ru.maxim.barybians.data.persistence.database.dao.LikeDao
-import ru.maxim.barybians.data.persistence.database.dao.UserDao
-import ru.maxim.barybians.data.persistence.database.model.LikeEntity
-import ru.maxim.barybians.data.persistence.database.model.PostEntity
+import ru.maxim.barybians.data.database.BarybiansDatabase
+import ru.maxim.barybians.data.database.dao.CommentDao
+import ru.maxim.barybians.data.database.dao.LikeDao
+import ru.maxim.barybians.data.database.dao.UserDao
+import ru.maxim.barybians.data.database.model.LikeEntity
+import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.domain.model.Post
 import timber.log.Timber
 import java.lang.StringBuilder

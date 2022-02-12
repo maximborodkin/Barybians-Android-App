@@ -2,11 +2,10 @@ package ru.maxim.barybians.di
 
 import android.app.Application
 import android.content.Context
-import androidx.paging.ExperimentalPagingApi
 import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.ui.MainActivity
 import ru.maxim.barybians.ui.activity.auth.registration.RegistrationFragment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog

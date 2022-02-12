@@ -1,7 +1,5 @@
 package ru.maxim.barybians.ui.fragment.feed
 
-import android.graphics.Bitmap
-
 interface FeedAdapterListener {
     fun onProfileClick(userId: Int)
     fun onImageClick(imageUrl: String)

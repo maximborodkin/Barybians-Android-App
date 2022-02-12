@@ -1,10 +1,10 @@
-package ru.maxim.barybians.data.persistence.database
+package ru.maxim.barybians.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import ru.maxim.barybians.data.persistence.database.BarybiansDatabase.Companion.databaseVersion
-import ru.maxim.barybians.data.persistence.database.dao.*
-import ru.maxim.barybians.data.persistence.database.model.*
+import ru.maxim.barybians.data.database.BarybiansDatabase.Companion.databaseVersion
+import ru.maxim.barybians.data.database.dao.*
+import ru.maxim.barybians.data.database.model.*
 
 @Database(
     entities = [

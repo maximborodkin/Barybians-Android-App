@@ -1,8 +1,8 @@
-package ru.maxim.barybians.data.persistence.database.dao
+package ru.maxim.barybians.data.database.dao
 
 import androidx.room.*
-import ru.maxim.barybians.data.persistence.database.model.UserEntity
-import ru.maxim.barybians.data.persistence.database.model.UserEntity.Contract.Columns
+import ru.maxim.barybians.data.database.model.UserEntity
+import ru.maxim.barybians.data.database.model.UserEntity.Contract.Columns
 
 @Dao
 interface UserDao {

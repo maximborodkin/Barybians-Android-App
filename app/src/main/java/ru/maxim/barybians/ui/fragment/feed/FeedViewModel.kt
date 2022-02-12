@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.paging.FeedRemoteMediator
-import ru.maxim.barybians.data.persistence.database.model.mapper.PostEntityMapper
+import ru.maxim.barybians.data.paging.PostRemoteMediator
+import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.domain.model.Post
 import javax.inject.Inject
@@ -20,9 +20,9 @@ import javax.inject.Inject
 @OptIn(ExperimentalPagingApi::class)
 open class FeedViewModel constructor(
     application: Application,
+    postRemoteMediator: PostRemoteMediator,
     protected val postRepository: PostRepository,
-    private val postEntityMapper: PostEntityMapper,
-    feedRemoteMediator: FeedRemoteMediator
+    private val postEntityMapper: PostEntityMapper
 ) : AndroidViewModel(application) {
 
     // When your wings are burning, who keeps you from falling?
@@ -33,8 +33,8 @@ open class FeedViewModel constructor(
             prefetchDistance = PostRepository.prefetchDistance,
             enablePlaceholders = true
         ),
-        remoteMediator = feedRemoteMediator,
-        pagingSourceFactory = { postRepository.pagingSource() }
+        remoteMediator = postRemoteMediator,
+        pagingSourceFactory = { postRepository.feedPagingSource() }
     )
         .flow
         .map { pagingData -> pagingData.map { entityModel -> postEntityMapper.toDomainModel(entityModel) } }
@@ -87,12 +87,13 @@ open class FeedViewModel constructor(
         private val application: Application,
         private val postRepository: PostRepository,
         private val postEntityMapper: PostEntityMapper,
-        private val remoteMediator: FeedRemoteMediator,
+        private val remoteMediator: PostRemoteMediator,
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
+
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(FeedViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return FeedViewModel(application, postRepository, postEntityMapper, remoteMediator) as T
+                return FeedViewModel(application, remoteMediator, postRepository, postEntityMapper) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }

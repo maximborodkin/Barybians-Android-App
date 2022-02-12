@@ -42,7 +42,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
         super.onViewCreated(view, savedInstanceState)
         feedRefreshLayout.setOnRefreshListener(feedRecyclerAdapter::refresh)
         feedRecyclerView.adapter = feedRecyclerAdapter
-        feedRecyclerAdapter.setFeedItemsListener(this@FeedFragment)
+        feedRecyclerAdapter.setAdapterListener(this@FeedFragment)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -116,7 +116,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
     }
 
     override fun onDestroyView() {
-        feedRecyclerAdapter.setFeedItemsListener(null)
+        feedRecyclerAdapter.setAdapterListener(null)
         super.onDestroyView()
     }
 }

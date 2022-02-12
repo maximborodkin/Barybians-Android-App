@@ -4,9 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
+
         <import type="androidx.core.content.ContextCompat" />
+
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
+
         <import type="ru.maxim.barybians.R" />
 
         <variable
@@ -20,13 +24,17 @@
         <variable
             name="hasPersonalLike"
             type="Boolean" />
+
+        <variable
+            name="isDebug"
+            type="Boolean" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="0dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -63,10 +71,11 @@
                 android:id="@+id/itemPostId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{String.valueOf(post.id)}"
+                android:text="@{`Post id: ` + String.valueOf(post.id)}"
+                android:visibility="@{isDebug ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toEndOf="@id/itemPostName"
                 app:layout_constraintTop_toTopOf="@id/itemPostName"
-                tools:text="228" />
+                tools:text="Post id: 228" />
 
             <TextView
                 android:id="@+id/itemPostDate"

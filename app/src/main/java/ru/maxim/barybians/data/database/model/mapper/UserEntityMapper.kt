@@ -1,7 +1,7 @@
-package ru.maxim.barybians.data.persistence.database.model.mapper
+package ru.maxim.barybians.data.database.model.mapper
 
 import ru.maxim.barybians.data.DomainMapper
-import ru.maxim.barybians.data.persistence.database.model.UserEntity
+import ru.maxim.barybians.data.database.model.UserEntity
 import ru.maxim.barybians.domain.model.User
 import javax.inject.Inject
 

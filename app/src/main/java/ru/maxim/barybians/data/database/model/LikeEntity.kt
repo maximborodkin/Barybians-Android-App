@@ -1,9 +1,9 @@
-package ru.maxim.barybians.data.persistence.database.model
+package ru.maxim.barybians.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import ru.maxim.barybians.data.persistence.database.model.LikeEntity.Contract.Columns
-import ru.maxim.barybians.data.persistence.database.model.LikeEntity.Contract.tableName
+import ru.maxim.barybians.data.database.model.LikeEntity.Contract.Columns
+import ru.maxim.barybians.data.database.model.LikeEntity.Contract.tableName
 
 @Entity(
     tableName = tableName,

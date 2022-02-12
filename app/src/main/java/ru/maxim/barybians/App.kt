@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.di.AppComponent
 import ru.maxim.barybians.di.DaggerAppComponent
 import timber.log.Timber

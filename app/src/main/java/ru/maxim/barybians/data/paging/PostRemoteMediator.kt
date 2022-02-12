@@ -5,18 +5,18 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import ru.maxim.barybians.data.persistence.database.BarybiansDatabase
-import ru.maxim.barybians.data.persistence.database.dao.PostDao
-import ru.maxim.barybians.data.persistence.database.model.PostEntity
-import ru.maxim.barybians.data.persistence.database.model.mapper.PostEntityMapper
+import dagger.Reusable
+import ru.maxim.barybians.data.database.BarybiansDatabase
+import ru.maxim.barybians.data.database.dao.PostDao
+import ru.maxim.barybians.data.database.model.PostEntity
+import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.utils.transform
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@Reusable
 @OptIn(ExperimentalPagingApi::class)
-class FeedRemoteMediator @Inject constructor(
+class PostRemoteMediator @Inject constructor(
     private val feedRepository: PostRepository,
     private val database: BarybiansDatabase,
     private val postEntityMapper: PostEntityMapper,
@@ -51,13 +51,13 @@ class FeedRemoteMediator @Inject constructor(
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    postDao.clearAll()
+                    postDao.delete()
                 }
 
                 val entities = postEntityMapper.fromDomainModelList(feedPageResponse)
-                    .transform { post -> post.page = page; post.prevKey = prevKey; post.nextKey = nextKey }
+                    .transform { post -> post.prevKey = prevKey; post.nextKey = nextKey }
 
-                postDao.insertAll(entities)
+                postDao.insert(entities)
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {

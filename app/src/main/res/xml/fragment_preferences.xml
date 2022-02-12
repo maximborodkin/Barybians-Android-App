@@ -17,6 +17,13 @@
         app:iconSpaceReserved="false"
         app:title="@string/application">
 
+        <SwitchPreference
+            app:defaultValue="false"
+            app:iconSpaceReserved="false"
+            app:key="debug"
+            app:summary="Allow to show some debugging data"
+            app:title="@string/debug_mode" />
+
         <Preference
             app:iconSpaceReserved="false"
             app:key="clear_cache"

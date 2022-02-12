@@ -1,9 +1,9 @@
-package ru.maxim.barybians.data.persistence.database.model
+package ru.maxim.barybians.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ru.maxim.barybians.data.persistence.database.model.UserEntity.Contract.tableName
+import ru.maxim.barybians.data.database.model.UserEntity.Contract.tableName
 
 @Entity(tableName = tableName)
 data class UserEntity(

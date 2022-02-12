@@ -10,11 +10,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatBinding
 import ru.maxim.barybians.domain.model.Message
 import ru.maxim.barybians.domain.model.User

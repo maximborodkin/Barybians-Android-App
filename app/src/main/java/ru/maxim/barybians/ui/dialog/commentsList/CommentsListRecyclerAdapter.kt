@@ -7,12 +7,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemCommentBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.CommentViewHolder
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class CommentsListRecyclerAdapter @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val htmlUtils: HtmlUtils
-) : ListAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {
+) : PagingDataAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {
 
     private var commentsAdapterListener: CommentsAdapterListener? = null
 
@@ -45,11 +45,12 @@ class CommentsListRecyclerAdapter @Inject constructor(
             swipeBackground = swipeBackground,
             iconDrawable = deleteIcon,
             allowSwipe = { viewHolder ->
-                return@SwipeDismissCallback getItem(viewHolder.bindingAdapterPosition).author.id == preferencesManager.userId
+                getItem(viewHolder.bindingAdapterPosition)?.author?.id == preferencesManager.userId
             },
             onSwiped = { viewHolder ->
                 val position = viewHolder.bindingAdapterPosition
-                commentsAdapterListener?.onCommentSwipe(getItem(position).id, position)
+                val commentId = getItem(position)?.id ?: return@SwipeDismissCallback
+                commentsAdapterListener?.onCommentSwipe(commentId = commentId, viewHolderPosition = position)
             }
         )
 
@@ -68,10 +69,15 @@ class CommentsListRecyclerAdapter @Inject constructor(
 
     inner class CommentViewHolder(private val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(comment: Comment) = with(binding) {
+        fun bind(comment: Comment?) = with(binding) {
             val context = itemView.context
-            this.comment = comment
+            if (comment == null) {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.like_color))
+                return@with
+            }
+            itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSurface))
 
+            this.comment = comment
             val commentBody = htmlUtils.parseHtml(comment.text)
             itemCommentText.text = commentBody.first
             itemCommentAttachmentsHolder.removeAllViews()

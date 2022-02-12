@@ -5,8 +5,8 @@ import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import ru.maxim.barybians.data.persistence.database.BarybiansDatabase
-import ru.maxim.barybians.data.persistence.database.dao.*
+import ru.maxim.barybians.data.database.BarybiansDatabase
+import ru.maxim.barybians.data.database.dao.*
 import javax.inject.Singleton
 
 @Module

@@ -7,7 +7,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ActivityMainBinding
 import ru.maxim.barybians.utils.appComponent
 import javax.inject.Inject

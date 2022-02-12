@@ -4,7 +4,7 @@ import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.network.response.ChatResponse
 import ru.maxim.barybians.data.network.response.SendMessageResponse
 import ru.maxim.barybians.data.network.service.ChatService
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.domain.model.Chat
 import javax.inject.Inject
 

@@ -9,7 +9,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatsListBinding
 import ru.maxim.barybians.domain.model.Chat
 import ru.maxim.barybians.utils.appComponent

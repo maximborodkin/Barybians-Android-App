@@ -1,25 +1,5 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import ru.maxim.barybians.R
-import ru.maxim.barybians.data.network.exception.NoConnectionException
-import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.persistence.PreferencesManager
-import ru.maxim.barybians.data.repository.PostRepository
-import ru.maxim.barybians.data.repository.UserRepository
-import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.fragment.feed.FeedViewModel
-
 class ProfileViewModel()
 //    application: Application,
 //    postRepository: PostRepository,

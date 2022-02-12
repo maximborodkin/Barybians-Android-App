@@ -8,7 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor.Level.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.maxim.barybians.data.network.service.*
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import java.util.*
 import javax.inject.Inject
 

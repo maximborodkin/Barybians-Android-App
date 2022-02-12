@@ -56,30 +56,26 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
         return binding.root
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.comments.collect { comments ->
-                    recyclerAdapter.submitList(comments)
-
-                    binding.commentsListMessage.text =
-                        if (comments.isEmpty()) view.context.getString(R.string.no_comments_yet)
-                        else null
-
-                    binding.commentsListTitle.text =
-                        view.context.resources.getQuantityString(
-                            R.plurals.comment_plurals,
-                            comments.size,
-                            comments.size
-                        )
-                }
+                model.comments.collect(recyclerAdapter::submitData)
+//                binding.commentsListMessage.text =
+//                    if (comments.isEmpty()) view.context.getString(R.string.no_comments_yet)
+//                    else null
+//
+//                binding.commentsListTitle.text =
+//                    view.context.resources.getQuantityString(
+//                        R.plurals.comment_plurals,
+//                        comments.size,
+//                        comments.size
+//                    )
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            model.errorMessageId.observe(viewLifecycleOwner) { errorMessageId ->
+            model.messageRes.observe(viewLifecycleOwner) { errorMessageId ->
                 errorMessageId?.let {
                     if (recyclerAdapter.itemCount == 0) {
                         binding.commentsListMessage.text = view.context.getText(errorMessageId)
@@ -101,9 +97,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
             }
         }
 
-        binding.commentsListSendBtn.setOnClickListener {
-            model.createComment()
-        }
+        binding.commentsListSendBtn.setOnClickListener { model.createComment() }
     }
 
     override fun onUserClick(userId: Int) = findNavController().navigate(CommentsListDialogDirections.toProfile(userId))

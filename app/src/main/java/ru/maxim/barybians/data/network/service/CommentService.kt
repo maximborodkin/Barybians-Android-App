@@ -12,7 +12,7 @@ interface CommentService {
         @Header("request") uuid: String,
         @Field("postId") postId: Int,
         @Field("text") text: String
-    ): Response<Int>
+    ): Response<Comment>
 
     @FormUrlEncoded
     @PUT("/v2/comments/{commentId}")

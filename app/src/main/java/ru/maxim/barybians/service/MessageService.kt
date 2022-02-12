@@ -13,7 +13,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.response.MessageNotificationResponse
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.utils.isNotNull

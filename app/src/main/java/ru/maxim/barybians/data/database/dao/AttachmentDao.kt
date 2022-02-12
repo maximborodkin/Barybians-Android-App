@@ -1,8 +1,8 @@
-package ru.maxim.barybians.data.persistence.database.dao
+package ru.maxim.barybians.data.database.dao
 
 import androidx.room.*
-import ru.maxim.barybians.data.persistence.database.model.AttachmentEntity
-import ru.maxim.barybians.data.persistence.database.model.AttachmentEntity.Contract.Columns
+import ru.maxim.barybians.data.database.model.AttachmentEntity
+import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.Columns
 
 @Dao
 interface AttachmentDao {

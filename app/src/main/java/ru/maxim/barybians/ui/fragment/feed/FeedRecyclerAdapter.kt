@@ -10,7 +10,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.persistence.PreferencesManager
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.PostViewHolder
@@ -31,7 +31,7 @@ class FeedRecyclerAdapter @Inject constructor(
 
     private var feedAdapterListener: FeedAdapterListener? = null
 
-    fun setFeedItemsListener(listener: FeedAdapterListener?) {
+    fun setAdapterListener(listener: FeedAdapterListener?) {
         feedAdapterListener = listener
     }
 
@@ -54,9 +54,10 @@ class FeedRecyclerAdapter @Inject constructor(
                 return@with
             }
             itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSurface))
-            binding.post = post
-            binding.isPersonal = post.userId == preferencesManager.userId
-            binding.hasPersonalLike = post.likedUsers.contains { it.id == preferencesManager.userId }
+            this.post = post
+            isDebug = preferencesManager.isDebug
+            isPersonal = post.userId == preferencesManager.userId
+            hasPersonalLike = post.likedUsers.contains { it.id == preferencesManager.userId }
 
             itemPostAvatar.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
             itemPostName.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
