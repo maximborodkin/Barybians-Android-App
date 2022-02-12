@@ -9,23 +9,26 @@ import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.data.persistence.database.model.PostEntity.Contract.Columns
 
 @Dao
-abstract class PostDao {
+interface PostDao {
 
     @Query("SELECT * FROM ${PostEntity.tableName}")
-    abstract fun getFeed(): List<PostEntity>
+    fun getFeed(): List<PostEntity>
+
+    @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.page}=:page")
+    fun getFeedPage(page: Int): List<PostEntity>
 
     @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.userId}=:userId")
-    abstract fun getByUserId(userId: Int): List<PostEntity>
+    fun getByUserId(userId: Int): List<PostEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(postEntity: PostEntity)
+    suspend fun insert(postEntity: PostEntity)
 
-    @Query("SELECT * FROM ${PostEntity.tableName} ORDER BY ${Columns.date} DESC")
-    abstract fun pagingSource(): PagingSource<Int, PostEntity>
+    @Query("SELECT * FROM ${PostEntity.tableName}")
+    fun pagingSource(): PagingSource<Int, PostEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertAll(postEntities: List<PostEntity>)
+    suspend fun insertAll(postEntities: List<PostEntity>)
 
     @Query("DELETE FROM ${PostEntity.tableName}")
-    abstract suspend fun clearAll()
+    suspend fun clearAll()
 }

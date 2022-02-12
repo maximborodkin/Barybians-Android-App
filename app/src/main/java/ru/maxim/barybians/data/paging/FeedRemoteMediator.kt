@@ -5,14 +5,12 @@ import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import kotlinx.coroutines.currentCoroutineContext
 import ru.maxim.barybians.data.persistence.database.BarybiansDatabase
 import ru.maxim.barybians.data.persistence.database.dao.PostDao
 import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.data.persistence.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.utils.transform
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,7 +45,6 @@ class FeedRemoteMediator @Inject constructor(
                 startIndex = page * state.config.pageSize,
                 count = state.config.pageSize
             )
-            Timber.tag("XXX FeedRemoteMediator").d("${currentCoroutineContext().hashCode()} loaded page $page with size ${feedPageResponse.size}, first ${feedPageResponse.first().id} and last ${feedPageResponse.last().id}")
 
             val prevKey = if (page == 0) null else page - 1
             val nextKey = if (feedPageResponse.size < state.config.pageSize) null else page + 1
@@ -58,7 +55,7 @@ class FeedRemoteMediator @Inject constructor(
                 }
 
                 val entities = postEntityMapper.fromDomainModelList(feedPageResponse)
-                    .transform { post -> post.prevKey = prevKey; post.nextKey = nextKey }
+                    .transform { post -> post.page = page; post.prevKey = prevKey; post.nextKey = nextKey }
 
                 postDao.insertAll(entities)
             }

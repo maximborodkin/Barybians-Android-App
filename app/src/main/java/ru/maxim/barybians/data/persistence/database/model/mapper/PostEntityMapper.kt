@@ -9,6 +9,8 @@ import ru.maxim.barybians.data.persistence.database.dao.UserDao
 import ru.maxim.barybians.data.persistence.database.model.LikeEntity
 import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.domain.model.Post
+import timber.log.Timber
+import java.lang.StringBuilder
 import javax.inject.Inject
 
 class PostEntityMapper @Inject constructor(
@@ -54,6 +56,7 @@ class PostEntityMapper @Inject constructor(
         }
 
         return PostEntity(
+            id = 0,
             postId = domainModel.id,
             userId = domainModel.userId,
             title = domainModel.title,
@@ -61,5 +64,12 @@ class PostEntityMapper @Inject constructor(
             date = domainModel._date,
             edited = domainModel.edited
         )
+    }
+
+    override suspend fun toDomainModelList(model: List<PostEntity>): List<Post> {
+        val str = StringBuilder()
+        model.forEach { str.append(it.postId) }
+        Timber.d("XXX toDomainModelList ${model.size} $str")
+        return super.toDomainModelList(model)
     }
 }

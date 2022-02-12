@@ -31,7 +31,7 @@ open class FeedViewModel constructor(
             initialLoadSize = PostRepository.pageSize,
             pageSize = PostRepository.pageSize,
             prefetchDistance = PostRepository.prefetchDistance,
-            enablePlaceholders = false
+            enablePlaceholders = true
         ),
         remoteMediator = feedRemoteMediator,
         pagingSourceFactory = { postRepository.pagingSource() }

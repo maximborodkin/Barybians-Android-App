@@ -9,7 +9,9 @@ import ru.maxim.barybians.data.persistence.database.model.PostEntity.Contract.ta
 @Entity(tableName = tableName)
 data class PostEntity(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
+
     @ColumnInfo(name = Columns.postId)
     val postId: Int,
 
@@ -28,6 +30,9 @@ data class PostEntity(
     @ColumnInfo(name = Columns.edited)
     val edited: Int,
 
+    @ColumnInfo(name = Columns.page)
+    var page: Int = 0,
+
     @ColumnInfo(name = Columns.prevKey)
     var prevKey: Int? = null,
 
@@ -45,6 +50,7 @@ data class PostEntity(
             const val text = "text"
             const val date = "date"
             const val edited = "edited"
+            const val page = "page"
             const val prevKey = "prev_key"
             const val nextKey = "next_key"
         }

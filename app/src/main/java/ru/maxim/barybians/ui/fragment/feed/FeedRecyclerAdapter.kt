@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -48,8 +49,12 @@ class FeedRecyclerAdapter @Inject constructor(
 
         fun bind(post: Post?) = with(binding) {
             val context = itemView.context
+            if (post == null) {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.like_color))
+                return@with
+            }
+            itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSurface))
             binding.post = post
-            if (post == null) return@with
             binding.isPersonal = post.userId == preferencesManager.userId
             binding.hasPersonalLike = post.likedUsers.contains { it.id == preferencesManager.userId }
 

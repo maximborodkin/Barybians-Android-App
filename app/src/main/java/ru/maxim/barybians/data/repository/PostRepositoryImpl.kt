@@ -13,6 +13,8 @@ import ru.maxim.barybians.data.persistence.database.model.PostEntity
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.utils.contains
 import ru.maxim.barybians.utils.indexOrNull
+import timber.log.Timber
+import java.lang.StringBuilder
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,15 +35,6 @@ class PostRepositoryImpl @Inject constructor(
 
     override fun pagingSource(): PagingSource<Int, PostEntity> {
         return postDao.pagingSource()
-    }
-
-    override suspend fun loadPosts(userId: Int?) {
-//        if (userId == null) {
-//            _posts.emit(repositoryBound.wrapRequest(postService::getFeed))
-//        } else {
-//            val user = repositoryBound.wrapRequest { userService.getUser(userId) }
-//            user?.posts?.let { _posts.emit(it) }
-//        }
     }
 
     override suspend fun getPostById(postId: Int): Post? =

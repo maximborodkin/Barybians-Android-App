@@ -20,6 +20,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:scrollIndicators="end"
+            android:scrollbars="vertical"
+            android:scrollbarSize="8dp"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarThumbVertical="@drawable/ic_send"
             tools:itemCount="3"
             tools:listitem="@layout/item_post" />
 
