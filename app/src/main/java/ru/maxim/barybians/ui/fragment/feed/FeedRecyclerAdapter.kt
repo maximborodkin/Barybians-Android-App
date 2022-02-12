@@ -61,7 +61,10 @@ class FeedRecyclerAdapter @Inject constructor(
 
             itemPostAvatar.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
             itemPostName.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
-            itemPostMenuBtn.setOnClickListener { feedAdapterListener?.onPostMenuClick(post.id) }
+            itemPostMenuBtn.setOnClickListener {
+                val post = getItem(bindingAdapterPosition)
+                post?.let { feedAdapterListener?.onPostMenuClick(post) }
+            }
 
             val postBody = htmlUtils.parseHtml(post.text)
             itemPostText.text = postBody.first

@@ -15,6 +15,8 @@ import kotlinx.coroutines.launch
 import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentFeedBinding
+import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.ui.dialog.PostMenuDialog
 import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.hide
@@ -88,19 +90,17 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
         findNavController().navigate(FeedFragmentDirections.toImageViewer(imageUrl = imageUrl))
     }
 
-    override fun onPostMenuClick(postId: Int) {
-//        commentsRecyclerAdapter.currentList.find { it.id == postId }?.let { post ->
-//            PostMenuDialog.newInstance(
-//                title = post.title,
-//                text = post.text,
-//                onDelete = {
-//                    model.deletePost(post.id)
-//                },
-//                onEdit = { title, text ->
-//                    model.editPost(postId, title, text)
-//                }
-//            ).show(childFragmentManager, PostMenuDialog::class.simpleName)
-//        }
+    override fun onPostMenuClick(post: Post) {
+//        PostMenuDialog.newInstance(
+//            title = post.title,
+//            text = post.text,
+//            onDelete = {
+//                model.deletePost(post.id)
+//            },
+//            onEdit = { title, text ->
+//                model.editPost(post.id, title, text)
+//            }
+//        ).show(childFragmentManager, PostMenuDialog::class.simpleName)
     }
 
     override fun onCommentsClick(postId: Int) {
