@@ -22,139 +22,145 @@
             type="Boolean" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp">
+        app:cardCornerRadius="0dp"
+        android:layout_marginBottom="8dp">
 
-        <ru.maxim.barybians.ui.view.AvatarView
-            android:id="@+id/itemPostAvatar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:enableOnlineStatus="true"
-            app:image="@{post.author.avatarMin}"
-            app:isOnline="@{post.author.isOnline}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:isOnline="true"
-            tools:src="@tools:sample/avatars" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/itemPostName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="@{post.author.fullName}"
-            android:textSize="18sp"
-            app:iconEnd="@{post.author.role.iconResource}"
-            app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:drawableEnd="@drawable/ic_role_verified"
-            tools:text="@tools:sample/full_names" />
-
-        <TextView
-            android:id="@+id/itemPostId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/itemPostName"
-            app:layout_constraintTop_toTopOf="@id/itemPostName"
-            android:text="@{String.valueOf(post.id)}"
-            tools:text="228"/>
-
-        <TextView
-            android:id="@+id/itemPostDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="@{ExtensionsKt.simpleDate(post.date, true)}"
-            app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
-            app:layout_constraintTop_toBottomOf="@id/itemPostName"
-            tools:text="@tools:sample/date/ddmmyy" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/itemPostMenuBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:visibility="@{isPersonal ? View.VISIBLE : View.GONE}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_menu_vertical_grey" />
-
-        <TextView
-            android:id="@+id/itemPostTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@{post.title}"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemPostAvatar"
-            tools:text="@tools:sample/lorem[4]" />
-
-        <TextView
-            android:id="@+id/itemPostText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:fontFamily="@font/roboto_regular"
-            android:textAlignment="viewStart"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemPostTitle"
-            tools:text="@tools:sample/lorem[50]" />
-
-        <HorizontalScrollView
-            android:id="@+id/itemPostAttachmentsScrollView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemPostText"
-            android:scrollbars="horizontal"
-            android:scrollbarStyle="insideOverlay"
-            android:scrollbarSize="2dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp">
 
-            <LinearLayout
-                android:id="@+id/itemPostAttachmentsHolder"
+            <ru.maxim.barybians.ui.view.AvatarView
+                android:id="@+id/itemPostAvatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:enableOnlineStatus="true"
+                app:image="@{post.author.avatarMin}"
+                app:isOnline="@{post.author.isOnline}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:isOnline="true"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/itemPostName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
+                android:layout_marginStart="12dp"
+                android:text="@{post.author.fullName}"
+                android:textSize="18sp"
+                app:iconEnd="@{post.author.role.iconResource}"
+                app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:drawableEnd="@drawable/ic_role_verified"
+                tools:text="@tools:sample/full_names" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/itemPostLikeBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:drawableStart="@drawable/ic_like"
-            android:paddingVertical="12dp"
-            android:paddingStart="0dp"
-            android:paddingEnd="12dp"
-            android:text="@{post.likedUsers.empty ? `` :String.valueOf(post.likedUsers.size)}"
-            android:textSize="18sp"
-            app:drawableTintColor="@{hasPersonalLike ? @color/like_color : @color/grey}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemPostAttachmentsScrollView"
-            tools:drawableTint="@color/like_color"
-            tools:text="4" />
+            <TextView
+                android:id="@+id/itemPostId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.valueOf(post.id)}"
+                app:layout_constraintStart_toEndOf="@id/itemPostName"
+                app:layout_constraintTop_toTopOf="@id/itemPostName"
+                tools:text="228" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/itemPostCommentBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_comment_grey"
-            android:padding="12dp"
-            android:text="@{post.comments.empty ? `` : String.valueOf(post.comments.size)}"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@id/itemPostLikeBtn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/itemPostLikeBtn"
-            tools:text="4" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/itemPostDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@{ExtensionsKt.simpleDate(post.date, true)}"
+                app:layout_constraintStart_toEndOf="@id/itemPostAvatar"
+                app:layout_constraintTop_toBottomOf="@id/itemPostName"
+                tools:text="@tools:sample/date/ddmmyy" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/itemPostMenuBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:visibility="@{isPersonal ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_menu_vertical_grey" />
+
+            <TextView
+                android:id="@+id/itemPostTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@{post.title}"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/itemPostAvatar"
+                tools:text="@tools:sample/lorem[4]" />
+
+            <TextView
+                android:id="@+id/itemPostText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/roboto_regular"
+                android:textAlignment="viewStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/itemPostTitle"
+                tools:text="@tools:sample/lorem[50]" />
+
+            <HorizontalScrollView
+                android:id="@+id/itemPostAttachmentsScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:scrollbarSize="2dp"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollbars="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/itemPostText">
+
+                <LinearLayout
+                    android:id="@+id/itemPostAttachmentsHolder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/itemPostLikeBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:drawableStart="@drawable/ic_like"
+                android:paddingVertical="12dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="12dp"
+                android:text="@{post.likedUsers.empty ? `` :String.valueOf(post.likedUsers.size)}"
+                android:textSize="18sp"
+                app:drawableTintColor="@{hasPersonalLike ? @color/like_color : @color/grey}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/itemPostAttachmentsScrollView"
+                tools:drawableTint="@color/like_color"
+                tools:text="4" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/itemPostCommentBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_comment_grey"
+                android:padding="12dp"
+                android:text="@{post.comments.empty ? `` : String.valueOf(post.comments.size)}"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/itemPostLikeBtn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/itemPostLikeBtn"
+                tools:text="4" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 </layout>
