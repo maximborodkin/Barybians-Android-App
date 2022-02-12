@@ -1,6 +1,5 @@
 package ru.maxim.barybians.ui.dialog.commentsList
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Animatable
 import android.os.Bundle
@@ -8,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -21,6 +22,8 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentCommentsListBinding
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.hide
+import ru.maxim.barybians.utils.show
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
@@ -31,7 +34,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
     private var binding: FragmentCommentsListBinding by notNull()
 
     @Inject
-    lateinit var recyclerAdapter: CommentsListRecyclerAdapter
+    lateinit var commentsRecyclerAdapter: CommentsListRecyclerAdapter
 
     @Inject
     lateinit var factory: CommentsListViewModel.CommentsListViewModelFactory.Factory
@@ -46,58 +49,64 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentCommentsListBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = model
-            recyclerAdapter.setAdapterListener(this@CommentsListDialog)
-            commentsListRecycler.adapter = recyclerAdapter
-        }
-        return binding.root
-    }
+    ): View = FragmentCommentsListBinding.inflate(inflater, container, false).apply {
+        lifecycleOwner = viewLifecycleOwner
+        viewModel = model
+        commentsRecyclerAdapter.setAdapterListener(this@CommentsListDialog)
+        commentsListRecycler.adapter = commentsRecyclerAdapter
+    }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.comments.collect(recyclerAdapter::submitData)
-//                binding.commentsListMessage.text =
-//                    if (comments.isEmpty()) view.context.getString(R.string.no_comments_yet)
-//                    else null
-//
-//                binding.commentsListTitle.text =
-//                    view.context.resources.getQuantityString(
-//                        R.plurals.comment_plurals,
-//                        comments.size,
-//                        comments.size
-//                    )
+                model.comments.collect(commentsRecyclerAdapter::submitData)
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                commentsRecyclerAdapter.loadStateFlow.collect { state ->
+                    when (state.refresh) {
+                        is LoadState.Loading -> {
+                            commentsListProgressBar.isVisible = commentsRecyclerAdapter.itemCount == 0
+                            commentsListMessage.hide()
+                        }
+                        is LoadState.NotLoading -> {
+                            commentsListProgressBar.hide()
+                            if (commentsRecyclerAdapter.itemCount > 0) commentsListMessage.hide()
+                        }
+                        is LoadState.Error -> {
+                            commentsListProgressBar.hide()
+                            val errorMessage = getString(R.string.an_error_occurred_while_loading_comments)
+                            if (commentsRecyclerAdapter.itemCount == 0) {
+                                commentsListMessage.show()
+                                commentsListMessage.text = errorMessage
+                            } else {
+                                context?.toast(errorMessage)
+                            }
+                        }
+                    }
+                }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            model.messageRes.observe(viewLifecycleOwner) { errorMessageId ->
-                errorMessageId?.let {
-                    if (recyclerAdapter.itemCount == 0) {
-                        binding.commentsListMessage.text = view.context.getText(errorMessageId)
-                    } else {
-                        recyclerAdapter.notifyDataSetChanged()
-                        context?.toast(it)
-                    }
-                }
+            model.messageRes.observe(viewLifecycleOwner) { messageRes ->
+                messageRes?.let { context?.toast(messageRes) }
             }
             model.isSending.observe(viewLifecycleOwner) { isSending ->
                 if (isSending) {
                     val timerAnimatedDrawable =
                         AppCompatResources.getDrawable(view.context, R.drawable.ic_timer_animated)
-                    binding.commentsListSendBtn.setImageDrawable(timerAnimatedDrawable)
+                    commentsListSendBtn.setImageDrawable(timerAnimatedDrawable)
                     (timerAnimatedDrawable as? Animatable)?.start()
                 } else {
-                    binding.commentsListSendBtn.setImageResource(R.drawable.ic_send)
+                    commentsListSendBtn.setImageResource(R.drawable.ic_send)
                 }
             }
         }
 
-        binding.commentsListSendBtn.setOnClickListener { model.createComment() }
+        commentsListSendBtn.setOnClickListener { model.createComment() }
     }
 
     override fun onUserClick(userId: Int) = findNavController().navigate(CommentsListDialogDirections.toProfile(userId))
@@ -112,7 +121,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
             setIcon(R.drawable.ic_delete_grey)
             setMessage(R.string.this_action_cannot_be_undone)
             setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                recyclerAdapter.notifyItemChanged(viewHolderPosition)
+                commentsRecyclerAdapter.notifyItemChanged(viewHolderPosition)
                 dialog.dismiss()
             }
             setPositiveButton(android.R.string.ok) { dialog, _ ->
@@ -121,7 +130,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
             }
         }
         deleteConfirmationDialog.setOnCancelListener {
-            recyclerAdapter.notifyItemChanged(viewHolderPosition)
+            commentsRecyclerAdapter.notifyItemChanged(viewHolderPosition)
         }
         deleteConfirmationDialog.show()
     }
@@ -138,7 +147,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
     }
 
     override fun onDestroyView() {
-        recyclerAdapter.setAdapterListener(null)
+        commentsRecyclerAdapter.setAdapterListener(null)
         super.onDestroyView()
     }
 }

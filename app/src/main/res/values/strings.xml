@@ -42,6 +42,7 @@
     <string name="dialogs">Dialogs</string>
     <string name="profile">Profile</string>
     <string name="an_error_occurred_while_loading_feed">An error occurred while loading feed</string>
+    <string name="an_error_occurred_while_loading_comments">An error occurred while loading comments</string>
     <string name="an_error_occurred_while_loading_chats">An error occurred while loading chats</string>
     <string name="an_error_occurred_while_loading_messages">An error occurred while loading messages</string>
     <!--  Profile  -->
@@ -142,5 +143,6 @@
     <string name="no_likes_yet">No likes yet</string>
     <string name="unable_to_edit_status">Unable to edit status</string>
     <string name="debug_mode">Debug mode</string>
+    <string name="comments">Comments</string>
 
 </resources>
