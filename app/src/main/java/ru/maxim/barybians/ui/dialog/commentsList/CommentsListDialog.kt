@@ -49,12 +49,15 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentCommentsListBinding.inflate(inflater, container, false).apply {
-        lifecycleOwner = viewLifecycleOwner
-        viewModel = model
-        commentsRecyclerAdapter.setAdapterListener(this@CommentsListDialog)
-        commentsListRecycler.adapter = commentsRecyclerAdapter
-    }.root
+    ): View {
+        binding = FragmentCommentsListBinding.inflate(inflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = model
+            commentsRecyclerAdapter.setAdapterListener(this@CommentsListDialog)
+            commentsListRecycler.adapter = commentsRecyclerAdapter
+        }
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
