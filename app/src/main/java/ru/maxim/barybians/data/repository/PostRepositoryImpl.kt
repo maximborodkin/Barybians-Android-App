@@ -8,6 +8,7 @@ import ru.maxim.barybians.data.database.dao.PostDao
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
+import ru.maxim.barybians.data.network.model.mapper.PostDtoMapper
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.utils.isNotNull
@@ -20,28 +21,35 @@ class PostRepositoryImpl @Inject constructor(
     private val postDao: PostDao,
     private val likeDao: LikeDao,
     private val postEntityMapper: PostEntityMapper,
+    private val postDtoMapper: PostDtoMapper,
     private val repositoryBound: RepositoryBound,
     private val preferencesManager: PreferencesManager
 ) : PostRepository {
 
-    override suspend fun loadFeedPage(startIndex: Int, count: Int): List<Post> =
-        repositoryBound.wrapRequest { postService.loadFeedPage(startIndex, count) }
+    override suspend fun loadFeedPage(startIndex: Int, count: Int): List<Post> {
+        val postDto = repositoryBound.wrapRequest { postService.loadFeedPage(startIndex, count) }
+        return postDtoMapper.toDomainModelList(postDto)
+    }
 
     override fun feedPagingSource(): PagingSource<Int, PostEntity> {
         return postDao.pagingSource()
     }
 
-    override suspend fun getPostById(postId: Int): Post? =
-        repositoryBound.wrapRequest { postService.getById(postId) }
+    override suspend fun getPostById(postId: Int): Post? {
+        val postDto = repositoryBound.wrapRequest { postService.getById(postId) } ?: return null
+        return postDtoMapper.toDomainModel(postDto)
+    }
 
     override suspend fun createPost(title: String?, text: String) {
-        val post = repositoryBound.wrapRequest { postService.createPost(title, text) }
-        postDao.insert(postEntityMapper.fromDomainModel(post))
+        val postDto = repositoryBound.wrapRequest { postService.createPost(title, text) }
+        val post = postDtoMapper.toDomainModel(postDto)
+        postDao.insert(postEntityMapper.fromDomainModel(post).post)
     }
 
     override suspend fun editPost(postId: Int, title: String?, text: String) {
-        val post = repositoryBound.wrapRequest { postService.updatePost(postId, title, text) }
-        postDao.insert(postEntityMapper.fromDomainModel(post))
+        val postDto = repositoryBound.wrapRequest { postService.updatePost(postId, title, text) }
+        val post = postDtoMapper.toDomainModel(postDto)
+        postDao.insert(postEntityMapper.fromDomainModel(post).post)
     }
 
     override suspend fun deletePost(postId: Int) {
@@ -59,7 +67,7 @@ class PostRepositoryImpl @Inject constructor(
             else postService.setLike(postId)
         }
 
-        val likeEntities = likeResponse.whoLiked.map { user -> LikeEntity(postId = postId, userId = user.id) }
+        val likeEntities = likeResponse.whoLiked.map { user -> LikeEntity(postId = postId, userId = user.userId) }
         likeDao.insert(likeEntities)
     }
 }

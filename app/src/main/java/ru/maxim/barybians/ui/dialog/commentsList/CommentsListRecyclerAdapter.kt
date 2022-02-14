@@ -43,11 +43,11 @@ class CommentsListRecyclerAdapter @Inject constructor(
             swipeBackground = swipeBackground,
             iconDrawable = deleteIcon,
             allowSwipe = { viewHolder ->
-                getItem(viewHolder.bindingAdapterPosition)?.author?.id == preferencesManager.userId
+                getItem(viewHolder.bindingAdapterPosition)?.author?.userId == preferencesManager.userId
             },
             onSwiped = { viewHolder ->
                 val position = viewHolder.bindingAdapterPosition
-                val commentId = getItem(position)?.id ?: return@SwipeDismissCallback
+                val commentId = getItem(position)?.commentId ?: return@SwipeDismissCallback
                 commentsAdapterListener?.onCommentSwipe(commentId = commentId, viewHolderPosition = position)
             }
         )
@@ -96,11 +96,11 @@ class CommentsListRecyclerAdapter @Inject constructor(
                 itemCommentAttachmentsHolder.addView(imageView)
             }
 
-            itemCommentUserAvatar.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.id) }
-            itemCommentUserName.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.id) }
+            itemCommentUserAvatar.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.userId) }
+            itemCommentUserName.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.userId) }
             root.setOnLongClickListener {
-                if (comment.author.id == preferencesManager.userId) {
-                    commentsAdapterListener?.onCommentLongClick(comment.id, comment.text)
+                if (comment.author.userId == preferencesManager.userId) {
+                    commentsAdapterListener?.onCommentLongClick(comment.commentId, comment.text)
                 }
                 true
             }
@@ -118,7 +118,7 @@ class CommentsListRecyclerAdapter @Inject constructor(
 
     private object CommentDiffUtil : DiffUtil.ItemCallback<Comment>() {
         override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean =
-            oldItem.id == newItem.id
+            oldItem.commentId == newItem.commentId
 
         override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean =
             oldItem == newItem

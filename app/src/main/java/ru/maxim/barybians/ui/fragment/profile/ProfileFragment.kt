@@ -201,7 +201,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //    }
 //
 //    override fun showUserProfile(user: User) {
-//        val isPersonal = user.id == preferencesManager.userId
+//        val isPersonal = user.postId == preferencesManager.userId
 //        binding.profileLoading.visibility = View.GONE
 //        binding.profileRefreshLayout.isRefreshing = false
 //
@@ -209,7 +209,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //
 //        profileItems.add(
 //            HeaderItem(
-//                userId = user.id,
+//                userId = user.postId,
 //                isPersonal = isPersonal,
 //                avatarSmall = user.avatarMin,
 //                avatarFull = user.avatarFull,
@@ -226,25 +226,25 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //        for (post in user.posts) {
 //            val likes = ArrayList<UserItem>()
 //            likes.addAll(post.likedUsers.map {
-//                UserItem(it.id, "${it.firstName} ${it.lastName}", it.avatarMin)
+//                UserItem(it.postId, "${it.firstName} ${it.lastName}", it.avatarMin)
 //            })
 //            val comments: ArrayList<CommentItem> = ArrayList()
 //            comments.addAll(post.comments.map { comment ->
 //                val author = UserItem(
-//                    comment.author.id,
+//                    comment.author.postId,
 //                    "${comment.author.firstName} ${comment.author.lastName}",
 //                    comment.author.avatarMin
 //                )
 //                val date = dateFormatUtils.getSimplifiedDate(comment.date)
-//                CommentItem(comment.id, comment.text, date, author)
+//                CommentItem(comment.postId, comment.text, date, author)
 //            })
 //
 //            val date = dateFormatUtils.getSimplifiedDate(post.date)
 //            profileItems.add(
 //                PostItem(
-//                    postId = post.id,
+//                    postId = post.postId,
 //                    isPersonal = isPersonal,
-//                    authorId = user.id,
+//                    authorId = user.postId,
 //                    avatar = user.avatarMin,
 //                    name = user.fullName,
 //                    date = date,
@@ -257,7 +257,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //
 //            val currentPostId = profilePresenter.currentPostId
 //            val currentPostPosition = profilePresenter.currentPostPosition
-//            if (currentPostId == post.id && currentPostPosition != -1) {
+//            if (currentPostId == post.postId && currentPostPosition != -1) {
 //                showCommentsList(currentPostId, currentPostPosition)
 //            }
 //        }
@@ -296,7 +296,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //        profileItems.add(
 //            2,
 //            PostItem(
-//                post.id,
+//                post.postId,
 //                true,
 //                preferencesManager.userId,
 //                User.getAvatarMin(preferencesManager.userAvatar),
@@ -350,7 +350,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //            User.getAvatarMin(preferencesManager.userAvatar)
 //        )
 //        val date = dateFormatUtils.getSimplifiedDate(comment.date)
-//        val commentItem = CommentItem(comment.id, comment.text, date, author)
+//        val commentItem = CommentItem(comment.postId, comment.text, date, author)
 //
 //        postComments.add(commentItem)
 //        val commentsCount = postComments.size
@@ -382,7 +382,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //
 //    override fun onCommentDeleted(postPosition: Int, commentPosition: Int, commentId: Int) {
 //        val postComments = (profileItems[postPosition] as? PostItem)?.comments ?: return
-//        if (postComments[commentPosition].id == commentId) postComments.removeAt(commentPosition)
+//        if (postComments[commentPosition].postId == commentId) postComments.removeAt(commentPosition)
 //        // TODO: migrate to flow
 ////        currentCommentsListDialog?.let {
 ////            it.commentsBottomSheetTitle?.text =
@@ -403,7 +403,7 @@ class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, Profi
 //        val likesList = (profileItems[postPosition] as? PostItem)?.likes
 //        likesList?.clear()
 //        likedUsers.forEach {
-//            likesList?.add(UserItem(it.id, "${it.firstName} ${it.lastName}", it.avatarMin))
+//            likesList?.add(UserItem(it.postId, "${it.firstName} ${it.lastName}", it.avatarMin))
 //        }
 //        val postItemViewHolder =
 //            binding.profileRecyclerView.findViewHolderForAdapterPosition(postPosition)

@@ -8,7 +8,7 @@ import android.os.IBinder
 class UserStatusService : Service() {
 
     private val binder = StatusServiceBinder()
-    private val statuses = HashMap<Int, Boolean>() // <User id, is online>
+    private val statuses = HashMap<Int, Boolean>() // <User postId, is online>
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         return Service.START_STICKY

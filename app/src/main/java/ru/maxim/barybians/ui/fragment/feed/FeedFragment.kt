@@ -94,10 +94,10 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
 //            title = post.title,
 //            text = post.text,
 //            onDelete = {
-//                model.deletePost(post.id)
+//                model.deletePost(post.postId)
 //            },
 //            onEdit = { title, text ->
-//                model.editPost(post.id, title, text)
+//                model.editPost(post.postId, title, text)
 //            }
 //        ).show(childFragmentManager, PostMenuDialog::class.simpleName)
     }

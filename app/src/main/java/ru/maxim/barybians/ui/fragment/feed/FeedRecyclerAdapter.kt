@@ -51,13 +51,12 @@ class FeedRecyclerAdapter @Inject constructor(
             this.post = post
             isDebug = preferencesManager.isDebug
             isPersonal = post.userId == preferencesManager.userId
-            hasPersonalLike = post.likedUsers.contains { it.id == preferencesManager.userId }
+            hasPersonalLike = post.likedUsers.contains { it.userId == preferencesManager.userId }
 
             itemPostAvatar.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
             itemPostName.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
             itemPostMenuBtn.setOnClickListener {
-                val post = getItem(bindingAdapterPosition)
-                post?.let { feedAdapterListener?.onPostMenuClick(post) }
+                 getItem(bindingAdapterPosition)?.let { feedAdapterListener?.onPostMenuClick(it) }
             }
 
             val postBody = htmlUtils.parseHtml(post.text)
@@ -76,9 +75,9 @@ class FeedRecyclerAdapter @Inject constructor(
                 itemPostAttachmentsHolder.addView(imageView)
             }
 
-            itemPostLikeBtn.setOnClickListener { feedAdapterListener?.onLikeClick(post.id) }
-            itemPostLikeBtn.setOnLongClickListener { feedAdapterListener?.onLikeLongClick(post.id); true }
-            itemPostCommentBtn.setOnClickListener { feedAdapterListener?.onCommentsClick(post.id) }
+            itemPostLikeBtn.setOnClickListener { feedAdapterListener?.onLikeClick(post.postId) }
+            itemPostLikeBtn.setOnLongClickListener { feedAdapterListener?.onLikeLongClick(post.postId); true }
+            itemPostCommentBtn.setOnClickListener { feedAdapterListener?.onCommentsClick(post.postId) }
         }
 
         private fun bindPlaceholder() = with(binding) {
@@ -99,7 +98,7 @@ class FeedRecyclerAdapter @Inject constructor(
 
     private object PostsDiffUtil : DiffUtil.ItemCallback<Post>() {
         override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean =
-            oldItem.id == newItem.id
+            oldItem.postId == newItem.postId
 
         override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean =
             oldItem == newItem

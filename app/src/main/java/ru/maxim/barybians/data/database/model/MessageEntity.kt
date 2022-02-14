@@ -1,7 +1,8 @@
 package ru.maxim.barybians.data.database.model
 
 import androidx.room.*
-import ru.maxim.barybians.data.database.model.MessageEntity.MessageEntityBody.Contract.tableName
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.NO_ACTION
 
 data class MessageEntity(
     @Embedded val message: MessageEntityBody,
@@ -9,7 +10,7 @@ data class MessageEntity(
     @Relation(
         entity = AttachmentEntity::class,
         entityColumn = AttachmentEntity.Contract.Columns.messageId,
-        parentColumn = MessageEntityBody.Contract.Columns.messageId
+        parentColumn = Columns.messageId
     )
     val attachments: List<AttachmentEntity>
 ) {
@@ -34,18 +35,18 @@ data class MessageEntity(
 
         @ColumnInfo(name = Columns.unread)
         val unread: Int,
-    ) {
-        companion object Contract {
-            const val tableName = "messages"
+    )
 
-            object Columns {
-                const val messageId = "message_id"
-                const val senderId = "sender_id"
-                const val receiverId = "receiver_id"
-                const val text = "text"
-                const val time = "date"
-                const val unread = "unread"
-            }
+    companion object Contract {
+        const val tableName = "messages"
+
+        object Columns {
+            const val messageId = "message_id"
+            const val senderId = "sender_id"
+            const val receiverId = "receiver_id"
+            const val text = "text"
+            const val time = "date"
+            const val unread = "unread"
         }
     }
 }

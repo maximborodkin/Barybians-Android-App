@@ -4,8 +4,8 @@ import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
-import ru.maxim.barybians.data.network.response.AuthResponse
-import ru.maxim.barybians.data.network.response.RegistrationResponse
+import ru.maxim.barybians.data.network.model.response.AuthResponse
+import ru.maxim.barybians.data.network.model.response.RegistrationResponse
 
 interface AuthService {
 

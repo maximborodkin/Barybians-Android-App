@@ -12,8 +12,8 @@ import ru.maxim.barybians.data.database.model.*
         ChatEntity::class,
         CommentEntity::class,
         LikeEntity::class,
-        MessageEntity::class,
-        PostEntity::class,
+        MessageEntity.MessageEntityBody::class,
+        PostEntity.PostEntityBody::class,
         UserEntity::class
     ],
     version = databaseVersion,

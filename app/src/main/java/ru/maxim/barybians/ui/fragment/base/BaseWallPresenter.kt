@@ -13,7 +13,7 @@ abstract class BaseWallPresenter<T : BaseWallView>(
 ) : MvpPresenter<T>() {
 
     /**
-     * id and layout position of currently shown post
+     * postId and layout position of currently shown post
      * Used to restore BottomSheetDialog state.
      * If dialog was shown before the state has changed, it will be restored by this parameters.
      * Passed to [FeedFragment.onCommentsClick]

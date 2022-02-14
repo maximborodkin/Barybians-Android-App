@@ -1,8 +1,8 @@
 package ru.maxim.barybians.data.network.model.response
 
-import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.data.network.model.UserDto
 
 data class AuthResponse(
-    val user: User?,
+    val user: UserDto?,
     val token: String?
 )

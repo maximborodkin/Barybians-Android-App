@@ -7,11 +7,14 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import dagger.Reusable
 import ru.maxim.barybians.data.database.BarybiansDatabase
+import ru.maxim.barybians.data.database.dao.CommentDao
 import ru.maxim.barybians.data.database.dao.PostDao
+import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.utils.transform
+import timber.log.Timber
 import javax.inject.Inject
 
 @Reusable
@@ -20,7 +23,9 @@ class PostRemoteMediator @Inject constructor(
     private val feedRepository: PostRepository,
     private val database: BarybiansDatabase,
     private val postEntityMapper: PostEntityMapper,
-    private val postDao: PostDao
+    private val postDao: PostDao,
+    private val userDao: UserDao,
+    private val commentDao: CommentDao
 ) : RemoteMediator<Int, PostEntity>() {
 
     /*
@@ -37,7 +42,7 @@ class PostRemoteMediator @Inject constructor(
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     val last = state.lastItemOrNull() ?: return MediatorResult.Success(endOfPaginationReached = false)
-                    last.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    last.post.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
                 }
             }
 
@@ -55,12 +60,14 @@ class PostRemoteMediator @Inject constructor(
                 }
 
                 val entities = postEntityMapper.fromDomainModelList(feedPageResponse)
-                    .transform { post -> post.prevKey = prevKey; post.nextKey = nextKey }
+                    .transform { post -> post.post.prevKey = prevKey; post.post.nextKey = nextKey }
 
-                postDao.insert(entities)
+                postDao.savePosts(userDao, commentDao, entities)
+
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {
+            Timber.e(e)
             MediatorResult.Error(e)
         }
     }

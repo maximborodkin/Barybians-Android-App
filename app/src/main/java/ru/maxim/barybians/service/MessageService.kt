@@ -2,7 +2,6 @@ package ru.maxim.barybians.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -12,16 +11,12 @@ import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.TaskStackBuilder
-import com.google.gson.Gson
 import kotlinx.coroutines.*
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
-import ru.maxim.barybians.data.network.response.MessageNotificationResponse
+import ru.maxim.barybians.data.network.model.MessageDto
 import ru.maxim.barybians.data.network.service.ChatService
-import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.utils.isNotNull
 import javax.inject.Inject
 
@@ -33,7 +28,7 @@ import javax.inject.Inject
 class MessageService : Service() {
 
     private val log_tag = "MESSAGE_SERVICE"
-    private val newMessages = ArrayList<MessageNotificationResponse>()
+    private val newMessages = ArrayList<MessageDto>()
     private var lastReceivedMessageId = 0
     private val notificationManager by lazy { NotificationManagerCompat.from(this) }
     private val notificationsChannelId = "MessagesNotificationsChannel"
@@ -129,7 +124,7 @@ class MessageService : Service() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 chatService.getChatsList().body()?.forEach {
-                    val dialogMessageId = it.lastMessage.id
+                    val dialogMessageId = it.lastMessage.messageId
                     if (dialogMessageId > lastReceivedMessageId) lastReceivedMessageId = dialogMessageId
                 }
             } catch (ignored: Exception) {
@@ -149,13 +144,13 @@ class MessageService : Service() {
                             Log.d("MESSAGES_SERVICE", "pollingResponse: ${pollingResponse.body()}")
                             pollingResponse.body()?.entrySet()?.forEach {
                                 try {
-                                    val message = (Gson().fromJson(
-                                        it.value,
-                                        MessageNotificationResponse::class.java
-                                    ))
-                                    newMessages.add(message)
-                                    lastReceivedMessageId = message.message.id
-                                    createNotification(message)
+//                                    val message = (Gson().fromJson(
+//                                        it.value,
+//                                        MessageNotificationResponse::class.java
+//                                    ))
+//                                    newMessages.add(message)
+//                                    lastReceivedMessageId = message.message.postId
+//                                    createNotification(message)
                                 } catch (e: Exception) {
                                 }
                             }
@@ -169,30 +164,30 @@ class MessageService : Service() {
         }
     }
 
-    private fun createNotification(message: MessageNotificationResponse) {
-        // TODO("Make vibrate and sound for notification")
-        // TODO("Create preferences for notifications(disable, mute, mute for date range)")
-        Log.d("MESSAGES_SERVICE", "Created notification: ${newMessages.last().message.text}")
-        val interlocutor = message.secondUser
-        val interlocutorName = "${interlocutor.firstName} ${interlocutor.lastName}"
-        val dialogIntent = Intent(this, ChatFragment::class.java).apply {
-            putExtra("userId", interlocutor.id)
-            putExtra("userName", interlocutorName)
-            putExtra("userAvatar", interlocutor.avatarMin)
-        }
-        val pendingIntent = TaskStackBuilder.create(this).run {
-            addNextIntentWithParentStack(dialogIntent)
-            getPendingIntent(pendingIntentResultCode, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-        val builder = NotificationCompat.Builder(this, notificationsChannelId)
-            .setSmallIcon(R.drawable.ic_dialogs_list_white)
-            .setContentTitle(interlocutorName)
-            .setContentText(newMessages.last().message.text)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-
-        notificationManager.notify(messageNotificationId, builder.build())
-    }
+//    private fun createNotification(message: MessageDto) {
+//        // TODO("Make vibrate and sound for notification")
+//        // TODO("Create preferences for notifications(disable, mute, mute for date range)")
+//        Log.d("MESSAGES_SERVICE", "Created notification: ${newMessages.last().message.text}")
+//        val interlocutor = message.secondUser
+//        val interlocutorName = "${interlocutor.firstName} ${interlocutor.lastName}"
+//        val dialogIntent = Intent(this, ChatFragment::class.java).apply {
+//            putExtra("userId", interlocutor.postId)
+//            putExtra("userName", interlocutorName)
+//            putExtra("userAvatar", interlocutor.avatarMin)
+//        }
+//        val pendingIntent = TaskStackBuilder.create(this).run {
+//            addNextIntentWithParentStack(dialogIntent)
+//            getPendingIntent(pendingIntentResultCode, PendingIntent.FLAG_UPDATE_CURRENT)
+//        }
+//        val builder = NotificationCompat.Builder(this, notificationsChannelId)
+//            .setSmallIcon(R.drawable.ic_dialogs_list_white)
+//            .setContentTitle(interlocutorName)
+//            .setContentText(newMessages.last().message.text)
+//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//            .setContentIntent(pendingIntent)
+//
+//        notificationManager.notify(messageNotificationId, builder.build())
+//    }
 
     private fun createMessagesNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -10,7 +10,7 @@ import ru.maxim.barybians.domain.model.User
 interface ChatView : MvpView {
 
     @AddToEnd
-    fun showMessages(messages: ArrayList<Message>, interlocutor: User)
+    fun showMessages(messages: List<Message>, interlocutor: User)
 
     @OneExecution
     fun onLoadingMessagesError()
@@ -25,5 +25,5 @@ interface ChatView : MvpView {
     fun onMessageSendingError(messageId: Long)
 
     @AddToEnd
-    fun onMessagesReceived(messages: ArrayList<Message>)
+    fun onMessagesReceived(messages: List<Message>)
 }

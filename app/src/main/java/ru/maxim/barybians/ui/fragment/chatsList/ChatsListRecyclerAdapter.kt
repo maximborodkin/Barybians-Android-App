@@ -47,7 +47,7 @@ class ChatsListRecyclerAdapter(
             }
             message.text = lastMessage.append(": ${chat.lastMessage.text}").toString()
 
-            itemView.setOnClickListener { onChatClick(chat.secondUser.id) }
+            itemView.setOnClickListener { onChatClick(chat.secondUser.userId) }
         }
     }
 

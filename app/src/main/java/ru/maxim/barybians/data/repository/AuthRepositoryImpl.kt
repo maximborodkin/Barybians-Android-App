@@ -6,8 +6,8 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.*
-import ru.maxim.barybians.data.network.response.ErrorResponse
-import ru.maxim.barybians.data.network.response.RegistrationResponse
+import ru.maxim.barybians.data.network.model.response.ErrorResponse
+import ru.maxim.barybians.data.network.model.response.RegistrationResponse
 import ru.maxim.barybians.data.network.service.AuthService
 import ru.maxim.barybians.utils.NetworkUtils
 import ru.maxim.barybians.utils.isNotNull
@@ -35,7 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
 
                 with(preferencesManager) {
                     token = responseBody.token
-                    userId = responseBody.user.id
+                    userId = responseBody.user.userId
                     userName = "${responseBody.user.firstName} ${responseBody.user.lastName}"
                     userAvatar = responseBody.user.photo.orEmpty()
                 }

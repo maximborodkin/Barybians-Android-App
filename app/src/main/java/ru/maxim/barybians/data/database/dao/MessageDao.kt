@@ -8,6 +8,7 @@ import ru.maxim.barybians.data.database.model.MessageEntity.Contract.Columns
 @Dao
 interface MessageDao {
 
+    @Transaction
     @Query(
         """SELECT * FROM ${MessageEntity.tableName} WHERE 
         ${Columns.senderId}=:firsUserId AND ${Columns.receiverId}=:secondUserId OR
@@ -16,12 +17,15 @@ interface MessageDao {
     )
     fun getChatMessages(firsUserId: Int, secondUserId: Int): Flow<List<MessageEntity>>
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(messageEntity: MessageEntity)
+    suspend fun insert(messageEntity: MessageEntity.MessageEntityBody)
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(messageEntities: List<MessageEntity>)
+    suspend fun insert(messageEntities: List<MessageEntity.MessageEntityBody>)
 
+    @Transaction
     @Delete
-    suspend fun delete(messageEntity: MessageEntity)
+    suspend fun delete(messageEntity: MessageEntity.MessageEntityBody)
 }

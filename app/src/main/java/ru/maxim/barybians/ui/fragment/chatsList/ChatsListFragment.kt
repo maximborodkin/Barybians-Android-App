@@ -11,6 +11,7 @@ import moxy.ktx.moxyPresenter
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatsListBinding
+import ru.maxim.barybians.data.network.model.ChatDto
 import ru.maxim.barybians.domain.model.Chat
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast

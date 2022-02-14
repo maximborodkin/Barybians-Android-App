@@ -2,14 +2,25 @@ package ru.maxim.barybians.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.tableName
 
-@Entity(tableName = tableName)
+@Entity(
+    tableName = tableName,
+    foreignKeys = [
+        ForeignKey(
+            entity = MessageEntity.MessageEntityBody::class,
+            parentColumns = [AttachmentEntity.Contract.Columns.messageId],
+            childColumns = [MessageEntity.Contract.Columns.messageId],
+            onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.NO_ACTION
+        )
+    ]
+)
 data class AttachmentEntity(
 
-    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = Columns.attachmentId)
+    @PrimaryKey(autoGenerate = true)
     val attachmentId: Int,
 
     @ColumnInfo(name = Columns.messageId)
@@ -17,17 +28,6 @@ data class AttachmentEntity(
 
     @ColumnInfo(name = Columns.type)
     val type: String,
-
-//    val offset: Int?,
-//    val length: Int?,
-//    val style: String?,
-//
-//    val url: String?,
-//    val title: String?,
-//    val description: String?,
-//    val image: String?,
-//    val favicon: String?,
-//    val timestamp: Long?
 ) {
     companion object Contract {
         const val tableName = "message_attachments"

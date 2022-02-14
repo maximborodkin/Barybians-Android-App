@@ -67,7 +67,7 @@
                 android:id="@+id/itemPostId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{`Post id: ` + String.valueOf(post.id)}"
+                android:text="@{`Post id: ` + String.valueOf(post.postId)}"
                 android:visibility="@{isDebug ? View.VISIBLE : View.GONE}"
                 app:layout_constraintStart_toEndOf="@id/itemPostName"
                 app:layout_constraintTop_toTopOf="@id/itemPostName"

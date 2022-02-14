@@ -36,15 +36,15 @@ class LikesListRecyclerAdapter @Inject constructor() :
 
         fun bind(user: User) = with(binding) {
             itemUserAvatar.load(user.avatarMin)
-            itemUserAvatar.isOnline = user.lastVisit > Date().time / 1000 - 5 * 60
+            itemUserAvatar.isOnline = user.isOnline
             itemUserName.text = user.fullName
-            root.setOnClickListener { onUserClick?.invoke(user.id) }
+            root.setOnClickListener { onUserClick?.invoke(user.userId) }
         }
     }
 
     private object UserDiffUtils : DiffUtil.ItemCallback<User>() {
         override fun areItemsTheSame(oldItem: User, newItem: User): Boolean =
-            oldItem.id == newItem.id
+            oldItem.userId == newItem.userId
 
         override fun areContentsTheSame(oldItem: User, newItem: User): Boolean =
             oldItem == newItem
