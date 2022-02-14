@@ -13,11 +13,8 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.NotFoundException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.data.repository.PostRepository
-import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.domain.model.User
-import java.util.*
 
 class LikesListDialogViewModel private constructor(
     application: Application,

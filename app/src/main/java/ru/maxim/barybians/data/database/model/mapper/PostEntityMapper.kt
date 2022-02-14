@@ -9,8 +9,6 @@ import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.domain.model.Post
-import timber.log.Timber
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 class PostEntityMapper @Inject constructor(
@@ -40,14 +38,14 @@ class PostEntityMapper @Inject constructor(
         )
     }
 
+    /*
+    * The game is over
+    * No more rounds to play, it's time to pay
+    * Who's got the Joker?
+    * To kill the lies and make your hurt recall
+    * There is no other sky to fall
+    * */
     override suspend fun fromDomainModel(domainModel: Post): PostEntity {
-        /*
-        * The game is over
-        * No more rounds to play, it's time to pay
-        * Who's got the Joker?
-        * To kill the lies and make your hurt recall
-        * There is no other sky to fall
-        * */
         database.withTransaction {
             userDao.insert(userEntityMapper.fromDomainModel(domainModel.author))
             userDao.insert(userEntityMapper.fromDomainModelList(domainModel.likedUsers))
@@ -64,12 +62,5 @@ class PostEntityMapper @Inject constructor(
             date = domainModel._date,
             edited = domainModel.edited
         )
-    }
-
-    override suspend fun toDomainModelList(model: List<PostEntity>): List<Post> {
-        val str = StringBuilder()
-        model.forEach { str.append(it.postId) }
-        Timber.d("XXX toDomainModelList ${model.size} $str")
-        return super.toDomainModelList(model)
     }
 }

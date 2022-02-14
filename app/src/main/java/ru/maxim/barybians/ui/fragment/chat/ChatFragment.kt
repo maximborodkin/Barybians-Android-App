@@ -24,7 +24,6 @@ import ru.maxim.barybians.utils.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.collections.ArrayList
 
 class ChatFragment : MvpAppCompatFragment(), ChatView {
 

@@ -1,6 +1,6 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-class ProfileViewModel()
+class ProfileViewModel
 //    application: Application,
 //    postRepository: PostRepository,
 //    private val userRepository: UserRepository,

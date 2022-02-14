@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.tableName
 
 @Entity(tableName = tableName)
-data class AttachmentEntity (
+data class AttachmentEntity(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = Columns.attachmentId)

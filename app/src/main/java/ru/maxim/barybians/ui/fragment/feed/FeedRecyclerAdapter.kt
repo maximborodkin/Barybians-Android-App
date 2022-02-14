@@ -13,7 +13,6 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.PostViewHolder
 import ru.maxim.barybians.utils.*
 import javax.inject.Inject
@@ -22,11 +21,6 @@ class FeedRecyclerAdapter @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val htmlUtils: HtmlUtils
 ) : PagingDataAdapter<Post, PostViewHolder>(PostsDiffUtil) {
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-//        recyclerView.itemAnimator = null
-    }
 
     private var feedAdapterListener: FeedAdapterListener? = null
 

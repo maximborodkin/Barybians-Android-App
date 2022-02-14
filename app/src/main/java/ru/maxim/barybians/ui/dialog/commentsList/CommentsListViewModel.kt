@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.paging.CommentRemoteMediator.CommentsRemoteMediatorFactory
-import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
 import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.domain.model.Comment
 import java.util.*

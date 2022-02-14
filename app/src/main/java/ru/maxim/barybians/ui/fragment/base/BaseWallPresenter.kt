@@ -1,14 +1,10 @@
 package ru.maxim.barybians.ui.fragment.base
 
-import kotlinx.coroutines.launch
 import moxy.MvpPresenter
-import moxy.presenterScope
-import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.repository.CommentRepository
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.data.repository.UserRepository
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
-import java.util.*
 
 abstract class BaseWallPresenter<T : BaseWallView>(
     private val postRepository: PostRepository,

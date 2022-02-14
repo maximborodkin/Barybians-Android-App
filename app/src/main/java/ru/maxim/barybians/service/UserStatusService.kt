@@ -14,10 +14,6 @@ class UserStatusService : Service() {
         return Service.START_STICKY
     }
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
     override fun onBind(intent: Intent?): IBinder = binder
 
     inner class StatusServiceBinder : Binder() {

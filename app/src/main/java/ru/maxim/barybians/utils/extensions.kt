@@ -22,9 +22,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.di.AppComponent
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Calendar.DATE
-import java.util.Calendar.YEAR
-import java.util.Calendar.MONTH
+import java.util.Calendar.*
 
 fun Any?.isNull() = this == null
 fun Any?.isNotNull() = !this.isNull()

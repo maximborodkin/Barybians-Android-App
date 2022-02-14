@@ -1,14 +1,14 @@
 package ru.maxim.barybians.data.repository
 
 import androidx.paging.PagingSource
-import ru.maxim.barybians.data.RepositoryBound
-import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.PreferencesManager
+import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.database.dao.LikeDao
 import ru.maxim.barybians.data.database.dao.PostDao
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
+import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.utils.isNotNull
 import javax.inject.Inject

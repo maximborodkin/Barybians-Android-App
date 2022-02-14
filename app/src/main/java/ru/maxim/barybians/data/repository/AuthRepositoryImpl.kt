@@ -4,11 +4,11 @@ import com.google.gson.Gson
 import dagger.Reusable
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.*
 import ru.maxim.barybians.data.network.response.ErrorResponse
 import ru.maxim.barybians.data.network.response.RegistrationResponse
 import ru.maxim.barybians.data.network.service.AuthService
-import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.utils.NetworkUtils
 import ru.maxim.barybians.utils.isNotNull
 import timber.log.Timber

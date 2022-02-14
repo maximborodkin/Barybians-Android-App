@@ -1,9 +1,15 @@
 package ru.maxim.barybians.service
 
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.*
+import android.os.Binder
+import android.os.Build
+import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
@@ -12,12 +18,11 @@ import androidx.core.app.TaskStackBuilder
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.network.response.MessageNotificationResponse
 import ru.maxim.barybians.data.PreferencesManager
+import ru.maxim.barybians.data.network.response.MessageNotificationResponse
 import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.utils.isNotNull
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -95,7 +100,7 @@ class MessageService : Service() {
         wakeLock =
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
                 newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MessageService::lock").apply {
-                    acquire(10*60*1000L /*10 minutes*/)
+                    acquire(10 * 60 * 1000L /*10 minutes*/)
                 }
             }
         createMessagesNotificationChannel()
@@ -151,7 +156,8 @@ class MessageService : Service() {
                                     newMessages.add(message)
                                     lastReceivedMessageId = message.message.id
                                     createNotification(message)
-                                } catch (e: Exception){ }
+                                } catch (e: Exception) {
+                                }
                             }
                         }
                     } catch (ignored: Exception) {

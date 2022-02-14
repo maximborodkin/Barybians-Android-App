@@ -2,11 +2,11 @@ package ru.maxim.barybians.data.repository
 
 import androidx.paging.PagingSource
 import ru.maxim.barybians.data.RepositoryBound
-import ru.maxim.barybians.data.network.service.CommentService
-import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.database.dao.CommentDao
 import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
+import ru.maxim.barybians.data.network.service.CommentService
+import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.domain.model.Comment
 import javax.inject.Inject
 
