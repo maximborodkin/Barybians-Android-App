@@ -16,7 +16,6 @@ import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentFeedBinding
 import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.ui.dialog.PostMenuDialog
 import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.hide
