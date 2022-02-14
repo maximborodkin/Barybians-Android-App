@@ -109,7 +109,7 @@ fun <T> List<T>.transform(action: (T) -> Unit): List<T> {
     return this
 }
 
-fun Date.simple(hasTime: Boolean = true): String {
+private fun Date.simple(hasTime: Boolean = true): String {
     val today = Calendar.getInstance()
     val date = Calendar.getInstance().also { it.timeInMillis = this.time }
     return when {
@@ -120,13 +120,12 @@ fun Date.simple(hasTime: Boolean = true): String {
     }.format(this)
 }
 
-fun Date.date(): String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(this)
-
-fun Date.time(): String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(this)
-
 fun simpleDate(timestamp: Long, hasTime: Boolean = true) = Date(timestamp).simple(hasTime)
-fun date(timestamp: Long) = Date(timestamp).date()
-fun time(timestamp: Long) = Date(timestamp).time()
+fun simpleDate(date: Date, hasTime: Boolean = true) = date.simple(hasTime)
+fun date(timestamp: Long): String = date(Date(timestamp))
+fun date(date: Date): String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date)
+fun time(timestamp: Long): String = time(Date(timestamp))
+fun time(date: Date): String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
 
 val Context.appComponent: AppComponent
     get() = when (this) {

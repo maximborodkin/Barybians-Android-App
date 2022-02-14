@@ -1,6 +1,6 @@
-package ru.maxim.barybians.domain.model
+package ru.maxim.barybians.data.network.model
 
-data class Attachment(
+data class AttachmentDto(
     val messageId: Int,
     val type: String
 //    val offset: Int?,

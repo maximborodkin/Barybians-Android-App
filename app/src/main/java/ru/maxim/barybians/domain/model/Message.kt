@@ -1,17 +1,15 @@
 package ru.maxim.barybians.domain.model
 
-import com.google.gson.annotations.SerializedName
+import ru.maxim.barybians.data.database.model.AttachmentEntity
+import ru.maxim.barybians.data.database.model.UserEntity
+import java.util.*
 
 data class Message(
     val id: Int,
-    val senderId: Int,
-    val receiverId: Int,
+    val sender: UserEntity,
+    val receiver: UserEntity,
     val text: String,
-    @SerializedName("utime")
-    val _date: Long,
-    val unread: Int,
-    val attachments: List<Attachment>?
-) {
-    val date: Long
-        get() = _date * 1000
-}
+    val date: Date,
+    val isUnread: Boolean,
+    val attachments: List<AttachmentEntity>
+)
