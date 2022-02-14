@@ -4,6 +4,7 @@ import ru.maxim.barybians.data.DomainMapper
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.domain.model.Comment
+import java.util.*
 import javax.inject.Inject
 
 class CommentEntityMapper @Inject constructor(
@@ -12,27 +13,24 @@ class CommentEntityMapper @Inject constructor(
 ) : DomainMapper<CommentEntity, Comment>() {
 
     override suspend fun toDomainModel(model: CommentEntity): Comment {
-        val author = requireNotNull(userDao.getById(model.userId))
-
         return Comment(
-            id = model.commentId,
+            commentId = model.commentId,
             postId = model.postId,
             userId = model.userId,
             text = model.text,
-            _date = model.date,
-            author = userEntityMapper.toDomainModel(author)
+            date = Date(model.date),
+            author = userEntityMapper.toDomainModel(model.author)
         )
     }
 
     override suspend fun fromDomainModel(domainModel: Comment): CommentEntity {
-        userDao.insert(userEntityMapper.fromDomainModel(domainModel.author))
-
         return CommentEntity(
-            commentId = domainModel.id,
+            commentId = domainModel.commentId,
             postId = domainModel.postId,
             userId = domainModel.userId,
             text = domainModel.text,
-            date = domainModel._date
+            date = domainModel.date.time,
+            author = userEntityMapper.fromDomainModel(domainModel.author)
         )
     }
 }

@@ -1,17 +1,15 @@
 package ru.maxim.barybians.domain.model
 
-import ru.maxim.barybians.data.database.model.CommentEntity
-import ru.maxim.barybians.data.database.model.UserEntity
 import java.util.*
 
 data class Post(
-    val id: Int,
+    val postId: Int,
     val userId: Int,
     val title: String?,
     val text: String,
     val date: Date,
-    val edited: Boolean,
-    val author: UserEntity,
-    val likedUsers: List<UserEntity>,
-    val comments: List<CommentEntity>
+    val isEdited: Boolean,
+    val author: User,
+    val likedUsers: List<User>,
+    val comments: List<Comment>
 )

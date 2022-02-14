@@ -20,8 +20,8 @@ data class LikeEntity(
         const val tableName = "likes"
 
         object Columns {
-            const val postId = "post_id"
-            const val userId = "user_id"
+            const val postId = PostEntityBody.Contract.Columns.postId
+            const val userId = UserEntity.Contract.Columns.userId
         }
     }
 }

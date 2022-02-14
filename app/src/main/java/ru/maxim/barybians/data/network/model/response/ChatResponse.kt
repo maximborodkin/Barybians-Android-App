@@ -1,4 +1,4 @@
-package ru.maxim.barybians.data.network.response
+package ru.maxim.barybians.data.network.model.response
 
 import ru.maxim.barybians.domain.model.Message
 import ru.maxim.barybians.domain.model.User

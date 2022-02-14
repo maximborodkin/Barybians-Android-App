@@ -2,10 +2,8 @@ package ru.maxim.barybians.data.database.dao
 
 import androidx.room.*
 import ru.maxim.barybians.data.database.model.LikeEntity
-import ru.maxim.barybians.data.database.model.PostRelatedEntity
 import ru.maxim.barybians.data.database.model.UserEntity
 import ru.maxim.barybians.data.database.model.LikeEntity.Contract as Like
-import ru.maxim.barybians.data.database.model.PostEntity.Contract as Post
 import ru.maxim.barybians.data.database.model.UserEntity.Contract as User
 
 @Dao
@@ -21,9 +19,6 @@ interface LikeDao {
 
     @Query("SELECT * FROM ${Like.tableName} WHERE ${Like.Columns.postId}=:postId AND ${Like.Columns.userId}=:userId")
     suspend fun getLike(postId: Int, userId: Int): LikeEntity?
-
-    @Query("SELECT * FROM ${Post.tableName} WHERE ${Post.Columns.postId}=:postId")
-    fun getFullPost(postId: Int): PostRelatedEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(likeEntity: LikeEntity)

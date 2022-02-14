@@ -1,6 +1,7 @@
 package ru.maxim.barybians.data.database.model
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.maxim.barybians.data.database.model.CommentEntity.Contract.tableName
@@ -28,7 +29,10 @@ data class CommentEntity(
     var prevKey: Int? = null,
 
     @ColumnInfo(name = Columns.nextKey)
-    var nextKey: Int? = null
+    var nextKey: Int? = null,
+
+    @Embedded(prefix = "author_")
+    val author: UserEntity
 ) {
     companion object Contract {
         const val tableName = "comments"

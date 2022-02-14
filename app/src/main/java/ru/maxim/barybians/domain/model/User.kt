@@ -4,7 +4,7 @@ import ru.maxim.barybians.data.network.RetrofitClient
 import java.util.*
 
 data class User(
-    val id: Int,
+    val userId: Int,
     val firstName: String,
     val lastName: String,
     val photo: String?,
