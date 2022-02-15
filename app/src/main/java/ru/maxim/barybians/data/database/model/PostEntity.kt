@@ -7,6 +7,13 @@ data class PostEntity(
 
     @Relation(
         entity = UserEntity::class,
+        parentColumn = Columns.userId,
+        entityColumn = UserEntity.Contract.Columns.userId
+    )
+    val author: UserEntity,
+
+    @Relation(
+        entity = UserEntity::class,
         parentColumn = LikeEntity.Contract.Columns.postId,
         entityColumn = LikeEntity.Contract.Columns.userId,
         associateBy = Junction(LikeEntity::class)
@@ -44,24 +51,11 @@ data class PostEntity(
         @ColumnInfo(name = Columns.edited)
         val edited: Int,
 
-        @ColumnInfo(name = Columns.prevKey)
-        var prevKey: Int? = null,
+        @ColumnInfo(name = Columns.prevPage)
+        var prevPage: Int? = null,
 
-        @ColumnInfo(name = Columns.nextKey)
-        var nextKey: Int? = null,
-
-        @Embedded(prefix = "author_")
-        val author: UserEntity = UserEntity(
-            userId = 0,
-            firstName = "test",
-            lastName = "",
-            photo = null,
-            status = null,
-            birthDate = 0,
-            sex = "",
-            lastVisit = 0,
-            roleId = null
-        ),
+        @ColumnInfo(name = Columns.nextPage)
+        var nextPage: Int? = null,
     )
 
     companion object Contract {
@@ -74,8 +68,8 @@ data class PostEntity(
             const val text = "text"
             const val date = "date"
             const val edited = "isEdited"
-            const val prevKey = "prev_key"
-            const val nextKey = "next_key"
+            const val prevPage = "prev_page"
+            const val nextPage = "next_page"
         }
     }
 }

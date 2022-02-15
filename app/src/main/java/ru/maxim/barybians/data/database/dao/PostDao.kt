@@ -2,15 +2,29 @@ package ru.maxim.barybians.data.database.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import kotlinx.coroutines.delay
+import ru.maxim.barybians.data.database.model.CommentEntity
+import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.PostEntity.Contract.Columns
-import javax.inject.Inject
+import ru.maxim.barybians.data.database.model.UserEntity
 
 @Dao
 abstract class PostDao {
 
-    @Query("SELECT * FROM ${PostEntity.tableName}")
+    @Query("SELECT COUNT(*) FROM ${PostEntity.tableName}")
+    abstract fun getPostsCount(): Int
+
+    @Query("SELECT COUNT(*) FROM ${UserEntity.tableName}")
+    abstract fun getUsersCount(): Int
+
+    @Query("SELECT COUNT(*) FROM ${CommentEntity.tableName}")
+    abstract fun getCommentsCount(): Int
+
+    @Query("SELECT COUNT(*) FROM ${LikeEntity.tableName}")
+    abstract fun getLikesCount(): Int
+
+
+    @Query("SELECT * FROM ${PostEntity.tableName} ORDER BY ${Columns.date} DESC")
     abstract fun pagingSource(): PagingSource<Int, PostEntity>
 
     @Transaction
@@ -33,15 +47,9 @@ abstract class PostDao {
     @Query("DELETE FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
     abstract suspend fun delete(postId: Int)
 
-    suspend fun savePost(userDao: UserDao, commentDao: CommentDao, postEntity: PostEntity) {
-        insert(postEntity.post)
-        userDao.insert(postEntity.likes)
-        commentDao.insert(postEntity.comments)
-    }
-
     suspend fun savePosts(userDao: UserDao, commentDao: CommentDao, postEntities: List<PostEntity>) {
         insert(postEntities.map { it.post })
-//        userDao.insert(postEntities.flatMap { it.likes })
-//        commentDao.insert(postEntities.flatMap { it.comments })
+        userDao.insert(postEntities.flatMap { it.likes })
+        commentDao.insert(postEntities.flatMap { it.comments })
     }
 }

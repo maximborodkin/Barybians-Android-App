@@ -1,7 +1,7 @@
 package ru.maxim.barybians.data.database.model.mapper
 
-import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.data.database.model.PostEntity
+import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.domain.model.Post
 import java.util.*
 import javax.inject.Inject
@@ -19,7 +19,7 @@ class PostEntityMapper @Inject constructor(
             text = model.post.text,
             date = Date(model.post.date),
             isEdited = model.post.edited == 1,
-            author = userEntityMapper.toDomainModel(model.post.author),
+            author = userEntityMapper.toDomainModel(model.author),
             likedUsers = userEntityMapper.toDomainModelList(model.likes),
             comments = commentEntityMapper.toDomainModelList(model.comments)
         )
@@ -41,8 +41,8 @@ class PostEntityMapper @Inject constructor(
                 text = domainModel.text,
                 date = domainModel.date.time,
                 edited = if (domainModel.isEdited) 1 else 0,
-                author = userEntityMapper.fromDomainModel(domainModel.author),
             ),
+            author = userEntityMapper.fromDomainModel(domainModel.author),
             likes = userEntityMapper.fromDomainModelList(domainModel.likedUsers),
             comments = commentEntityMapper.fromDomainModelList(domainModel.comments)
         )
