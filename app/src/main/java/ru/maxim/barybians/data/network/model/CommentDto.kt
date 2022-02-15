@@ -3,6 +3,7 @@ package ru.maxim.barybians.data.network.model
 import com.google.gson.annotations.SerializedName
 
 data class CommentDto(
+    @SerializedName("id")
     val commentId: Int,
     val postId: Int,
     val userId: Int,

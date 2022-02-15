@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="ru.maxim.barybians.ui.activity.auth.registration.RegistrationViewModel" />
+            type="ru.maxim.barybians.ui.fragment.registration.RegistrationViewModel" />
     </data>
 
     <ScrollView
@@ -115,7 +115,7 @@
                     android:id="@+id/registrationMaleBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:alpha="@{viewModel.sex ? 0.5F : 1F}"
+                    android:alpha="@{viewModel.gender ? 0.5F : 1F}"
                     android:src="@drawable/ic_male"
                     tools:src="@drawable/ic_male" />
 
@@ -128,7 +128,7 @@
                     android:id="@+id/registrationFemaleBtn"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:alpha="@{viewModel.sex ? 1F : 0.5F}"
+                    android:alpha="@{viewModel.gender ? 1F : 0.5F}"
                     android:src="@drawable/ic_female"
                     tools:alpha="0.5" />
             </LinearLayout>

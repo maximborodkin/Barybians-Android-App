@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 @Reusable
 @OptIn(ExperimentalPagingApi::class)
-class PostRemoteMediator @Inject constructor(
+class FeedRemoteMediator @Inject constructor(
     private val feedRepository: PostRepository,
     private val database: BarybiansDatabase,
     private val postEntityMapper: PostEntityMapper,
@@ -63,7 +63,6 @@ class PostRemoteMediator @Inject constructor(
                     .transform { post -> post.post.prevKey = prevKey; post.post.nextKey = nextKey }
 
                 postDao.savePosts(userDao, commentDao, entities)
-
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {

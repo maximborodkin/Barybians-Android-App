@@ -1,7 +1,7 @@
 package ru.maxim.barybians.data.network.model.mapper
 
-import ru.maxim.barybians.data.DomainMapper
 import ru.maxim.barybians.data.network.model.PostDto
+import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.domain.model.Post
 import java.util.*
 import javax.inject.Inject
@@ -11,8 +11,8 @@ class PostDtoMapper @Inject constructor(
     private val commentDtoMapper: CommentDtoMapper
 ) : DomainMapper<PostDto, Post>() {
 
-    override suspend fun toDomainModel(model: PostDto): Post {
-        return Post(
+    override suspend fun toDomainModel(model: PostDto): Post =
+        Post(
             postId = model.postId,
             userId = model.userId,
             title = model.title,
@@ -23,7 +23,6 @@ class PostDtoMapper @Inject constructor(
             likedUsers = userDtoMapper.toDomainModelList(model.likedUsers),
             comments = commentDtoMapper.toDomainModelList(model.comments)
         )
-    }
 
     /*
     * The game is over
@@ -32,8 +31,8 @@ class PostDtoMapper @Inject constructor(
     * To kill the lies and make your hurt recall
     * There is no other sky to fall
     * */
-    override suspend fun fromDomainModel(domainModel: Post): PostDto {
-        return PostDto(
+    override suspend fun fromDomainModel(domainModel: Post): PostDto =
+        PostDto(
             postId = domainModel.postId,
             userId = domainModel.userId,
             title = domainModel.title,
@@ -44,5 +43,4 @@ class PostDtoMapper @Inject constructor(
             likedUsers = userDtoMapper.fromDomainModelList(domainModel.likedUsers),
             comments = commentDtoMapper.fromDomainModelList(domainModel.comments)
         )
-    }
 }

@@ -1,4 +1,4 @@
-package ru.maxim.barybians.data
+package ru.maxim.barybians.domain
 
 abstract class DomainMapper<T, DomainModel> {
 

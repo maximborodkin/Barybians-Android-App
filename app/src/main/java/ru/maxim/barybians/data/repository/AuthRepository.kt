@@ -7,7 +7,7 @@ interface AuthRepository {
         firstName: String,
         lastName: String,
         birthDate: String,
-        sex: Boolean,
+        gender: Boolean,
         login: String,
         password: String
     )

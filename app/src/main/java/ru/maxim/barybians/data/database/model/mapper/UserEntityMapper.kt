@@ -1,7 +1,8 @@
 package ru.maxim.barybians.data.database.model.mapper
 
-import ru.maxim.barybians.data.DomainMapper
 import ru.maxim.barybians.data.database.model.UserEntity
+import ru.maxim.barybians.domain.DomainMapper
+import ru.maxim.barybians.domain.model.Gender
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.domain.model.UserRole
 import java.util.*
@@ -17,7 +18,7 @@ class UserEntityMapper @Inject constructor() : DomainMapper<UserEntity, User>() 
             photo = model.photo,
             status = model.status,
             birthDate = Date(model.birthDate),
-            sex = model.sex,
+            gender = Gender.values().firstOrNull { it.genderId == model.gender } ?: Gender.Male,
             lastVisit = Date(model.lastVisit),
             role = UserRole.values().firstOrNull { it.roleId == model.roleId } ?: UserRole.Unverified
         )
@@ -30,7 +31,7 @@ class UserEntityMapper @Inject constructor() : DomainMapper<UserEntity, User>() 
             photo = domainModel.photo,
             status = domainModel.status,
             birthDate = domainModel.birthDate.time,
-            sex = domainModel.sex,
+            gender = domainModel.gender.genderId,
             lastVisit = domainModel.lastVisit.time,
             roleId = domainModel.role.roleId
         )

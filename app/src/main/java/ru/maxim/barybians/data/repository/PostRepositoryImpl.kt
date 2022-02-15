@@ -2,7 +2,6 @@ package ru.maxim.barybians.data.repository
 
 import androidx.paging.PagingSource
 import ru.maxim.barybians.data.PreferencesManager
-import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.database.dao.LikeDao
 import ru.maxim.barybians.data.database.dao.PostDao
 import ru.maxim.barybians.data.database.model.LikeEntity

@@ -10,7 +10,7 @@ data class User(
     val photo: String?,
     val status: String?,
     val birthDate: Date,
-    val sex: String,
+    val gender: Gender,
     val lastVisit: Date,
     val role: UserRole,
 ) {

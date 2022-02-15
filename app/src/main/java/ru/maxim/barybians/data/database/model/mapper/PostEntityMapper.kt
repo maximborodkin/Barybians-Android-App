@@ -1,6 +1,6 @@
 package ru.maxim.barybians.data.database.model.mapper
 
-import ru.maxim.barybians.data.DomainMapper
+import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.domain.model.Post
 import java.util.*

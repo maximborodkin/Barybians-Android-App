@@ -7,7 +7,7 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineScope
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.ui.MainActivity
-import ru.maxim.barybians.ui.activity.auth.registration.RegistrationFragment
+import ru.maxim.barybians.ui.fragment.registration.RegistrationFragment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
 import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment

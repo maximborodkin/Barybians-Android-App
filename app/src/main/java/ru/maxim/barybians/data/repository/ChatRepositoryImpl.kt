@@ -1,7 +1,6 @@
 package ru.maxim.barybians.data.repository
 
 import ru.maxim.barybians.data.PreferencesManager
-import ru.maxim.barybians.data.RepositoryBound
 import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.domain.model.Chat
 import ru.maxim.barybians.domain.model.Message

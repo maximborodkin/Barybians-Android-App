@@ -27,8 +27,8 @@ data class UserEntity(
     @ColumnInfo(name = Columns.birthDate)
     val birthDate: Long,
 
-    @ColumnInfo(name = Columns.sex)
-    val sex: String,
+    @ColumnInfo(name = Columns.gender)
+    val gender: Int,
 
     @ColumnInfo(name = Columns.lastVisit)
     val lastVisit: Long,
@@ -46,7 +46,7 @@ data class UserEntity(
             const val photo = "photo"
             const val status = "status"
             const val birthDate = "birth_date"
-            const val sex = "sex"
+            const val gender = "gender"
             const val lastVisit = "last_visit"
             const val roleId = "role_id"
         }

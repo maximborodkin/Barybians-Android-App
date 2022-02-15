@@ -3,6 +3,7 @@ package ru.maxim.barybians.data.network.model
 import com.google.gson.annotations.SerializedName
 
 data class PostDto(
+    @SerializedName("id")
     val postId: Int,
     val userId: Int,
     val title: String?,

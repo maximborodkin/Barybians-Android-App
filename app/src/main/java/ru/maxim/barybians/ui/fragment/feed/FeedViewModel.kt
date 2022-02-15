@@ -12,7 +12,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.paging.PostRemoteMediator
+import ru.maxim.barybians.data.paging.FeedRemoteMediator
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.domain.model.Post
 import javax.inject.Inject
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalPagingApi::class)
 open class FeedViewModel constructor(
     application: Application,
-    postRemoteMediator: PostRemoteMediator,
+    feedRemoteMediator: FeedRemoteMediator,
     protected val postRepository: PostRepository,
     private val postEntityMapper: PostEntityMapper
 ) : AndroidViewModel(application) {
@@ -33,7 +33,7 @@ open class FeedViewModel constructor(
             prefetchDistance = PostRepository.prefetchDistance,
             enablePlaceholders = true
         ),
-        remoteMediator = postRemoteMediator,
+        remoteMediator = feedRemoteMediator,
         pagingSourceFactory = { postRepository.feedPagingSource() }
     )
         .flow
@@ -87,7 +87,7 @@ open class FeedViewModel constructor(
         private val application: Application,
         private val postRepository: PostRepository,
         private val postEntityMapper: PostEntityMapper,
-        private val remoteMediator: PostRemoteMediator,
+        private val remoteMediator: FeedRemoteMediator,
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
         @Suppress("UNCHECKED_CAST")

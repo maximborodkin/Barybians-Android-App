@@ -56,20 +56,20 @@ class AuthRepositoryImpl @Inject constructor(
         firstName: String,
         lastName: String,
         birthDate: String,
-        sex: Boolean,
+        gender: Boolean,
         login: String,
         password: String
     ) = withContext(IO) {
         try {
             if (!networkUtils.networkStateChangeListener.value) throw NoConnectionException()
             val registerResponse = authService.register(
-                firstName,
-                lastName,
-                birthDate,
-                sex,
-                defaultAvatarUrl,
-                login,
-                password
+                firstName = firstName,
+                lastName = lastName,
+                birthDate = birthDate,
+                gender = gender,
+                photo = defaultAvatarUrl,
+                username = login,
+                password = password
             )
             val responseBody = registerResponse.body()
 

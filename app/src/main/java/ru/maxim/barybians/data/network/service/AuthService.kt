@@ -22,7 +22,7 @@ interface AuthService {
         @Field("firstName") firstName: String,
         @Field("lastName") lastName: String,
         @Field("birthDate") birthDate: String,
-        @Field("sex") sex: Boolean,
+        @Field("sex") gender: Boolean,
         @Field("photo") photo: String,
         @Field("username") username: String,
         @Field("password") password: String

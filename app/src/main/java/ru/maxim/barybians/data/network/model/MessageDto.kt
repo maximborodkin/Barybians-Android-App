@@ -3,6 +3,7 @@ package ru.maxim.barybians.data.network.model
 import com.google.gson.annotations.SerializedName
 
 data class MessageDto(
+    @SerializedName("id")
     val messageId: Int,
     val senderId: Int,
     val receiverId: Int,

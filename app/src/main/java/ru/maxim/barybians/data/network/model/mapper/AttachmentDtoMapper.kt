@@ -1,6 +1,6 @@
 package ru.maxim.barybians.data.network.model.mapper
 
-import ru.maxim.barybians.data.DomainMapper
+import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.data.network.model.AttachmentDto
 import ru.maxim.barybians.domain.model.Attachment
 import javax.inject.Inject
