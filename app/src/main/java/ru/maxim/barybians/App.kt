@@ -18,16 +18,14 @@ class App : MultiDexApplication() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate() {
-        val preferencesManager = PreferencesManager(PreferenceManager.getDefaultSharedPreferences(applicationContext))
 
         appComponent = DaggerAppComponent.builder()
             .application(this)
             .applicationContext(applicationContext)
             .applicationScope(applicationScope)
-            .preferencesManager(preferencesManager)
             .build()
 
-        if (preferencesManager.isDarkMode) {
+        if (appComponent.preferencesManager.isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

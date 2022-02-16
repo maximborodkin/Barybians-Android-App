@@ -2,6 +2,7 @@ package ru.maxim.barybians.data.repository
 
 import androidx.paging.PagingSource
 import ru.maxim.barybians.data.database.dao.CommentDao
+import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
 import ru.maxim.barybians.data.network.model.mapper.CommentDtoMapper
@@ -13,6 +14,7 @@ import javax.inject.Inject
 class CommentRepositoryImpl @Inject constructor(
     private val commentService: CommentService,
     private val commentDao: CommentDao,
+    private val userDao: UserDao,
     private val commentEntityMapper: CommentEntityMapper,
     private val commentDtoMapper: CommentDtoMapper,
     private val postService: PostService,
@@ -33,13 +35,13 @@ class CommentRepositoryImpl @Inject constructor(
     override suspend fun createComment(uuid: String, postId: Int, text: String) {
         val commentDto = repositoryBound.wrapRequest { commentService.addComment(uuid, postId, text) }
         val comment = commentDtoMapper.toDomainModel(commentDto)
-        commentDao.insert(commentEntityMapper.fromDomainModel(comment))
+        commentDao.save(commentEntityMapper.fromDomainModel(comment), userDao)
     }
 
     override suspend fun editComment(commentId: Int, text: String) {
         val commentDto = repositoryBound.wrapRequest { commentService.editComment(commentId, text) }
         val comment = commentDtoMapper.toDomainModel(commentDto)
-        commentDao.insert(commentEntityMapper.fromDomainModel(comment))
+        commentDao.save(commentEntityMapper.fromDomainModel(comment), userDao)
     }
 
     override suspend fun deleteComment(commentId: Int) {

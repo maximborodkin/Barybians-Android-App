@@ -1,6 +1,8 @@
 package ru.maxim.barybians.data.database.model
 
 import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.NO_ACTION
 
 data class PostEntity(
     @Embedded val post: PostEntityBody,
@@ -21,7 +23,7 @@ data class PostEntity(
     val likes: List<UserEntity>,
 
     @Relation(
-        entity = CommentEntity::class,
+        entity = CommentEntity.CommentEntityBody::class,
         parentColumn = Columns.postId,
         entityColumn = CommentEntity.Contract.Columns.postId
     )
@@ -29,7 +31,23 @@ data class PostEntity(
 ) {
 
     // I can tear down angeles from the sky and make Mona Lisa cry
-    @Entity(tableName = tableName)
+    @Entity(
+        tableName = tableName,
+//        foreignKeys = [
+//            ForeignKey(
+//                entity = UserEntity::class,
+//                parentColumns = [UserEntity.Contract.Columns.userId],
+//                childColumns = [Columns.userId],
+//                onDelete = CASCADE, onUpdate = NO_ACTION
+//            )
+//        ],
+        indices = [
+            Index(
+                value = [CommentEntity.Contract.Columns.userId],
+                unique = false
+            )
+        ]
+    )
     data class PostEntityBody(
 
         @PrimaryKey(autoGenerate = false)

@@ -8,6 +8,7 @@ import androidx.room.withTransaction
 import dagger.Reusable
 import ru.maxim.barybians.data.database.BarybiansDatabase
 import ru.maxim.barybians.data.database.dao.CommentDao
+import ru.maxim.barybians.data.database.dao.LikeDao
 import ru.maxim.barybians.data.database.dao.PostDao
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.PostEntity
@@ -24,6 +25,7 @@ class FeedRemoteMediator @Inject constructor(
     private val database: BarybiansDatabase,
     private val postEntityMapper: PostEntityMapper,
     private val postDao: PostDao,
+    private val likeDao: LikeDao,
     private val userDao: UserDao,
     private val commentDao: CommentDao
 ) : RemoteMediator<Int, PostEntity>() {
@@ -36,7 +38,6 @@ class FeedRemoteMediator @Inject constructor(
     * My heart and soul
     * */
     override suspend fun load(loadType: LoadType, state: PagingState<Int, PostEntity>): MediatorResult {
-        Timber.d("XXX $loadType nextPage: ${state.lastItemOrNull()?.post?.nextPage}")
         return try {
             val page: Int = when (loadType) {
                 LoadType.REFRESH -> 0
@@ -51,7 +52,7 @@ class FeedRemoteMediator @Inject constructor(
                 startIndex = page * state.config.pageSize,
                 count = state.config.pageSize
             )
-            Timber.d("XXX loaded ${feedPageResponse.size} first:${feedPageResponse.first().postId}, last:${feedPageResponse.last().postId}")
+            Timber.d("XXX $loadType loaded ${feedPageResponse.size} first:${feedPageResponse.first().postId}, last:${feedPageResponse.last().postId}")
 
             val prevPage = if (page == 0) null else page - 1
             val nextPage = if (feedPageResponse.size < state.config.pageSize) null else page + 1
@@ -64,8 +65,7 @@ class FeedRemoteMediator @Inject constructor(
                 val entities = postEntityMapper.fromDomainModelList(feedPageResponse)
                     .transform { post -> post.post.prevPage = prevPage; post.post.nextPage = nextPage }
 
-                postDao.savePosts(userDao, commentDao, entities)
-                Timber.d("XXX Saved posts: ${postDao.getPostsCount()}, users: ${postDao.getUsersCount()}, comments: ${postDao.getCommentsCount()}, likes: ${postDao.getLikesCount()}")
+                postDao.savePosts(entities, userDao, commentDao, likeDao)
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {

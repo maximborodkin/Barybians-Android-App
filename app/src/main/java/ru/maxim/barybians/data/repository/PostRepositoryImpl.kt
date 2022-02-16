@@ -31,7 +31,7 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override fun feedPagingSource(): PagingSource<Int, PostEntity> {
-        return postDao.pagingSource()
+        return postDao.feedPagingSource()
     }
 
     override suspend fun getPostById(postId: Int): Post? {

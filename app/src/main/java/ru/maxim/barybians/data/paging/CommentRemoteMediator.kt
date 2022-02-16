@@ -11,6 +11,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import ru.maxim.barybians.data.database.BarybiansDatabase
 import ru.maxim.barybians.data.database.dao.CommentDao
+import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
 import ru.maxim.barybians.data.repository.CommentRepository
@@ -23,6 +24,7 @@ class CommentRemoteMediator private constructor(
     private val database: BarybiansDatabase,
     private val commentEntityMapper: CommentEntityMapper,
     private val commentDao: CommentDao,
+    private val userDao: UserDao,
     private val postId: Int
 ) : RemoteMediator<Int, CommentEntity>() {
 
@@ -33,7 +35,7 @@ class CommentRemoteMediator private constructor(
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     val last = state.lastItemOrNull() ?: return MediatorResult.Success(endOfPaginationReached = false)
-                    last.nextKey ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    last.comment.nextPage ?: return MediatorResult.Success(endOfPaginationReached = true)
                 }
             }
 
@@ -43,8 +45,8 @@ class CommentRemoteMediator private constructor(
                 count = state.config.pageSize
             )
 
-            val prevKey = if (page == 0) null else page - 1
-            val nextKey = if (commentsResponse.size < state.config.pageSize) null else page + 1
+            val prevPage = if (page == 0) null else page - 1
+            val nextPage = if (commentsResponse.size < state.config.pageSize) null else page + 1
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -52,9 +54,9 @@ class CommentRemoteMediator private constructor(
                 }
 
                 val entities = commentEntityMapper.fromDomainModelList(commentsResponse)
-                    .transform { comment -> comment.prevKey = prevKey; comment.nextKey = nextKey }
+                    .transform { comment -> comment.comment.prevPage = prevPage; comment.comment.nextPage = nextPage }
 
-                commentDao.insert(entities)
+                commentDao.save(entities, userDao)
             }
             MediatorResult.Success(endOfPaginationReached = commentsResponse.size < state.config.pageSize)
         } catch (e: Exception) {
@@ -67,10 +69,12 @@ class CommentRemoteMediator private constructor(
         private val database: BarybiansDatabase,
         private val commentEntityMapper: CommentEntityMapper,
         private val commentDao: CommentDao,
+        private val userDao: UserDao,
         @Assisted("postId") private val postId: Int
     ) {
 
-        fun create() = CommentRemoteMediator(commentRepository, database, commentEntityMapper, commentDao, postId)
+        fun create() =
+            CommentRemoteMediator(commentRepository, database, commentEntityMapper, commentDao, userDao, postId)
 
         @AssistedFactory
         interface Factory {

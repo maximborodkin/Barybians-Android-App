@@ -1,19 +1,22 @@
 package ru.maxim.barybians.data.database.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.tableName
 
 @Entity(
     tableName = tableName,
-    foreignKeys = [
-        ForeignKey(
-            entity = MessageEntity.MessageEntityBody::class,
-            parentColumns = [AttachmentEntity.Contract.Columns.messageId],
-            childColumns = [MessageEntity.Contract.Columns.messageId],
-            onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.NO_ACTION
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = MessageEntity.MessageEntityBody::class,
+//            parentColumns = [AttachmentEntity.Contract.Columns.messageId],
+//            childColumns = [MessageEntity.Contract.Columns.messageId],
+//            onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.NO_ACTION
+//        )
+//    ],
+    indices = [
+        Index(
+            value = [AttachmentEntity.Contract.Columns.messageId],
+            unique = false
         )
     ]
 )

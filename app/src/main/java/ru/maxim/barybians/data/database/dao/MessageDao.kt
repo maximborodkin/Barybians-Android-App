@@ -17,15 +17,12 @@ interface MessageDao {
     )
     fun getChatMessages(firsUserId: Int, secondUserId: Int): Flow<List<MessageEntity>>
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(messageEntity: MessageEntity.MessageEntityBody)
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(messageEntities: List<MessageEntity.MessageEntityBody>)
 
-    @Transaction
     @Delete
     suspend fun delete(messageEntity: MessageEntity.MessageEntityBody)
 }

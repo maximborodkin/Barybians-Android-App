@@ -15,6 +15,7 @@ import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.PostViewHolder
 import ru.maxim.barybians.utils.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class FeedRecyclerAdapter @Inject constructor(
@@ -26,6 +27,11 @@ class FeedRecyclerAdapter @Inject constructor(
 
     fun setAdapterListener(listener: FeedAdapterListener?) {
         feedAdapterListener = listener
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        recyclerView.itemAnimator = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -41,6 +47,7 @@ class FeedRecyclerAdapter @Inject constructor(
     inner class PostViewHolder(private val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post?) = with(binding) {
+            Timber.d("XXX bind post:${post != null}}")
             if (post == null) {
                 bindPlaceholder()
                 return@with
