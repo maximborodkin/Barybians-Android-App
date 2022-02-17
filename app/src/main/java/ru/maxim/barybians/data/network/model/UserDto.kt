@@ -12,7 +12,7 @@ data class UserDto(
     val status: String?,
     @SerializedName("ubirthDate")
     val birthDate: Long,
-    @SerializedName("gender")
+    @SerializedName("sex")
     val gender: Int,
     @SerializedName("ulastVisit")
     val lastVisit: Long,

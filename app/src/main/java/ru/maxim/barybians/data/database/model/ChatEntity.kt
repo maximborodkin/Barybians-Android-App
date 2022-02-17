@@ -13,26 +13,26 @@ import ru.maxim.barybians.data.database.model.MessageEntity.MessageEntityBody
 @Entity(
     tableName = tableName,
     primaryKeys = [Columns.firstUserId, Columns.secondUserId],
-//    foreignKeys = [
-//        ForeignKey(
-//            entity = UserEntity::class,
-//            parentColumns = [UserEntity.Contract.Columns.userId],
-//            childColumns = [ChatEntity.Contract.Columns.firstUserId],
-//            onDelete = CASCADE, onUpdate = NO_ACTION
-//        ),
-//        ForeignKey(
-//            entity = UserEntity::class,
-//            parentColumns = [UserEntity.Contract.Columns.userId],
-//            childColumns = [ChatEntity.Contract.Columns.secondUserId],
-//            onDelete = CASCADE, onUpdate = NO_ACTION
-//        ),
-//        ForeignKey(
-//            entity = MessageEntityBody::class,
-//            parentColumns = [MessageEntity.Contract.Columns.messageId],
-//            childColumns = [ChatEntity.Contract.Columns.lastMessageId],
-//            onDelete = CASCADE, onUpdate = NO_ACTION
-//        )
-//    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = [UserEntity.Contract.Columns.userId],
+            childColumns = [ChatEntity.Contract.Columns.firstUserId],
+            onDelete = CASCADE, onUpdate = NO_ACTION
+        ),
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = [UserEntity.Contract.Columns.userId],
+            childColumns = [ChatEntity.Contract.Columns.secondUserId],
+            onDelete = CASCADE, onUpdate = NO_ACTION
+        ),
+        ForeignKey(
+            entity = MessageEntityBody::class,
+            parentColumns = [MessageEntity.Contract.Columns.messageId],
+            childColumns = [ChatEntity.Contract.Columns.lastMessageId],
+            onDelete = CASCADE, onUpdate = NO_ACTION
+        )
+    ],
     indices = [
         Index(
             value = [ChatEntity.Contract.Columns.firstUserId],

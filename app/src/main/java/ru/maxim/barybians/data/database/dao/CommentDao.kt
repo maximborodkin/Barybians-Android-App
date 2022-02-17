@@ -39,14 +39,8 @@ abstract class CommentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(commentEntity: CommentEntityBody)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(commentEntities: List<CommentEntityBody>)
-
     @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun update(commentEntity: CommentEntityBody)
-
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun update(commentEntity: List<CommentEntityBody>)
 
     @Delete
     abstract suspend fun delete(commentEntity: CommentEntityBody)

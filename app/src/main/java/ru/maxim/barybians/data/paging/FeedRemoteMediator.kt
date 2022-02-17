@@ -6,6 +6,7 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import dagger.Reusable
+import kotlinx.coroutines.delay
 import ru.maxim.barybians.data.database.BarybiansDatabase
 import ru.maxim.barybians.data.database.dao.CommentDao
 import ru.maxim.barybians.data.database.dao.LikeDao
@@ -15,7 +16,6 @@ import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.repository.PostRepository
 import ru.maxim.barybians.utils.transform
-import timber.log.Timber
 import javax.inject.Inject
 
 @Reusable
@@ -52,24 +52,23 @@ class FeedRemoteMediator @Inject constructor(
                 startIndex = page * state.config.pageSize,
                 count = state.config.pageSize
             )
-            Timber.d("XXX $loadType loaded ${feedPageResponse.size} first:${feedPageResponse.first().postId}, last:${feedPageResponse.last().postId}")
+            delay(3000)
 
             val prevPage = if (page == 0) null else page - 1
             val nextPage = if (feedPageResponse.size < state.config.pageSize) null else page + 1
+
+            val entities = postEntityMapper.fromDomainModelList(feedPageResponse).transform { post ->
+                post.post.prevPage = prevPage; post.post.nextPage = nextPage
+            }
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     postDao.delete()
                 }
-
-                val entities = postEntityMapper.fromDomainModelList(feedPageResponse)
-                    .transform { post -> post.post.prevPage = prevPage; post.post.nextPage = nextPage }
-
                 postDao.savePosts(entities, userDao, commentDao, likeDao)
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {
-            Timber.e(e)
             MediatorResult.Error(e)
         }
     }

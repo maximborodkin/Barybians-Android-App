@@ -2,12 +2,10 @@ package ru.maxim.barybians.data.database.dao
 
 import androidx.paging.PagingSource
 import androidx.room.*
-import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.PostEntity.Contract.Columns
 import ru.maxim.barybians.data.database.model.PostEntity.PostEntityBody
-import ru.maxim.barybians.data.database.model.UserEntity
 
 @Dao
 abstract class PostDao {
@@ -20,30 +18,34 @@ abstract class PostDao {
     @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.userId}=:userId ORDER BY ${Columns.date} DESC")
     abstract fun userPostsPagingSource(userId: Int): PagingSource<Int, PostEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(postEntity: PostEntityBody)
+    @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
+    abstract fun getById(postId: Int): PostEntityBody?
+
+    suspend fun save(postEntity: PostEntity, userDao: UserDao, commentDao: CommentDao, likeDao: LikeDao) {
+        userDao.save(postEntity.likes + postEntity.author)
+        commentDao.save(postEntity.comments, userDao)
+        if (getById(postEntity.post.postId) != null) {
+            update(postEntity.post)
+        } else {
+            insert(postEntity.post)
+        }
+        likeDao.insert(postEntity.likes.map { like ->
+            LikeEntity(postId = postEntity.post.postId, userId = like.userId)
+        })
+    }
+
+    suspend fun savePosts(postEntities: List<PostEntity>, userDao: UserDao, commentDao: CommentDao, likeDao: LikeDao) =
+        postEntities.forEach { post -> save(post, userDao, commentDao, likeDao) }
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun update(postEntity: PostEntityBody)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(postEntities: List<PostEntityBody>)
+    abstract suspend fun insert(postEntity: PostEntityBody)
 
     @Query("DELETE FROM ${PostEntity.tableName}")
     abstract suspend fun delete()
 
     @Query("DELETE FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
     abstract suspend fun delete(postId: Int)
-
-    suspend fun savePosts(postEntities: List<PostEntity>, userDao: UserDao, commentDao: CommentDao, likeDao: LikeDao) {
-        val posts: List<PostEntityBody> = postEntities.map { post -> post.post }
-        val authors: List<UserEntity> = postEntities.map { post -> post.author }
-        val comments: List<CommentEntity> = postEntities.flatMap { post -> post.comments }
-        val likedUsers: List<UserEntity> = postEntities.flatMap { post -> post.likes }
-        val likes: List<LikeEntity> = postEntities.flatMap { post ->
-            post.likes.map { like -> LikeEntity(postId = post.post.postId, userId = like.userId) }
-        }
-
-        userDao.insert(authors + likedUsers)
-        insert(posts)
-        commentDao.save(comments, userDao)
-        likeDao.insert(likes)
-    }
 }

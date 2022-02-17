@@ -33,14 +33,14 @@ data class PostEntity(
     // I can tear down angeles from the sky and make Mona Lisa cry
     @Entity(
         tableName = tableName,
-//        foreignKeys = [
-//            ForeignKey(
-//                entity = UserEntity::class,
-//                parentColumns = [UserEntity.Contract.Columns.userId],
-//                childColumns = [Columns.userId],
-//                onDelete = CASCADE, onUpdate = NO_ACTION
-//            )
-//        ],
+        foreignKeys = [
+            ForeignKey(
+                entity = UserEntity::class,
+                parentColumns = [UserEntity.Contract.Columns.userId],
+                childColumns = [Columns.userId],
+                onDelete = CASCADE, onUpdate = NO_ACTION
+            )
+        ],
         indices = [
             Index(
                 value = [CommentEntity.Contract.Columns.userId],

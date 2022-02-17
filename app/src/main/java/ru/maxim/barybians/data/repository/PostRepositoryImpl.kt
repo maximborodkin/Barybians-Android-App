@@ -67,6 +67,7 @@ class PostRepositoryImpl @Inject constructor(
         }
 
         val likeEntities = likeResponse.whoLiked.map { user -> LikeEntity(postId = postId, userId = user.userId) }
+        likeDao.deleteByPostId(postId)
         likeDao.insert(likeEntities)
     }
 }

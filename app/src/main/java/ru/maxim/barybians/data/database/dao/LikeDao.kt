@@ -33,5 +33,8 @@ interface LikeDao {
     suspend fun delete()
 
     @Query("DELETE FROM ${Like.tableName} WHERE ${Like.Columns.postId}=:postId AND ${Like.Columns.userId}=:userId")
-    suspend fun removeLike(postId: Int, userId: Int)
+    suspend fun delete(postId: Int, userId: Int)
+
+    @Query("DELETE FROM ${Like.tableName} WHERE ${Like.Columns.postId}=:postId")
+    suspend fun deleteByPostId(postId: Int)
 }

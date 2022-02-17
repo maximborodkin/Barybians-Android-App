@@ -5,14 +5,14 @@ import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.tableNam
 
 @Entity(
     tableName = tableName,
-//    foreignKeys = [
-//        ForeignKey(
-//            entity = MessageEntity.MessageEntityBody::class,
-//            parentColumns = [AttachmentEntity.Contract.Columns.messageId],
-//            childColumns = [MessageEntity.Contract.Columns.messageId],
-//            onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.NO_ACTION
-//        )
-//    ],
+    foreignKeys = [
+        ForeignKey(
+            entity = MessageEntity.MessageEntityBody::class,
+            parentColumns = [AttachmentEntity.Contract.Columns.messageId],
+            childColumns = [MessageEntity.Contract.Columns.messageId],
+            onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.NO_ACTION
+        )
+    ],
     indices = [
         Index(
             value = [AttachmentEntity.Contract.Columns.messageId],

@@ -22,17 +22,13 @@ abstract class UserDao {
         }
     }
 
+    suspend fun save(userEntity: List<UserEntity>) = userEntity.forEach { user -> save(user) }
+
     @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun update(userEntity: UserEntity)
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun update(userEntities: List<UserEntity>)
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(userEntity: UserEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(userEntities: List<UserEntity>)
 
     @Delete
     abstract suspend fun delete(userEntity: UserEntity)

@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-import androidx.core.content.ContextCompat
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -14,8 +13,9 @@ import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.PostViewHolder
-import ru.maxim.barybians.utils.*
-import timber.log.Timber
+import ru.maxim.barybians.utils.HtmlUtils
+import ru.maxim.barybians.utils.contains
+import ru.maxim.barybians.utils.load
 import javax.inject.Inject
 
 class FeedRecyclerAdapter @Inject constructor(
@@ -47,15 +47,9 @@ class FeedRecyclerAdapter @Inject constructor(
     inner class PostViewHolder(private val binding: ItemPostBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(post: Post?) = with(binding) {
-            Timber.d("XXX bind post:${post != null}}")
-            if (post == null) {
-                bindPlaceholder()
-                return@with
-            }
+            binding.post = post ?: return@with
+
             val context = itemView.context
-            itemPostProgressBar.hide()
-            itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorSurface))
-            this.post = post
             isDebug = preferencesManager.isDebug
             isPersonal = post.userId == preferencesManager.userId
             hasPersonalLike = post.likedUsers.contains { it.userId == preferencesManager.userId }
@@ -63,7 +57,7 @@ class FeedRecyclerAdapter @Inject constructor(
             itemPostAvatar.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
             itemPostName.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
             itemPostMenuBtn.setOnClickListener {
-                 getItem(bindingAdapterPosition)?.let { feedAdapterListener?.onPostMenuClick(it) }
+                getItem(bindingAdapterPosition)?.let { feedAdapterListener?.onPostMenuClick(it) }
             }
 
             val postBody = htmlUtils.parseHtml(post.text)
@@ -86,28 +80,10 @@ class FeedRecyclerAdapter @Inject constructor(
             itemPostLikeBtn.setOnLongClickListener { feedAdapterListener?.onLikeLongClick(post.postId); true }
             itemPostCommentBtn.setOnClickListener { feedAdapterListener?.onCommentsClick(post.postId) }
         }
-
-        private fun bindPlaceholder() = with(binding) {
-            isPersonal = false
-            hasPersonalLike = false
-            itemPostAvatar.isOnline = false
-            itemPostAvatar.setImageDrawable(null)
-            itemPostName.text = null
-            itemPostDate.text = null
-            itemPostLikeBtn.text = null
-            itemPostCommentBtn.text = null
-            itemPostTitle.text = null
-            itemPostText.text = null
-            itemPostAttachmentsHolder.removeAllViews()
-            itemPostProgressBar.show()
-        }
     }
 
     private object PostsDiffUtil : DiffUtil.ItemCallback<Post>() {
-        override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean =
-            oldItem.postId == newItem.postId
-
-        override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean =
-            oldItem == newItem
+        override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean = oldItem.postId == newItem.postId
+        override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean = oldItem == newItem
     }
 }
