@@ -2,12 +2,10 @@ package ru.maxim.barybians
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.di.AppComponent
 import ru.maxim.barybians.di.DaggerAppComponent
 import timber.log.Timber
@@ -25,6 +23,7 @@ class App : MultiDexApplication() {
             .applicationScope(applicationScope)
             .build()
 
+        appComponent.preferencesManager.isDebug = true
         if (appComponent.preferencesManager.isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {

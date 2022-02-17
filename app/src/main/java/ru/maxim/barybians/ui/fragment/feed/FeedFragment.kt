@@ -34,6 +34,9 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
     @Inject
     lateinit var feedRecyclerAdapter: FeedRecyclerAdapter
 
+    @Inject
+    lateinit var loadingStateAdapter: LoadingStateAdapter
+
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
@@ -42,8 +45,10 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         feedRefreshLayout.setOnRefreshListener(feedRecyclerAdapter::refresh)
-        feedRecyclerView.adapter = feedRecyclerAdapter
+
+        loadingStateAdapter.setOnRetryListener(feedRecyclerAdapter::retry)
         feedRecyclerAdapter.setAdapterListener(this@FeedFragment)
+        feedRecyclerView.adapter = feedRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

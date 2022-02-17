@@ -32,6 +32,9 @@ class FeedRecyclerAdapter @Inject constructor(
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         recyclerView.itemAnimator = null
+        recyclerView.scrollBarSize =
+            if (preferencesManager.isDebug) recyclerView.context.resources.getDimensionPixelSize(R.dimen.scrollbar_size)
+            else 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -48,7 +51,6 @@ class FeedRecyclerAdapter @Inject constructor(
 
         fun bind(post: Post?) = with(binding) {
             binding.post = post ?: return@with
-
             val context = itemView.context
             isDebug = preferencesManager.isDebug
             isPersonal = post.userId == preferencesManager.userId

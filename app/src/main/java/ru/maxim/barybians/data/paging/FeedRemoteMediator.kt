@@ -6,7 +6,6 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import dagger.Reusable
-import kotlinx.coroutines.delay
 import ru.maxim.barybians.data.database.BarybiansDatabase
 import ru.maxim.barybians.data.database.dao.CommentDao
 import ru.maxim.barybians.data.database.dao.LikeDao
@@ -52,7 +51,6 @@ class FeedRemoteMediator @Inject constructor(
                 startIndex = page * state.config.pageSize,
                 count = state.config.pageSize
             )
-            delay(3000)
 
             val prevPage = if (page == 0) null else page - 1
             val nextPage = if (feedPageResponse.size < state.config.pageSize) null else page + 1

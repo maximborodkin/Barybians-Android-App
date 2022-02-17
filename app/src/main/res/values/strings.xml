@@ -3,7 +3,7 @@
     <string name="server_error">Server error</string>
     <string name="network_error">Network error</string>
     <string name="no_internet_connection">No internet connection</string>
-    <string name="common_network_error">Something went wring. Please try later</string>
+    <string name="common_network_error">Something went wring. Please try again</string>
     <string name="request_timeout">Request timeout</string>
     <string name="forbidden_error">You haven\'t permissions for this action</string>
     <string name="are_you_sure">Are you sure?</string>
@@ -144,5 +144,6 @@
     <string name="unable_to_edit_status">Unable to edit status</string>
     <string name="debug_mode">Debug mode</string>
     <string name="comments">Comments</string>
+    <string name="retry">Retry</string>
 
 </resources>

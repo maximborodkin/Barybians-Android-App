@@ -14,7 +14,7 @@ interface PostRepository {
     suspend fun loadFeedPage(startIndex: Int, count: Int): List<Post>
 
     companion object {
-        const val pageSize = 30
-        const val prefetchDistance = 5
+        const val pageSize = 10
+        const val prefetchDistance = 1
     }
 }
