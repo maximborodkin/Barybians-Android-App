@@ -7,13 +7,13 @@ import javax.inject.Inject
 
 class AttachmentDtoMapper @Inject constructor() : DomainMapper<AttachmentDto, Attachment>() {
 
-    override suspend fun toDomainModel(model: AttachmentDto): Attachment =
+    override fun toDomainModel(model: AttachmentDto): Attachment =
         Attachment(
             messageId = model.messageId,
             type = model.type
         )
 
-    override suspend fun fromDomainModel(domainModel: Attachment): AttachmentDto =
+    override fun fromDomainModel(domainModel: Attachment): AttachmentDto =
         AttachmentDto(
             messageId = domainModel.messageId,
             type = domainModel.type

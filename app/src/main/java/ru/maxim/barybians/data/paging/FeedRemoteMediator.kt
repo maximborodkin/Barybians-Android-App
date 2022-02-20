@@ -13,8 +13,9 @@ import ru.maxim.barybians.data.database.dao.PostDao
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
-import ru.maxim.barybians.data.repository.PostRepository
+import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.utils.transform
+import timber.log.Timber
 import javax.inject.Inject
 
 @Reusable
@@ -51,7 +52,7 @@ class FeedRemoteMediator @Inject constructor(
                 startIndex = page * state.config.pageSize,
                 count = state.config.pageSize
             )
-
+            Timber.d("XXX loaded page $page with size ${feedPageResponse.size}")
             val prevPage = if (page == 0) null else page - 1
             val nextPage = if (feedPageResponse.size < state.config.pageSize) null else page + 1
 

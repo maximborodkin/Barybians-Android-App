@@ -11,7 +11,7 @@ class PostDtoMapper @Inject constructor(
     private val commentDtoMapper: CommentDtoMapper
 ) : DomainMapper<PostDto, Post>() {
 
-    override suspend fun toDomainModel(model: PostDto): Post =
+    override fun toDomainModel(model: PostDto): Post =
         Post(
             postId = model.postId,
             userId = model.userId,
@@ -24,14 +24,7 @@ class PostDtoMapper @Inject constructor(
             comments = commentDtoMapper.toDomainModelList(model.comments)
         )
 
-    /*
-    * The game is over
-    * No more rounds to play, it's time to pay
-    * Who's got the Joker?
-    * To kill the lies and make your hurt recall
-    * There is no other sky to fall
-    * */
-    override suspend fun fromDomainModel(domainModel: Post): PostDto =
+    override fun fromDomainModel(domainModel: Post): PostDto =
         PostDto(
             postId = domainModel.postId,
             userId = domainModel.userId,

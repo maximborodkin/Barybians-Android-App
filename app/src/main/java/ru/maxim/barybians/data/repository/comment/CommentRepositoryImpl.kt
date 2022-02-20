@@ -1,13 +1,15 @@
-package ru.maxim.barybians.data.repository
+package ru.maxim.barybians.data.repository.like
 
-import androidx.paging.PagingSource
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import ru.maxim.barybians.data.database.dao.CommentDao
 import ru.maxim.barybians.data.database.dao.UserDao
-import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
 import ru.maxim.barybians.data.network.model.mapper.CommentDtoMapper
 import ru.maxim.barybians.data.network.service.CommentService
 import ru.maxim.barybians.data.network.service.PostService
+import ru.maxim.barybians.data.repository.RepositoryBound
+import ru.maxim.barybians.data.repository.comment.CommentRepository
 import ru.maxim.barybians.domain.model.Comment
 import javax.inject.Inject
 
@@ -21,15 +23,9 @@ class CommentRepositoryImpl @Inject constructor(
     private val repositoryBound: RepositoryBound
 ) : CommentRepository {
 
-    // TODO: Temporary method. In future it will be replaced by
-    //  commentService().loadCommentsPage(postId: Int, startIndex: Int, count: Int)
-    override suspend fun loadCommentsPage(postId: Int, startIndex: Int, count: Int): List<Comment> {
-        val commentDto = repositoryBound.wrapRequest { postService.getById(postId) }?.comments ?: emptyList()
-        return commentDtoMapper.toDomainModelList(commentDto)
-    }
-
-    override fun commentsPagingSource(postId: Int): PagingSource<Int, CommentEntity> {
-        return commentDao.pagingSource(postId)
+    override fun getComments(postId: Int, sortingDirection: Boolean): LiveData<List<Comment>> {
+        return commentDao.getByPostId(postId, sortingDirection)
+            .map { commentsList -> commentEntityMapper.toDomainModelList(commentsList) }
     }
 
     override suspend fun createComment(uuid: String, postId: Int, text: String) {

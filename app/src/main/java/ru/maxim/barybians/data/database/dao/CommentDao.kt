@@ -1,6 +1,6 @@
 package ru.maxim.barybians.data.database.dao
 
-import androidx.paging.PagingSource
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.CommentEntity.CommentEntityBody
@@ -10,12 +10,16 @@ import ru.maxim.barybians.data.database.model.CommentEntity.Contract.Columns
 abstract class CommentDao {
 
     @Transaction
-    @Query("SELECT * FROM ${CommentEntity.tableName} WHERE ${Columns.postId}=:postId ORDER BY ${Columns.date} DESC")
-    abstract fun pagingSource(postId: Int): PagingSource<Int, CommentEntity>
-
-    @Transaction
-    @Query("SELECT * FROM ${CommentEntity.tableName} WHERE ${Columns.postId}=:postId")
-    abstract fun getByPostId(postId: Int): PagingSource<Int, CommentEntity>
+    @Query(
+        """
+        SELECT * FROM ${CommentEntity.tableName}
+        WHERE ${Columns.postId}=:postId 
+        ORDER BY
+            CASE WHEN :sortingDirection = 1 THEN ${Columns.date} END ASC, 
+            CASE WHEN :sortingDirection = 0 THEN ${Columns.date} END DESC
+    """
+    )
+    abstract fun getByPostId(postId: Int, sortingDirection: Boolean): LiveData<List<CommentEntity>>
 
     @Query("SELECT * FROM ${CommentEntity.tableName} WHERE ${Columns.commentId}=:commentId")
     abstract fun getById(commentId: Int): CommentEntityBody?

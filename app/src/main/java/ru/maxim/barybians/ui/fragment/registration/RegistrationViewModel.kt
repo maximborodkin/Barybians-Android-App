@@ -8,7 +8,7 @@ import ru.maxim.barybians.data.network.exception.AlreadyExistsException
 import ru.maxim.barybians.data.network.exception.BadRequestException
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.repository.AuthRepository
+import ru.maxim.barybians.data.repository.auth.AuthRepository
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*

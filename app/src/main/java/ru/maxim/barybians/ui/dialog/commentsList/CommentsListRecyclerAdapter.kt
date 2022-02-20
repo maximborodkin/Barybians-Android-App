@@ -7,22 +7,24 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemCommentBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.CommentViewHolder
-import ru.maxim.barybians.utils.*
+import ru.maxim.barybians.utils.HtmlUtils
+import ru.maxim.barybians.utils.SwipeDismissCallback
+import ru.maxim.barybians.utils.load
 import javax.inject.Inject
 
 class CommentsListRecyclerAdapter @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val htmlUtils: HtmlUtils
-) : PagingDataAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {
+) : ListAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {
 
     private var commentsAdapterListener: CommentsAdapterListener? = null
 
@@ -67,14 +69,10 @@ class CommentsListRecyclerAdapter @Inject constructor(
 
     inner class CommentViewHolder(private val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(comment: Comment?) = with(binding) {
-            if (comment == null) {
-                bindPlaceholder()
-                return@with
-            }
-            val context = itemView.context
-            itemCommentProgressBar.hide()
+        fun bind(comment: Comment) = with(binding) {
             this.comment = comment
+            this.isDebug = preferencesManager.isDebug
+            val context = itemView.context
             val commentBody = htmlUtils.parseHtml(comment.text)
             itemCommentText.text = commentBody.first
             itemCommentAttachmentsHolder.removeAllViews()
@@ -104,15 +102,6 @@ class CommentsListRecyclerAdapter @Inject constructor(
                 }
                 true
             }
-        }
-
-        private fun bindPlaceholder() = with(binding) {
-            itemCommentUserAvatar.setImageDrawable(null)
-            itemCommentUserName.text = null
-            itemCommentDate.text = null
-            itemCommentText.text = null
-            itemCommentAttachmentsHolder.removeAllViews()
-            itemCommentProgressBar.show()
         }
     }
 

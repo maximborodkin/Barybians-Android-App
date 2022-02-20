@@ -10,7 +10,7 @@ class MessageDtoMapper @Inject constructor(
     private val attachmentDtoMapper: AttachmentDtoMapper
 ) : DomainMapper<MessageDto, Message>() {
 
-    override suspend fun toDomainModel(model: MessageDto): Message =
+    override fun toDomainModel(model: MessageDto): Message =
         Message(
             messageId = model.messageId,
             senderId = model.senderId,
@@ -21,7 +21,7 @@ class MessageDtoMapper @Inject constructor(
             attachments = attachmentDtoMapper.toDomainModelList(model.attachments ?: listOf())
         )
 
-    override suspend fun fromDomainModel(domainModel: Message): MessageDto =
+    override fun fromDomainModel(domainModel: Message): MessageDto =
         MessageDto(
             messageId = domainModel.messageId,
             senderId = domainModel.senderId,

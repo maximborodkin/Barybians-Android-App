@@ -8,12 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.databinding.ItemUserBinding
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.likesList.LikesListRecyclerAdapter.UserViewHolder
-import ru.maxim.barybians.utils.load
-import java.util.*
 import javax.inject.Inject
 
-class LikesListRecyclerAdapter @Inject constructor() :
-    ListAdapter<User, UserViewHolder>(UserDiffUtils) {
+class LikesListRecyclerAdapter @Inject constructor() : ListAdapter<User, UserViewHolder>(UserDiffUtils) {
 
     private var onUserClick: ((userId: Int) -> Unit)? = null
 
@@ -35,9 +32,7 @@ class LikesListRecyclerAdapter @Inject constructor() :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) = with(binding) {
-            itemUserAvatar.load(user.avatarMin)
-            itemUserAvatar.isOnline = user.isOnline
-            itemUserName.text = user.fullName
+            binding.user = user
             root.setOnClickListener { onUserClick?.invoke(user.userId) }
         }
     }

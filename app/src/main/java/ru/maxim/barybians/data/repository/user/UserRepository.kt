@@ -1,4 +1,4 @@
-package ru.maxim.barybians.data.repository
+package ru.maxim.barybians.data.repository.user
 
 import ru.maxim.barybians.domain.model.User
 

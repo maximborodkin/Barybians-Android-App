@@ -10,7 +10,7 @@ class MessageEntityMapper @Inject constructor(
     private val attachmentEntityMapper: AttachmentEntityMapper
 ) : DomainMapper<MessageEntity, Message>() {
 
-    override suspend fun toDomainModel(model: MessageEntity): Message {
+    override fun toDomainModel(model: MessageEntity): Message {
         return Message(
             messageId = model.message.messageId,
             senderId = model.message.senderId,
@@ -22,7 +22,7 @@ class MessageEntityMapper @Inject constructor(
         )
     }
 
-    override suspend fun fromDomainModel(domainModel: Message): MessageEntity =
+    override fun fromDomainModel(domainModel: Message): MessageEntity =
         MessageEntity(
             message = MessageEntity.MessageEntityBody(
                 messageId = domainModel.messageId,

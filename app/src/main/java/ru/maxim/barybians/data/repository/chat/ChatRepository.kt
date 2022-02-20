@@ -1,4 +1,4 @@
-package ru.maxim.barybians.data.repository
+package ru.maxim.barybians.data.repository.chat
 
 import ru.maxim.barybians.domain.model.Chat
 import ru.maxim.barybians.domain.model.Message

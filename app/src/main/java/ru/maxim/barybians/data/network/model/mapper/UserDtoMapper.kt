@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class UserDtoMapper @Inject constructor() : DomainMapper<UserDto, User>() {
 
-    override suspend fun toDomainModel(model: UserDto): User =
+    override fun toDomainModel(model: UserDto): User =
         User(
             userId = model.userId,
             firstName = model.firstName,
@@ -23,7 +23,7 @@ class UserDtoMapper @Inject constructor() : DomainMapper<UserDto, User>() {
             role = UserRole.values().firstOrNull { it.roleId == model.roleId } ?: UserRole.Unverified
         )
 
-    override suspend fun fromDomainModel(domainModel: User): UserDto =
+    override fun fromDomainModel(domainModel: User): UserDto =
         UserDto(
             userId = domainModel.userId,
             firstName = domainModel.firstName,

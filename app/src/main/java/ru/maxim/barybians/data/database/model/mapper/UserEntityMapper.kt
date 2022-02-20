@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class UserEntityMapper @Inject constructor() : DomainMapper<UserEntity, User>() {
 
-    override suspend fun toDomainModel(model: UserEntity): User =
+    override fun toDomainModel(model: UserEntity): User =
         User(
             userId = model.userId,
             firstName = model.firstName,
@@ -23,7 +23,7 @@ class UserEntityMapper @Inject constructor() : DomainMapper<UserEntity, User>() 
             role = UserRole.values().firstOrNull { it.roleId == model.roleId } ?: UserRole.Unverified
         )
 
-    override suspend fun fromDomainModel(domainModel: User): UserEntity =
+    override fun fromDomainModel(domainModel: User): UserEntity =
         UserEntity(
             userId = domainModel.userId,
             firstName = domainModel.firstName,

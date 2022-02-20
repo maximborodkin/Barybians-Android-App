@@ -11,7 +11,7 @@ class PostEntityMapper @Inject constructor(
     private val commentEntityMapper: CommentEntityMapper
 ) : DomainMapper<PostEntity, Post>() {
 
-    override suspend fun toDomainModel(model: PostEntity): Post {
+    override fun toDomainModel(model: PostEntity): Post {
         return Post(
             postId = model.post.postId,
             userId = model.post.userId,
@@ -32,7 +32,7 @@ class PostEntityMapper @Inject constructor(
     * To kill the lies and make your hurt recall
     * There is no other sky to fall
     * */
-    override suspend fun fromDomainModel(domainModel: Post): PostEntity {
+    override fun fromDomainModel(domainModel: Post): PostEntity {
         return PostEntity(
             post = PostEntity.PostEntityBody(
                 postId = domainModel.postId,

@@ -10,7 +10,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.repository.AuthRepository
+import ru.maxim.barybians.data.repository.auth.AuthRepository
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import java.io.File

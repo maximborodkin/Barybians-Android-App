@@ -13,7 +13,8 @@ import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.paging.FeedRemoteMediator
-import ru.maxim.barybians.data.repository.PostRepository
+import ru.maxim.barybians.data.repository.like.LikeRepository
+import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.domain.model.Post
 import javax.inject.Inject
 
@@ -21,7 +22,8 @@ import javax.inject.Inject
 open class FeedViewModel constructor(
     application: Application,
     feedRemoteMediator: FeedRemoteMediator,
-    protected val postRepository: PostRepository,
+    private val postRepository: PostRepository,
+    private val likeRepository: LikeRepository,
     private val postEntityMapper: PostEntityMapper
 ) : AndroidViewModel(application) {
 
@@ -72,7 +74,7 @@ open class FeedViewModel constructor(
 
     fun changeLike(postId: Int) = viewModelScope.launch {
         try {
-            postRepository.changeLike(postId)
+            likeRepository.changeLike(postId)
         } catch (e: Exception) {
             val errorMessageRes = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection
@@ -87,13 +89,14 @@ open class FeedViewModel constructor(
         private val application: Application,
         private val postRepository: PostRepository,
         private val postEntityMapper: PostEntityMapper,
+        private val likeRepository: LikeRepository,
         private val remoteMediator: FeedRemoteMediator,
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(FeedViewModel::class.java)) {
-                return FeedViewModel(application, remoteMediator, postRepository, postEntityMapper) as T
+                return FeedViewModel(application, remoteMediator, postRepository, likeRepository, postEntityMapper) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }

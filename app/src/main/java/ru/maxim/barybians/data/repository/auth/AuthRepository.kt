@@ -1,4 +1,4 @@
-package ru.maxim.barybians.data.repository
+package ru.maxim.barybians.data.repository.auth
 
 interface AuthRepository {
     suspend fun authenticate(login: String, password: String)

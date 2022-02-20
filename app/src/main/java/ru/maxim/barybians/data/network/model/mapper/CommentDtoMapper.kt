@@ -10,7 +10,7 @@ class CommentDtoMapper @Inject constructor(
     private val userDtoMapper: UserDtoMapper
 ) : DomainMapper<CommentDto, Comment>() {
 
-    override suspend fun toDomainModel(model: CommentDto): Comment =
+    override fun toDomainModel(model: CommentDto): Comment =
         Comment(
             commentId = model.commentId,
             postId = model.postId,
@@ -20,7 +20,7 @@ class CommentDtoMapper @Inject constructor(
             author = userDtoMapper.toDomainModel(model.author)
         )
 
-    override suspend fun fromDomainModel(domainModel: Comment): CommentDto =
+    override fun fromDomainModel(domainModel: Comment): CommentDto =
         CommentDto(
             commentId = domainModel.commentId,
             postId = domainModel.postId,

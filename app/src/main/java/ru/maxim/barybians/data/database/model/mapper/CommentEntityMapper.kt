@@ -10,7 +10,7 @@ class CommentEntityMapper @Inject constructor(
     private val userEntityMapper: UserEntityMapper
 ) : DomainMapper<CommentEntity, Comment>() {
 
-    override suspend fun toDomainModel(model: CommentEntity): Comment {
+    override fun toDomainModel(model: CommentEntity): Comment {
         return Comment(
             commentId = model.comment.commentId,
             postId = model.comment.postId,
@@ -21,7 +21,7 @@ class CommentEntityMapper @Inject constructor(
         )
     }
 
-    override suspend fun fromDomainModel(domainModel: Comment): CommentEntity {
+    override fun fromDomainModel(domainModel: Comment): CommentEntity {
         return CommentEntity(
             comment = CommentEntity.CommentEntityBody(
                 commentId = domainModel.commentId,

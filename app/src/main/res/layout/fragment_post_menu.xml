@@ -40,7 +40,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_delete_grey" />
+            app:srcCompat="@drawable/ic_delete" />
 
         <TextView
             android:layout_width="wrap_content"

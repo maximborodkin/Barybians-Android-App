@@ -1,7 +1,8 @@
-package ru.maxim.barybians.data.repository
+package ru.maxim.barybians.data.repository.chat
 
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.service.ChatService
+import ru.maxim.barybians.data.repository.RepositoryBound
 import ru.maxim.barybians.domain.model.Chat
 import ru.maxim.barybians.domain.model.Message
 import javax.inject.Inject

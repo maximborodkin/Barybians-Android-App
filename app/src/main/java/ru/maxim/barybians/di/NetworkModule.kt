@@ -5,7 +5,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import ru.maxim.barybians.data.network.RetrofitClient
-import ru.maxim.barybians.data.repository.*
+import ru.maxim.barybians.data.repository.auth.AuthRepository
+import ru.maxim.barybians.data.repository.auth.AuthRepositoryImpl
+import ru.maxim.barybians.data.repository.chat.ChatRepository
+import ru.maxim.barybians.data.repository.chat.ChatRepositoryImpl
+import ru.maxim.barybians.data.repository.comment.CommentRepository
+import ru.maxim.barybians.data.repository.like.CommentRepositoryImpl
+import ru.maxim.barybians.data.repository.like.LikeRepository
+import ru.maxim.barybians.data.repository.like.LikeRepositoryImpl
+import ru.maxim.barybians.data.repository.post.PostRepository
+import ru.maxim.barybians.data.repository.post.PostRepositoryImpl
+import ru.maxim.barybians.data.repository.user.UserRepository
+import ru.maxim.barybians.data.repository.user.UserRepositoryImpl
 import ru.maxim.barybians.di.NetworkModule.RepositoryBindings
 
 @Module(includes = [RepositoryBindings::class])
@@ -42,6 +53,9 @@ object NetworkModule {
 
         @Binds
         fun bindCommentRepository(commentRepositoryImpl: CommentRepositoryImpl): CommentRepository
+
+        @Binds
+        fun bindLikeRepository(likeRepositoryImpl: LikeRepositoryImpl): LikeRepository
 
         @Binds
         fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl): PostRepository

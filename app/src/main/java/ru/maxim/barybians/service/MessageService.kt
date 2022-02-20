@@ -190,18 +190,18 @@ class MessageService : Service() {
 //    }
 
     private fun createMessagesNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.messages_notifications_channel_name)
-            val descriptionText = getString(R.string.messages_notifications_channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(notificationsChannelId, name, importance).apply {
-                description = descriptionText
-                enableVibration(true)
-            }
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            val name = getString(R.string.messages_notifications_channel_name)
+//            val descriptionText = getString(R.string.messages_notifications_channel_description)
+//            val importance = NotificationManager.IMPORTANCE_DEFAULT
+//            val channel = NotificationChannel(notificationsChannelId, name, importance).apply {
+//                description = descriptionText
+//                enableVibration(true)
+//            }
+//            val notificationManager: NotificationManager =
+//                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//            notificationManager.createNotificationChannel(channel)
+//        }
     }
 }
 

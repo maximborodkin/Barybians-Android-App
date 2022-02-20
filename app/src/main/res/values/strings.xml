@@ -1,5 +1,7 @@
 <resources>
 <!--  Shared  -->
+    <string name="app_name_release">Barybians</string>
+    <string name="app_name_debug">Barybians Debug</string>
     <string name="server_error">Server error</string>
     <string name="network_error">Network error</string>
     <string name="no_internet_connection">No internet connection</string>
@@ -14,10 +16,10 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="you">You</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+    <string name="retry">Retry</string>
 
-<!--  Application  -->
-    <string name="app_name_release">Barybians</string>
-    <string name="app_name_debug">Barybians Debug</string>
 
 <!--  LoginActivity/RegistrationActivity  -->
     <string name="log_in">Log in</string>
@@ -29,15 +31,18 @@
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="birth_date">Birth date</string>
-    <string name="sex">Sex</string>
+    <string name="gender">Gender</string>
     <string name="repeat_password">Repeat password</string>
     <string name="passwords_didn_t_match">Passwords didn\'t match</string>
     <string name="unknown_error">Unknown error</string>
     <string name="invalid_login_or_password">Invalid login or password</string>
     <string name="must_be_at_least_3_characters">Must be at least 3 characters</string>
     <string name="must_be_at_least_4_characters">Must be at least 4 characters</string>
+    <string name="invalid_registration_data">Invalid registration data</string>
+    <string name="login_already_exists">Login already exists</string>
 
-<!--  MainActivity  -->
+
+    <!--  MainActivity  -->
     <string name="feed">Feed</string>
     <string name="dialogs">Dialogs</string>
     <string name="profile">Profile</string>
@@ -47,9 +52,7 @@
     <string name="an_error_occurred_while_loading_messages">An error occurred while loading messages</string>
     <!--  Profile  -->
         <string name="an_error_occurred_while_loading_profile">An error occurred while loading profile</string>
-        <string name="unable_to_load_comments">Unable to load comments</string>
-        <string name="unable_to_create_comment">Unable to create comment</string>
-        <string name="unable_to_delete_comment">Unable to delete comment</string>
+
         <string name="unable_to_load_image">Unable to load image</string>
         <string name="open_chat">Open chat</string>
         <string name="administrator">Administrator</string>
@@ -65,8 +68,6 @@
         <string name="unable_to_edit_post">Unable to edit post</string>
         <string name="unable_to_delete_post">Unable to delete post</string>
         <string name="unable_to_change_like">Unable to change like</string>
-        <string name="no_comments_yet">No comments yet</string>
-        <string name="add_comment">Add comment</string>
         <string name="age_plurals_zero">%1$d years</string>
         <string name="age_plurals_one">%1$d year</string>
         <string name="age_plurals_two">%1$d years</string>
@@ -81,38 +82,29 @@
             <item quantity="many">@string/age_plurals_many</item>
             <item quantity="other">@string/age_plurals_other</item>
         </plurals>
-        <string name="like_plurals_zero">No likes yet</string>
-        <string name="like_plurals_one">%1$d like</string>
-        <string name="like_plurals_two">%1$d likes</string>
-        <string name="like_plurals_few">%1$d likes</string>
-        <string name="like_plurals_many">%1$d likes</string>
-        <string name="like_plurals_other">%1$d likes</string>
-        <plurals name="like_plurals">
-            <item quantity="zero">@string/like_plurals_zero</item>
-            <item quantity="one">@string/like_plurals_one</item>
-            <item quantity="two">@string/like_plurals_two</item>
-            <item quantity="few">@string/like_plurals_few</item>
-            <item quantity="many">@string/like_plurals_many</item>
-            <item quantity="other">@string/like_plurals_other</item>
-        </plurals>
-        <string name="comment_plurals_zero">No comments yet</string>
-        <string name="comment_plurals_one">%1$d comment</string>
-        <string name="comment_plurals_two">%1$d comments</string>
-        <string name="comment_plurals_few">%1$d comments</string>
-        <string name="comment_plurals_many">%1$d comments</string>
-        <string name="comment_plurals_other">%1$d comments</string>
-        <plurals name="comment_plurals">
-            <item quantity="zero">@string/comment_plurals_zero</item>
-            <item quantity="one">@string/comment_plurals_one</item>
-            <item quantity="two">@string/comment_plurals_two</item>
-            <item quantity="few">@string/comment_plurals_few</item>
-            <item quantity="many">@string/comment_plurals_many</item>
-            <item quantity="other">@string/comment_plurals_other</item>
-        </plurals>
-    <!--  Dialog  -->
+
+
+<!--  DialogFragment  -->
         <string name="type_message">Type message&#8230;</string>
 
-<!--  PreferenceActivity  -->
+<!--  CommentsListFragment  -->
+    <string name="comments">Comments</string>
+    <string name="no_comments_yet">No comments yet</string>
+    <string name="add_comment">Add comment</string>
+    <string name="unable_to_load_comments">Unable to load comments</string>
+    <string name="unable_to_create_comment">Unable to create comment</string>
+    <string name="unable_to_edit_comment">Unable to edit comment</string>
+    <string name="unable_to_delete_comment">Unable to delete comment</string>
+    <string name="delete_this_comment">Delete this comment?</string>
+
+
+
+    <!--  LikesListFragment  -->
+    <string name="likes">Likes</string>
+    <string name="no_likes_yet">No likes yet</string>
+    <string name="unable_to_load_likes">Unable to load likes</string>
+
+    <!--  PreferenceFragment  -->
         <string name="theme">Theme</string>
         <string name="dark_mode">Dark mode</string>
         <string name="application">Application</string>
@@ -125,25 +117,17 @@
         <string name="about">About</string>
         <string name="build_version">Build version</string>
 
-    <!--  Notifications  -->
-    <string name="messages_notifications_channel_name">Messages notifications</string>
-    <string name="messages_notifications_channel_description">Notify you about new messages</string>
+<!--  Notifications  -->
     <string name="sticker">sticker</string>
-    <string name="login_already_exists">Login already exists</string>
-    <string name="invalid_registration_data">Invalid registration data</string>
+
     <string name="new_chat_label">There is no dialogs. Start new by clicking + button below</string>
     <string name="add_chat">Add dialog</string>
-    <string name="unable_to_update_comment">Unable to update comment</string>
     <string name="send">Send</string>
-    <string name="delete_this_comment">Delete this comment?</string>
     <string name="this_action_cannot_be_undone">This action cannot be undone</string>
     <string name="string_too_long">String too long</string>
     <string name="this_string_is_required">This string is required</string>
     <string name="edit_comment">Edit comment</string>
-    <string name="no_likes_yet">No likes yet</string>
     <string name="unable_to_edit_status">Unable to edit status</string>
     <string name="debug_mode">Debug mode</string>
-    <string name="comments">Comments</string>
-    <string name="retry">Retry</string>
 
 </resources>

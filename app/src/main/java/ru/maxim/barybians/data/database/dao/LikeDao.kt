@@ -1,6 +1,7 @@
 package ru.maxim.barybians.data.database.dao
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.UserEntity
 import ru.maxim.barybians.data.database.model.LikeEntity.Contract as Like
@@ -10,12 +11,12 @@ import ru.maxim.barybians.data.database.model.UserEntity.Contract as User
 interface LikeDao {
 
     @Query(
-        """SELECT ${User.tableName}.* FROM 
-            ${User.tableName} INNER JOIN ${Like.tableName}
+        """SELECT ${User.tableName}.* 
+            FROM ${User.tableName} INNER JOIN ${Like.tableName}
                 ON ${User.tableName}.${User.Columns.userId}=${Like.tableName}.${Like.Columns.userId}
             WHERE ${Like.Columns.postId}=:postId"""
     )
-    suspend fun getByPostId(postId: Int): List<UserEntity>
+    fun getByPostId(postId: Int): Flow<List<UserEntity>>
 
     @Query("SELECT * FROM ${Like.tableName} WHERE ${Like.Columns.postId}=:postId AND ${Like.Columns.userId}=:userId")
     suspend fun getLike(postId: Int, userId: Int): LikeEntity?

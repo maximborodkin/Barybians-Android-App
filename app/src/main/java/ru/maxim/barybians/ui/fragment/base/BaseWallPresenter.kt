@@ -1,9 +1,9 @@
 package ru.maxim.barybians.ui.fragment.base
 
 import moxy.MvpPresenter
-import ru.maxim.barybians.data.repository.CommentRepository
-import ru.maxim.barybians.data.repository.PostRepository
-import ru.maxim.barybians.data.repository.UserRepository
+import ru.maxim.barybians.data.repository.comment.CommentRepository
+import ru.maxim.barybians.data.repository.post.PostRepository
+import ru.maxim.barybians.data.repository.user.UserRepository
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 
 abstract class BaseWallPresenter<T : BaseWallView>(

@@ -1,4 +1,4 @@
-package ru.maxim.barybians.data.repository
+package ru.maxim.barybians.data.repository.auth
 
 import com.google.gson.Gson
 import dagger.Reusable

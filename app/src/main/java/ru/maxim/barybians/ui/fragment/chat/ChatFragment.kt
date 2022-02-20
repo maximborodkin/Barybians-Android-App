@@ -111,9 +111,8 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
     }
 
     private fun sendMessage(text: String) {
-        val timestamp = Date().time
-        val time = time(timestamp)
-        val viewHolderId = "${text}${timestamp}".hashCode().toLong()
+        val time = time(Date())
+        val viewHolderId = text.hashCode().toLong()
         messageItems.add(OutgoingMessage(viewHolderId, text, time, Sending))
         binding.chatRecyclerView.apply {
             adapter?.notifyItemInserted(messageItems.size - 1)
