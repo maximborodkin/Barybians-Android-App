@@ -1,7 +1,9 @@
 package ru.maxim.barybians.data.repository.like
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.database.dao.LikeDao
 import ru.maxim.barybians.data.database.model.LikeEntity
@@ -26,7 +28,7 @@ class LikeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun changeLike(postId: Int) {
+    override suspend fun changeLike(postId: Int) = withContext(Dispatchers.IO) {
         val hasPersonalLike = likeDao.getLike(postId, preferencesManager.userId).isNotNull()
 
         val likeResponse = repositoryBound.wrapRequest {

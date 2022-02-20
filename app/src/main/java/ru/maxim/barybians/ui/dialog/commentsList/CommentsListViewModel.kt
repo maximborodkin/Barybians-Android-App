@@ -16,6 +16,7 @@ import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.comment.CommentRepository
 import ru.maxim.barybians.domain.model.Comment
+import timber.log.Timber
 import java.util.*
 
 @OptIn(ExperimentalPagingApi::class)
@@ -74,6 +75,7 @@ class CommentsListViewModel private constructor(
             commentRepository.createComment(uuid, postId, requireNotNull(commentText.value))
             commentText.postValue(String())
         } catch (e: Exception) {
+            Timber.e(e)
             val error = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection
                 is TimeoutException -> R.string.request_timeout

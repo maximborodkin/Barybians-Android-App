@@ -1,6 +1,9 @@
 package ru.maxim.barybians.data.repository.post
 
 import androidx.paging.PagingSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.database.dao.LikeDao
 import ru.maxim.barybians.data.database.dao.PostDao
@@ -19,6 +22,7 @@ import javax.inject.Singleton
 class PostRepositoryImpl @Inject constructor(
     private val postService: PostService,
     private val postDao: PostDao,
+    private val likeDao: LikeDao,
     private val postEntityMapper: PostEntityMapper,
     private val postDtoMapper: PostDtoMapper,
     private val repositoryBound: RepositoryBound,
@@ -38,19 +42,19 @@ class PostRepositoryImpl @Inject constructor(
         return postDtoMapper.toDomainModel(postDto)
     }
 
-    override suspend fun createPost(title: String?, text: String) {
+    override suspend fun createPost(title: String?, text: String) = withContext(IO) {
         val postDto = repositoryBound.wrapRequest { postService.createPost(title, text) }
         val post = postDtoMapper.toDomainModel(postDto)
         postDao.insert(postEntityMapper.fromDomainModel(post).post)
     }
 
-    override suspend fun editPost(postId: Int, title: String?, text: String) {
+    override suspend fun editPost(postId: Int, title: String?, text: String) = withContext(IO)  {
         val postDto = repositoryBound.wrapRequest { postService.updatePost(postId, title, text) }
         val post = postDtoMapper.toDomainModel(postDto)
         postDao.insert(postEntityMapper.fromDomainModel(post).post)
     }
 
-    override suspend fun deletePost(postId: Int) {
+    override suspend fun deletePost(postId: Int) = withContext(IO) {
         val isDeleted = repositoryBound.wrapRequest { postService.deletePost(postId) }
         if (isDeleted) {
             postDao.delete(postId)

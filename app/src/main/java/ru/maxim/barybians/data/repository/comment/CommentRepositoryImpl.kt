@@ -1,7 +1,9 @@
-package ru.maxim.barybians.data.repository.like
+package ru.maxim.barybians.data.repository.comment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.database.dao.CommentDao
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
@@ -19,7 +21,6 @@ class CommentRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val commentEntityMapper: CommentEntityMapper,
     private val commentDtoMapper: CommentDtoMapper,
-    private val postService: PostService,
     private val repositoryBound: RepositoryBound
 ) : CommentRepository {
 
@@ -28,19 +29,19 @@ class CommentRepositoryImpl @Inject constructor(
             .map { commentsList -> commentEntityMapper.toDomainModelList(commentsList) }
     }
 
-    override suspend fun createComment(uuid: String, postId: Int, text: String) {
+    override suspend fun createComment(uuid: String, postId: Int, text: String) = withContext(IO) {
         val commentDto = repositoryBound.wrapRequest { commentService.addComment(uuid, postId, text) }
         val comment = commentDtoMapper.toDomainModel(commentDto)
         commentDao.save(commentEntityMapper.fromDomainModel(comment), userDao)
     }
 
-    override suspend fun editComment(commentId: Int, text: String) {
+    override suspend fun editComment(commentId: Int, text: String) = withContext(IO) {
         val commentDto = repositoryBound.wrapRequest { commentService.editComment(commentId, text) }
         val comment = commentDtoMapper.toDomainModel(commentDto)
         commentDao.save(commentEntityMapper.fromDomainModel(comment), userDao)
     }
 
-    override suspend fun deleteComment(commentId: Int) {
+    override suspend fun deleteComment(commentId: Int) = withContext(IO) {
         val isDeleted = repositoryBound.wrapRequest { commentService.deleteComment(commentId) }
         if (isDeleted) {
             commentDao.delete(commentId)

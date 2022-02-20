@@ -10,7 +10,7 @@ import ru.maxim.barybians.data.repository.auth.AuthRepositoryImpl
 import ru.maxim.barybians.data.repository.chat.ChatRepository
 import ru.maxim.barybians.data.repository.chat.ChatRepositoryImpl
 import ru.maxim.barybians.data.repository.comment.CommentRepository
-import ru.maxim.barybians.data.repository.like.CommentRepositoryImpl
+import ru.maxim.barybians.data.repository.comment.CommentRepositoryImpl
 import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.data.repository.like.LikeRepositoryImpl
 import ru.maxim.barybians.data.repository.post.PostRepository
