@@ -1,14 +1,10 @@
 package ru.maxim.barybians.ui.fragment.base
 
-import kotlinx.coroutines.launch
 import moxy.MvpPresenter
-import moxy.presenterScope
-import ru.maxim.barybians.data.network.exception.NoConnectionException
-import ru.maxim.barybians.data.repository.CommentRepository
-import ru.maxim.barybians.data.repository.PostRepository
-import ru.maxim.barybians.data.repository.UserRepository
+import ru.maxim.barybians.data.repository.comment.CommentRepository
+import ru.maxim.barybians.data.repository.post.PostRepository
+import ru.maxim.barybians.data.repository.user.UserRepository
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
-import java.util.*
 
 abstract class BaseWallPresenter<T : BaseWallView>(
     private val postRepository: PostRepository,
@@ -17,7 +13,7 @@ abstract class BaseWallPresenter<T : BaseWallView>(
 ) : MvpPresenter<T>() {
 
     /**
-     * id and layout position of currently shown post
+     * postId and layout position of currently shown post
      * Used to restore BottomSheetDialog state.
      * If dialog was shown before the state has changed, it will be restored by this parameters.
      * Passed to [FeedFragment.onCommentsClick]

@@ -14,19 +14,16 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="8dp"
-        android:paddingBottom="12dp">
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/likesListTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:text="@string/likes"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="3 likes" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/likesListRecycler"
@@ -41,29 +38,18 @@
             tools:itemCount="3"
             tools:listitem="@layout/item_user" />
 
-        <ProgressBar
-            android:id="@+id/likesListProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="@{viewModel.isLoading ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@id/likesListRecycler"
-            app:layout_constraintEnd_toEndOf="@id/likesListRecycler"
-            app:layout_constraintStart_toStartOf="@id/likesListRecycler"
-            app:layout_constraintTop_toTopOf="@id/likesListRecycler" />
-
         <TextView
-            android:id="@+id/likesListMessage"
+            android:id="@+id/likesListEmptyMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="24dp"
             android:textSize="16sp"
-            android:visibility="@{viewModel.isLoading || viewModel.likes.size > 0 ? View.GONE : View.VISIBLE}"
+            android:visibility="@{viewModel.likes.empty ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/likesListRecycler"
             app:layout_constraintEnd_toEndOf="@id/likesListRecycler"
             app:layout_constraintStart_toStartOf="@id/likesListRecycler"
             app:layout_constraintTop_toTopOf="@id/likesListRecycler"
-            tools:text="Unable to load likes. Please try later" />
-
+            tools:text="Unable to load likes. Please try later"
+            tools:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

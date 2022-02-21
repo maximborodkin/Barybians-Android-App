@@ -1,6 +1,5 @@
 package ru.maxim.barybians.ui.dialog.likesList
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
-import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentLikesListBinding
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
@@ -52,38 +50,16 @@ class LikesListDialog : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.likes.collect { likes ->
-                    recyclerAdapter.submitList(likes)
-
-                    binding.likesListMessage.text =
-                        if (likes.isEmpty()) view.context.getString(R.string.no_likes_yet)
-                        else null
-
-                    binding.likesListTitle.text = context?.resources?.getQuantityString(
-                        R.plurals.like_plurals,
-                        likes.size,
-                        likes.size
-                    )
-                }
+                model.likes.collect(recyclerAdapter::submitList)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            model.errorMessageId.observe(viewLifecycleOwner) { errorMessageId ->
-                errorMessageId?.let {
-                    if (recyclerAdapter.itemCount == 0) {
-                        binding.likesListMessage.text = view.context.getText(errorMessageId)
-                    } else {
-                        recyclerAdapter.notifyDataSetChanged()
-                        context?.toast(it)
-                    }
-                }
-            }
+            model.errorMessage.observe(viewLifecycleOwner) { messageResource -> context?.toast(messageResource) }
         }
 
         recyclerAdapter.setOnUserClickListener { userId ->

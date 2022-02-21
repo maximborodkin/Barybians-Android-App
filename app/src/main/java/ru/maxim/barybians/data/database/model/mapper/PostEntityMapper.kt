@@ -1,75 +1,50 @@
 package ru.maxim.barybians.data.database.model.mapper
 
-import androidx.room.withTransaction
-import ru.maxim.barybians.data.DomainMapper
-import ru.maxim.barybians.data.database.BarybiansDatabase
-import ru.maxim.barybians.data.database.dao.CommentDao
-import ru.maxim.barybians.data.database.dao.LikeDao
-import ru.maxim.barybians.data.database.dao.UserDao
-import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
+import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.domain.model.Post
-import timber.log.Timber
-import java.lang.StringBuilder
+import java.util.*
 import javax.inject.Inject
 
 class PostEntityMapper @Inject constructor(
-    private val database: BarybiansDatabase,
-    private val userDao: UserDao,
-    private val likeDao: LikeDao,
-    private val commentDao: CommentDao,
     private val userEntityMapper: UserEntityMapper,
     private val commentEntityMapper: CommentEntityMapper
 ) : DomainMapper<PostEntity, Post>() {
 
-    override suspend fun toDomainModel(model: PostEntity): Post {
-        val author = requireNotNull(userDao.getById(model.userId))
-        val likedUsers = likeDao.getByPostId(model.postId)
-        val comments = commentDao.getByPostId(model.postId)
-
+    override fun toDomainModel(model: PostEntity): Post {
         return Post(
-            id = model.postId,
-            userId = model.userId,
-            title = model.title,
-            text = model.text,
-            _date = model.date,
-            edited = model.edited,
-            author = userEntityMapper.toDomainModel(author),
-            likedUsers = userEntityMapper.toDomainModelList(likedUsers),
-            comments = commentEntityMapper.toDomainModelList(comments)
+            postId = model.post.postId,
+            userId = model.post.userId,
+            title = model.post.title,
+            text = model.post.text,
+            date = Date(model.post.date),
+            isEdited = model.post.edited == 1,
+            author = userEntityMapper.toDomainModel(model.author),
+            likedUsers = userEntityMapper.toDomainModelList(model.likes),
+            comments = commentEntityMapper.toDomainModelList(model.comments)
         )
     }
 
-    override suspend fun fromDomainModel(domainModel: Post): PostEntity {
-        /*
-        * The game is over
-        * No more rounds to play, it's time to pay
-        * Who's got the Joker?
-        * To kill the lies and make your hurt recall
-        * There is no other sky to fall
-        * */
-        database.withTransaction {
-            userDao.insert(userEntityMapper.fromDomainModel(domainModel.author))
-            userDao.insert(userEntityMapper.fromDomainModelList(domainModel.likedUsers))
-            likeDao.insert(domainModel.likedUsers.map { user -> LikeEntity(postId = domainModel.id, userId = user.id) })
-            commentDao.insert(commentEntityMapper.fromDomainModelList(domainModel.comments))
-        }
-
+    /*
+    * The game is over
+    * No more rounds to play, it's time to pay
+    * Who's got the Joker?
+    * To kill the lies and make your hurt recall
+    * There is no other sky to fall
+    * */
+    override fun fromDomainModel(domainModel: Post): PostEntity {
         return PostEntity(
-            id = 0,
-            postId = domainModel.id,
-            userId = domainModel.userId,
-            title = domainModel.title,
-            text = domainModel.text,
-            date = domainModel._date,
-            edited = domainModel.edited
+            post = PostEntity.PostEntityBody(
+                postId = domainModel.postId,
+                userId = domainModel.userId,
+                title = domainModel.title,
+                text = domainModel.text,
+                date = domainModel.date.time,
+                edited = if (domainModel.isEdited) 1 else 0,
+            ),
+            author = userEntityMapper.fromDomainModel(domainModel.author),
+            likes = userEntityMapper.fromDomainModelList(domainModel.likedUsers),
+            comments = commentEntityMapper.fromDomainModelList(domainModel.comments)
         )
-    }
-
-    override suspend fun toDomainModelList(model: List<PostEntity>): List<Post> {
-        val str = StringBuilder()
-        model.forEach { str.append(it.postId) }
-        Timber.d("XXX toDomainModelList ${model.size} $str")
-        return super.toDomainModelList(model)
     }
 }

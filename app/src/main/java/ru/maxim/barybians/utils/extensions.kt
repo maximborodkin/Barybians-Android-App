@@ -9,12 +9,15 @@ import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingData
+import androidx.paging.map
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import ru.maxim.barybians.App
@@ -22,9 +25,9 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.di.AppComponent
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Calendar.DATE
-import java.util.Calendar.YEAR
 import java.util.Calendar.MONTH
+import java.util.Calendar.YEAR
+import java.util.Calendar.DATE
 
 fun Any?.isNull() = this == null
 fun Any?.isNotNull() = !this.isNull()
@@ -52,10 +55,10 @@ fun TextView.setDrawableEnd(@DrawableRes drawableResource: Int) =
 fun TextView.clearDrawables() =
     TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, 0, 0, 0, 0)
 
-fun Context.toast(text: String) = Toast.makeText(this, text, LENGTH_SHORT).show()
-fun Context.toast(resource: Int) = toast(getString(resource))
-fun Context.longToast(text: String) = Toast.makeText(this, text, LENGTH_LONG).show()
-fun Context.longToast(resource: Int) = longToast(getString(resource))
+fun Context.toast(text: String?) = text?.let { Toast.makeText(this, it, LENGTH_SHORT).show() }
+fun Context.toast(@StringRes resource: Int?) = resource?.let { toast(getString(it)) }
+fun Context.longToast(text: String?) = text?.let { Toast.makeText(this, it, LENGTH_LONG).show() }
+fun Context.longToast(@StringRes resource: Int?) = resource?.let { longToast(getString(it)) }
 
 @SuppressLint("CheckResult")
 fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnail: String? = null) {
@@ -80,14 +83,6 @@ fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnai
         .into(this)
 }
 
-inline fun <T> List<T>.indexOrNull(predicate: (T) -> Boolean): Int? {
-    for ((index, item) in this.withIndex()) {
-        if (predicate(item))
-            return index
-    }
-    return null
-}
-
 inline fun <T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
     for (item in this) {
         if (predicate(item))
@@ -96,12 +91,12 @@ inline fun <T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
     return false
 }
 
-fun View.show() {
-    this.isVisible = true
+fun View?.show() {
+    this?.isVisible = true
 }
 
-fun View.hide() {
-    this.isGone = true
+fun View?.hide() {
+    this?.isGone = true
 }
 
 fun MutableLiveData<String>.isEmpty() = value?.isEmpty()
@@ -111,24 +106,26 @@ fun <T> List<T>.transform(action: (T) -> Unit): List<T> {
     return this
 }
 
-fun Date.simple(hasTime: Boolean = true): String {
+fun simpleDate(date: Date, hasTime: Boolean = true): String {
     val today = Calendar.getInstance()
-    val date = Calendar.getInstance().also { it.timeInMillis = this.time }
+    val calendar = Calendar.getInstance().also { it.timeInMillis = date.time }
     return when {
-        date[YEAR] == today[YEAR] && date[MONTH] == date[MONTH] && date[DATE] == today[DATE] ->
-            SimpleDateFormat("HH:mm", Locale.getDefault())
-        date[YEAR] == today[YEAR] -> SimpleDateFormat("dd MMM${if (hasTime) " HH:mm" else ""}", Locale.getDefault())
+        calendar[YEAR] == today[YEAR] &&
+        calendar[MONTH] == calendar[MONTH] &&
+        calendar[DATE] == today[DATE] -> SimpleDateFormat("HH:mm", Locale.getDefault())
+        calendar[YEAR] == today[YEAR] -> SimpleDateFormat("dd MMM${if (hasTime) " HH:mm" else ""}", Locale.getDefault())
         else -> SimpleDateFormat("dd MMM yyyy${if (hasTime) " HH:mm" else ""}", Locale.getDefault())
-    }.format(this)
+    }.format(date)
 }
 
-fun Date.date(): String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(this)
+fun date(date: Date): String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date)
+fun time(date: Date): String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
 
-fun Date.time(): String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(this)
-
-fun simpleDate(timestamp: Long, hasTime: Boolean = true) = Date(timestamp).simple(hasTime)
-fun date(timestamp: Long) = Date(timestamp).date()
-fun time(timestamp: Long) = Date(timestamp).time()
+inline fun <reified T : Any> PagingData<T>.size(): Any {
+    var size = 0
+    this.map { size++ }
+    return size
+}
 
 val Context.appComponent: AppComponent
     get() = when (this) {

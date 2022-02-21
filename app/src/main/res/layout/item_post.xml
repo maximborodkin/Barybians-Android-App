@@ -7,6 +7,7 @@
         <import type="android.view.View" />
         <import type="androidx.core.content.ContextCompat" />
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
+        <import type="kotlin.text.StringsKt" />
         <import type="ru.maxim.barybians.R" />
 
         <variable
@@ -64,16 +65,6 @@
                 tools:text="@tools:sample/full_names" />
 
             <TextView
-                android:id="@+id/itemPostId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{`Post id: ` + String.valueOf(post.id)}"
-                android:visibility="@{isDebug ? View.VISIBLE : View.GONE}"
-                app:layout_constraintStart_toEndOf="@id/itemPostName"
-                app:layout_constraintTop_toTopOf="@id/itemPostName"
-                tools:text="Post id: 228" />
-
-            <TextView
                 android:id="@+id/itemPostDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -100,6 +91,7 @@
                 android:layout_marginTop="6dp"
                 android:text="@{post.title}"
                 android:textSize="18sp"
+                android:visibility="@{post.title == null || StringsKt.isBlank(post.title) ? View.GONE : View.VISIBLE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/itemPostAvatar"
@@ -166,15 +158,13 @@
                 app:layout_constraintTop_toTopOf="@id/itemPostLikeBtn"
                 tools:text="4" />
 
-            <ProgressBar
-                android:id="@+id/itemPostProgressBar"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+                android:text="@{`postId: ` + String.valueOf(post.postId)}"
+                android:visibility="@{isDebug ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:indeterminate="true"/>
+                app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

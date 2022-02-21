@@ -4,8 +4,8 @@ import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
-import ru.maxim.barybians.data.network.response.AuthResponse
-import ru.maxim.barybians.data.network.response.RegistrationResponse
+import ru.maxim.barybians.data.network.model.response.AuthResponse
+import ru.maxim.barybians.data.network.model.response.RegistrationResponse
 
 interface AuthService {
 
@@ -22,7 +22,7 @@ interface AuthService {
         @Field("firstName") firstName: String,
         @Field("lastName") lastName: String,
         @Field("birthDate") birthDate: String,
-        @Field("sex") sex: Boolean,
+        @Field("sex") gender: Boolean,
         @Field("photo") photo: String,
         @Field("username") username: String,
         @Field("password") password: String

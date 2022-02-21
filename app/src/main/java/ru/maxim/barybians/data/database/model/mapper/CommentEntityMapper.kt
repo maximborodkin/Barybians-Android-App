@@ -1,38 +1,36 @@
 package ru.maxim.barybians.data.database.model.mapper
 
-import ru.maxim.barybians.data.DomainMapper
-import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.CommentEntity
+import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.domain.model.Comment
+import java.util.*
 import javax.inject.Inject
 
 class CommentEntityMapper @Inject constructor(
-    private val userDao: UserDao,
     private val userEntityMapper: UserEntityMapper
 ) : DomainMapper<CommentEntity, Comment>() {
 
-    override suspend fun toDomainModel(model: CommentEntity): Comment {
-        val author = requireNotNull(userDao.getById(model.userId))
-
+    override fun toDomainModel(model: CommentEntity): Comment {
         return Comment(
-            id = model.commentId,
-            postId = model.postId,
-            userId = model.userId,
-            text = model.text,
-            _date = model.date,
-            author = userEntityMapper.toDomainModel(author)
+            commentId = model.comment.commentId,
+            postId = model.comment.postId,
+            userId = model.comment.userId,
+            text = model.comment.text,
+            date = Date(model.comment.date),
+            author = userEntityMapper.toDomainModel(model.author)
         )
     }
 
-    override suspend fun fromDomainModel(domainModel: Comment): CommentEntity {
-        userDao.insert(userEntityMapper.fromDomainModel(domainModel.author))
-
+    override fun fromDomainModel(domainModel: Comment): CommentEntity {
         return CommentEntity(
-            commentId = domainModel.id,
-            postId = domainModel.postId,
-            userId = domainModel.userId,
-            text = domainModel.text,
-            date = domainModel._date
+            comment = CommentEntity.CommentEntityBody(
+                commentId = domainModel.commentId,
+                postId = domainModel.postId,
+                userId = domainModel.userId,
+                text = domainModel.text,
+                date = domainModel.date.time
+            ),
+            author = userEntityMapper.fromDomainModel(domainModel.author)
         )
     }
 }

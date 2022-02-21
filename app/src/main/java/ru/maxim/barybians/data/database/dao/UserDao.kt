@@ -1,24 +1,35 @@
 package ru.maxim.barybians.data.database.dao
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import ru.maxim.barybians.data.database.model.UserEntity
 import ru.maxim.barybians.data.database.model.UserEntity.Contract.Columns
 
 @Dao
-interface UserDao {
+abstract class UserDao {
 
     @Query("SELECT * FROM ${UserEntity.tableName}")
-    suspend fun getAll(): List<UserEntity>
+    abstract fun pagingSource(): PagingSource<Int, UserEntity>
 
     @Query("SELECT * FROM ${UserEntity.tableName} WHERE ${Columns.userId}=:userId")
-    suspend fun getById(userId: Int): UserEntity?
+    abstract fun getById(userId: Int): UserEntity?
+
+    suspend fun save(userEntity: UserEntity) {
+        if (getById(userEntity.userId) != null) {
+            update(userEntity)
+        } else {
+            insert(userEntity)
+        }
+    }
+
+    suspend fun save(userEntity: List<UserEntity>) = userEntity.forEach { user -> save(user) }
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun update(userEntity: UserEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(userEntity: UserEntity)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(userEntities: List<UserEntity>)
+    abstract suspend fun insert(userEntity: UserEntity)
 
     @Delete
-    suspend fun delete(userEntity: UserEntity)
+    abstract suspend fun delete(userEntity: UserEntity)
 }

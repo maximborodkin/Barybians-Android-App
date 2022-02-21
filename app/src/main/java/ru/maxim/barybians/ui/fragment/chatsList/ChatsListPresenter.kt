@@ -5,7 +5,7 @@ import moxy.InjectViewState
 import moxy.MvpPresenter
 import moxy.presenterScope
 import ru.maxim.barybians.data.network.exception.NoConnectionException
-import ru.maxim.barybians.data.repository.ChatRepository
+import ru.maxim.barybians.data.repository.chat.ChatRepository
 import javax.inject.Inject
 
 @InjectViewState

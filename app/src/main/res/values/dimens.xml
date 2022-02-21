@@ -7,4 +7,5 @@
     <dimen name="attachment_space">6dp</dimen>
     <dimen name="image_attachment_size">128dp</dimen>
     <dimen name="sticker_size">200dp</dimen>
+    <dimen name="scrollbar_size">6dp</dimen>
 </resources>

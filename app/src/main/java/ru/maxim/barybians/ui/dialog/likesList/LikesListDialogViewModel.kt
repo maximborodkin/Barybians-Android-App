@@ -5,68 +5,46 @@ import androidx.lifecycle.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.stateIn
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
-import ru.maxim.barybians.data.network.exception.NotFoundException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.repository.CommentRepository
-import ru.maxim.barybians.data.repository.PostRepository
-import ru.maxim.barybians.domain.model.Comment
+import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.domain.model.User
-import java.util.*
 
 class LikesListDialogViewModel private constructor(
     application: Application,
-    private val postRepository: PostRepository,
-    private val postId: Int
+    likeRepository: LikeRepository,
+    postId: Int
 ) : AndroidViewModel(application) {
 
-    private val _likes: MutableStateFlow<List<User>> = MutableStateFlow(listOf())
-    val likes: StateFlow<List<User>> = _likes.asStateFlow()
-
-    private val _errorMessageId: MutableLiveData<Int?> = MutableLiveData(null)
-    val errorMessageId: LiveData<Int?> = _errorMessageId
-
-    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    init {
-        update()
-    }
-
-    private fun update() = viewModelScope.launch {
-        _isLoading.postValue(true)
-        try {
-            val post = postRepository.getPostById(postId)
-            if (post != null) {
-                _likes.emit(post.likedUsers)
-            } else throw NotFoundException()
-        } catch (e: Exception) {
-            val error = when (e) {
-                is NoConnectionException -> R.string.no_internet_connection
-                is TimeoutException -> R.string.request_timeout
-                else -> R.string.unable_to_load_comments
+    val likes: StateFlow<List<User>> =
+        likeRepository.getLikes(postId)
+            .catch { exception ->
+                val errorMessage = when (exception) {
+                    is NoConnectionException -> R.string.no_internet_connection
+                    is TimeoutException -> R.string.request_timeout
+                    else -> R.string.unable_to_load_likes
+                }
+                _errorMessage.postValue(errorMessage)
             }
-            _errorMessageId.postValue(error)
-        } finally {
-            _isLoading.postValue(false)
-        }
-    }
+            .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
+    private val _errorMessage: MutableLiveData<Int?> = MutableLiveData(null)
+    val errorMessage: LiveData<Int?> = _errorMessage
 
     class LikesListDialogViewModelFactory @AssistedInject constructor(
         private val application: Application,
-        private val postRepository: PostRepository,
+        private val likeRepository: LikeRepository,
         @Assisted("postId") private val postId: Int
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LikesListDialogViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return LikesListDialogViewModel(application, postRepository, postId) as T
+                return LikesListDialogViewModel(application, likeRepository, postId) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }

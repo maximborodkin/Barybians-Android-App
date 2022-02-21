@@ -2,12 +2,51 @@ package ru.maxim.barybians.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.NO_ACTION
+import androidx.room.Index
 import ru.maxim.barybians.data.database.model.ChatEntity.Contract.Columns
 import ru.maxim.barybians.data.database.model.ChatEntity.Contract.tableName
+import ru.maxim.barybians.data.database.model.MessageEntity.MessageEntityBody
 
 @Entity(
     tableName = tableName,
-    primaryKeys = [Columns.firstUserId, Columns.secondUserId]
+    primaryKeys = [Columns.firstUserId, Columns.secondUserId],
+    foreignKeys = [
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = [UserEntity.Contract.Columns.userId],
+            childColumns = [ChatEntity.Contract.Columns.firstUserId],
+            onDelete = CASCADE, onUpdate = NO_ACTION
+        ),
+        ForeignKey(
+            entity = UserEntity::class,
+            parentColumns = [UserEntity.Contract.Columns.userId],
+            childColumns = [ChatEntity.Contract.Columns.secondUserId],
+            onDelete = CASCADE, onUpdate = NO_ACTION
+        ),
+        ForeignKey(
+            entity = MessageEntityBody::class,
+            parentColumns = [MessageEntity.Contract.Columns.messageId],
+            childColumns = [ChatEntity.Contract.Columns.lastMessageId],
+            onDelete = CASCADE, onUpdate = NO_ACTION
+        )
+    ],
+    indices = [
+        Index(
+            value = [ChatEntity.Contract.Columns.firstUserId],
+            unique = false
+        ),
+        Index(
+            value = [ChatEntity.Contract.Columns.secondUserId],
+            unique = false
+        ),
+        Index(
+            value = [ChatEntity.Contract.Columns.lastMessageId],
+            unique = false
+        )
+    ]
 )
 data class ChatEntity(
 

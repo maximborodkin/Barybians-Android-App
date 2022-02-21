@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.activity.auth.registration
+package ru.maxim.barybians.ui.fragment.registration
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -14,7 +14,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentRegistrationBinding
-import ru.maxim.barybians.ui.activity.auth.registration.RegistrationViewModel.RegistrationViewModelFactory
+import ru.maxim.barybians.ui.fragment.registration.RegistrationViewModel.RegistrationViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.clearDrawables
 import ru.maxim.barybians.utils.setDrawableStart
@@ -54,8 +54,8 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
                 datePickerDialog.datePicker.maxDate = Date().time
                 datePickerDialog.show()
             }
-            registrationMaleBtn.setOnClickListener { model.sex.postValue(false) }
-            registrationFemaleBtn.setOnClickListener { model.sex.postValue(true) }
+            registrationMaleBtn.setOnClickListener { model.gender.postValue(false) }
+            registrationFemaleBtn.setOnClickListener { model.gender.postValue(true) }
 
             registrationBtn.setOnClickListener { model.register() }
 

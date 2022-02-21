@@ -24,7 +24,6 @@ import ru.maxim.barybians.utils.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.collections.ArrayList
 
 class ChatFragment : MvpAppCompatFragment(), ChatView {
 
@@ -88,7 +87,7 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
         }
     }
 
-    override fun showMessages(messages: ArrayList<Message>, interlocutor: User) {
+    override fun showMessages(messages: List<Message>, interlocutor: User) {
         with(binding) {
             chatLoading.visibility = GONE
             chatToolbarUser.userName = interlocutor.fullName
@@ -99,7 +98,7 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
         messageItems.addAll(messages.map {
             val time = simpleDate(it.date)
             val viewHolderId = "${it.text}${it.date}".hashCode().toLong()
-            val status = if (it.unread == 1) Unread else Read
+            val status = if (it.isUnread) Unread else Read
             return@map if (it.senderId == currentUserId)
                 OutgoingMessage(viewHolderId, it.text, time, status)
             else
@@ -112,9 +111,8 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
     }
 
     private fun sendMessage(text: String) {
-        val timestamp = Date().time
-        val time = time(timestamp)
-        val viewHolderId = "${text}${timestamp}".hashCode().toLong()
+        val time = time(Date())
+        val viewHolderId = text.hashCode().toLong()
         messageItems.add(OutgoingMessage(viewHolderId, text, time, Sending))
         binding.chatRecyclerView.apply {
             adapter?.notifyItemInserted(messageItems.size - 1)
@@ -144,7 +142,7 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
             ?.setErrorLabel()
     }
 
-    override fun onMessagesReceived(messages: ArrayList<Message>) {
+    override fun onMessagesReceived(messages: List<Message>) {
         messages.forEach {
             when (it.senderId) {
                 interlocutorId -> {

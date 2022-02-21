@@ -8,12 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.databinding.ItemUserBinding
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.likesList.LikesListRecyclerAdapter.UserViewHolder
-import ru.maxim.barybians.utils.load
-import java.util.*
 import javax.inject.Inject
 
-class LikesListRecyclerAdapter @Inject constructor() :
-    ListAdapter<User, UserViewHolder>(UserDiffUtils) {
+class LikesListRecyclerAdapter @Inject constructor() : ListAdapter<User, UserViewHolder>(UserDiffUtils) {
 
     private var onUserClick: ((userId: Int) -> Unit)? = null
 
@@ -35,16 +32,14 @@ class LikesListRecyclerAdapter @Inject constructor() :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) = with(binding) {
-            itemUserAvatar.load(user.avatarMin)
-            itemUserAvatar.isOnline = user.lastVisit > Date().time / 1000 - 5 * 60
-            itemUserName.text = user.fullName
-            root.setOnClickListener { onUserClick?.invoke(user.id) }
+            binding.user = user
+            root.setOnClickListener { onUserClick?.invoke(user.userId) }
         }
     }
 
     private object UserDiffUtils : DiffUtil.ItemCallback<User>() {
         override fun areItemsTheSame(oldItem: User, newItem: User): Boolean =
-            oldItem.id == newItem.id
+            oldItem.userId == newItem.userId
 
         override fun areContentsTheSame(oldItem: User, newItem: User): Boolean =
             oldItem == newItem

@@ -2,6 +2,7 @@ package ru.maxim.barybians.data.network.service
 
 import retrofit2.Response
 import retrofit2.http.*
+import ru.maxim.barybians.data.network.model.CommentDto
 import ru.maxim.barybians.domain.model.Comment
 
 interface CommentService {
@@ -12,14 +13,14 @@ interface CommentService {
         @Header("request") uuid: String,
         @Field("postId") postId: Int,
         @Field("text") text: String
-    ): Response<Comment>
+    ): Response<CommentDto>
 
     @FormUrlEncoded
     @PUT("/v2/comments/{commentId}")
     suspend fun editComment(
         @Path("commentId") commentId: Int,
         @Field("text") text: String
-    ): Response<Comment>
+    ): Response<CommentDto>
 
     @DELETE("/v2/comments/{commentId}")
     suspend fun deleteComment(@Path("commentId") commentId: Int): Response<Boolean>

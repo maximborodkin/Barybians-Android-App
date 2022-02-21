@@ -7,7 +7,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.InvalidCredentialsException
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.repository.AuthRepository
+import ru.maxim.barybians.data.repository.auth.AuthRepository
 import javax.inject.Inject
 
 class LoginViewModel private constructor(

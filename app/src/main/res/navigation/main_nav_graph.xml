@@ -22,7 +22,7 @@
 
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="ru.maxim.barybians.ui.activity.auth.registration.RegistrationFragment"
+        android:name="ru.maxim.barybians.ui.fragment.registration.RegistrationFragment"
         android:label="RegistrationFragment"
         tools:layout="@layout/fragment_registration">
 

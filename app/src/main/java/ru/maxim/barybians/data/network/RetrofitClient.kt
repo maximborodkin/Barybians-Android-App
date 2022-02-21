@@ -4,11 +4,11 @@ import com.google.gson.GsonBuilder
 import dagger.Reusable
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.logging.HttpLoggingInterceptor.Level.*
+import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.maxim.barybians.data.network.service.*
 import ru.maxim.barybians.data.PreferencesManager
+import ru.maxim.barybians.data.network.service.*
 import java.util.*
 import javax.inject.Inject
 

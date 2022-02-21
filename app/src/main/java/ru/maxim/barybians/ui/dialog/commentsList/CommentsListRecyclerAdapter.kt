@@ -7,22 +7,24 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
 import androidx.core.content.ContextCompat
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemCommentBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.CommentViewHolder
-import ru.maxim.barybians.utils.*
+import ru.maxim.barybians.utils.HtmlUtils
+import ru.maxim.barybians.utils.SwipeDismissCallback
+import ru.maxim.barybians.utils.load
 import javax.inject.Inject
 
 class CommentsListRecyclerAdapter @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val htmlUtils: HtmlUtils
-) : PagingDataAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {
+) : ListAdapter<Comment, CommentViewHolder>(CommentDiffUtil) {
 
     private var commentsAdapterListener: CommentsAdapterListener? = null
 
@@ -43,11 +45,11 @@ class CommentsListRecyclerAdapter @Inject constructor(
             swipeBackground = swipeBackground,
             iconDrawable = deleteIcon,
             allowSwipe = { viewHolder ->
-                getItem(viewHolder.bindingAdapterPosition)?.author?.id == preferencesManager.userId
+                getItem(viewHolder.bindingAdapterPosition)?.author?.userId == preferencesManager.userId
             },
             onSwiped = { viewHolder ->
                 val position = viewHolder.bindingAdapterPosition
-                val commentId = getItem(position)?.id ?: return@SwipeDismissCallback
+                val commentId = getItem(position)?.commentId ?: return@SwipeDismissCallback
                 commentsAdapterListener?.onCommentSwipe(commentId = commentId, viewHolderPosition = position)
             }
         )
@@ -67,14 +69,10 @@ class CommentsListRecyclerAdapter @Inject constructor(
 
     inner class CommentViewHolder(private val binding: ItemCommentBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(comment: Comment?) = with(binding) {
-            if (comment == null) {
-                bindPlaceholder()
-                return@with
-            }
-            val context = itemView.context
-            itemCommentProgressBar.hide()
+        fun bind(comment: Comment) = with(binding) {
             this.comment = comment
+            this.isDebug = preferencesManager.isDebug
+            val context = itemView.context
             val commentBody = htmlUtils.parseHtml(comment.text)
             itemCommentText.text = commentBody.first
             itemCommentAttachmentsHolder.removeAllViews()
@@ -96,29 +94,20 @@ class CommentsListRecyclerAdapter @Inject constructor(
                 itemCommentAttachmentsHolder.addView(imageView)
             }
 
-            itemCommentUserAvatar.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.id) }
-            itemCommentUserName.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.id) }
+            itemCommentUserAvatar.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.userId) }
+            itemCommentUserName.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.userId) }
             root.setOnLongClickListener {
-                if (comment.author.id == preferencesManager.userId) {
-                    commentsAdapterListener?.onCommentLongClick(comment.id, comment.text)
+                if (comment.author.userId == preferencesManager.userId) {
+                    commentsAdapterListener?.onCommentLongClick(comment.commentId, comment.text)
                 }
                 true
             }
-        }
-
-        private fun bindPlaceholder() = with(binding) {
-            itemCommentUserAvatar.setImageDrawable(null)
-            itemCommentUserName.text = null
-            itemCommentDate.text = null
-            itemCommentText.text = null
-            itemCommentAttachmentsHolder.removeAllViews()
-            itemCommentProgressBar.show()
         }
     }
 
     private object CommentDiffUtil : DiffUtil.ItemCallback<Comment>() {
         override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean =
-            oldItem.id == newItem.id
+            oldItem.commentId == newItem.commentId
 
         override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean =
             oldItem == newItem

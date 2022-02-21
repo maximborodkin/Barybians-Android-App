@@ -1,6 +1,6 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-class ProfileViewModel()
+class ProfileViewModel
 //    application: Application,
 //    postRepository: PostRepository,
 //    private val userRepository: UserRepository,
@@ -53,14 +53,14 @@ class ProfileViewModel()
 //    ) : ViewModelProvider.AndroidViewModelFactory(application) {
 //        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 //            if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-//                val id = if (userId <= 0) preferencesManager.userId else userId
+//                val postId = if (userId <= 0) preferencesManager.userId else userId
 //
 //                @Suppress("UNCHECKED_CAST")
 //                return ProfileViewModel(
 //                    application,
 //                    postRepository,
 //                    userRepository,
-//                    id
+//                    postId
 //                ) as T
 //            }
 //            throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")

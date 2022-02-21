@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.activity.auth.registration
+package ru.maxim.barybians.ui.fragment.registration
 
 import android.app.Application
 import androidx.lifecycle.*
@@ -8,7 +8,7 @@ import ru.maxim.barybians.data.network.exception.AlreadyExistsException
 import ru.maxim.barybians.data.network.exception.BadRequestException
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.repository.AuthRepository
+import ru.maxim.barybians.data.repository.auth.AuthRepository
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
@@ -51,7 +51,7 @@ class RegistrationViewModel private constructor(
     }
     private val birthDateApiString = MutableLiveData(String())
 
-    val sex = MutableLiveData(false) // true is female, false is male
+    val gender = MutableLiveData(false) // true is female, false is male
     val login = MutableLiveData(String())
     val password = MutableLiveData(String())
     val repeatPassword = MutableLiveData(String())
@@ -71,7 +71,8 @@ class RegistrationViewModel private constructor(
     private val _passwordMessage = MediatorLiveData<Int?>().apply { addSource(password) { postValue(null) } }
     val passwordMessage: LiveData<Int?> = _passwordMessage
 
-    private val _repeatPasswordMessage = MediatorLiveData<Int?>().apply { addSource(repeatPassword) { postValue(null) } }
+    private val _repeatPasswordMessage =
+        MediatorLiveData<Int?>().apply { addSource(repeatPassword) { postValue(null) } }
     val repeatPasswordMessage: LiveData<Int?> = _repeatPasswordMessage
 
     private fun validateFields(): Boolean {
@@ -130,7 +131,7 @@ class RegistrationViewModel private constructor(
                     firstName = requireNotNull(firstName.value).trim(),
                     lastName = requireNotNull(lastName.value).trim(),
                     birthDate = requireNotNull(birthDateApiString.value),
-                    sex = sex.value == true,
+                    gender = gender.value == true,
                     login = requireNotNull(login.value).trim(),
                     password = requireNotNull(password.value).trim()
                 )

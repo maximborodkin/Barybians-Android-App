@@ -4,10 +4,11 @@ import android.app.Application
 import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
+import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.ui.MainActivity
-import ru.maxim.barybians.ui.activity.auth.registration.RegistrationFragment
+import ru.maxim.barybians.ui.fragment.registration.RegistrationFragment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
 import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
@@ -34,9 +35,6 @@ interface AppComponent {
         @BindsInstance
         fun applicationScope(coroutineScope: CoroutineScope): Builder
 
-        @BindsInstance
-        fun preferencesManager(preferencesManager: PreferencesManager): Builder
-
         fun build(): AppComponent
     }
 
@@ -51,4 +49,6 @@ interface AppComponent {
     fun inject(preferencesFragment: PreferencesFragment)
     fun inject(commentsListDialog: CommentsListDialog)
     fun inject(likesListDialog: LikesListDialog)
+    
+    val preferencesManager: PreferencesManager
 }

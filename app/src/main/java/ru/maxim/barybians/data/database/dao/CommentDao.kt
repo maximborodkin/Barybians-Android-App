@@ -1,34 +1,60 @@
 package ru.maxim.barybians.data.database.dao
 
-import androidx.paging.PagingSource
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import ru.maxim.barybians.data.database.model.CommentEntity
+import ru.maxim.barybians.data.database.model.CommentEntity.CommentEntityBody
 import ru.maxim.barybians.data.database.model.CommentEntity.Contract.Columns
 
 @Dao
-interface CommentDao {
+abstract class CommentDao {
 
-    @Query("SELECT * FROM ${CommentEntity.tableName} WHERE ${Columns.postId}=:postId ORDER BY ${Columns.date} DESC")
-    fun pagingSource(postId: Int): PagingSource<Int, CommentEntity>
+    @Transaction
+    @Query(
+        """
+        SELECT * FROM ${CommentEntity.tableName}
+        WHERE ${Columns.postId}=:postId 
+        ORDER BY
+            CASE WHEN :sortingDirection = 1 THEN ${Columns.date} END ASC, 
+            CASE WHEN :sortingDirection = 0 THEN ${Columns.date} END DESC
+    """
+    )
+    abstract fun getByPostId(postId: Int, sortingDirection: Boolean): LiveData<List<CommentEntity>>
 
-    @Query("SELECT * FROM ${CommentEntity.tableName} WHERE ${Columns.postId}=:postId")
-    suspend fun getByPostId(postId: Int): List<CommentEntity>
+    @Query("SELECT * FROM ${CommentEntity.tableName} WHERE ${Columns.commentId}=:commentId")
+    abstract fun getById(commentId: Int): CommentEntityBody?
+
+    suspend fun save(commentEntity: CommentEntity, userDao: UserDao) {
+        userDao.save(commentEntity.author)
+        if (getById(commentEntity.comment.commentId) != null) {
+            update(commentEntity.comment)
+        } else {
+            insert(commentEntity.comment)
+        }
+    }
+
+    suspend fun save(commentEntities: List<CommentEntity>, userDao: UserDao) {
+        commentEntities.forEach { comment ->
+            userDao.save(comment.author)
+            save(comment, userDao)
+        }
+    }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(commentEntity: CommentEntity)
+    abstract suspend fun insert(commentEntity: CommentEntityBody)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(commentEntities: List<CommentEntity>)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun update(commentEntity: CommentEntityBody)
 
     @Delete
-    suspend fun delete(commentEntity: CommentEntity)
-
-    @Query("DELETE FROM ${CommentEntity.tableName}")
-    suspend fun delete()
+    abstract suspend fun delete(commentEntity: CommentEntityBody)
 
     @Query("DELETE FROM ${CommentEntity.tableName} WHERE ${Columns.commentId}=:commentId")
-    suspend fun delete(commentId: Int)
+    abstract suspend fun delete(commentId: Int)
 
     @Query("DELETE FROM ${CommentEntity.tableName} WHERE ${Columns.postId}=:postId")
-    suspend fun deleteByPostId(postId: Int)
+    abstract suspend fun deleteByPostId(postId: Int)
+
+    @Query("DELETE FROM ${CommentEntity.tableName}")
+    abstract suspend fun clear()
 }

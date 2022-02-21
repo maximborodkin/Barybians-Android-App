@@ -8,7 +8,7 @@ import moxy.MvpPresenter
 import moxy.presenterScope
 import retrofit2.Response
 import ru.maxim.barybians.data.network.RetrofitClient
-import ru.maxim.barybians.data.network.response.ChatResponse
+import ru.maxim.barybians.data.network.model.response.ChatResponse
 import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.utils.isNotNull
 import timber.log.Timber
@@ -31,9 +31,9 @@ class ChatPresenter @Inject constructor(
             loadMessagesResponse.body()?.apply {
                 if (loadMessagesResponse.isSuccessful) {
                     val messages = messages
-                    lastMessageId = messages.last().id
-                    val interlocutor = if (firstUser.id == userId) firstUser else secondUser
-                    viewState.showMessages(messages, interlocutor)
+                    lastMessageId = messages.last().messageId
+//                    val interlocutor = if (firstUser.id == userId) firstUser else secondUser
+//                    viewState.showMessages(messages, interlocutor)
                 } else {
                     viewState.onLoadingMessagesError()
                 }
@@ -67,7 +67,7 @@ class ChatPresenter @Inject constructor(
     }
 
     private fun startDialogObserving(interlocutorId: Int) = presenterScope.launch(IO) {
-        Timber.d("Start observing with id $interlocutorId and lastMessageId $lastMessageId")
+        Timber.d("Start observing with postId $interlocutorId and lastMessageId $lastMessageId")
         while (!pollingChannel.isClosedForReceive) {
             withTimeoutOrNull(pollingTimeout) {
                 try {
@@ -78,10 +78,10 @@ class ChatPresenter @Inject constructor(
                         Timber.d("pollingResponse: " + pollingResponse.body())
                         val messages = pollingResponse.body()?.messages
                         if (messages != null) {
-                            Timber.d("Messages received: $messages, lastMessageId: ${messages.last().id}")
-                            lastMessageId = messages.last().id
+                            Timber.d("Messages received: $messages, lastMessageId: ${messages.last().messageId}")
+                            lastMessageId = messages.last().messageId
                             CoroutineScope(Dispatchers.Main).launch {
-                                viewState.onMessagesReceived(messages)
+//                                viewState.onMessagesReceived(messages)
                             }
                         }
                     }
