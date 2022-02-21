@@ -1,7 +1,10 @@
 package ru.maxim.barybians.data.database.model
 
 import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.NO_ACTION
 import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.tableName
+import ru.maxim.barybians.data.database.model.MessageEntity.Contract.Columns
 
 @Entity(
     tableName = tableName,
@@ -9,8 +12,8 @@ import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.tableNam
         ForeignKey(
             entity = MessageEntity.MessageEntityBody::class,
             parentColumns = [AttachmentEntity.Contract.Columns.messageId],
-            childColumns = [MessageEntity.Contract.Columns.messageId],
-            onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.NO_ACTION
+            childColumns = [Columns.messageId],
+            onDelete = CASCADE, onUpdate = NO_ACTION
         )
     ],
     indices = [

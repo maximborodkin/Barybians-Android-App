@@ -1,7 +1,7 @@
 package ru.maxim.barybians.data.network.model.mapper
 
-import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.data.network.model.UserDto
+import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.domain.model.Gender
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.domain.model.UserRole

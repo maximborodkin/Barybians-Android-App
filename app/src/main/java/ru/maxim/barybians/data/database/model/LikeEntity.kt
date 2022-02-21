@@ -16,23 +16,23 @@ import ru.maxim.barybians.data.database.model.LikeEntity.Contract.tableName
         ForeignKey(
             entity = PostEntity.PostEntityBody::class,
             parentColumns = [PostEntity.Contract.Columns.postId],
-            childColumns = [LikeEntity.Contract.Columns.postId],
+            childColumns = [Columns.postId],
             onDelete = CASCADE, onUpdate = NO_ACTION
         ),
         ForeignKey(
             entity = UserEntity::class,
             parentColumns = [UserEntity.Contract.Columns.userId],
-            childColumns = [LikeEntity.Contract.Columns.userId],
+            childColumns = [Columns.userId],
             onDelete = CASCADE, onUpdate = NO_ACTION
         ),
     ],
     indices = [
         Index(
-            value = [LikeEntity.Contract.Columns.postId],
+            value = [Columns.postId],
             unique = false
         ),
         Index(
-            value = [LikeEntity.Contract.Columns.userId],
+            value = [Columns.userId],
             unique = false
         )
     ]

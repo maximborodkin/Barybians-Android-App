@@ -10,8 +10,8 @@ class CommentEntityMapper @Inject constructor(
     private val userEntityMapper: UserEntityMapper
 ) : DomainMapper<CommentEntity, Comment>() {
 
-    override fun toDomainModel(model: CommentEntity): Comment {
-        return Comment(
+    override fun toDomainModel(model: CommentEntity): Comment =
+        Comment(
             commentId = model.comment.commentId,
             postId = model.comment.postId,
             userId = model.comment.userId,
@@ -19,10 +19,10 @@ class CommentEntityMapper @Inject constructor(
             date = Date(model.comment.date),
             author = userEntityMapper.toDomainModel(model.author)
         )
-    }
 
-    override fun fromDomainModel(domainModel: Comment): CommentEntity {
-        return CommentEntity(
+
+    override fun fromDomainModel(domainModel: Comment): CommentEntity =
+        CommentEntity(
             comment = CommentEntity.CommentEntityBody(
                 commentId = domainModel.commentId,
                 postId = domainModel.postId,
@@ -32,5 +32,4 @@ class CommentEntityMapper @Inject constructor(
             ),
             author = userEntityMapper.fromDomainModel(domainModel.author)
         )
-    }
 }

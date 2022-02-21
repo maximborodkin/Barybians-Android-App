@@ -3,7 +3,6 @@ package ru.maxim.barybians.data.network.service
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.*
-import ru.maxim.barybians.data.network.model.ChatDto
 import ru.maxim.barybians.data.network.model.MessageDto
 import ru.maxim.barybians.data.network.model.StickerPackDto
 import ru.maxim.barybians.data.network.model.response.MessagesResponse

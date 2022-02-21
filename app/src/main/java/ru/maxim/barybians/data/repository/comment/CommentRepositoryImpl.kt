@@ -9,9 +9,7 @@ import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
 import ru.maxim.barybians.data.network.model.mapper.CommentDtoMapper
 import ru.maxim.barybians.data.network.service.CommentService
-import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.repository.RepositoryBound
-import ru.maxim.barybians.data.repository.comment.CommentRepository
 import ru.maxim.barybians.domain.model.Comment
 import javax.inject.Inject
 

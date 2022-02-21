@@ -1,20 +1,15 @@
 package ru.maxim.barybians.data.repository.post
 
 import androidx.paging.PagingSource
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
-import ru.maxim.barybians.data.PreferencesManager
-import ru.maxim.barybians.data.database.dao.LikeDao
 import ru.maxim.barybians.data.database.dao.PostDao
-import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.model.mapper.PostDtoMapper
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.repository.RepositoryBound
 import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.utils.isNotNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,7 +17,6 @@ import javax.inject.Singleton
 class PostRepositoryImpl @Inject constructor(
     private val postService: PostService,
     private val postDao: PostDao,
-    private val likeDao: LikeDao,
     private val postEntityMapper: PostEntityMapper,
     private val postDtoMapper: PostDtoMapper,
     private val repositoryBound: RepositoryBound,
@@ -48,7 +42,7 @@ class PostRepositoryImpl @Inject constructor(
         postDao.insert(postEntityMapper.fromDomainModel(post).post)
     }
 
-    override suspend fun editPost(postId: Int, title: String?, text: String) = withContext(IO)  {
+    override suspend fun editPost(postId: Int, title: String?, text: String) = withContext(IO) {
         val postDto = repositoryBound.wrapRequest { postService.updatePost(postId, title, text) }
         val post = postDtoMapper.toDomainModel(postDto)
         postDao.insert(postEntityMapper.fromDomainModel(post).post)

@@ -1,10 +1,8 @@
 package ru.maxim.barybians.data.repository.post
 
 import androidx.paging.PagingSource
-import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.domain.model.User
 
 interface PostRepository {
     fun feedPagingSource(): PagingSource<Int, PostEntity>

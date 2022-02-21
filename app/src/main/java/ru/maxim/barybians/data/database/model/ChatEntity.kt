@@ -17,33 +17,33 @@ import ru.maxim.barybians.data.database.model.MessageEntity.MessageEntityBody
         ForeignKey(
             entity = UserEntity::class,
             parentColumns = [UserEntity.Contract.Columns.userId],
-            childColumns = [ChatEntity.Contract.Columns.firstUserId],
+            childColumns = [Columns.firstUserId],
             onDelete = CASCADE, onUpdate = NO_ACTION
         ),
         ForeignKey(
             entity = UserEntity::class,
             parentColumns = [UserEntity.Contract.Columns.userId],
-            childColumns = [ChatEntity.Contract.Columns.secondUserId],
+            childColumns = [Columns.secondUserId],
             onDelete = CASCADE, onUpdate = NO_ACTION
         ),
         ForeignKey(
             entity = MessageEntityBody::class,
             parentColumns = [MessageEntity.Contract.Columns.messageId],
-            childColumns = [ChatEntity.Contract.Columns.lastMessageId],
+            childColumns = [Columns.lastMessageId],
             onDelete = CASCADE, onUpdate = NO_ACTION
         )
     ],
     indices = [
         Index(
-            value = [ChatEntity.Contract.Columns.firstUserId],
+            value = [Columns.firstUserId],
             unique = false
         ),
         Index(
-            value = [ChatEntity.Contract.Columns.secondUserId],
+            value = [Columns.secondUserId],
             unique = false
         ),
         Index(
-            value = [ChatEntity.Contract.Columns.lastMessageId],
+            value = [Columns.lastMessageId],
             unique = false
         )
     ]

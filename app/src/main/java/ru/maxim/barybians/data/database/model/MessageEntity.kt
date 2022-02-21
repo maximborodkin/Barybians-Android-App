@@ -10,11 +10,37 @@ data class MessageEntity(
     @Relation(
         entity = AttachmentEntity::class,
         entityColumn = AttachmentEntity.Contract.Columns.messageId,
-        parentColumn = Columns.messageId
+        parentColumn = MessageEntity.Contract.Columns.messageId
     )
     val attachments: List<AttachmentEntity>
 ) {
-    @Entity(tableName = tableName)
+    @Entity(
+        tableName = tableName,
+        foreignKeys = [
+            ForeignKey(
+                entity = UserEntity::class,
+                parentColumns = [UserEntity.Contract.Columns.userId],
+                childColumns = [Columns.senderId],
+                onDelete = CASCADE, onUpdate = NO_ACTION
+            ),
+            ForeignKey(
+                entity = UserEntity::class,
+                parentColumns = [UserEntity.Contract.Columns.userId],
+                childColumns = [Columns.receiverId],
+                onDelete = CASCADE, onUpdate = NO_ACTION
+            ),
+        ],
+        indices = [
+            Index(
+                value = [Columns.senderId],
+                unique = false
+            ),
+            Index(
+                value = [Columns.receiverId],
+                unique = false
+            )
+        ]
+    )
     data class MessageEntityBody(
 
         @PrimaryKey(autoGenerate = false)

@@ -16,8 +16,6 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PagingData
-import androidx.paging.map
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import ru.maxim.barybians.App
@@ -120,12 +118,6 @@ fun simpleDate(date: Date, hasTime: Boolean = true): String {
 
 fun date(date: Date): String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date)
 fun time(date: Date): String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
-
-inline fun <reified T : Any> PagingData<T>.size(): Any {
-    var size = 0
-    this.map { size++ }
-    return size
-}
 
 val Context.appComponent: AppComponent
     get() = when (this) {

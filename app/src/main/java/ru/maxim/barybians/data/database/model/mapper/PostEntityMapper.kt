@@ -11,8 +11,8 @@ class PostEntityMapper @Inject constructor(
     private val commentEntityMapper: CommentEntityMapper
 ) : DomainMapper<PostEntity, Post>() {
 
-    override fun toDomainModel(model: PostEntity): Post {
-        return Post(
+    override fun toDomainModel(model: PostEntity): Post =
+        Post(
             postId = model.post.postId,
             userId = model.post.userId,
             title = model.post.title,
@@ -23,7 +23,6 @@ class PostEntityMapper @Inject constructor(
             likedUsers = userEntityMapper.toDomainModelList(model.likes),
             comments = commentEntityMapper.toDomainModelList(model.comments)
         )
-    }
 
     /*
     * The game is over
@@ -32,8 +31,8 @@ class PostEntityMapper @Inject constructor(
     * To kill the lies and make your hurt recall
     * There is no other sky to fall
     * */
-    override fun fromDomainModel(domainModel: Post): PostEntity {
-        return PostEntity(
+    override fun fromDomainModel(domainModel: Post): PostEntity =
+        PostEntity(
             post = PostEntity.PostEntityBody(
                 postId = domainModel.postId,
                 userId = domainModel.userId,
@@ -46,5 +45,4 @@ class PostEntityMapper @Inject constructor(
             likes = userEntityMapper.fromDomainModelList(domainModel.likedUsers),
             comments = commentEntityMapper.fromDomainModelList(domainModel.comments)
         )
-    }
 }

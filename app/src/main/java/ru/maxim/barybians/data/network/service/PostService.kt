@@ -4,7 +4,6 @@ import retrofit2.Response
 import retrofit2.http.*
 import ru.maxim.barybians.data.network.model.PostDto
 import ru.maxim.barybians.data.network.model.response.LikeResponse
-import ru.maxim.barybians.domain.model.Post
 
 interface PostService {
 

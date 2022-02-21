@@ -78,11 +78,9 @@ class AuthRepositoryImpl @Inject constructor(
             } else {
                 val errorMessage =
                     if (registerResponse.errorBody().isNotNull())
-                        Gson().fromJson(
-                            registerResponse.errorBody()?.charStream(),
-                            ErrorResponse::class.java
-                        ).message
-                    else null
+                        Gson().fromJson(registerResponse.errorBody()?.charStream(), ErrorResponse::class.java).message
+                    else
+                        null
 
                 throw when (registerResponse.code()) {
                     HTTP_CLIENT_TIMEOUT, HTTP_GATEWAY_TIMEOUT -> TimeoutException()

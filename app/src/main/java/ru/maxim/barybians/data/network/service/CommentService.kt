@@ -3,7 +3,6 @@ package ru.maxim.barybians.data.network.service
 import retrofit2.Response
 import retrofit2.http.*
 import ru.maxim.barybians.data.network.model.CommentDto
-import ru.maxim.barybians.domain.model.Comment
 
 interface CommentService {
 
