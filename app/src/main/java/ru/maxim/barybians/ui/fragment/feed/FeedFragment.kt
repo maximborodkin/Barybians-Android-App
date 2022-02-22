@@ -13,23 +13,30 @@ import androidx.paging.LoadState
 import androidx.paging.LoadState.Error
 import androidx.paging.LoadState.Loading
 import by.kirich1409.viewbindingdelegate.viewBinding
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.databinding.FragmentFeedBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
 import ru.maxim.barybians.utils.appComponent
-import ru.maxim.barybians.utils.size
+import ru.maxim.barybians.utils.hide
 import ru.maxim.barybians.utils.toast
 import timber.log.Timber
 import javax.inject.Inject
 
 class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterListener {
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
 
     @Inject
     lateinit var viewModelFactory: FeedViewModelFactory
@@ -61,25 +68,29 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
                 feedRecyclerAdapter.loadStateFlow.collectLatest { loadState ->
+                    delay(100)
                     val state = loadState.mediator?.refresh ?: return@collectLatest
-                    delay(20)
                     if (state == currentLoadingState) return@collectLatest
                     currentLoadingState = state
-                    Timber.d("XXX state: $state itemCount: ${feedRecyclerAdapter.itemCount} size: ${model.feed.value.size()}")
 
                     feedProgressBar.isVisible = state is Loading && !feedRefreshLayout.isRefreshing
                     feedRefreshLayout.isRefreshing = feedRefreshLayout.isRefreshing && state is Loading
-                    feedMessage.isVisible = state is Error && feedRecyclerAdapter.itemCount == 0
+                    feedMessage.isVisible = state is Error && model.postsCountBuffer == 0
                     if (state is Error) {
-                        val errorMessage = when (state.error) {
+                        var errorMessage = when (state.error) {
                             is NoConnectionException -> getString(R.string.no_internet_connection)
                             is TimeoutException -> getString(R.string.request_timeout)
                             else -> getString(R.string.an_error_occurred_while_loading_feed)
                         }
+                        if (preferencesManager.isDebug) {
+                            errorMessage += "\n${state.error}(${state.error.message})"
+                        }
                         feedMessage.text = errorMessage
-                        if (feedRecyclerAdapter.itemCount > 0) {
+                        if (model.postsCount.value ?: 0 > 0) {
                             context?.toast(errorMessage)
                         }
+                    } else {
+                        feedMessage.text = null
                     }
                 }
             }
@@ -88,6 +99,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
                 model.feed.collect { posts ->
+                    feedRefreshLayout.isRefreshing = false
                     feedRecyclerAdapter.submitData(posts)
                 }
             }
@@ -95,6 +107,16 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
 
         viewLifecycleOwner.lifecycleScope.launch {
             model.messageRes.observe(viewLifecycleOwner) { messageRes -> context?.toast(messageRes) }
+//            model.postsCount.observe(viewLifecycleOwner) { postsCount ->
+//                if (postsCount == 0) {
+//                    launch {
+//                        withContext(IO) { delay(5) }
+//                        withContext(Main) { feedMessage.isVisible = model.postsCount.value == 0 }
+//                    }
+//                } else {
+//                    feedMessage.hide()
+//                }
+//            }
         }
     }
 

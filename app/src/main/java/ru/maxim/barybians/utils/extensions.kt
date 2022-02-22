@@ -16,8 +16,12 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.PagingData
+import androidx.paging.map
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import ru.maxim.barybians.App
 import ru.maxim.barybians.R
 import ru.maxim.barybians.di.AppComponent
@@ -81,7 +85,7 @@ fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnai
         .into(this)
 }
 
-inline fun <T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
+inline fun <reified T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
     for (item in this) {
         if (predicate(item))
             return true
@@ -90,18 +94,26 @@ inline fun <T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
 }
 
 fun View?.show() {
-    this?.isVisible = true
+    if (this?.isGone == true) this.isVisible = true
 }
 
 fun View?.hide() {
-    this?.isGone = true
+    if (this?.isVisible == true) this.isGone = true
 }
 
 fun MutableLiveData<String>.isEmpty() = value?.isEmpty()
 
-fun <T> List<T>.transform(action: (T) -> Unit): List<T> {
+inline fun <reified T> List<T>.transform(action: (T) -> Unit): List<T> {
     this.forEach(action)
     return this
+}
+
+suspend inline fun <reified T : Any> Flow<PagingData<T>>.getSize(): Int {
+    var buffer = 0
+    this.collect {
+       it.map { buffer++ }
+    }
+    return buffer
 }
 
 fun simpleDate(date: Date, hasTime: Boolean = true): String {
