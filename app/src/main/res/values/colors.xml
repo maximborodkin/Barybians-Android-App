@@ -20,4 +20,10 @@
     <color name="colorOnSurface">#1C1B1F</color>
     <color name="colorError">#B3261E</color>
     <color name="colorOnError">#FFFFFF</color>
+    <color name="roleAdministrator">#009900</color>
+    <color name="roleBarybian">#0077FF</color>
+    <color name="roleVerified">#B3AD0B</color>
+
+    <color name="incomingMessageBackground">#E1DADA</color>
+    <color name="outgoingMessageBackground">#A2CBE3</color>
 </resources>

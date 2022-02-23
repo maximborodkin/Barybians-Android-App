@@ -10,17 +10,4 @@
     <declare-styleable name="AvatarView">
         <attr name="enableOnlineStatus" format="boolean" />
     </declare-styleable>
-
-    <attr name="recyclerViewBackground" format="reference" />
-    <attr name="profileHeaderStyle" format="reference" />
-    <attr name="cardBackground" format="color"/>
-    <attr name="accentTextStyle" format="reference" />
-    <attr name="postTitleLayoutStyle" format="reference" />
-    <attr name="postTitleInputStyle" format="reference" />
-    <attr name="postTextLayoutStyle" format="reference" />
-    <attr name="postTextInputStyle" format="reference" />
-    <attr name="textButtonStyle" format="reference" />
-    <attr name="commentInputStyle" format="reference" />
-    <attr name="incomingMessageBackgroundColor" format="reference"/>
-    <attr name="outgoingMessageBackgroundColor" format="reference"/>
 </resources>

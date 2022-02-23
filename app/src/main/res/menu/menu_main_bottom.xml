@@ -4,15 +4,15 @@
     <item
         android:id="@+id/feedFragment"
         android:title="@string/feed"
-        android:icon="@drawable/ic_feed_list_white"/>
+        android:icon="@drawable/ic_feed"/>
 
     <item
         android:id="@+id/dialogsListFragment"
         android:title="@string/dialogs"
-        android:icon="@drawable/ic_dialogs_list_white"/>
+        android:icon="@drawable/ic_chats"/>
 
     <item
         android:id="@+id/profileFragment"
         android:title="@string/profile"
-        android:icon="@drawable/ic_user_white"/>
+        android:icon="@drawable/ic_user"/>
 </menu>

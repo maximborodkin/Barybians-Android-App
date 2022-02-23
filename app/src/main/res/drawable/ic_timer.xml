@@ -1,31 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="16dp"
     android:width="16dp"
+    android:height="16dp"
+    android:tint="@color/unread_message_circle_color"
     android:viewportWidth="20"
     android:viewportHeight="20">
 
     <path
-        android:fillColor="@color/unread_message_circle_color"
-        android:pathData="
-        M10,0
-        C4.5,0 0,4.5 0,10
-        C0,15.5 4.5,20 10,20
-        C15.5,20 20,15.5 20,10
-        C20,4.5 15.5,0 10,0
-        L10,0Z
-        M10,18
-        C5.6,18 2,14.4 2,10
-        C2,5.6 5.6,2 10,2
-        C14.4,2 18,5.6 18,10
-        C18,14.4 14.4,18 10,18
-        L10,18Z" />
+        android:fillColor="@color/white"
+        android:pathData="M10,0 C4.5,0 0,4.5 0,10 C0,15.5 4.5,20 10,20 C15.5,20 20,15.5 20,10 C20,4.5 15.5,0 10,0 L10,0Z M10,18 C5.6,18 2,14.4 2,10 C2,5.6 5.6,2 10,2 C14.4,2 18,5.6 18,10 C18,14.4 14.4,18 10,18 L10,18Z" />
 
-    <path android:strokeColor="@color/unread_message_circle_color"
+    <path
+        android:pathData="M10,10 L10,4"
         android:strokeWidth="2"
-        android:strokeLineCap="round"
-        android:pathData="M10,10 L10,4"/>
+        android:strokeColor="@color/white"
+        android:strokeLineCap="round" />
 
     <group
         android:name="minute"
@@ -33,10 +22,9 @@
         android:pivotY="10">
 
         <path
-            android:strokeColor="@color/unread_message_circle_color"
-            android:strokeLineCap="round"
+            android:pathData="M10,10 L14,14"
             android:strokeWidth="2"
-            android:pathData="M10,10 L14,14" />
+            android:strokeColor="@color/white"
+            android:strokeLineCap="round" />
     </group>
-
 </vector>

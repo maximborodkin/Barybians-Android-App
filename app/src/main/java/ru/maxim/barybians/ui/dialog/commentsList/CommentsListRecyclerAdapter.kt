@@ -38,7 +38,7 @@ class CommentsListRecyclerAdapter @Inject constructor(
             ContextCompat.getColor(recyclerView.context, R.color.delete_swipe_background)
         )
         val deleteIcon = requireNotNull(
-            ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_delete_white)
+            ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_delete)
         )
 
         val swipeDismissCallback = SwipeDismissCallback<CommentViewHolder>(

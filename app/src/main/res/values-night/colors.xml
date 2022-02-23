@@ -8,4 +8,7 @@
     <color name="colorOnBackground">#E6E1E5</color>
     <color name="colorSurface">#1C1B1F</color>
     <color name="colorOnSurface">#E6E1E5</color>
+
+    <color name="incomingMessageBackground">#333333</color>
+    <color name="outgoingMessageBackground">#656565</color>
 </resources>
