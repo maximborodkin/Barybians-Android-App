@@ -129,5 +129,6 @@
     <string name="edit_comment">Edit comment</string>
     <string name="unable_to_edit_status">Unable to edit status</string>
     <string name="debug_mode">Debug mode</string>
+    <string name="there_is_no_changed">There is no changes</string>
 
 </resources>

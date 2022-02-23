@@ -34,7 +34,8 @@
         android:padding="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back" />
+        app:srcCompat="@drawable/ic_back"
+        android:tint="@color/white"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/itemProfileHeaderEditButton"
@@ -43,7 +44,8 @@
         android:padding="12dp"
         app:layout_constraintEnd_toStartOf="@id/itemProfileHeaderPreferencesButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_edit_white" />
+        app:srcCompat="@drawable/ic_edit"
+        android:tint="@color/white"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/itemProfileHeaderPreferencesButton"
@@ -52,7 +54,8 @@
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_preferences_white" />
+        app:srcCompat="@drawable/ic_preferences"
+        android:tint="@color/white"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/itemProfileHeaderCardBackground"

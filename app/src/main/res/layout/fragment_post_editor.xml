@@ -7,7 +7,6 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragmentPostEditorTitleLayout"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/title"
@@ -22,15 +21,13 @@
             android:id="@+id/fragmentPostEditorTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lines="1"
             android:maxLines="3" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragmentPostEditorTextLayout"
-
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="@string/text"
         app:endIconMode="clear_text"
@@ -45,7 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start|top"
-            android:minLines="3"
-            android:maxLines="15" />
+            android:minLines="3" />
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

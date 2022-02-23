@@ -3,13 +3,12 @@ package ru.maxim.barybians.ui.fragment.feed
 import android.app.Application
 import androidx.lifecycle.*
 import androidx.paging.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.android.awaitFrame
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
@@ -17,8 +16,6 @@ import ru.maxim.barybians.data.paging.FeedRemoteMediator
 import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.utils.getSize
-import timber.log.Timber
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -43,11 +40,9 @@ open class FeedViewModel constructor(
     )
         .flow
         .map { pagingData ->
-            postsCountBuffer = 0
-            _postsCount.postValue(postsCountBuffer)
+            postsCount = 0
             pagingData.map { entityModel ->
-                postsCountBuffer++
-                _postsCount.postValue(postsCountBuffer)
+                postsCount++
                 postEntityMapper.toDomainModel(entityModel)
             }
         }
@@ -57,9 +52,8 @@ open class FeedViewModel constructor(
     private val _messageRes: MutableLiveData<Int?> = MutableLiveData(null)
     val messageRes: LiveData<Int?> = _messageRes
 
-    var postsCountBuffer = 0
-    private val _postsCount: MutableLiveData<Int> = MutableLiveData(0)
-    val postsCount: LiveData<Int> = _postsCount
+    var postsCount = 0
+        private set
 
     fun editPost(postId: Int, title: String?, text: String) = viewModelScope.launch {
         try {
