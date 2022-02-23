@@ -27,7 +27,7 @@ import ru.maxim.barybians.ui.fragment.feed.FeedViewModel
 class ProfileViewModel(
     application: Application,
     userPostsRemoteMediator: FeedRemoteMediator,
-    private val postRepository: PostRepository,
+    postRepository: PostRepository,
     private val likeRepository: LikeRepository,
     private val postEntityMapper: PostEntityMapper,
     private val userRepository: UserRepository,

@@ -1,32 +1,83 @@
 package ru.maxim.barybians.ui.fragment.profile
 
 import android.content.Context
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import by.kirich1409.viewbindingdelegate.viewBinding
-import moxy.MvpAppCompatFragment
-import ru.maxim.barybians.R
-import ru.maxim.barybians.databinding.FragmentProfileBinding
+import androidx.recyclerview.widget.ConcatAdapter
+import kotlinx.coroutines.launch
+import ru.maxim.barybians.ui.fragment.feed.FeedFragment
+import ru.maxim.barybians.ui.fragment.profile.ProfileViewModel.ProfileViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import javax.inject.Inject
 
-class ProfileFragment : MvpAppCompatFragment(R.layout.fragment_profile)/*, ProfileItemsListener*/ {
+class ProfileFragment : FeedFragment(), ProfileItemsListener {
 
     private val args: ProfileFragmentArgs by navArgs()
-    val binding: FragmentProfileBinding by viewBinding(FragmentProfileBinding::bind)
 
-//    @Inject
-//    lateinit var viewModelFactory: ProfileViewModel.ProfileViewModelFactory.Factory
-//    private val model: ProfileViewModel by viewModels { viewModelFactory.create(args.userId) }
+    @Inject
+    lateinit var profileViewModelFactory: ProfileViewModelFactory.Factory
+    override val model: ProfileViewModel by viewModels { profileViewModelFactory.create(args.userId) }
+
 
     @Inject
     lateinit var headerRecyclerAdapter: ProfileHeaderRecyclerAdapter
 
-//    @Inject
-//    lateinit var feedRecyclerAdapter: FeedRecyclerAdapter
-
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.user.collect { user ->
+                    if (user != null) headerRecyclerAdapter.submitList(listOf(user))
+                }
+            }
+        }
+    }
+
+    override fun setupRecyclerView() {
+        loadingStateAdapter.setOnRetryListener(feedRecyclerAdapter::retry)
+        feedRecyclerAdapter.setAdapterListener(this)
+        headerRecyclerAdapter.setProfileItemsListener(this)
+        val profileRecyclerAdapter = ConcatAdapter(
+            headerRecyclerAdapter,
+            feedRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
+        )
+        binding.feedRecyclerView.adapter = profileRecyclerAdapter
+    }
+
+    override fun onBackButtonClick() {
+        findNavController().popBackStack()
+    }
+
+    override fun onPreferencesButtonClick() {
+        findNavController().navigate(ProfileFragmentDirections.profileToSettings())
+    }
+
+    override fun onStatusClick() {
+        TODO("Not yet implemented")
+    }
+
+    override fun onOpenChatButtonClick(userId: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCreatePost(title: String?, text: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDestroyView() {
+        headerRecyclerAdapter.setProfileItemsListener(null)
+        super.onDestroyView()
     }
 
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -23,13 +23,13 @@ import javax.inject.Inject
 open class FeedViewModel constructor(
     application: Application,
     feedRemoteMediator: FeedRemoteMediator,
-    private val postRepository: PostRepository,
+    protected val postRepository: PostRepository,
     private val likeRepository: LikeRepository,
     private val postEntityMapper: PostEntityMapper
 ) : AndroidViewModel(application) {
 
     // When your wings are burning, who keeps you from falling?
-    protected open val feed: StateFlow<PagingData<Post>> = Pager(
+    open val postsList: StateFlow<PagingData<Post>> = Pager(
         config = PagingConfig(
             initialLoadSize = PostRepository.pageSize,
             pageSize = PostRepository.pageSize,

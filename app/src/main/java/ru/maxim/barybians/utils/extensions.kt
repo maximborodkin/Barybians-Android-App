@@ -16,17 +16,14 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.PagingData
-import androidx.paging.map
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import ru.maxim.barybians.App
 import ru.maxim.barybians.R
 import ru.maxim.barybians.di.AppComponent
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Calendar
 import java.util.Calendar.MONTH
 import java.util.Calendar.YEAR
 import java.util.Calendar.DATE
@@ -54,8 +51,7 @@ fun TextView.setDrawableEnd(@DrawableRes drawableResource: Int) =
         this.compoundDrawablesRelative[3]                          //bottom
     )
 
-fun TextView.clearDrawables() =
-    TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, 0, 0, 0, 0)
+fun TextView.clearDrawables() = TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, 0, 0, 0, 0)
 
 fun Context.toast(text: String?) = text?.let { Toast.makeText(this, it, LENGTH_SHORT).show() }
 fun Context.toast(@StringRes resource: Int?) = resource?.let { toast(getString(it)) }
@@ -108,14 +104,6 @@ inline fun <reified T> List<T>.transform(action: (T) -> Unit): List<T> {
     return this
 }
 
-suspend inline fun <reified T : Any> Flow<PagingData<T>>.getSize(): Int {
-    var buffer = 0
-    this.collect {
-       it.map { buffer++ }
-    }
-    return buffer
-}
-
 fun simpleDate(date: Date, hasTime: Boolean = true): String {
     val today = Calendar.getInstance()
     val calendar = Calendar.getInstance().also { it.timeInMillis = date.time }
@@ -128,6 +116,12 @@ fun simpleDate(date: Date, hasTime: Boolean = true): String {
     }.format(date)
 }
 
+fun years(date: Date): Int {
+    val now = Calendar.getInstance()
+    val birthDate = Calendar.getInstance().apply { time = date }
+    return if (now[Calendar.DAY_OF_YEAR] < birthDate[Calendar.DAY_OF_YEAR]) now[YEAR] - birthDate[YEAR] - 1
+    else now[YEAR] - birthDate[YEAR]
+}
 fun date(date: Date): String = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date)
 fun time(date: Date): String = SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)
 

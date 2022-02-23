@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.lifecycleScope
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import moxy.MvpAppCompatFragment
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.NoConnectionException
@@ -36,16 +36,16 @@ import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
-class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterListener {
+open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener {
 
     @Inject
     lateinit var preferencesManager: PreferencesManager
 
     @Inject
-    lateinit var viewModelFactory: FeedViewModelFactory
-    private val model: FeedViewModel by viewModels { viewModelFactory }
+    lateinit var feedViewModelFactory: FeedViewModelFactory
+    protected open val model: FeedViewModel by viewModels { feedViewModelFactory }
 
-    private val binding by viewBinding(FragmentFeedBinding::bind)
+    protected val binding by viewBinding(FragmentFeedBinding::bind)
 
     @Inject
     lateinit var feedRecyclerAdapter: FeedRecyclerAdapter
@@ -65,9 +65,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
         super.onViewCreated(view, savedInstanceState)
         feedRefreshLayout.setOnRefreshListener(feedRecyclerAdapter::refresh)
 
-        loadingStateAdapter.setOnRetryListener(feedRecyclerAdapter::retry)
-        feedRecyclerAdapter.setAdapterListener(this@FeedFragment)
-        feedRecyclerView.adapter = feedRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
+        setupRecyclerView()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
@@ -101,7 +99,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
-                model.feed.collect { posts ->
+                model.postsList.collect { posts ->
                     feedRefreshLayout.isRefreshing = false
                     feedRecyclerAdapter.submitData(posts)
                 }
@@ -111,6 +109,12 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
         viewLifecycleOwner.lifecycleScope.launch {
             model.errorMessage.observe(viewLifecycleOwner) { messageRes -> context?.toast(messageRes) }
         }
+    }
+
+    open fun setupRecyclerView() {
+        loadingStateAdapter.setOnRetryListener(feedRecyclerAdapter::retry)
+        feedRecyclerAdapter.setAdapterListener(this@FeedFragment)
+        binding.feedRecyclerView.adapter = feedRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
     }
 
     override fun onProfileClick(userId: Int) {
@@ -169,7 +173,8 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
                 val newTitle = editPostDialogBinding.fragmentPostEditorTitle.text.toString()
                 val newText = editPostDialogBinding.fragmentPostEditorText.text.toString()
                 if (newText.isBlank()) {
-                    editPostDialogBinding.fragmentPostEditorTextLayout.error = getString(R.string.this_field_is_required)
+                    editPostDialogBinding.fragmentPostEditorTextLayout.error =
+                        getString(R.string.this_field_is_required)
                 } else if (title == newTitle && text == newText) {
                     editPostDialogBinding.fragmentPostEditorTextLayout.error = getString(R.string.there_is_no_changes)
                     editPostDialogBinding.fragmentPostEditorTitleLayout.error = getString(R.string.there_is_no_changes)

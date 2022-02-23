@@ -1,150 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+        <import type="android.view.View" />
+        <import type="ru.maxim.barybians.utils.ExtensionsKt" />
+
         <variable
             name="user"
             type="ru.maxim.barybians.domain.model.User" />
+
+        <variable
+            name="isPersonal"
+            type="Boolean" />
+
+        <variable
+            name="isDebug"
+            type="Boolean" />
     </data>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
 
-    tools:layout_height="match_parent">
-
-    <ru.maxim.barybians.ui.view.ProfileBackgroundView
-        android:id="@+id/itemProfileHeaderBackground"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:scaleType="centerCrop"
-        app:blurRadius="12"
-        app:foregroundTransparency="140"
-        app:hasBlur="true"
-        app:hasDarkForeground="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/itemProfileHeaderBackButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_back"
-        android:tint="@color/white"/>
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/itemProfileHeaderEditButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="12dp"
-        app:layout_constraintEnd_toStartOf="@id/itemProfileHeaderPreferencesButton"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_edit"
-        android:tint="@color/white"/>
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/itemProfileHeaderPreferencesButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:padding="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_preferences"
-        android:tint="@color/white"/>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/itemProfileHeaderCardBackground"
-
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="102dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/itemProfileHeaderChatBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemProfileHeaderName"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:textAlignment="center"
-        android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintStart_toStartOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderAvatar"
-        tools:text="@tools:sample/full_names" />
-
-    <TextView
-        android:id="@+id/itemProfileHeaderAge"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintStart_toStartOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderName"
-        tools:text="22 года" />
+        tools:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/itemProfileHeaderStatus"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/itemProfileHeaderBackground"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center_vertical|center_horizontal"
-        android:maxLines="2"
-        android:paddingHorizontal="32dp"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintStart_toStartOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderAge"
-        tools:text="Работа над приложением продолжается" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/itemProfileHeaderBackButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:tint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_back" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/itemProfileHeaderChatBtn"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/itemProfileHeaderPreferencesButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:tint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_preferences" />
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/open_chat"
-        app:layout_constraintBottom_toBottomOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintEnd_toEndOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintStart_toStartOf="@id/itemProfileHeaderCardBackground"
-        app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderStatus" />
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/itemProfileHeaderCardBackground"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="102dp"
+            android:paddingBottom="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/Widget.MyApp.MaterialCardView">
 
-    <ru.maxim.barybians.ui.view.AvatarView
-        android:id="@+id/itemProfileHeaderAvatar"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        app:enableOnlineStatus="true"
-        app:layout_constraintBottom_toTopOf="@+id/itemProfileHeaderCardBackground"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/itemProfileHeaderCardBackground"
-        tools:isOnline="true"
-        tools:src="@tools:sample/avatars" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/itemProfilePostCreator"
-        layout="@layout/item_post_creator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:userAvatar="@{user.avatarMin}"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderCardBackground" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/itemProfileHeaderName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="48dp"
+                    android:text="@{user.fullName}"
+                    android:textAlignment="center"
+                    android:textSize="22sp"
+                    app:iconEnd="@{user.role.iconResource}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@tools:sample/full_names" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/itemProfileHeaderAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@{@plurals/age_plurals(ExtensionsKt.years(user.birthDate), ExtensionsKt.years(user.birthDate))}"
+                    android:textAlignment="center"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderName"
+                    tools:text="22 года" />
+
+                <TextView
+                    android:id="@+id/itemProfileHeaderStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:maxLines="2"
+                    android:paddingHorizontal="32dp"
+                    android:paddingVertical="6dp"
+                    android:text="@{user.status}"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderAge"
+                    tools:text="Работа над приложением продолжается" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/itemProfileHeaderChatButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/open_chat"
+                    android:visibility="@{isPersonal ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderStatus" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <ru.maxim.barybians.ui.view.AvatarView
+            android:id="@+id/itemProfileHeaderAvatar"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:elevation="8dp"
+            app:enableOnlineStatus="true"
+            app:image="@{user.avatarMin}"
+            app:layout_constraintBottom_toTopOf="@+id/itemProfileHeaderCardBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/itemProfileHeaderCardBackground"
+            tools:isOnline="true"
+            tools:src="@tools:sample/avatars" />
+
+        <include
+            android:id="@+id/itemProfilePostCreator"
+            layout="@layout/item_post_creator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="@{isPersonal ? View.VISIBLE : View.GONE}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderCardBackground"
+            app:userAvatar="@{user.avatarMin}" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

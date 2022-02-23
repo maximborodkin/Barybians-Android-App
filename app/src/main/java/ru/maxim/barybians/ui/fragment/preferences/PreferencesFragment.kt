@@ -5,11 +5,13 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreference
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.repository.auth.AuthRepository
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
@@ -28,13 +30,17 @@ class PreferencesFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.fragment_preferences)
+        setClearCacheSummary()
+
+        findPreference<SwitchPreference>(PreferencesManager.isDarkModeKey)?.setOnPreferenceChangeListener { _, _ ->
+            activity?.recreate()
+            true
+        }
 
         findPreference<Preference>(buildVersion)?.summary =
             context?.packageName?.let { packageName ->
                 context?.packageManager?.getPackageInfo(packageName, 0)?.versionName
             }
-
-        setClearCacheSummary()
 
         findPreference<Preference>(clearCache)?.setOnPreferenceClickListener {
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
@@ -81,6 +87,8 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     }
 
     companion object PreferencesMenuKeys {
+        private const val darkMode = "dark_mode"
+        private const val debugMode = "debug_mode"
         private const val clearCache = "clear_cache"
         private const val logout = "logout"
         private const val buildVersion = "build_version"
