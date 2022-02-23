@@ -24,8 +24,8 @@
 
         <ru.maxim.barybians.ui.view.AvatarView
             android:id="@+id/itemCommentUserAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:enableOnlineStatus="true"
             app:image="@{comment.author.avatarMin}"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,6 +52,15 @@
             app:layout_constraintStart_toEndOf="@id/itemCommentUserAvatar"
             app:layout_constraintTop_toBottomOf="@id/itemCommentUserName"
             tools:text="@tools:sample/date/ddmmyy" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/itemCommentMenuButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_context_menu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/itemCommentText"

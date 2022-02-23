@@ -17,6 +17,7 @@ import androidx.paging.LoadState
 import androidx.paging.LoadState.Error
 import androidx.paging.LoadState.Loading
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -33,7 +34,6 @@ import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
-import timber.log.Timber
 import javax.inject.Inject
 
 class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterListener {
@@ -75,7 +75,6 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
                     .debounce(100)
                     .mapNotNull { loadState -> loadState.mediator?.refresh }
                     .collectLatest { loadState ->
-                        Timber.d("XXX ${loadState.javaClass.simpleName} ${model.postsCount}")
                         if (loadState == currentLoadingState) return@collectLatest
                         currentLoadingState = loadState
 
@@ -123,61 +122,57 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
     }
 
     override fun onPostMenuClick(post: Post, anchor: View) {
-        activity?.let { activity ->
-            PopupMenu(activity, anchor).apply {
-                activity.menuInflater.inflate(R.menu.menu_post, menu)
+        val activity = activity ?: return
+        PopupMenu(activity, anchor).apply {
+            activity.menuInflater.inflate(R.menu.menu_post, menu)
 
-                menu.findItem(R.id.menuPostEdit)?.setOnMenuItemClickListener {
-                    showEditDialog(post.title, post.text) { title, text ->
-                        model.editPost(postId = post.postId, title = title, text = text)
-                    }
-                    true
+            menu.findItem(R.id.menuPostEdit)?.setOnMenuItemClickListener {
+                showEditDialog(post.title, post.text) { title, text ->
+                    model.editPost(postId = post.postId, title = title, text = text)
                 }
-
-                menu.findItem(R.id.menuPostDelete)?.setOnMenuItemClickListener {
-                    showDeleteDialog { model.deletePost(postId = post.postId) }
-                    true
-                }
-                show()
+                true
             }
 
+            menu.findItem(R.id.menuPostDelete)?.setOnMenuItemClickListener {
+                showDeleteDialog { model.deletePost(postId = post.postId) }
+                true
+            }
+            show()
         }
     }
 
     private fun showDeleteDialog(onDelete: () -> Unit) {
-        AlertDialog.Builder(context ?: return).apply {
+        MaterialAlertDialogBuilder(context ?: return).apply {
             setTitle(R.string.delete_this_post)
-            setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-            setPositiveButton(R.string.ok) { dialog, _ ->
-                onDelete()
-                dialog.dismiss()
-            }
+            setMessage(R.string.this_action_cannot_be_undone)
+            setNegativeButton(R.string.cancel, null)
+            setPositiveButton(R.string.ok) { _, _ -> onDelete() }
         }.show()
     }
 
     private fun showEditDialog(title: String?, text: String, onEdit: (title: String?, text: String) -> Unit) {
-        val editorDialogBinding = FragmentPostEditorBinding.inflate(layoutInflater).apply {
+        val editPostDialogBinding = FragmentPostEditorBinding.inflate(layoutInflater).apply {
             fragmentPostEditorTitle.setText(title)
             fragmentPostEditorText.setText(text)
             fragmentPostEditorTitle.addTextChangedListener { fragmentPostEditorTitleLayout.error = null }
             fragmentPostEditorText.addTextChangedListener { fragmentPostEditorTextLayout.error = null }
         }
-        val editPostDialog = AlertDialog.Builder(context ?: return).apply {
-            setView(editorDialogBinding.root)
+        val editPostDialog = MaterialAlertDialogBuilder(context ?: return).apply {
             setTitle(R.string.edit_post)
+            setView(editPostDialogBinding.root)
             setNegativeButton(R.string.cancel, null)
             setPositiveButton(R.string.ok, null)
         }.create()
 
         editPostDialog.setOnShowListener { dialog ->
             (dialog as? AlertDialog)?.getButton(BUTTON_POSITIVE)?.setOnClickListener {
-                val newTitle = editorDialogBinding.fragmentPostEditorTitle.text.toString()
-                val newText = editorDialogBinding.fragmentPostEditorText.text.toString()
+                val newTitle = editPostDialogBinding.fragmentPostEditorTitle.text.toString()
+                val newText = editPostDialogBinding.fragmentPostEditorText.text.toString()
                 if (newText.isBlank()) {
-                    editorDialogBinding.fragmentPostEditorTextLayout.error = getString(R.string.this_field_is_required)
+                    editPostDialogBinding.fragmentPostEditorTextLayout.error = getString(R.string.this_field_is_required)
                 } else if (title == newTitle && text == newText) {
-                    editorDialogBinding.fragmentPostEditorTextLayout.error = getString(R.string.there_is_no_changed)
-                    editorDialogBinding.fragmentPostEditorTitleLayout.error = getString(R.string.there_is_no_changed)
+                    editPostDialogBinding.fragmentPostEditorTextLayout.error = getString(R.string.there_is_no_changes)
+                    editPostDialogBinding.fragmentPostEditorTitleLayout.error = getString(R.string.there_is_no_changes)
                 } else {
                     onEdit(newTitle, newText)
                     dialog.dismiss()

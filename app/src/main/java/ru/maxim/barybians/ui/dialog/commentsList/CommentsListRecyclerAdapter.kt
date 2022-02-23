@@ -1,14 +1,12 @@
 package ru.maxim.barybians.ui.dialog.commentsList
 
-import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.R
@@ -17,7 +15,6 @@ import ru.maxim.barybians.databinding.ItemCommentBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListRecyclerAdapter.CommentViewHolder
 import ru.maxim.barybians.utils.HtmlUtils
-import ru.maxim.barybians.utils.SwipeDismissCallback
 import ru.maxim.barybians.utils.load
 import javax.inject.Inject
 
@@ -30,31 +27,6 @@ class CommentsListRecyclerAdapter @Inject constructor(
 
     fun setAdapterListener(listener: CommentsAdapterListener?) {
         commentsAdapterListener = listener
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        val swipeBackground = ColorDrawable(
-            ContextCompat.getColor(recyclerView.context, R.color.delete_swipe_background)
-        )
-        val deleteIcon = requireNotNull(
-            ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_delete)
-        )
-
-        val swipeDismissCallback = SwipeDismissCallback<CommentViewHolder>(
-            swipeBackground = swipeBackground,
-            iconDrawable = deleteIcon,
-            allowSwipe = { viewHolder ->
-                getItem(viewHolder.bindingAdapterPosition)?.author?.userId == preferencesManager.userId
-            },
-            onSwiped = { viewHolder ->
-                val position = viewHolder.bindingAdapterPosition
-                val commentId = getItem(position)?.commentId ?: return@SwipeDismissCallback
-                commentsAdapterListener?.onCommentSwipe(commentId = commentId, viewHolderPosition = position)
-            }
-        )
-
-        ItemTouchHelper(swipeDismissCallback).attachToRecyclerView(recyclerView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -96,11 +68,9 @@ class CommentsListRecyclerAdapter @Inject constructor(
 
             itemCommentUserAvatar.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.userId) }
             itemCommentUserName.setOnClickListener { commentsAdapterListener?.onUserClick(comment.author.userId) }
-            root.setOnLongClickListener {
-                if (comment.author.userId == preferencesManager.userId) {
-                    commentsAdapterListener?.onCommentLongClick(comment.commentId, comment.text)
-                }
-                true
+            itemCommentMenuButton.isVisible = preferencesManager.userId == comment.userId
+            itemCommentMenuButton.setOnClickListener { button ->
+                commentsAdapterListener?.onCommentMenuClick(comment, button)
             }
         }
     }

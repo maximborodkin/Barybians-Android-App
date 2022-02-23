@@ -26,8 +26,8 @@ class CommentsListViewModel private constructor(
     private val postId: Int
 ) : AndroidViewModel(application) {
 
-    private val _messageRes: MutableLiveData<Int?> = MutableLiveData(null)
-    val errorMessage: LiveData<Int?> = _messageRes
+    private val _errorMessage: MutableLiveData<Int?> = MutableLiveData(null)
+    val errorMessage: LiveData<Int?> = _errorMessage
 
     private val _isSending: MutableLiveData<Boolean> = MutableLiveData(false)
     val isSending: LiveData<Boolean> = _isSending
@@ -47,7 +47,7 @@ class CommentsListViewModel private constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_load_comments
             }
-            _messageRes.postValue(errorMessage)
+            _errorMessage.postValue(errorMessage)
         }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -61,7 +61,7 @@ class CommentsListViewModel private constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_edit_comment
             }
-            _messageRes.postValue(error)
+            _errorMessage.postValue(error)
         } finally {
             _isSending.postValue(false)
         }
@@ -81,7 +81,7 @@ class CommentsListViewModel private constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_create_comment
             }
-            _messageRes.postValue(error)
+            _errorMessage.postValue(error)
         } finally {
             _isSending.postValue(false)
         }
@@ -97,7 +97,7 @@ class CommentsListViewModel private constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_delete_comment
             }
-            _messageRes.postValue(error)
+            _errorMessage.postValue(error)
         }
     }
 

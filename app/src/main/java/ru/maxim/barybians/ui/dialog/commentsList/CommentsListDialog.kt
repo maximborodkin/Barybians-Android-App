@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -18,6 +20,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentCommentsListBinding
+import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
@@ -62,32 +65,6 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
                 model.comments.collect(commentsRecyclerAdapter::submitList)
             }
         }
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                commentsRecyclerAdapter.loadStateFlow.collect { state ->
-//                    when (state.refresh) {
-//                        is LoadState.Loading -> {
-//                            commentsListProgressBar.isVisible = commentsRecyclerAdapter.itemCount == 0
-//                            commentsListMessage.hide()
-//                        }
-//                        is LoadState.NotLoading -> {
-//                            commentsListProgressBar.hide()
-//                            if (commentsRecyclerAdapter.itemCount > 0) commentsListMessage.hide()
-//                        }
-//                        is LoadState.Error -> {
-//                            commentsListProgressBar.hide()
-//                            val errorMessage = getString(R.string.an_error_occurred_while_loading_comments)
-//                            if (commentsRecyclerAdapter.itemCount == 0) {
-//                                commentsListMessage.show()
-//                                commentsListMessage.text = errorMessage
-//                            } else {
-//                                context?.toast(errorMessage)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             model.errorMessage.observe(viewLifecycleOwner) { messageResource -> context?.toast(messageResource) }
@@ -114,35 +91,43 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
         findNavController().navigate(CommentsListDialogDirections.toImageViewer(imageUrl = url))
     }
 
-    override fun onCommentSwipe(commentId: Int, viewHolderPosition: Int) {
+    override fun onCommentMenuClick(comment: Comment, anchor: View) {
+        val activity = activity ?: return
+        PopupMenu(activity, anchor).apply {
+            activity.menuInflater.inflate(R.menu.menu_comment, menu)
+
+            menu.findItem(R.id.menuCommentEdit)?.setOnMenuItemClickListener {
+                showEditDialog(comment.text) { text -> model.editComment(commentId = comment.commentId, text = text) }
+                true
+            }
+
+            menu.findItem(R.id.menuCommentDelete)?.setOnMenuItemClickListener {
+                showDeleteDialog { model.deleteComment(commentId = comment.commentId) }
+                true
+            }
+            show()
+        }
+    }
+
+    private fun showEditDialog(text: String, onEdit: (text: String) -> Unit) {
+        EditTextDialog(
+            context = context ?: return,
+            title = getString(R.string.edit_comment),
+            text = text,
+            onPositiveButtonClicked = onEdit
+        ).show()
+    }
+
+    private fun showDeleteDialog(onDelete: () -> Unit) {
         MaterialAlertDialogBuilder(context ?: return).apply {
             setTitle(R.string.delete_this_comment)
             setIcon(R.drawable.ic_delete)
             setMessage(R.string.this_action_cannot_be_undone)
-            setNegativeButton(android.R.string.cancel) { dialog, _ ->
-                commentsRecyclerAdapter.notifyItemChanged(viewHolderPosition)
-                dialog.dismiss()
-            }
-            setPositiveButton(android.R.string.ok) { dialog, _ ->
-                model.deleteComment(commentId)
-                dialog.dismiss()
-            }
-            setOnCancelListener {
-                commentsRecyclerAdapter.notifyItemChanged(viewHolderPosition)
-            }
+            setNegativeButton(android.R.string.cancel, null)
+            setPositiveButton(android.R.string.ok) { _, _ -> onDelete() }
         }.show()
     }
 
-    override fun onCommentLongClick(commentId: Int, commentText: String) {
-        EditTextDialog(
-            context = context ?: return,
-            title = getString(R.string.edit_comment),
-            text = commentText,
-            onPositiveButtonClicked = { newText ->
-                model.editComment(commentId, newText)
-            }
-        )
-    }
 
     override fun onDestroyView() {
         commentsRecyclerAdapter.setAdapterListener(null)

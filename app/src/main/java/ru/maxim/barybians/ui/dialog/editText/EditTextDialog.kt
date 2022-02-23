@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.dialog.editText
 
 import android.content.Context
+import android.content.DialogInterface
 import android.view.LayoutInflater
 import android.view.WindowManager.LayoutParams
 import androidx.appcompat.app.AlertDialog
@@ -11,49 +12,50 @@ import ru.maxim.barybians.databinding.DialogEdittextBinding
 
 class EditTextDialog(
     context: Context,
-    title: String,
-    text: String? = null,
-    onPositiveButtonClicked: (title: String) -> Unit,
-    maxCharactersCount: Int? = null,
-    hint: String? = null
+    private val title: String,
+    private val text: String = String(),
+    private val onPositiveButtonClicked: (text: String) -> Unit,
+    private val maxCharactersCount: Int? = null,
+    private val hint: String? = null,
+    private val isTextRequired: Boolean = true
 ) : MaterialAlertDialogBuilder(context) {
 
-    init {
-        val customView = DialogEdittextBinding.inflate(LayoutInflater.from(context))
-        setView(customView.root)
+    private val editTextDialogBinding = DialogEdittextBinding.inflate(LayoutInflater.from(context)).apply {
+        alertDialogEditText.setText(text)
+        alertDialogEditText.hint = hint
+        alertDialogEditText.setSelection(alertDialogEditText.length())
+        alertDialogEditText.requestFocus()
+        alertDialogEditText.addTextChangedListener { alertDialogEditTextLayout.error = null }
 
+        alertDialogEditTextLayout.counterMaxLength = maxCharactersCount ?: 0
+    }
+
+    override fun create(): AlertDialog = MaterialAlertDialogBuilder(context).apply {
         setTitle(title)
+        setView(editTextDialogBinding.root)
+        setPositiveButton(R.string.ok, null)
+        setNegativeButton(R.string.cancel, null)
+    }.create()
 
-        with(customView.alertDialogEditText) {
-            setText(text)
-            setHint(hint)
-            setSelection(length())
-            requestFocus()
-            addTextChangedListener { customView.alertDialogEditTextLayout.error = null }
-        }
-        maxCharactersCount?.let { customView.alertDialogEditTextLayout.counterMaxLength = it }
-
-        setPositiveButton(android.R.string.ok, null)
-        setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
-
-        val dialog = create()
-        dialog.window?.setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-        dialog.show()
-
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
-            val newText = customView.alertDialogEditText.text.toString()
-            if (newText.isNotBlank()) {
-                if (maxCharactersCount != null && newText.length > maxCharactersCount) {
-                    customView.alertDialogEditTextLayout.error =
-                        context.getString(R.string.string_too_long)
+    override fun show(): AlertDialog {
+        val editTextDialog = create()
+        editTextDialog.show()
+        editTextDialog.window?.setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        editTextDialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setOnClickListener {
+            val newText = editTextDialogBinding.alertDialogEditText.text.toString()
+            if (newText.isNotBlank() || !isTextRequired) {
+                if (text.trim() == newText.trim()) {
+                    editTextDialogBinding.alertDialogEditTextLayout.error = context.getString(R.string.there_is_no_changes)
+                } else if (maxCharactersCount != null && newText.length > maxCharactersCount) {
+                    editTextDialogBinding.alertDialogEditTextLayout.error = context.getString(R.string.value_too_long)
                 } else {
-                    onPositiveButtonClicked(newText)
-                    dialog.dismiss()
+                    onPositiveButtonClicked(newText.trim())
+                    editTextDialog.dismiss()
                 }
             } else {
-                customView.alertDialogEditTextLayout.error =
-                    context.getString(R.string.this_string_is_required)
+                editTextDialogBinding.alertDialogEditTextLayout.error = context.getString(R.string.this_field_is_required)
             }
         }
+        return editTextDialog
     }
 }
