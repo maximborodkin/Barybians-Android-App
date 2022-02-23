@@ -19,9 +19,10 @@
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="retry">Retry</string>
+    <string name="unable_to_load_image">Unable to load image</string>
 
 
-<!--  LoginActivity/RegistrationActivity  -->
+    <!--  LoginActivity/RegistrationActivity  -->
     <string name="log_in">Log in</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
@@ -46,14 +47,12 @@
     <string name="feed">Feed</string>
     <string name="dialogs">Dialogs</string>
     <string name="profile">Profile</string>
-    <string name="an_error_occurred_while_loading_feed">An error occurred while loading feed</string>
     <string name="an_error_occurred_while_loading_comments">An error occurred while loading comments</string>
     <string name="an_error_occurred_while_loading_chats">An error occurred while loading chats</string>
     <string name="an_error_occurred_while_loading_messages">An error occurred while loading messages</string>
-    <!--  Profile  -->
+    <!--  Feed  -->
         <string name="an_error_occurred_while_loading_profile">An error occurred while loading profile</string>
-
-        <string name="unable_to_load_image">Unable to load image</string>
+    <string name="an_error_occurred_while_loading_feed">An error occurred while loading feed</string>
         <string name="open_chat">Open chat</string>
         <string name="administrator">Administrator</string>
         <string name="barybian">Barybian</string>
@@ -62,12 +61,16 @@
         <string name="new_post">New post</string>
         <string name="title">Title</string>
         <string name="text">Text</string>
+        <string name="title_length_error">Title must be no more than 50 characters</string>
+        <string name="text_length_error">Post text must be no more than 4000 characters</string>
         <string name="unable_to_create_post">Unable to create post</string>
         <string name="delete_this_post">Delete this post?</string>
         <string name="edit_post">Edit post</string>
         <string name="unable_to_edit_post">Unable to edit post</string>
         <string name="unable_to_delete_post">Unable to delete post</string>
         <string name="unable_to_change_like">Unable to change like</string>
+
+<!--  Profile  -->
         <string name="age_plurals_zero">%1$d years</string>
         <string name="age_plurals_one">%1$d year</string>
         <string name="age_plurals_two">%1$d years</string>
@@ -129,5 +132,4 @@
     <string name="unable_to_edit_status">Unable to edit status</string>
     <string name="debug_mode">Debug mode</string>
     <string name="there_is_no_changes">There is no changes</string>
-
 </resources>

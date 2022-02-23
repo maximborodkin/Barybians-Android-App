@@ -114,7 +114,8 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
             context = context ?: return,
             title = getString(R.string.edit_comment),
             text = text,
-            onPositiveButtonClicked = onEdit
+            onPositiveButtonClicked = onEdit,
+            maxCharactersCount = 2000
         ).show()
     }
 

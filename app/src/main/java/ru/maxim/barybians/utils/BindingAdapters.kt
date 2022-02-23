@@ -13,29 +13,20 @@ import com.google.android.material.textfield.TextInputLayout
 import ru.maxim.barybians.ui.view.AvatarView
 
 @BindingAdapter("errorText")
-fun setErrorText(view: TextInputLayout, errorMessage: String?) {
-    view.error = errorMessage
-}
-
-@BindingAdapter("errorText")
 fun setErrorText(view: TextInputLayout, @StringRes errorMessage: Int?) {
     view.error = if (errorMessage != null) view.context.getString(errorMessage) else null
 }
 
-@BindingAdapter(value = ["image", "placeholder", "thumbnail"], requireAll = false)
+@BindingAdapter(value = ["image", "placeholder", "thumbnail", "blur"], requireAll = false)
 fun loadImage(
     imageView: ImageView,
     image: String?,
     @DrawableRes placeholder: Int?,
-    thumbnail: String?
+    thumbnail: String?,
+    blur: Int?
 ) {
     if (image.isNullOrBlank()) return
-    imageView.load(url = image, placeholder = placeholder, thumbnail = thumbnail)
-}
-
-@BindingAdapter("tintColor")
-fun ImageView.setTintColor(@ColorRes color: Int) {
-    setColorFilter(color)
+    imageView.load(url = image, placeholder = placeholder, thumbnail = thumbnail, blur = blur)
 }
 
 @BindingAdapter("drawableTintColor")

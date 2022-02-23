@@ -1,13 +1,11 @@
 package ru.maxim.barybians.ui.fragment.feed
 
 import android.content.Context
-import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State.STARTED
@@ -29,8 +27,8 @@ import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.databinding.FragmentFeedBinding
-import ru.maxim.barybians.databinding.FragmentPostEditorBinding
 import ru.maxim.barybians.domain.model.Post
+import ru.maxim.barybians.ui.dialog.editPost.EditPostDialog
 import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
@@ -63,7 +61,9 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
     @OptIn(FlowPreview::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
+        isCreateButtonShown = true
         feedRefreshLayout.setOnRefreshListener(feedRecyclerAdapter::refresh)
+        feedCreatePostButton.setOnClickListener { showEditDialog(R.string.new_post, onEdit = model::createPost) }
 
         setupRecyclerView()
 
@@ -131,7 +131,7 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
             activity.menuInflater.inflate(R.menu.menu_post, menu)
 
             menu.findItem(R.id.menuPostEdit)?.setOnMenuItemClickListener {
-                showEditDialog(post.title, post.text) { title, text ->
+                showEditDialog(R.string.edit_post, post.title, post.text) { title, text ->
                     model.editPost(postId = post.postId, title = title, text = text)
                 }
                 true
@@ -154,38 +154,19 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
         }.show()
     }
 
-    private fun showEditDialog(title: String?, text: String, onEdit: (title: String?, text: String) -> Unit) {
-        val editPostDialogBinding = FragmentPostEditorBinding.inflate(layoutInflater).apply {
-            fragmentPostEditorTitle.setText(title)
-            fragmentPostEditorText.setText(text)
-            fragmentPostEditorTitle.addTextChangedListener { fragmentPostEditorTitleLayout.error = null }
-            fragmentPostEditorText.addTextChangedListener { fragmentPostEditorTextLayout.error = null }
-        }
-        val editPostDialog = MaterialAlertDialogBuilder(context ?: return).apply {
-            setTitle(R.string.edit_post)
-            setView(editPostDialogBinding.root)
-            setNegativeButton(R.string.cancel, null)
-            setPositiveButton(R.string.ok, null)
-        }.create()
-
-        editPostDialog.setOnShowListener { dialog ->
-            (dialog as? AlertDialog)?.getButton(BUTTON_POSITIVE)?.setOnClickListener {
-                val newTitle = editPostDialogBinding.fragmentPostEditorTitle.text.toString()
-                val newText = editPostDialogBinding.fragmentPostEditorText.text.toString()
-                if (newText.isBlank()) {
-                    editPostDialogBinding.fragmentPostEditorTextLayout.error =
-                        getString(R.string.this_field_is_required)
-                } else if (title == newTitle && text == newText) {
-                    editPostDialogBinding.fragmentPostEditorTextLayout.error = getString(R.string.there_is_no_changes)
-                    editPostDialogBinding.fragmentPostEditorTitleLayout.error = getString(R.string.there_is_no_changes)
-                } else {
-                    onEdit(newTitle, newText)
-                    dialog.dismiss()
-                }
-            }
-        }
-
-        editPostDialog.show()
+    private fun showEditDialog(
+        @StringRes dialogTitle: Int,
+        title: String? = null,
+        text: String = String(),
+        onEdit: (title: String?, text: String) -> Unit
+    ) {
+        EditPostDialog(
+            context = context ?: return,
+            dialogTitle = dialogTitle,
+            title = title,
+            text = text,
+            onPositiveButtonClicked = onEdit
+        ).show()
     }
 
     override fun onCommentsClick(postId: Int) {

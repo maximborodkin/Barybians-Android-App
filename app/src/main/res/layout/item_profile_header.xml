@@ -30,6 +30,9 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:scaleType="centerCrop"
+            app:image="@{user.avatarMin}"
+            app:blur="@{25}"
+            android:tint="@color/profileHeaderBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -75,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="48dp"
+                    android:layout_marginTop="58dp"
                     android:text="@{user.fullName}"
                     android:textAlignment="center"
                     android:textSize="22sp"
@@ -134,8 +137,8 @@
 
         <ru.maxim.barybians.ui.view.AvatarView
             android:id="@+id/itemProfileHeaderAvatar"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:elevation="8dp"
             app:enableOnlineStatus="true"
             app:image="@{user.avatarMin}"
@@ -145,17 +148,5 @@
             app:layout_constraintTop_toTopOf="@+id/itemProfileHeaderCardBackground"
             tools:isOnline="true"
             tools:src="@tools:sample/avatars" />
-
-        <include
-            android:id="@+id/itemProfilePostCreator"
-            layout="@layout/item_post_creator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="@{isPersonal ? View.VISIBLE : View.GONE}"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderCardBackground"
-            app:userAvatar="@{user.avatarMin}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

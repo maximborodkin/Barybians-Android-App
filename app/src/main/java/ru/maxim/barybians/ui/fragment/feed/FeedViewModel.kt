@@ -17,6 +17,7 @@ import ru.maxim.barybians.data.paging.FeedRemoteMediator.FeedRemoteMediatorFacto
 import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.domain.model.Post
+import java.util.*
 import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
@@ -55,6 +56,21 @@ open class FeedViewModel constructor(
 
     var postsCount = 0
         private set
+
+    fun createPost(title: String?, text: String) = viewModelScope.launch {
+        try {
+            val uuid = UUID.randomUUID().toString()
+            postRepository.createPost(uuid, title, text)
+        } catch (e: Exception) {
+            val errorMessageRes = when (e) {
+                is NoConnectionException -> R.string.no_internet_connection
+                is TimeoutException -> R.string.request_timeout
+                else -> R.string.unable_to_create_post
+            }
+            mErrorMessage.postValue(errorMessageRes)
+        }
+    }
+
 
     fun editPost(postId: Int, title: String?, text: String) = viewModelScope.launch {
         try {

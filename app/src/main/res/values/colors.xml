@@ -26,4 +26,5 @@
 
     <color name="incomingMessageBackground">#E1DADA</color>
     <color name="outgoingMessageBackground">#A2CBE3</color>
+    <color name="profileHeaderBackground">#B4000000</color>
 </resources>

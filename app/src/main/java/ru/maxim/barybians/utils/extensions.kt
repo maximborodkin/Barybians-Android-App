@@ -2,12 +2,15 @@ package ru.maxim.barybians.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -18,6 +21,11 @@ import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.request.RequestOptions
+import jp.wasabeef.glide.transformations.BitmapTransformation
+import jp.wasabeef.glide.transformations.BlurTransformation
+import jp.wasabeef.glide.transformations.ColorFilterTransformation
 import ru.maxim.barybians.App
 import ru.maxim.barybians.R
 import ru.maxim.barybians.di.AppComponent
@@ -59,7 +67,12 @@ fun Context.longToast(text: String?) = text?.let { Toast.makeText(this, it, LENG
 fun Context.longToast(@StringRes resource: Int?) = resource?.let { longToast(getString(it)) }
 
 @SuppressLint("CheckResult")
-fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnail: String? = null) {
+fun ImageView.load(
+    url: String?,
+    thumbnail: String? = null,
+    @DrawableRes placeholder: Int? = null,
+    blur: Int? = null
+) {
     if (url.isNullOrBlank()) return
     val requestBuilder = Glide.with(context).load(url)
 
@@ -74,6 +87,10 @@ fun ImageView.load(url: String?, @DrawableRes placeholder: Int? = null, thumbnai
                 start()
             })
         }
+    }
+
+    if (blur != null && blur > 0) {
+        requestBuilder.apply(RequestOptions.bitmapTransform(BlurTransformation(blur)))
     }
 
     requestBuilder

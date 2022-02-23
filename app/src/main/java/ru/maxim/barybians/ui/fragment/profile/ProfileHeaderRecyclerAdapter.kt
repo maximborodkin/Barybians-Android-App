@@ -30,6 +30,7 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
             binding.isPersonal = user.userId == preferencesManager.userId
             binding.isDebug = preferencesManager.isDebug
 
+            itemProfileHeaderAvatar.setOnClickListener { profileItemsListener?.onImageClick(user.avatarFull) }
             itemProfileHeaderBackButton.setOnClickListener { profileItemsListener?.onBackButtonClick() }
             itemProfileHeaderPreferencesButton.setOnClickListener { profileItemsListener?.onPreferencesButtonClick() }
             itemProfileHeaderStatus.setOnClickListener { profileItemsListener?.onStatusClick() }

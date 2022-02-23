@@ -11,7 +11,7 @@ interface PostRepository {
     fun userPostsPagingSource(userId: Int): PagingSource<Int, PostEntity>
     suspend fun loadUserPostsPage(userId: Int, startIndex: Int, count: Int): List<Post>
 
-    suspend fun createPost(title: String?, text: String)
+    suspend fun createPost(uuid: String, title: String?, text: String)
     suspend fun editPost(postId: Int, title: String?, text: String)
     suspend fun deletePost(postId: Int)
 

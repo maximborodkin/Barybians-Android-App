@@ -23,6 +23,7 @@ interface PostService {
     @FormUrlEncoded
     @POST("/v2/posts")
     suspend fun createPost(
+        @Header("request") uuid: String,
         @Field("title") title: String?,
         @Field("text") text: String
     ): Response<PostDto>

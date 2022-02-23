@@ -10,6 +10,7 @@ import ru.maxim.barybians.data.network.model.mapper.PostDtoMapper
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.repository.RepositoryBound
 import ru.maxim.barybians.domain.model.Post
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,8 +43,8 @@ class PostRepositoryImpl @Inject constructor(
         return postDao.userPostsPagingSource(userId)
     }
 
-    override suspend fun createPost(title: String?, text: String) = withContext(IO) {
-        val postDto = repositoryBound.wrapRequest { postService.createPost(title, text) }
+    override suspend fun createPost(uuid: String, title: String?, text: String) = withContext(IO) {
+        val postDto = repositoryBound.wrapRequest { postService.createPost(uuid, title, text) }
         val post = postDtoMapper.toDomainModel(postDto)
         postDao.insert(postEntityMapper.fromDomainModel(post).post)
     }
