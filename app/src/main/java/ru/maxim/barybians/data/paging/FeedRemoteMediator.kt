@@ -15,12 +15,12 @@ import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.utils.transform
-import timber.log.Timber
 import javax.inject.Inject
 
 @Reusable
 @OptIn(ExperimentalPagingApi::class)
-class FeedRemoteMediator @Inject constructor(
+class FeedRemoteMediator private constructor(
+    private val userId: Int?,
     private val feedRepository: PostRepository,
     private val database: BarybiansDatabase,
     private val postEntityMapper: PostEntityMapper,
@@ -48,10 +48,19 @@ class FeedRemoteMediator @Inject constructor(
                 }
             }
 
-            val feedPageResponse = feedRepository.loadFeedPage(
-                startIndex = page * state.config.pageSize,
-                count = state.config.pageSize
-            )
+            val feedPageResponse = if (userId == null || userId <= 0) {
+                feedRepository.loadFeedPage(
+                    startIndex = page * state.config.pageSize,
+                    count = state.config.pageSize
+                )
+            } else {
+                feedRepository.loadUserPostsPage(
+                    userId = userId,
+                    startIndex = page * state.config.pageSize,
+                    count = state.config.pageSize
+                )
+            }
+
             val prevPage = if (page == 0) null else page - 1
             val nextPage = if (feedPageResponse.size < state.config.pageSize) null else page + 1
 
@@ -69,5 +78,26 @@ class FeedRemoteMediator @Inject constructor(
         } catch (e: Exception) {
             MediatorResult.Error(e)
         }
+    }
+
+    class FeedRemoteMediatorFactory @Inject constructor(
+        private val feedRepository: PostRepository,
+        private val database: BarybiansDatabase,
+        private val postEntityMapper: PostEntityMapper,
+        private val postDao: PostDao,
+        private val likeDao: LikeDao,
+        private val userDao: UserDao,
+        private val commentDao: CommentDao
+    ) {
+        fun create(userId: Int? = null) = FeedRemoteMediator(
+            userId = userId,
+            feedRepository = feedRepository,
+            database = database,
+            postEntityMapper = postEntityMapper,
+            postDao = postDao,
+            likeDao = likeDao,
+            userDao = userDao,
+            commentDao = commentDao
+        )
     }
 }

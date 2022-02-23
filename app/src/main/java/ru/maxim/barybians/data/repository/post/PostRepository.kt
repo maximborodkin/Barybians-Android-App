@@ -7,7 +7,10 @@ import ru.maxim.barybians.domain.model.Post
 interface PostRepository {
     fun feedPagingSource(): PagingSource<Int, PostEntity>
     suspend fun loadFeedPage(startIndex: Int, count: Int): List<Post>
-    suspend fun getPostById(postId: Int): Post?
+
+    fun userPostsPagingSource(userId: Int): PagingSource<Int, PostEntity>
+    suspend fun loadUserPostsPage(userId: Int, startIndex: Int, count: Int): List<Post>
+
     suspend fun createPost(title: String?, text: String)
     suspend fun editPost(postId: Int, title: String?, text: String)
     suspend fun deletePost(postId: Int)

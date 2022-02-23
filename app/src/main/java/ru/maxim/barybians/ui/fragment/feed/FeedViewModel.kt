@@ -13,6 +13,7 @@ import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.paging.FeedRemoteMediator
+import ru.maxim.barybians.data.paging.FeedRemoteMediator.FeedRemoteMediatorFactory
 import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.domain.model.Post
@@ -28,7 +29,7 @@ open class FeedViewModel constructor(
 ) : AndroidViewModel(application) {
 
     // When your wings are burning, who keeps you from falling?
-    val feed: StateFlow<PagingData<Post>> = Pager(
+    protected open val feed: StateFlow<PagingData<Post>> = Pager(
         config = PagingConfig(
             initialLoadSize = PostRepository.pageSize,
             pageSize = PostRepository.pageSize,
@@ -49,8 +50,8 @@ open class FeedViewModel constructor(
         .cachedIn(viewModelScope)
         .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
 
-    private val _messageRes: MutableLiveData<Int?> = MutableLiveData(null)
-    val messageRes: LiveData<Int?> = _messageRes
+    protected val mErrorMessage: MutableLiveData<Int?> = MutableLiveData(null)
+    val errorMessage: LiveData<Int?> = mErrorMessage
 
     var postsCount = 0
         private set
@@ -64,7 +65,7 @@ open class FeedViewModel constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_edit_post
             }
-            _messageRes.postValue(errorMessageRes)
+            mErrorMessage.postValue(errorMessageRes)
         }
     }
 
@@ -77,7 +78,7 @@ open class FeedViewModel constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_delete_post
             }
-            _messageRes.postValue(errorMessageRes)
+            mErrorMessage.postValue(errorMessageRes)
         }
     }
 
@@ -90,7 +91,7 @@ open class FeedViewModel constructor(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_change_like
             }
-            _messageRes.postValue(errorMessageRes)
+            mErrorMessage.postValue(errorMessageRes)
         }
     }
 
@@ -99,13 +100,19 @@ open class FeedViewModel constructor(
         private val postRepository: PostRepository,
         private val postEntityMapper: PostEntityMapper,
         private val likeRepository: LikeRepository,
-        private val remoteMediator: FeedRemoteMediator,
+        private val remoteMediatorFactory: FeedRemoteMediatorFactory,
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(FeedViewModel::class.java)) {
-                return FeedViewModel(application, remoteMediator, postRepository, likeRepository, postEntityMapper) as T
+                return FeedViewModel(
+                    application,
+                    remoteMediatorFactory.create(),
+                    postRepository,
+                    likeRepository,
+                    postEntityMapper
+                ) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }

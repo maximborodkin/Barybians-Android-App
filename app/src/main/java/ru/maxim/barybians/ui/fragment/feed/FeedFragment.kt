@@ -109,7 +109,7 @@ class FeedFragment : MvpAppCompatFragment(R.layout.fragment_feed), FeedAdapterLi
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            model.messageRes.observe(viewLifecycleOwner) { messageRes -> context?.toast(messageRes) }
+            model.errorMessage.observe(viewLifecycleOwner) { messageRes -> context?.toast(messageRes) }
         }
     }
 

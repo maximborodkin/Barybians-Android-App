@@ -23,7 +23,7 @@ class PostRepositoryImpl @Inject constructor(
 ) : PostRepository {
 
     override suspend fun loadFeedPage(startIndex: Int, count: Int): List<Post> {
-        val postDto = repositoryBound.wrapRequest { postService.loadFeedPage(startIndex, count) }
+        val postDto = repositoryBound.wrapRequest { postService.loadFeedPage(startIndex = startIndex, count = count) }
         return postDtoMapper.toDomainModelList(postDto)
     }
 
@@ -31,9 +31,15 @@ class PostRepositoryImpl @Inject constructor(
         return postDao.feedPagingSource()
     }
 
-    override suspend fun getPostById(postId: Int): Post? {
-        val postDto = repositoryBound.wrapRequest { postService.getById(postId) } ?: return null
-        return postDtoMapper.toDomainModel(postDto)
+    override suspend fun loadUserPostsPage(userId: Int, startIndex: Int, count: Int): List<Post> {
+        val postDto = repositoryBound.wrapRequest {
+            postService.loadUserPostsPage(userId = userId, startIndex = startIndex, count = count)
+        }
+        return postDtoMapper.toDomainModelList(postDto)
+    }
+
+    override fun userPostsPagingSource(userId: Int): PagingSource<Int, PostEntity> {
+        return postDao.userPostsPagingSource(userId)
     }
 
     override suspend fun createPost(title: String?, text: String) = withContext(IO) {

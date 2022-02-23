@@ -7,11 +7,15 @@ import ru.maxim.barybians.data.network.model.response.LikeResponse
 
 interface PostService {
 
-    @GET("/v2/posts/{postId}")
-    suspend fun getById(@Path("postId") postId: Int): Response<PostDto?>
-
     @GET("/v2/posts")
     suspend fun loadFeedPage(
+        @Query("start") startIndex: Int,
+        @Query("end") count: Int
+    ): Response<List<PostDto>>
+
+    @GET("/v2/users/{userId}/posts")
+    suspend fun loadUserPostsPage(
+        @Path("userId") userId: Int,
         @Query("start") startIndex: Int,
         @Query("end") count: Int
     ): Response<List<PostDto>>
