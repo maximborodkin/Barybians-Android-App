@@ -13,7 +13,7 @@ import ru.maxim.barybians.databinding.DialogEdittextBinding
 class EditTextDialog(
     context: Context,
     private val title: String,
-    private val text: String = String(),
+    private val text: String? = String(),
     private val onPositiveButtonClicked: (text: String) -> Unit,
     private val maxCharactersCount: Int? = null,
     private val hint: String? = null,
@@ -44,7 +44,7 @@ class EditTextDialog(
         editTextDialog.getButton(DialogInterface.BUTTON_POSITIVE)?.setOnClickListener {
             val newText = editTextDialogBinding.alertDialogEditText.text.toString()
             if (newText.isNotBlank() || !isTextRequired) {
-                if (text.trim() == newText.trim()) {
+                if (text?.trim() == newText.trim()) {
                     editTextDialogBinding.alertDialogEditTextLayout.error = context.getString(R.string.there_is_no_changes)
                 } else if (maxCharactersCount != null && newText.length > maxCharactersCount) {
                     editTextDialogBinding.alertDialogEditTextLayout.error = context.getString(R.string.value_too_long)

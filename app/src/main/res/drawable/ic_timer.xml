@@ -2,7 +2,7 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="16dp"
     android:height="16dp"
-    android:tint="@color/unread_message_circle_color"
+    android:tint="@color/messageUnreadStatus"
     android:viewportWidth="20"
     android:viewportHeight="20">
 

@@ -8,5 +8,4 @@ interface ProfileItemsListener : FeedAdapterListener {
     fun onPreferencesButtonClick()
     fun onStatusClick()
     fun onOpenChatButtonClick(userId: Int)
-    fun onCreatePost(title: String?, text: String)
 }

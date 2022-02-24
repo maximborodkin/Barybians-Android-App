@@ -133,9 +133,9 @@ fun simpleDate(date: Date, hasTime: Boolean = true): String {
     }.format(date)
 }
 
-fun years(date: Date): Int {
+fun years(date: Date?): Int {
     val now = Calendar.getInstance()
-    val birthDate = Calendar.getInstance().apply { time = date }
+    val birthDate = Calendar.getInstance().apply { time = date ?: Date() }
     return if (now[Calendar.DAY_OF_YEAR] < birthDate[Calendar.DAY_OF_YEAR]) now[YEAR] - birthDate[YEAR] - 1
     else now[YEAR] - birthDate[YEAR]
 }

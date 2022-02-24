@@ -9,12 +9,15 @@ import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemProfileHeaderBinding
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.fragment.profile.ProfileHeaderRecyclerAdapter.ProfileHeaderViewHolder
+import ru.maxim.barybians.utils.HtmlUtils
+import ru.maxim.barybians.utils.hide
+import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
 class ProfileHeaderRecyclerAdapter @Inject constructor(
-    private val preferencesManager: PreferencesManager
-) :
-    ListAdapter<User, ProfileHeaderViewHolder>(ProfileHeaderDiffUtil) {
+    private val preferencesManager: PreferencesManager,
+    private val htmlUtils: HtmlUtils
+) : ListAdapter<User?, ProfileHeaderViewHolder>(ProfileHeaderDiffUtil) {
 
     private var profileItemsListener: ProfileItemsListener? = null
 
@@ -25,16 +28,32 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
     inner class ProfileHeaderViewHolder(private val binding: ItemProfileHeaderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(user: User) = with(binding) {
-            binding.user = user
-            binding.isPersonal = user.userId == preferencesManager.userId
-            binding.isDebug = preferencesManager.isDebug
+        fun bind(user: User?) = with(binding) {
+            if (user != null) {
+                binding.user = user
+                binding.isPersonal = user.userId == preferencesManager.userId
+                binding.isDebug = preferencesManager.isDebug
 
-            itemProfileHeaderAvatar.setOnClickListener { profileItemsListener?.onImageClick(user.avatarFull) }
-            itemProfileHeaderBackButton.setOnClickListener { profileItemsListener?.onBackButtonClick() }
-            itemProfileHeaderPreferencesButton.setOnClickListener { profileItemsListener?.onPreferencesButtonClick() }
-            itemProfileHeaderStatus.setOnClickListener { profileItemsListener?.onStatusClick() }
-            itemProfileHeaderChatButton.setOnClickListener { profileItemsListener?.onOpenChatButtonClick(user.userId) }
+                itemProfileHeaderProgressBar.hide()
+                itemProfileHeaderAvatar.setOnClickListener { profileItemsListener?.onImageClick(user.avatarFull) }
+                itemProfileHeaderPreferencesButton.setOnClickListener { profileItemsListener?.onPreferencesButtonClick() }
+                itemProfileHeaderChatButton.setOnClickListener { profileItemsListener?.onOpenChatButtonClick(user.userId) }
+                itemProfileHeaderName.setOnClickListener { itemView.context.toast(user.role.stringResource) }
+                itemProfileHeaderStatus.text = htmlUtils.parseHtml(user.status ?: String()).first
+                if (preferencesManager.userId == user.userId) {
+                    itemProfileHeaderStatus.setOnClickListener { profileItemsListener?.onStatusClick() }
+                }
+            } else {
+                binding.isPersonal = false
+                itemProfileHeaderProgressBar.show()
+                itemProfileHeaderBackground.setImageDrawable(null)
+                itemProfileHeaderAvatar.setImageDrawable(null)
+                itemProfileHeaderAvatar.isOnline = false
+                itemProfileHeaderName.text = null
+                itemProfileHeaderAge.text = null
+                itemProfileHeaderStatus.text = null
+                itemProfileHeaderChatButton.hide()
+            }
         }
     }
 
@@ -48,7 +67,7 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
         holder.bind(getItem(position))
     }
 
-    private object ProfileHeaderDiffUtil : DiffUtil.ItemCallback<User>() {
+    private object ProfileHeaderDiffUtil : DiffUtil.ItemCallback<User?>() {
         override fun areItemsTheSame(oldItem: User, newItem: User): Boolean = true
 
         override fun areContentsTheSame(oldItem: User, newItem: User): Boolean = oldItem == newItem

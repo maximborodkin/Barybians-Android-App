@@ -111,6 +111,10 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
         }
     }
 
+    open fun refresh() {
+
+    }
+
     open fun setupRecyclerView() {
         loadingStateAdapter.setOnRetryListener(feedRecyclerAdapter::retry)
         feedRecyclerAdapter.setAdapterListener(this@FeedFragment)

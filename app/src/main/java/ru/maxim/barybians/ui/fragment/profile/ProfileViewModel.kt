@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,6 +44,7 @@ class ProfileViewModel(
 
     fun updateUser() = viewModelScope.launch {
         try {
+            delay(4000)
             _user.emit(userRepository.getUserById(userId))
         } catch (e: Exception) {
             val errorMessageRes = when (e) {

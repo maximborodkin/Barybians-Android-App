@@ -35,7 +35,7 @@ class AvatarView @JvmOverloads constructor(
     }
 
     private val onlineStatusPaint: Paint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.online_circle_color)
+        color = ContextCompat.getColor(context, R.color.onlineStatus)
     }
 
     override fun onDraw(canvas: Canvas?) {

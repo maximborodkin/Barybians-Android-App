@@ -132,4 +132,6 @@
     <string name="unable_to_edit_status">Unable to edit status</string>
     <string name="debug_mode">Debug mode</string>
     <string name="there_is_no_changes">There is no changes</string>
+    <string name="edit_status">Edit status</string>
+    <string name="status">Status</string>
 </resources>

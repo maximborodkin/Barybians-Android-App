@@ -4,27 +4,26 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="grey">#666666</color>
-    <color name="online_circle_color">#32AD37</color>
-    <color name="unread_message_circle_color">#516BFF</color>
-    <color name="error_message_circle_color">#B51A1A</color>
-    <color name="send_btn_color">#448AFF</color>
-    <color name="like_color">#B0003A</color>
-    <color name="delete_swipe_background">#C62828</color>
+    <color name="onlineStatus">#32AD37</color>
+    <color name="messageUnreadStatus">#516BFF</color>
+    <color name="messageErrorStatus">#B51A1A</color>
+    <color name="sendButton">#448AFF</color>
+    <color name="likeFilled">#B0003A</color>
+    <color name="roleAdministrator">#009900</color>
+    <color name="roleBarybian">#0077FF</color>
+    <color name="roleVerified">#B3AD0B</color>
 
     <!--  Light Theme  -->
     <color name="colorPrimary">#5770CE</color>
     <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorBackground">#F2F3F7</color>
+    <color name="colorBackground">#E8E9EF</color>
     <color name="colorOnBackground">#1C1B1F</color>
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorOnSurface">#1C1B1F</color>
     <color name="colorError">#B3261E</color>
     <color name="colorOnError">#FFFFFF</color>
-    <color name="roleAdministrator">#009900</color>
-    <color name="roleBarybian">#0077FF</color>
-    <color name="roleVerified">#B3AD0B</color>
 
     <color name="incomingMessageBackground">#E1DADA</color>
     <color name="outgoingMessageBackground">#A2CBE3</color>
-    <color name="profileHeaderBackground">#B4000000</color>
+    <color name="profileHeaderBackground">#74FFFFFF</color>
 </resources>

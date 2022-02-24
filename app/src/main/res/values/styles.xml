@@ -2,12 +2,13 @@
     <!--  Global  -->
     <style name="Widget.Material3.CardView.Elevated.Appearance">
         <item name="cardElevation">3dp</item>
-        <item name="cardCornerRadius">0dp</item>
-        <item name="cardBackgroundColor">?colorSurface</item>
-        <item name="android:textColor">?colorOnSurface</item>
+        <item name="cardBackgroundColor">@color/colorSurface</item>
+        <item name="android:textColor">@color/colorOnSurface</item>
     </style>
 
-    <style name="Widget.MyApp.MaterialCardView" parent="Widget.Material3.CardView.Filled">
+    <style name="ProfileHeaderRoundedCard" parent="Widget.Material3.CardView.Elevated.Appearance">
+        <item name="cardBackgroundColor">@color/colorSurface</item>
+        <item name="android:textColor">@color/colorOnSurface</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.ProfileHeaderRounded</item>
     </style>
 
