@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.like.LikeRepository
@@ -22,7 +21,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalPagingApi::class)
 open class FeedViewModel constructor(
     application: Application,
-    protected val postRepository: PostRepository,
+    private val postRepository: PostRepository,
     private val likeRepository: LikeRepository,
 ) : AndroidViewModel(application) {
 
@@ -101,9 +100,9 @@ open class FeedViewModel constructor(
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(FeedViewModel::class.java)) {
                 return FeedViewModel(
-                    application,
-                    postRepository,
-                    likeRepository,
+                    application = application,
+                    postRepository = postRepository,
+                    likeRepository = likeRepository,
                 ) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")

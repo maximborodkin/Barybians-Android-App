@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.maxim.barybians.R
-import ru.maxim.barybians.databinding.DialogEdittextBinding
+import ru.maxim.barybians.databinding.DialogEditTextBinding
 
 class EditTextDialog(
     context: Context,
@@ -20,7 +20,7 @@ class EditTextDialog(
     private val isTextRequired: Boolean = true
 ) : MaterialAlertDialogBuilder(context) {
 
-    private val editTextDialogBinding = DialogEdittextBinding.inflate(LayoutInflater.from(context)).apply {
+    private val editTextDialogBinding = DialogEditTextBinding.inflate(LayoutInflater.from(context)).apply {
         alertDialogEditText.setText(text)
         alertDialogEditText.hint = hint
         alertDialogEditText.setSelection(alertDialogEditText.length())
@@ -45,7 +45,8 @@ class EditTextDialog(
             val newText = editTextDialogBinding.alertDialogEditText.text.toString()
             if (newText.isNotBlank() || !isTextRequired) {
                 if (text?.trim() == newText.trim()) {
-                    editTextDialogBinding.alertDialogEditTextLayout.error = context.getString(R.string.there_is_no_changes)
+                    editTextDialogBinding.alertDialogEditTextLayout.error =
+                        context.getString(R.string.there_is_no_changes)
                 } else if (maxCharactersCount != null && newText.length > maxCharactersCount) {
                     editTextDialogBinding.alertDialogEditTextLayout.error = context.getString(R.string.value_too_long)
                 } else {
@@ -53,7 +54,8 @@ class EditTextDialog(
                     editTextDialog.dismiss()
                 }
             } else {
-                editTextDialogBinding.alertDialogEditTextLayout.error = context.getString(R.string.this_field_is_required)
+                editTextDialogBinding.alertDialogEditTextLayout.error =
+                    context.getString(R.string.this_field_is_required)
             }
         }
         return editTextDialog

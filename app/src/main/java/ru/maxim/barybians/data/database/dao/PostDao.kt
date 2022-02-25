@@ -1,10 +1,8 @@
 package ru.maxim.barybians.data.database.dao
 
-import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.PostEntity.Contract.Columns
@@ -27,13 +25,13 @@ abstract class PostDao {
     @Query("SELECT COUNT(*) FROM ${PostEntity.tableName} WHERE ${Columns.userId}=:userId")
     abstract fun userPostsCount(userId: Int): Flow<Int>
 
-    @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
-    abstract fun getById(postId: Int): PostEntityBody?
+    @Query("SELECT COUNT(*) FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
+    abstract fun checkPost(postId: Int): Int
 
     suspend fun save(postEntity: PostEntity, userDao: UserDao, commentDao: CommentDao, likeDao: LikeDao) {
         userDao.save(postEntity.likes + postEntity.author)
         commentDao.save(postEntity.comments, userDao)
-        if (getById(postEntity.post.postId) != null) {
+        if (checkPost(postEntity.post.postId) > 0) {
             update(postEntity.post)
         } else {
             insert(postEntity.post)
@@ -43,7 +41,7 @@ abstract class PostDao {
         })
     }
 
-    suspend fun savePosts(postEntities: List<PostEntity>, userDao: UserDao, commentDao: CommentDao, likeDao: LikeDao) =
+    suspend fun save(postEntities: List<PostEntity>, userDao: UserDao, commentDao: CommentDao, likeDao: LikeDao) =
         postEntities.forEach { post -> save(post, userDao, commentDao, likeDao) }
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

@@ -12,7 +12,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ConcatAdapter
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
-import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
 import ru.maxim.barybians.ui.fragment.feed.FeedFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileViewModel.ProfileViewModelFactory
@@ -27,7 +26,6 @@ class ProfileFragment : FeedFragment(), ProfileItemsListener {
     lateinit var profileViewModelFactory: ProfileViewModelFactory.Factory
     override val model: ProfileViewModel by viewModels { profileViewModelFactory.create(args.userId) }
 
-
     @Inject
     lateinit var headerRecyclerAdapter: ProfileHeaderRecyclerAdapter
 
@@ -40,13 +38,11 @@ class ProfileFragment : FeedFragment(), ProfileItemsListener {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.user.collect { user -> 
+                model.user.collect { user ->
                     headerRecyclerAdapter.submitList(listOf(user))
-                    if (user != null) binding.feedRecyclerView.layoutManager?.scrollToPosition(0)
                 }
             }
         }
-        model.refreshUser()
     }
 
     override fun refresh() {

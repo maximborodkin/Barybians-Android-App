@@ -21,24 +21,20 @@ abstract class CommentDao {
     )
     abstract fun getByPostId(postId: Int, sortingDirection: Boolean): LiveData<List<CommentEntity>>
 
-    @Query("SELECT * FROM ${CommentEntity.tableName} WHERE ${Columns.commentId}=:commentId")
-    abstract fun getById(commentId: Int): CommentEntityBody?
+    @Query("SELECT COUNT(*) FROM ${CommentEntity.tableName} WHERE ${Columns.commentId}=:commentId")
+    abstract fun checkComment(commentId: Int): Int
 
     suspend fun save(commentEntity: CommentEntity, userDao: UserDao) {
         userDao.save(commentEntity.author)
-        if (getById(commentEntity.comment.commentId) != null) {
+        if (checkComment(commentEntity.comment.commentId) > 0) {
             update(commentEntity.comment)
         } else {
             insert(commentEntity.comment)
         }
     }
 
-    suspend fun save(commentEntities: List<CommentEntity>, userDao: UserDao) {
-        commentEntities.forEach { comment ->
-            userDao.save(comment.author)
-            save(comment, userDao)
-        }
-    }
+    suspend fun save(commentEntities: List<CommentEntity>, userDao: UserDao) =
+        commentEntities.forEach { comment -> save(comment, userDao) }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(commentEntity: CommentEntityBody)

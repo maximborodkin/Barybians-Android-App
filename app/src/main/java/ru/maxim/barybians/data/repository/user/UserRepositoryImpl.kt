@@ -1,7 +1,8 @@
 package ru.maxim.barybians.data.repository.user
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.mapper.UserEntityMapper
 import ru.maxim.barybians.data.network.model.mapper.UserDtoMapper
@@ -18,12 +19,10 @@ class UserRepositoryImpl @Inject constructor(
     private val userEntityMapper: UserEntityMapper
 ) : UserRepository {
 
-    override fun getUserById(userId: Int): Flow<User?> =
-        userDao.getById(userId).map { entity ->
-            userEntityMapper.toDomainModel(entity ?: return@map null)
-        }
+    override fun getUserById(userId: Int) = userDao.getById(userId)
+        .map { entity -> userEntityMapper.toDomainModel(entity ?: return@map null) }
 
-    override suspend fun refreshUser(userId: Int) {
+    override suspend fun refreshUser(userId: Int) = withContext(IO) {
         val userDto = repositoryBound.wrapRequest { userService.getUser(userId) }
         if (userDto != null) {
             val user = userDtoMapper.toDomainModel(userDto)

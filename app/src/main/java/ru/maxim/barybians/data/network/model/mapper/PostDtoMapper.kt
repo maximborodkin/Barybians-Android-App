@@ -12,22 +12,17 @@ class PostDtoMapper @Inject constructor(
 ) : DomainMapper<PostDto, Post>() {
 
     override fun toDomainModel(model: PostDto): Post =
-      try {
-          Post(
-              postId = model.postId,
-              userId = model.userId,
-              title = model.title,
-              text = model.text,
-              date = Date(model.date * 1000),
-              isEdited = model.edited == 1,
-              author = userDtoMapper.toDomainModel(model.author),
-              likedUsers = userDtoMapper.toDomainModelList(model.likedUsers),
-              comments = commentDtoMapper.toDomainModelList(model.comments)
-          )
-      } catch (e: Exception) {
-
-          throw e
-      }
+        Post(
+            postId = model.postId,
+            userId = model.userId,
+            title = model.title,
+            text = model.text,
+            date = Date(model.date * 1000),
+            isEdited = model.edited == 1,
+            author = userDtoMapper.toDomainModel(model.author),
+            likedUsers = userDtoMapper.toDomainModelList(model.likedUsers),
+            comments = commentDtoMapper.toDomainModelList(model.comments)
+        )
 
     override fun fromDomainModel(domainModel: Post): PostDto =
         PostDto(

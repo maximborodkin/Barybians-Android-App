@@ -8,7 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import ru.maxim.barybians.R
-import ru.maxim.barybians.databinding.FragmentPostEditorBinding
+import ru.maxim.barybians.databinding.DialogEditPostBinding
 
 class EditPostDialog(
     context: Context,
@@ -18,7 +18,7 @@ class EditPostDialog(
     private val onPositiveButtonClicked: (title: String?, text: String) -> Unit
 ) : MaterialAlertDialogBuilder(context) {
 
-    private val editPostDialogBinding = FragmentPostEditorBinding.inflate(LayoutInflater.from(context)).apply {
+    private val editPostDialogBinding = DialogEditPostBinding.inflate(LayoutInflater.from(context)).apply {
         fragmentPostEditorTitle.setText(title)
         fragmentPostEditorText.setText(text)
         fragmentPostEditorTitleLayout.counterMaxLength = titleMaxLength

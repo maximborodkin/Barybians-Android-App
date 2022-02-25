@@ -76,7 +76,7 @@ class PostRemoteMediator private constructor(
                 if (loadType == LoadType.REFRESH) {
 //                    postDao.delete()
                 }
-                postDao.savePosts(entities, userDao, commentDao, likeDao)
+                postDao.save(entities, userDao, commentDao, likeDao)
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {
