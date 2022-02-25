@@ -19,7 +19,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
@@ -31,6 +30,7 @@ import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.dialog.editPost.EditPostDialog
 import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.longToast
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
@@ -62,7 +62,7 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         isCreateButtonShown = true
-        feedRefreshLayout.setOnRefreshListener(feedRecyclerAdapter::refresh)
+        feedRefreshLayout.setOnRefreshListener(::refresh)
         feedCreatePostButton.setOnClickListener { showEditDialog(R.string.new_post, onEdit = model::createPost) }
 
         setupRecyclerView()
@@ -70,15 +70,12 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
                 feedRecyclerAdapter.loadStateFlow
-                    .debounce(100)
                     .mapNotNull { loadState -> loadState.mediator?.refresh }
                     .collectLatest { loadState ->
                         if (loadState == currentLoadingState) return@collectLatest
                         currentLoadingState = loadState
 
-                        feedProgressBar.isVisible = loadState is Loading && !feedRefreshLayout.isRefreshing
-                        feedRefreshLayout.isRefreshing = feedRefreshLayout.isRefreshing && loadState is Loading
-                        feedMessage.isVisible = loadState is Error && model.postsCount == 0
+                        feedRefreshLayout.isRefreshing = loadState is Loading
                         if (loadState is Error) {
                             var errorMessage = when (loadState.error) {
                                 is NoConnectionException -> getString(R.string.no_internet_connection)
@@ -87,11 +84,11 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
                             }
                             if (preferencesManager.isDebug) {
                                 errorMessage += "\n${loadState.error}(${loadState.error.message})"
-                            }
-                            feedMessage.text = errorMessage
-                            if (model.postsCount > 0) {
+                                context?.longToast(errorMessage)
+                            } else {
                                 context?.toast(errorMessage)
                             }
+                            feedMessage.text = errorMessage
                         }
                     }
             }
@@ -100,9 +97,14 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
                 model.postsList.collect { posts ->
-                    feedRefreshLayout.isRefreshing = false
                     feedRecyclerAdapter.submitData(posts)
                 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(STARTED) {
+                model.postsCount.collect { postsCount -> feedMessage.isVisible = postsCount == 0 }
             }
         }
 
@@ -112,7 +114,7 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
     }
 
     open fun refresh() {
-
+        feedRecyclerAdapter.refresh()
     }
 
     open fun setupRecyclerView() {

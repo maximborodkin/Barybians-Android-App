@@ -1,4 +1,4 @@
-package ru.maxim.barybians.data.paging
+package ru.maxim.barybians.data.repository.post
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -13,17 +13,21 @@ import ru.maxim.barybians.data.database.dao.PostDao
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
-import ru.maxim.barybians.data.repository.post.PostRepository
+import ru.maxim.barybians.data.network.model.mapper.PostDtoMapper
+import ru.maxim.barybians.data.network.service.PostService
+import ru.maxim.barybians.data.repository.RepositoryBound
 import ru.maxim.barybians.utils.transform
 import javax.inject.Inject
 
 @Reusable
 @OptIn(ExperimentalPagingApi::class)
-class FeedRemoteMediator private constructor(
+class PostRemoteMediator private constructor(
     private val userId: Int?,
-    private val feedRepository: PostRepository,
     private val database: BarybiansDatabase,
+    private val repositoryBound: RepositoryBound,
     private val postEntityMapper: PostEntityMapper,
+    private val postDtoMapper: PostDtoMapper,
+    private val postService: PostService,
     private val postDao: PostDao,
     private val likeDao: LikeDao,
     private val userDao: UserDao,
@@ -48,17 +52,16 @@ class FeedRemoteMediator private constructor(
                 }
             }
 
+            val startIndex = page * state.config.pageSize
+            val count = state.config.pageSize
             val feedPageResponse = if (userId == null || userId <= 0) {
-                feedRepository.loadFeedPage(
-                    startIndex = page * state.config.pageSize,
-                    count = state.config.pageSize
-                )
+                val postDto = repositoryBound.wrapRequest { postService.loadFeedPage(startIndex = startIndex, count = count) }
+                postDtoMapper.toDomainModelList(postDto)
             } else {
-                feedRepository.loadUserPostsPage(
-                    userId = userId,
-                    startIndex = page * state.config.pageSize,
-                    count = state.config.pageSize
-                )
+                val postDto = repositoryBound.wrapRequest {
+                    postService.loadUserPostsPage(userId = userId, startIndex = startIndex, count = count)
+                }
+                postDtoMapper.toDomainModelList(postDto)
             }
 
             val prevPage = if (page == 0) null else page - 1
@@ -80,20 +83,24 @@ class FeedRemoteMediator private constructor(
         }
     }
 
-    class FeedRemoteMediatorFactory @Inject constructor(
-        private val feedRepository: PostRepository,
+    class PostRemoteMediatorFactory @Inject constructor(
         private val database: BarybiansDatabase,
+        private val repositoryBound: RepositoryBound,
         private val postEntityMapper: PostEntityMapper,
+        private val postDtoMapper: PostDtoMapper,
+        private val postService: PostService,
         private val postDao: PostDao,
         private val likeDao: LikeDao,
         private val userDao: UserDao,
         private val commentDao: CommentDao
     ) {
-        fun create(userId: Int? = null) = FeedRemoteMediator(
+        fun create(userId: Int? = null) = PostRemoteMediator(
             userId = userId,
-            feedRepository = feedRepository,
             database = database,
             postEntityMapper = postEntityMapper,
+            postDtoMapper = postDtoMapper,
+            repositoryBound = repositoryBound,
+            postService = postService,
             postDao = postDao,
             likeDao = likeDao,
             userDao = userDao,

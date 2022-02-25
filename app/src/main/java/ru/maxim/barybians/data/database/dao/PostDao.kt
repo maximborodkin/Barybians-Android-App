@@ -1,7 +1,10 @@
 package ru.maxim.barybians.data.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
+import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.PostEntity.Contract.Columns
@@ -17,6 +20,12 @@ abstract class PostDao {
     @Transaction
     @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.userId}=:userId ORDER BY ${Columns.date} DESC")
     abstract fun userPostsPagingSource(userId: Int): PagingSource<Int, PostEntity>
+
+    @Query("SELECT COUNT(*) FROM ${PostEntity.tableName}")
+    abstract fun feedPostsCount(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM ${PostEntity.tableName} WHERE ${Columns.userId}=:userId")
+    abstract fun userPostsCount(userId: Int): Flow<Int>
 
     @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
     abstract fun getById(postId: Int): PostEntityBody?

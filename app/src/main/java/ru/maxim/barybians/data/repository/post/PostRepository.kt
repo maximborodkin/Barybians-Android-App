@@ -1,16 +1,13 @@
 package ru.maxim.barybians.data.repository.post
 
-import androidx.paging.PagingSource
-import ru.maxim.barybians.data.database.model.PostEntity
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.domain.model.Post
 
 interface PostRepository {
-    fun feedPagingSource(): PagingSource<Int, PostEntity>
-    suspend fun loadFeedPage(startIndex: Int, count: Int): List<Post>
-
-    fun userPostsPagingSource(userId: Int): PagingSource<Int, PostEntity>
-    suspend fun loadUserPostsPage(userId: Int, startIndex: Int, count: Int): List<Post>
-
+    fun getFeedPager(): Flow<PagingData<Post>>
+    fun getUserPostsPager(userId: Int): Flow<PagingData<Post>>
+    fun getPostsCount(userId: Int? = null): Flow<Int>
     suspend fun createPost(uuid: String, title: String?, text: String)
     suspend fun editPost(postId: Int, title: String?, text: String)
     suspend fun deletePost(postId: Int)
@@ -19,4 +16,5 @@ interface PostRepository {
         const val pageSize = 30
         const val prefetchDistance = 5
     }
+
 }

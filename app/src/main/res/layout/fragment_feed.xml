@@ -37,16 +37,6 @@
                 tools:itemCount="3"
                 tools:listitem="@layout/item_post" />
 
-            <ProgressBar
-                android:id="@+id/feedProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/feedMessage"
                 android:layout_width="wrap_content"

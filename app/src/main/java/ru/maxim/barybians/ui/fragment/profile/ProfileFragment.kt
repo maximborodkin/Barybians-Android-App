@@ -47,8 +47,9 @@ class ProfileFragment : FeedFragment(), ProfileItemsListener {
         }
     }
 
-    private fun refreshProfile() {
-
+    override fun refresh() {
+        super.refresh()
+        model.updateUser()
     }
 
     override fun setupRecyclerView() {
