@@ -9,16 +9,15 @@ import androidx.paging.cachedIn
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
-import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.repository.post.PostRemoteMediator
-import ru.maxim.barybians.data.repository.post.PostRemoteMediator.PostRemoteMediatorFactory
 import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.data.repository.user.UserRepository
@@ -34,8 +33,16 @@ class ProfileViewModel(
     private val userId: Int
 ) : FeedViewModel(application, postRepository, likeRepository) {
 
-    private val _user: MutableStateFlow<User?> = MutableStateFlow(null)
-    val user: StateFlow<User?> = _user.asStateFlow()
+    val user: StateFlow<User?> = userRepository.getUserById(userId)
+        .catch { e ->
+            val errorMessageRes = when (e) {
+                is NoConnectionException -> R.string.no_internet_connection
+                is TimeoutException -> R.string.request_timeout
+                else -> R.string.an_error_occurred_while_loading_profile
+            }
+            mErrorMessage.postValue(errorMessageRes)
+        }
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     override val postsList: StateFlow<PagingData<Post>> = postRepository.getUserPostsPager(userId)
         .cachedIn(viewModelScope)
@@ -44,22 +51,8 @@ class ProfileViewModel(
     override val postsCount: StateFlow<Int> = postRepository.getPostsCount(userId)
         .stateIn(viewModelScope, SharingStarted.Lazily, 0)
 
-    init {
-        updateUser()
-    }
-
-    fun updateUser() = viewModelScope.launch {
-        try {
-            delay(4000)
-            _user.emit(userRepository.getUserById(userId))
-        } catch (e: Exception) {
-            val errorMessageRes = when (e) {
-                is NoConnectionException -> R.string.no_internet_connection
-                is TimeoutException -> R.string.request_timeout
-                else -> R.string.an_error_occurred_while_loading_profile
-            }
-            mErrorMessage.postValue(errorMessageRes)
-        }
+    fun refreshUser() = viewModelScope.launch {
+        userRepository.refreshUser(userId)
     }
 
     fun editStatus(status: String) = viewModelScope.launch {

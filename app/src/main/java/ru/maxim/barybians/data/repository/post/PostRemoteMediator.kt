@@ -17,6 +17,7 @@ import ru.maxim.barybians.data.network.model.mapper.PostDtoMapper
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.repository.RepositoryBound
 import ru.maxim.barybians.utils.transform
+import timber.log.Timber
 import javax.inject.Inject
 
 @Reusable
@@ -73,12 +74,13 @@ class PostRemoteMediator private constructor(
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    postDao.delete()
+//                    postDao.delete()
                 }
                 postDao.savePosts(entities, userDao, commentDao, likeDao)
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {
+            Timber.e(e)
             MediatorResult.Error(e)
         }
     }

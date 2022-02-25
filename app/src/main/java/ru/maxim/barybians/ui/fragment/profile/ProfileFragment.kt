@@ -40,16 +40,18 @@ class ProfileFragment : FeedFragment(), ProfileItemsListener {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.user.collect { user ->
-                    if (user != null) headerRecyclerAdapter.submitList(listOf(user))
+                model.user.collect { user -> 
+                    headerRecyclerAdapter.submitList(listOf(user))
+                    if (user != null) binding.feedRecyclerView.layoutManager?.scrollToPosition(0)
                 }
             }
         }
+        model.refreshUser()
     }
 
     override fun refresh() {
         super.refresh()
-        model.updateUser()
+        model.refreshUser()
     }
 
     override fun setupRecyclerView() {

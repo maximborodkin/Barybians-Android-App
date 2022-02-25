@@ -3,11 +3,9 @@ package ru.maxim.barybians.ui.fragment.profile
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemProfileHeaderBinding
 import ru.maxim.barybians.domain.model.User
@@ -33,20 +31,7 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User?) = with(binding) {
-            binding.isPersonal = true
-            val placeholderAvatar = ColorDrawable(itemProfileHeaderCardBackground.cardBackgroundColor.defaultColor)
-            itemProfileHeaderProgressBar.show()
-            itemProfileHeaderBackground.setImageDrawable(null)
-            itemProfileHeaderAvatar.setImageDrawable(placeholderAvatar)
-            itemProfileHeaderAvatar.isOnline = false
-            itemProfileHeaderName.text = null
-            itemProfileHeaderAge.hide()
-            itemProfileHeaderStatus.text = null
-            itemProfileHeaderChatButton.hide()
-
-            itemProfileHeaderPreferencesButton.setOnClickListener { profileItemsListener?.onPreferencesButtonClick() }
-
-            /*if (user != null) {
+            if (user != null) {
                 binding.user = user
                 binding.isPersonal = user.userId == preferencesManager.userId
                 binding.isDebug = preferencesManager.isDebug
@@ -63,7 +48,7 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
                 }
             } else {
                 binding.isPersonal = true
-                val placeholderAvatar = ColorDrawable(itemProfileHeaderCardBackground.cardBackgroundColor.defaultColor)
+                val placeholderAvatar = ColorDrawable(itemProfileHeaderCardBackground.solidColor)
                 itemProfileHeaderProgressBar.show()
                 itemProfileHeaderBackground.setImageDrawable(null)
                 itemProfileHeaderAvatar.setImageDrawable(placeholderAvatar)
@@ -72,7 +57,7 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
                 itemProfileHeaderAge.hide()
                 itemProfileHeaderStatus.text = null
                 itemProfileHeaderChatButton.hide()
-            } */
+            }
         }
     }
 
