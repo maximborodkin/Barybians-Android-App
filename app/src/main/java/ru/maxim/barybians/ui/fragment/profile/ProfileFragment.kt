@@ -14,17 +14,27 @@ import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentProfileBinding
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
 import ru.maxim.barybians.ui.fragment.feed.PostsListFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileViewModel.ProfileViewModelFactory
+import ru.maxim.barybians.utils.HtmlUtils
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.show
+import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private val args: ProfileFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
+
+    @Inject
+    lateinit var htmlUtils: HtmlUtils
 
     @Inject
     lateinit var profileViewModelFactory: ProfileViewModelFactory.Factory
@@ -64,30 +74,36 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         if (user == null) {
 
         } else {
-            profileHeader.user = user
+            binding.isDebug = preferencesManager.isDebug
+            binding.isPersonal = preferencesManager.userId == model.userId
+            binding.user = user
+
+            itemProfileHeaderAvatar.setOnClickListener {
+                findNavController().navigate(ProfileFragmentDirections.toImageViewer(user.avatarFull))
+            }
+
+            itemProfileHeaderPreferencesButton.setOnClickListener {
+                findNavController().navigate(ProfileFragmentDirections.profileToPreferences())
+            }
+
+            itemProfileHeaderChatButton.setOnClickListener {
+                findNavController().navigate(ProfileFragmentDirections.toChat(user.userId))
+            }
+            itemProfileHeaderName.setOnClickListener { context?.toast(user.role.stringResource) }
+            itemProfileHeaderStatus.text = htmlUtils.parseHtml(user.status ?: String()).first
+            if (preferencesManager.userId == user.userId) {
+                itemProfileHeaderStatus.setOnClickListener {
+                    EditTextDialog(
+                        context = context ?: return@setOnClickListener,
+                        title = getString(R.string.edit_status),
+                        text = model.user.value?.status,
+                        onPositiveButtonClicked = model::editStatus,
+                        maxCharactersCount = 50,
+                        hint = getString(R.string.status),
+                        isTextRequired = false
+                    ).show()
+                }
+            }
         }
     }
-
-    fun onStatusClick() {
-        EditTextDialog(
-            context = context ?: return,
-            title = getString(R.string.edit_status),
-            text = model.user.value?.status,
-            onPositiveButtonClicked = model::editStatus,
-            maxCharactersCount = 50,
-            hint = getString(R.string.status),
-            isTextRequired = false
-        ).show()
-    }
-
-    fun onAvatarClick(imageUrl: String) =
-        findNavController().navigate(ProfileFragmentDirections.toImageViewer(imageUrl))
-
-    fun onOpenChatButtonClick(userId: Int) =
-        findNavController().navigate(ProfileFragmentDirections.toChat(userId))
-
-//    override fun onDestroyView() {
-//        headerRecyclerAdapter.setProfileItemsListener(null)
-//        super.onDestroyView()
-//    }
 }

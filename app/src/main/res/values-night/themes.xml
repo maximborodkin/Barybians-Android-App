@@ -4,6 +4,16 @@
         <item name="android:statusBarColor">@color/colorSurface</item>
         <item name="android:windowLightStatusBar">false</item>
 
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="colorOnError">@color/colorOnError</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+
         <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated.Appearance</item>
     </style>
 </resources>

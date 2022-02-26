@@ -50,6 +50,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:icon="@drawable/ic_up"
+                    app:iconTint="@color/colorSecondary"
+                    android:textColor="@color/colorSecondary"
                     tools:text="Ascending" />
 
                 <androidx.recyclerview.widget.RecyclerView

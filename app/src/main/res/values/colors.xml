@@ -15,6 +15,7 @@
 
     <!--  Light Theme  -->
     <color name="colorPrimary">#5770CE</color>
+    <color name="colorSecondary">#3A4C91</color>
     <color name="colorOnPrimary">#FFFFFF</color>
     <color name="colorBackground">#E8E9EF</color>
     <color name="colorOnBackground">#1C1B1F</color>

@@ -68,8 +68,8 @@
             app:argType="integer" />
 
         <action
-            android:id="@+id/profileToSettings"
-            app:destination="@id/settingsFragment"
+            android:id="@+id/profileToPreferences"
+            app:destination="@id/preferencesFragment"
             app:launchSingleTop="false"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="false" />
@@ -95,9 +95,9 @@
     </action>
 
     <fragment
-        android:id="@+id/settingsFragment"
+        android:id="@+id/preferencesFragment"
         android:name="ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment"
-        android:label="SettingsFragment"
+        android:label="PreferencesFragment"
         tools:layout="@xml/fragment_preferences" />
 
     <fragment
