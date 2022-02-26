@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="android:statusBarColor">@color/colorBackground</item>
+        <item name="android:statusBarColor">@color/colorSurface</item>
         <item name="android:windowLightStatusBar">false</item>
 
         <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated.Appearance</item>

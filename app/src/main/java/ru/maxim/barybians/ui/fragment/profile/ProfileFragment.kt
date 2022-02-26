@@ -3,6 +3,7 @@ package ru.maxim.barybians.ui.fragment.profile
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +32,7 @@ class ProfileFragment : FeedFragment(), ProfileItemsListener {
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
+        activity?.setTitle(R.string.feed)
         super.onAttach(context)
     }
 
@@ -38,9 +40,7 @@ class ProfileFragment : FeedFragment(), ProfileItemsListener {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.user.collect { user ->
-                    headerRecyclerAdapter.submitList(listOf(user))
-                }
+                model.user.collect { user -> headerRecyclerAdapter.submitList(listOf(user)) }
             }
         }
     }

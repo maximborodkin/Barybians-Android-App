@@ -33,11 +33,11 @@
             tools:layout_height="match_parent">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/itemProfileHeaderBackground"
+                android:id="@+id/itemProfileHeaderImage"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:scaleType="centerCrop"
-                android:tint="@color/profileHeaderBackground"
+                android:tint="@color/profileHeaderImageForeground"
                 app:blur="@{25}"
                 app:image="@{user.avatarMin}"
                 app:layout_constraintEnd_toEndOf="parent"

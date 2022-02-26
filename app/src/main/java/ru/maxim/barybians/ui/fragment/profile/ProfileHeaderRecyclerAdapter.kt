@@ -50,7 +50,7 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
                 binding.isPersonal = true
                 val placeholderAvatar = ColorDrawable(itemProfileHeaderCardBackground.solidColor)
                 itemProfileHeaderProgressBar.show()
-                itemProfileHeaderBackground.setImageDrawable(null)
+                itemProfileHeaderImage.setImageDrawable(null)
                 itemProfileHeaderAvatar.setImageDrawable(placeholderAvatar)
                 itemProfileHeaderAvatar.isOnline = false
                 itemProfileHeaderName.text = null
