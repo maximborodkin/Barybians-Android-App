@@ -71,7 +71,7 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
             chatMessageEmojiBtn.setOnClickListener {
                 val stickersPicker = StickersPickerDialog.newInstance {
                     // TODO: Implement sticker sending
-                    context?.toast(it)
+                    context.toast(it)
                 }
                 stickersPicker.show(childFragmentManager, "StickersPicker")
             }
@@ -138,8 +138,7 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
     }
 
     override fun onMessageSendingError(messageId: Long) {
-        (binding.chatRecyclerView.findViewHolderForItemId(messageId) as? OutgoingMessageViewHolder)
-            ?.setErrorLabel()
+        (binding.chatRecyclerView.findViewHolderForItemId(messageId) as? OutgoingMessageViewHolder)?.setErrorLabel()
     }
 
     override fun onMessagesReceived(messages: List<Message>) {

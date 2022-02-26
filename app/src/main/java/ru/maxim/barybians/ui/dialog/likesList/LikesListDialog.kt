@@ -59,7 +59,7 @@ class LikesListDialog : BottomSheetDialogFragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            model.errorMessage.observe(viewLifecycleOwner) { messageResource -> context?.toast(messageResource) }
+            model.errorMessage.observe(viewLifecycleOwner) { messageResource -> context.toast(messageResource) }
         }
 
         recyclerAdapter.setOnUserClickListener { userId ->

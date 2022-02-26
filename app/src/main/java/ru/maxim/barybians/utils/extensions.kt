@@ -61,10 +61,18 @@ fun TextView.setDrawableEnd(@DrawableRes drawableResource: Int) =
 
 fun TextView.clearDrawables() = TextViewCompat.setCompoundDrawablesRelativeWithIntrinsicBounds(this, 0, 0, 0, 0)
 
-fun Context.toast(text: String?) = text?.let { Toast.makeText(this, it, LENGTH_SHORT).show() }
-fun Context.toast(@StringRes resource: Int?) = resource?.let { toast(getString(it)) }
-fun Context.longToast(text: String?) = text?.let { Toast.makeText(this, it, LENGTH_LONG).show() }
-fun Context.longToast(@StringRes resource: Int?) = resource?.let { longToast(getString(it)) }
+fun Context?.toast(text: String?) {
+    if (this != null && text.isNotNullOrBlank()) Toast.makeText(this, text, LENGTH_SHORT).show()
+}
+fun Context?.toast(@StringRes resource: Int?) {
+    if (this != null && resource != null) Toast.makeText(this, resource, LENGTH_SHORT).show()
+}
+fun Context?.longToast(text: String?) {
+    if (this != null && text.isNotNullOrBlank()) Toast.makeText(this, text, LENGTH_LONG).show()
+}
+fun Context?.longToast(@StringRes resource: Int?) {
+    if (this != null && resource != null) Toast.makeText(this, resource, LENGTH_LONG).show()
+}
 
 @SuppressLint("CheckResult")
 fun ImageView.load(

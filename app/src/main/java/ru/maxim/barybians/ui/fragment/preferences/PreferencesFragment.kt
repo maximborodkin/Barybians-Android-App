@@ -46,7 +46,7 @@ class PreferencesFragment : PreferenceFragmentCompat() {
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                 Glide.get(requireContext().applicationContext).clearDiskCache()
             }
-            context?.toast(R.string.cache_cleared)
+            context.toast(R.string.cache_cleared)
             setClearCacheSummary()
             true
         }

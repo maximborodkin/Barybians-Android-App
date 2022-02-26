@@ -38,12 +38,7 @@ class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), Ch
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
             chatsListRefreshLayout.setOnRefreshListener(dialogsListPresenter::loadDialogsList)
-            chatsListAddNewBtn.setOnClickListener {
-                preferencesManager.isDarkMode = !preferencesManager.isDarkMode
-                activity?.recreate()
-                context?.toast("Create chat dialog #NotImplemented")
-                // TODO: Add chat creation dialog
-            }
+            chatsListAddNewBtn.setOnClickListener { }
         }
     }
 
@@ -72,14 +67,14 @@ class ChatsListFragment : MvpAppCompatFragment(R.layout.fragment_chats_list), Ch
     }
 
     override fun showChatsListLoadError() = with(binding) {
-        context?.toast(R.string.an_error_occurred_while_loading_chats)
+        context.toast(R.string.an_error_occurred_while_loading_chats)
         chatsListLoading.isVisible = false
         chatsListRefreshLayout.isRefreshing = false
         chatsEmptyListLabel.isVisible = false
     }
 
     override fun showNoInternet() = with(binding) {
-        context?.toast(R.string.no_internet_connection)
+        context.toast(R.string.no_internet_connection)
         chatsListLoading.isVisible = false
         chatsListRefreshLayout.isRefreshing = false
         chatsEmptyListLabel.isVisible = false

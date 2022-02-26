@@ -61,7 +61,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
 
             viewLifecycleOwner.lifecycleScope.launch {
                 model.errorMessageRes.observe(viewLifecycleOwner) { messageRes ->
-                    messageRes?.let { context?.toast(it) }
+                    messageRes?.let { context.toast(it) }
                 }
 
                 model.isLoading.observe(viewLifecycleOwner) { isLoading ->

@@ -77,7 +77,7 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
                     })
                     loadStickerPack(binding.stickersPickerTabLayout.getTabAt(0)?.tag.toString())
                 } else {
-                    context?.toast("Unable to load stickers")
+                    context.toast("Unable to load stickers")
                 }
             }
         }

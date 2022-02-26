@@ -67,7 +67,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            model.errorMessage.observe(viewLifecycleOwner) { messageResource -> context?.toast(messageResource) }
+            model.errorMessage.observe(viewLifecycleOwner) { messageResource -> context.toast(messageResource) }
             model.isSending.observe(viewLifecycleOwner) { isSending ->
                 if (isSending) {
                     val sendingIcon = AppCompatResources.getDrawable(view.context, R.drawable.ic_timer_animated)

@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.google.android.material.appbar.AppBarLayout
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
@@ -52,19 +53,39 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 model.user.collect(::bindProfileHeader)
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            model.errorMessage.observe(viewLifecycleOwner) { errorMessage ->
+                binding.profileRefreshLayout.isRefreshing = false
+                context.toast(errorMessage)
+            }
+        }
 
-        val feedFragment = PostsListFragment().apply {
+        val postsListFragment = PostsListFragment().apply {
             arguments = bundleOf(PostsListFragment.userIdKey to model.userId)
         }
         childFragmentManager
             .beginTransaction()
-            .replace(binding.profilePostsListContainer.id, feedFragment)
+            .replace(binding.profilePostsListContainer.id, postsListFragment)
             .commit()
 
-        feedFragment.onRefresh = { model.refreshUser() }
+        binding.profileRefreshLayout.apply {
+            setOnRefreshListener {
+                model.refreshUser()
+                postsListFragment.refresh()
+            }
+
+            var isExpanded = true
+            binding.profileAppBarLayout.addOnOffsetChangedListener(
+                AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                    isExpanded = verticalOffset == 0
+                }
+            )
+            setOnChildScrollUpCallback { _, _ -> !isExpanded }
+        }
     }
 
     private fun bindProfileHeader(user: User?) = with(binding) {
+        profileRefreshLayout.isRefreshing = false
         if (user == null) {
             binding.isPersonal = true
             itemProfileHeaderPreferencesButton.hide()
@@ -93,7 +114,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             itemProfileHeaderChatButton.setOnClickListener {
                 findNavController().navigate(ProfileFragmentDirections.toChat(user.userId))
             }
-            itemProfileHeaderName.setOnClickListener { context?.toast(user.role.stringResource) }
+            itemProfileHeaderName.setOnClickListener { context.toast(user.role.stringResource) }
             itemProfileHeaderStatus.text = htmlUtils.parseHtml(user.status ?: String()).first
             if (preferencesManager.userId == user.userId) {
                 itemProfileHeaderStatus.setOnClickListener {

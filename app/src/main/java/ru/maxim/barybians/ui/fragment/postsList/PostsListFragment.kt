@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.LoadState.Error
 import androidx.paging.LoadState.Loading
+import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.FlowPreview
@@ -56,7 +57,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
 
     private var currentLoadingState: LoadState? = null
 
-    var onRefresh: (() -> Unit)? = null
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
@@ -66,17 +66,15 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
     @OptIn(FlowPreview::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
-        binding.postsListRefreshLayout.setOnRefreshListener {
-            onRefresh?.invoke()
-            postsListRecyclerAdapter.refresh()
-        }
+        binding.postsListRefreshLayout.setOnRefreshListener(::refresh)
         postsListCreateButton.isVisible =
             model.userId == null || model.userId ?: 0 <= 0 || model.userId == preferencesManager.userId
+        postsListRefreshLayout.isEnabled = model.userId == null || model.userId ?: 0 <= 0
         postsListCreateButton.setOnClickListener { showEditDialog(R.string.new_post, onEdit = model::createPost) }
 
         loadingStateAdapter.setOnRetryListener(postsListRecyclerAdapter::retry)
         postsListRecyclerAdapter.setAdapterListener(this@PostsListFragment)
-        postsListRecyclerView.adapter = postsListRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
+        postsListRecycler.adapter = postsListRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
@@ -120,8 +118,12 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            model.errorMessage.observe(viewLifecycleOwner) { messageRes -> context?.toast(messageRes) }
+            model.errorMessage.observe(viewLifecycleOwner) { messageRes -> context.toast(messageRes) }
         }
+    }
+
+    fun refresh() {
+        postsListRecyclerAdapter.refresh()
     }
 
     override fun onProfileClick(userId: Int) {
