@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/feedFragment">
+    app:startDestination="@id/postsListFragment">
 
     <fragment
         android:id="@+id/loginFragment"
@@ -13,7 +13,7 @@
 
         <action
             android:id="@+id/loginToFeed"
-            app:destination="@id/feedFragment" />
+            app:destination="@id/postsListFragment" />
 
         <action
             android:id="@+id/loginToRegistration"
@@ -28,14 +28,14 @@
 
         <action
             android:id="@+id/registrationToFeed"
-            app:destination="@id/feedFragment" />
+            app:destination="@id/postsListFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/feedFragment"
-        android:name="ru.maxim.barybians.ui.fragment.feed.FeedFragment"
-        android:label="FeedFragment"
-        tools:layout="@layout/fragment_feed">
+        android:id="@+id/postsListFragment"
+        android:name="ru.maxim.barybians.ui.fragment.feed.PostsListFragment"
+        android:label="PostsListFragment"
+        tools:layout="@layout/fragment_posts_list">
 
         <argument
             android:name="hasBottomNavigation"

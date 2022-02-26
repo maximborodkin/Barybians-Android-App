@@ -134,4 +134,6 @@
     <string name="there_is_no_changes">There is no changes</string>
     <string name="edit_status">Edit status</string>
     <string name="status">Status</string>
+    <string name="scroll_to_top">scroll to top</string>
+    <string name="preferences">Preferences</string>
 </resources>

@@ -1,8 +1,8 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-import ru.maxim.barybians.ui.fragment.feed.FeedAdapterListener
+import ru.maxim.barybians.ui.fragment.feed.PostsListAdapterListener
 
-interface ProfileItemsListener : FeedAdapterListener {
+interface ProfileItemsListener : PostsListAdapterListener {
 
     fun onBackButtonClick()
     fun onPreferencesButtonClick()

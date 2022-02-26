@@ -36,7 +36,6 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
                 binding.isPersonal = user.userId == preferencesManager.userId
                 binding.isDebug = preferencesManager.isDebug
 
-                itemProfileHeaderProgressBar.hide()
                 itemProfileHeaderAge.show()
                 itemProfileHeaderAvatar.setOnClickListener { profileItemsListener?.onImageClick(user.avatarFull) }
                 itemProfileHeaderPreferencesButton.setOnClickListener { profileItemsListener?.onPreferencesButtonClick() }
@@ -49,7 +48,6 @@ class ProfileHeaderRecyclerAdapter @Inject constructor(
             } else {
                 binding.isPersonal = true
                 val placeholderAvatar = ColorDrawable(itemProfileHeaderCardBackground.solidColor)
-                itemProfileHeaderProgressBar.show()
                 itemProfileHeaderImage.setImageDrawable(null)
                 itemProfileHeaderAvatar.setImageDrawable(placeholderAvatar)
                 itemProfileHeaderAvatar.isOnline = false

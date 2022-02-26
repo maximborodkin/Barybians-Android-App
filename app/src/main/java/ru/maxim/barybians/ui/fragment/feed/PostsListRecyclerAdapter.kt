@@ -12,21 +12,21 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.ui.fragment.feed.FeedRecyclerAdapter.PostViewHolder
+import ru.maxim.barybians.ui.fragment.feed.PostsListRecyclerAdapter.PostViewHolder
 import ru.maxim.barybians.utils.HtmlUtils
 import ru.maxim.barybians.utils.contains
 import ru.maxim.barybians.utils.load
 import javax.inject.Inject
 
-class FeedRecyclerAdapter @Inject constructor(
+class PostsListRecyclerAdapter @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val htmlUtils: HtmlUtils
 ) : PagingDataAdapter<Post, PostViewHolder>(PostsDiffUtil) {
 
-    private var feedAdapterListener: FeedAdapterListener? = null
+    private var postsListAdapterListener: PostsListAdapterListener? = null
 
-    fun setAdapterListener(listener: FeedAdapterListener?) {
-        feedAdapterListener = listener
+    fun setAdapterListener(listener: PostsListAdapterListener?) {
+        postsListAdapterListener = listener
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -56,10 +56,10 @@ class FeedRecyclerAdapter @Inject constructor(
             isPersonal = post.userId == preferencesManager.userId
             hasPersonalLike = post.likedUsers.contains { it.userId == preferencesManager.userId }
 
-            itemPostAvatar.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
-            itemPostName.setOnClickListener { feedAdapterListener?.onProfileClick(post.userId) }
+            itemPostAvatar.setOnClickListener { postsListAdapterListener?.onProfileClick(post.userId) }
+            itemPostName.setOnClickListener { postsListAdapterListener?.onProfileClick(post.userId) }
             itemPostMenuBtn.setOnClickListener { button ->
-                feedAdapterListener?.onPostMenuClick(
+                postsListAdapterListener?.onPostMenuClick(
                     post = getItem(bindingAdapterPosition) ?: return@setOnClickListener,
                     anchor = button
                 )
@@ -74,16 +74,16 @@ class FeedRecyclerAdapter @Inject constructor(
                         params.width = context.resources.getDimension(R.dimen.image_attachment_size).toInt()
                         params.height = params.width
                         params.marginEnd = context.resources.getDimension(R.dimen.attachment_space).toInt()
-                        setOnClickListener { feedAdapterListener?.onImageClick(attachment.url) }
+                        setOnClickListener { postsListAdapterListener?.onImageClick(attachment.url) }
                     }
                 }
                 imageView.load(url = attachment.url)
                 itemPostAttachmentsHolder.addView(imageView)
             }
 
-            itemPostLikeBtn.setOnClickListener { feedAdapterListener?.onLikeClick(post.postId) }
-            itemPostLikeBtn.setOnLongClickListener { feedAdapterListener?.onLikeLongClick(post.postId); true }
-            itemPostCommentBtn.setOnClickListener { feedAdapterListener?.onCommentsClick(post.postId) }
+            itemPostLikeBtn.setOnClickListener { postsListAdapterListener?.onLikeClick(post.postId) }
+            itemPostLikeBtn.setOnLongClickListener { postsListAdapterListener?.onLikeLongClick(post.postId); true }
+            itemPostCommentBtn.setOnClickListener { postsListAdapterListener?.onCommentsClick(post.postId) }
         }
     }
 

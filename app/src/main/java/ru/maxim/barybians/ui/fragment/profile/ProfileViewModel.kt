@@ -1,11 +1,7 @@
 package ru.maxim.barybians.ui.fragment.profile
 
 import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
+import androidx.lifecycle.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -18,33 +14,38 @@ import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.data.repository.user.UserRepository
-import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.fragment.feed.FeedViewModel
 
 class ProfileViewModel(
     application: Application,
     postRepository: PostRepository,
     likeRepository: LikeRepository,
     private val userRepository: UserRepository,
-    private val userId: Int
-) : FeedViewModel(application, postRepository, likeRepository) {
+    internal val userId: Int
+) : AndroidViewModel(application) {
 
     val user: StateFlow<User?> = userRepository.getUserById(userId)
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
-    override val postsList: StateFlow<PagingData<Post>> = postRepository.getUserPostsPager(userId)
-        .cachedIn(viewModelScope)
-        .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
-
-    override val postsCount: StateFlow<Int> = postRepository.getPostsCount(userId)
-        .stateIn(viewModelScope, SharingStarted.Lazily, 0)
+    private val _errorMessage: MutableLiveData<Int?> = MutableLiveData(null)
+    val errorMessage: LiveData<Int?> = _errorMessage
 
     init {
         refreshUser()
     }
 
-    fun refreshUser() = viewModelScope.launch { userRepository.refreshUser(userId) }
+    fun refreshUser() = viewModelScope.launch {
+        try {
+            userRepository.refreshUser(userId)
+        } catch (e: Exception) {
+            val errorMessageRes = when (e) {
+                is NoConnectionException -> R.string.no_internet_connection
+                is TimeoutException -> R.string.request_timeout
+                else -> R.string.an_error_occurred_while_loading_profile
+            }
+            _errorMessage.postValue(errorMessageRes)
+        }
+    }
 
     fun editStatus(status: String) = viewModelScope.launch {
         try {
@@ -55,7 +56,7 @@ class ProfileViewModel(
                 is TimeoutException -> R.string.request_timeout
                 else -> R.string.unable_to_edit_status
             }
-            mErrorMessage.postValue(errorMessageRes)
+            _errorMessage.postValue(errorMessageRes)
         }
     }
 

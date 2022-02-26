@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="FragmentTagUsage"
-        tools:layout="@layout/fragment_feed" />
+        tools:layout="@layout/fragment_posts_list" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/mainNavigationBottom"

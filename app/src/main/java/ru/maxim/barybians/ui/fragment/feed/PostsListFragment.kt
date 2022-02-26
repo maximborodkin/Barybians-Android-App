@@ -25,28 +25,32 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.databinding.FragmentFeedBinding
+import ru.maxim.barybians.databinding.FragmentPostsListBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.dialog.editPost.EditPostDialog
-import ru.maxim.barybians.ui.fragment.feed.FeedViewModel.FeedViewModelFactory
+import ru.maxim.barybians.ui.fragment.feed.PostsListViewModel.PostsListViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.longToast
 import ru.maxim.barybians.utils.toast
+import timber.log.Timber
 import javax.inject.Inject
 
-open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener {
+class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapterListener {
 
     @Inject
     lateinit var preferencesManager: PreferencesManager
 
     @Inject
-    lateinit var feedViewModelFactory: FeedViewModelFactory
-    protected open val model: FeedViewModel by viewModels { feedViewModelFactory }
+    lateinit var postsListViewModelFactory: PostsListViewModelFactory.Factory
+    private val model: PostsListViewModel by viewModels {
+        val userId = arguments?.getInt(userIdKey)
+        postsListViewModelFactory.create(userId)
+    }
 
-    protected val binding by viewBinding(FragmentFeedBinding::bind)
+    private val binding by viewBinding(FragmentPostsListBinding::bind)
 
     @Inject
-    lateinit var feedRecyclerAdapter: FeedRecyclerAdapter
+    lateinit var postsListRecyclerAdapter: PostsListRecyclerAdapter
 
     @Inject
     lateinit var loadingStateAdapter: LoadingStateAdapter
@@ -60,16 +64,18 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
 
     @OptIn(FlowPreview::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
+
         super.onViewCreated(view, savedInstanceState)
-        isCreateButtonShown = true
         feedRefreshLayout.setOnRefreshListener(::refresh)
         feedCreatePostButton.setOnClickListener { showEditDialog(R.string.new_post, onEdit = model::createPost) }
 
-        setupRecyclerView()
+        loadingStateAdapter.setOnRetryListener(postsListRecyclerAdapter::retry)
+        postsListRecyclerAdapter.setAdapterListener(this@PostsListFragment)
+        binding.feedRecyclerView.adapter = postsListRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
-                feedRecyclerAdapter.loadStateFlow
+                postsListRecyclerAdapter.loadStateFlow
                     .mapNotNull { loadState -> loadState.mediator?.refresh }
                     .collectLatest { loadState ->
                         if (loadState == currentLoadingState) return@collectLatest
@@ -97,7 +103,7 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
                 model.postsList.collect { posts ->
-                    feedRecyclerAdapter.submitData(posts)
+                    postsListRecyclerAdapter.submitData(posts)
                 }
             }
         }
@@ -113,22 +119,14 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
         }
     }
 
-    open fun refresh() {
-        feedRecyclerAdapter.refresh()
-    }
-
-    open fun setupRecyclerView() {
-        loadingStateAdapter.setOnRetryListener(feedRecyclerAdapter::retry)
-        feedRecyclerAdapter.setAdapterListener(this@FeedFragment)
-        binding.feedRecyclerView.adapter = feedRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
-    }
+    fun refresh() = postsListRecyclerAdapter.refresh()
 
     override fun onProfileClick(userId: Int) {
-        findNavController().navigate(FeedFragmentDirections.toProfile(userId))
+        findNavController().navigate(PostsListFragmentDirections.toProfile(userId))
     }
 
     override fun onImageClick(imageUrl: String) {
-        findNavController().navigate(FeedFragmentDirections.toImageViewer(imageUrl = imageUrl))
+        findNavController().navigate(PostsListFragmentDirections.toImageViewer(imageUrl = imageUrl))
     }
 
     override fun onPostMenuClick(post: Post, anchor: View) {
@@ -176,7 +174,7 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
     }
 
     override fun onCommentsClick(postId: Int) {
-        findNavController().navigate(FeedFragmentDirections.toCommentsList(postId))
+        findNavController().navigate(PostsListFragmentDirections.toCommentsList(postId))
     }
 
     override fun onLikeClick(postId: Int) {
@@ -184,11 +182,15 @@ open class FeedFragment : Fragment(R.layout.fragment_feed), FeedAdapterListener 
     }
 
     override fun onLikeLongClick(postId: Int) {
-        findNavController().navigate(FeedFragmentDirections.toLikesList(postId))
+        findNavController().navigate(PostsListFragmentDirections.toLikesList(postId))
     }
 
     override fun onDestroyView() {
-        feedRecyclerAdapter.setAdapterListener(null)
+        postsListRecyclerAdapter.setAdapterListener(null)
         super.onDestroyView()
+    }
+
+    companion object {
+        const val userIdKey = "user_id"
     }
 }

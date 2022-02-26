@@ -11,7 +11,7 @@ import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
 import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.ui.fragment.chatsList.ChatsListFragment
-import ru.maxim.barybians.ui.fragment.feed.FeedFragment
+import ru.maxim.barybians.ui.fragment.feed.PostsListFragment
 import ru.maxim.barybians.ui.fragment.login.LoginFragment
 import ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
@@ -41,7 +41,7 @@ interface AppComponent {
     fun inject(loginFragment: LoginFragment)
     fun inject(chatFragment: ChatFragment)
     fun inject(chatsListFragment: ChatsListFragment)
-    fun inject(feedFragment: FeedFragment)
+    fun inject(postsListFragment: PostsListFragment)
     fun inject(registrationFragment: RegistrationFragment)
     fun inject(profileFragment: ProfileFragment)
     fun inject(stickersPickerDialog: StickersPickerDialog)

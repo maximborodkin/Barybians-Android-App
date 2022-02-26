@@ -4,7 +4,7 @@ import moxy.MvpPresenter
 import ru.maxim.barybians.data.repository.comment.CommentRepository
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.data.repository.user.UserRepository
-import ru.maxim.barybians.ui.fragment.feed.FeedFragment
+import ru.maxim.barybians.ui.fragment.feed.PostsListFragment
 
 abstract class BaseWallPresenter<T : BaseWallView>(
     private val postRepository: PostRepository,
@@ -16,7 +16,7 @@ abstract class BaseWallPresenter<T : BaseWallView>(
      * postId and layout position of currently shown post
      * Used to restore BottomSheetDialog state.
      * If dialog was shown before the state has changed, it will be restored by this parameters.
-     * Passed to [FeedFragment.onCommentsClick]
+     * Passed to [PostsListFragment.onCommentsClick]
      * If value is -1, dialog will not appear
      */
 //    var currentPostId: Int = 0

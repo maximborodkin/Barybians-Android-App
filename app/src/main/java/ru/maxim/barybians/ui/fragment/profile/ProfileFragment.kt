@@ -3,36 +3,40 @@ package ru.maxim.barybians.ui.fragment.profile
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ConcatAdapter
+import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
+import ru.maxim.barybians.databinding.FragmentProfileBinding
+import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
-import ru.maxim.barybians.ui.fragment.feed.FeedFragment
+import ru.maxim.barybians.ui.fragment.feed.PostsListFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileViewModel.ProfileViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import javax.inject.Inject
 
-class ProfileFragment : FeedFragment(), ProfileItemsListener {
+class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private val args: ProfileFragmentArgs by navArgs()
 
     @Inject
     lateinit var profileViewModelFactory: ProfileViewModelFactory.Factory
-    override val model: ProfileViewModel by viewModels { profileViewModelFactory.create(args.userId) }
+    val model: ProfileViewModel by viewModels { profileViewModelFactory.create(args.userId) }
 
-    @Inject
-    lateinit var headerRecyclerAdapter: ProfileHeaderRecyclerAdapter
+    private val binding: FragmentProfileBinding by viewBinding(FragmentProfileBinding::bind)
+
+//    @Inject
+//    lateinit var headerRecyclerAdapter: ProfileHeaderRecyclerAdapter
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
-        activity?.setTitle(R.string.feed)
         super.onAttach(context)
     }
 
@@ -40,37 +44,31 @@ class ProfileFragment : FeedFragment(), ProfileItemsListener {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                model.user.collect { user -> headerRecyclerAdapter.submitList(listOf(user)) }
+                model.user.collect(::bindProfileHeader)
             }
+        }
+
+        val feedFragment = PostsListFragment().apply {
+            arguments = bundleOf(PostsListFragment.userIdKey to model.userId)
+        }
+        childFragmentManager
+            .beginTransaction()
+            .replace(binding.profilePostsListContainer.id, feedFragment)
+            .commit()
+
+        binding.profileRefreshLayout.setOnRefreshListener(feedFragment::refresh)
+    }
+
+    private fun bindProfileHeader(user: User?) = with(binding) {
+        profileRefreshLayout.isRefreshing = false
+        if (user == null) {
+
+        } else {
+            profileHeader.user = user
         }
     }
 
-    override fun refresh() {
-        super.refresh()
-        model.refreshUser()
-    }
-
-    override fun setupRecyclerView() {
-        loadingStateAdapter.setOnRetryListener(feedRecyclerAdapter::retry)
-        feedRecyclerAdapter.setAdapterListener(this)
-        headerRecyclerAdapter.setProfileItemsListener(this)
-        headerRecyclerAdapter.submitList(listOf(null))
-        val profileRecyclerAdapter = ConcatAdapter(
-            headerRecyclerAdapter,
-            feedRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
-        )
-        binding.feedRecyclerView.adapter = profileRecyclerAdapter
-    }
-
-    override fun onBackButtonClick() {
-        findNavController().popBackStack()
-    }
-
-    override fun onPreferencesButtonClick() {
-        findNavController().navigate(ProfileFragmentDirections.profileToSettings())
-    }
-
-    override fun onStatusClick() {
+    fun onStatusClick() {
         EditTextDialog(
             context = context ?: return,
             title = getString(R.string.edit_status),
@@ -82,12 +80,14 @@ class ProfileFragment : FeedFragment(), ProfileItemsListener {
         ).show()
     }
 
-    override fun onOpenChatButtonClick(userId: Int) {
-        findNavController().navigate(ProfileFragmentDirections.toChat(userId))
-    }
+    fun onAvatarClick(imageUrl: String) =
+        findNavController().navigate(ProfileFragmentDirections.toImageViewer(imageUrl))
 
-    override fun onDestroyView() {
-        headerRecyclerAdapter.setProfileItemsListener(null)
-        super.onDestroyView()
-    }
+    fun onOpenChatButtonClick(userId: Int) =
+        findNavController().navigate(ProfileFragmentDirections.toChat(userId))
+
+//    override fun onDestroyView() {
+//        headerRecyclerAdapter.setProfileItemsListener(null)
+//        super.onDestroyView()
+//    }
 }
