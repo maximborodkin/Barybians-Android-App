@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.feed
+package ru.maxim.barybians.ui.fragment.postsList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,7 +12,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemPostBinding
 import ru.maxim.barybians.domain.model.Post
-import ru.maxim.barybians.ui.fragment.feed.PostsListRecyclerAdapter.PostViewHolder
+import ru.maxim.barybians.ui.fragment.postsList.PostsListRecyclerAdapter.PostViewHolder
 import ru.maxim.barybians.utils.HtmlUtils
 import ru.maxim.barybians.utils.contains
 import ru.maxim.barybians.utils.load

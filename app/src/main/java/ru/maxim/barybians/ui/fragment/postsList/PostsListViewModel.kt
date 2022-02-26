@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.feed
+package ru.maxim.barybians.ui.fragment.postsList
 
 import android.app.Application
 import androidx.lifecycle.*
@@ -25,7 +25,7 @@ open class PostsListViewModel constructor(
     application: Application,
     private val postRepository: PostRepository,
     private val likeRepository: LikeRepository,
-    private val userId: Int?
+    val userId: Int?
 ) : AndroidViewModel(application) {
 
     // When your wings are burning, who keeps you from falling?

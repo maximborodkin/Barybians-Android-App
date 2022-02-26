@@ -33,7 +33,7 @@
 
     <fragment
         android:id="@+id/postsListFragment"
-        android:name="ru.maxim.barybians.ui.fragment.feed.PostsListFragment"
+        android:name="ru.maxim.barybians.ui.fragment.postsList.PostsListFragment"
         android:label="PostsListFragment"
         tools:layout="@layout/fragment_posts_list">
 

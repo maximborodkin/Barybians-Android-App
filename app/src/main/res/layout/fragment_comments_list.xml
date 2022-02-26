@@ -50,8 +50,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:icon="@drawable/ic_up"
-                    app:iconTint="@color/colorSecondary"
-                    android:textColor="@color/colorSecondary"
                     tools:text="Ascending" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -73,8 +71,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="12dp"
-                    android:textSize="16sp"
                     android:text="@string/no_comments_yet"
+                    android:textSize="16sp"
                     android:visibility="@{viewModel.comments.empty ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toBottomOf="@id/commentsListRecycler"
                     app:layout_constraintEnd_toEndOf="@id/commentsListRecycler"

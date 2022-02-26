@@ -1,7 +1,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!--  Global  -->
     <style name="Widget.Material3.CardView.Elevated.Appearance">
-        <item name="cardElevation">3dp</item>
+        <item name="cardElevation">0dp</item>
         <item name="cardBackgroundColor">@color/colorSurface</item>
         <item name="android:textColor">@color/colorOnSurface</item>
     </style>

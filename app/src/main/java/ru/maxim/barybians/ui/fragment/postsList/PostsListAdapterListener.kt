@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.feed
+package ru.maxim.barybians.ui.fragment.postsList
 
 import android.view.View
 import ru.maxim.barybians.domain.model.Post

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/feedRefreshLayout"
+        android:id="@+id/postsListRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -13,7 +13,7 @@
             android:layout_height="wrap_content">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/feedRecyclerView"
+                android:id="@+id/postsListRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fadeScrollbars="false"
@@ -29,7 +29,7 @@
                 tools:listitem="@layout/item_post" />
 
             <TextView
-                android:id="@+id/feedMessage"
+                android:id="@+id/postsListMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="24dp"
@@ -42,7 +42,7 @@
                 tools:text="Unable to load feed. Please try later" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/feedCreatePostButton"
+                android:id="@+id/postsListCreateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"

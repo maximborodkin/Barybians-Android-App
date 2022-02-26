@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.feed
+package ru.maxim.barybians.ui.fragment.postsList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.databinding.ItemLoadingStateBinding
-import ru.maxim.barybians.ui.fragment.feed.LoadingStateAdapter.LoadingStateViewHolder
+import ru.maxim.barybians.ui.fragment.postsList.LoadingStateAdapter.LoadingStateViewHolder
 import javax.inject.Inject
 
 class LoadingStateAdapter @Inject constructor() : LoadStateAdapter<LoadingStateViewHolder>() {

@@ -1,6 +1,6 @@
 package ru.maxim.barybians.ui.fragment.profile
 
-import ru.maxim.barybians.ui.fragment.feed.PostsListAdapterListener
+import ru.maxim.barybians.ui.fragment.postsList.PostsListAdapterListener
 
 interface ProfileItemsListener : PostsListAdapterListener {
 

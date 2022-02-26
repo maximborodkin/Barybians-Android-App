@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.feed
+package ru.maxim.barybians.ui.fragment.postsList
 
 import android.content.Context
 import android.os.Bundle
@@ -28,11 +28,10 @@ import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.databinding.FragmentPostsListBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.dialog.editPost.EditPostDialog
-import ru.maxim.barybians.ui.fragment.feed.PostsListViewModel.PostsListViewModelFactory
+import ru.maxim.barybians.ui.fragment.postsList.PostsListViewModel.PostsListViewModelFactory
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.longToast
 import ru.maxim.barybians.utils.toast
-import timber.log.Timber
 import javax.inject.Inject
 
 class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapterListener {
@@ -57,6 +56,8 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
 
     private var currentLoadingState: LoadState? = null
 
+    var onRefresh: (() -> Unit)? = null
+
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
@@ -64,14 +65,18 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
 
     @OptIn(FlowPreview::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
-
         super.onViewCreated(view, savedInstanceState)
-        feedRefreshLayout.setOnRefreshListener(::refresh)
-        feedCreatePostButton.setOnClickListener { showEditDialog(R.string.new_post, onEdit = model::createPost) }
+        binding.postsListRefreshLayout.setOnRefreshListener {
+            onRefresh?.invoke()
+            postsListRecyclerAdapter.refresh()
+        }
+        postsListCreateButton.isVisible =
+            model.userId == null || model.userId ?: 0 <= 0 || model.userId == preferencesManager.userId
+        postsListCreateButton.setOnClickListener { showEditDialog(R.string.new_post, onEdit = model::createPost) }
 
         loadingStateAdapter.setOnRetryListener(postsListRecyclerAdapter::retry)
         postsListRecyclerAdapter.setAdapterListener(this@PostsListFragment)
-        binding.feedRecyclerView.adapter = postsListRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
+        postsListRecyclerView.adapter = postsListRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
@@ -81,7 +86,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
                         if (loadState == currentLoadingState) return@collectLatest
                         currentLoadingState = loadState
 
-                        feedRefreshLayout.isRefreshing = loadState is Loading
+                        postsListRefreshLayout.isRefreshing = loadState is Loading
                         if (loadState is Error) {
                             var errorMessage = when (loadState.error) {
                                 is NoConnectionException -> getString(R.string.no_internet_connection)
@@ -94,7 +99,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
                             } else {
                                 context?.toast(errorMessage)
                             }
-                            feedMessage.text = errorMessage
+                            postsListMessage.text = errorMessage
                         }
                     }
             }
@@ -110,7 +115,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
-                model.postsCount.collect { postsCount -> feedMessage.isVisible = postsCount == 0 }
+                model.postsCount.collect { postsCount -> postsListMessage.isVisible = postsCount == 0 }
             }
         }
 
@@ -118,8 +123,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
             model.errorMessage.observe(viewLifecycleOwner) { messageRes -> context?.toast(messageRes) }
         }
     }
-
-    fun refresh() = postsListRecyclerAdapter.refresh()
 
     override fun onProfileClick(userId: Int) {
         findNavController().navigate(PostsListFragmentDirections.toProfile(userId))

@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.fragment.profile
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -18,12 +19,9 @@ import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentProfileBinding
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
-import ru.maxim.barybians.ui.fragment.feed.PostsListFragment
+import ru.maxim.barybians.ui.fragment.postsList.PostsListFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileViewModel.ProfileViewModelFactory
-import ru.maxim.barybians.utils.HtmlUtils
-import ru.maxim.barybians.utils.appComponent
-import ru.maxim.barybians.utils.show
-import ru.maxim.barybians.utils.toast
+import ru.maxim.barybians.utils.*
 import javax.inject.Inject
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
@@ -41,9 +39,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     val model: ProfileViewModel by viewModels { profileViewModelFactory.create(args.userId) }
 
     private val binding: FragmentProfileBinding by viewBinding(FragmentProfileBinding::bind)
-
-//    @Inject
-//    lateinit var headerRecyclerAdapter: ProfileHeaderRecyclerAdapter
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
@@ -66,17 +61,26 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             .replace(binding.profilePostsListContainer.id, feedFragment)
             .commit()
 
-        binding.profileRefreshLayout.setOnRefreshListener(feedFragment::refresh)
+        feedFragment.onRefresh = { model.refreshUser() }
     }
 
     private fun bindProfileHeader(user: User?) = with(binding) {
-        profileRefreshLayout.isRefreshing = false
         if (user == null) {
-
+            binding.isPersonal = true
+            itemProfileHeaderPreferencesButton.hide()
+            itemProfileHeaderImage.setImageDrawable(null)
+            itemProfileHeaderAvatar.setImageDrawable(ColorDrawable(itemProfileHeaderCardBackground.solidColor))
+            itemProfileHeaderAvatar.isOnline = false
+            itemProfileHeaderName.text = null
+            itemProfileHeaderAge.hide()
+            itemProfileHeaderStatus.text = null
+            itemProfileHeaderChatButton.hide()
         } else {
             binding.isDebug = preferencesManager.isDebug
             binding.isPersonal = preferencesManager.userId == model.userId
             binding.user = user
+
+            itemProfileHeaderAge.show()
 
             itemProfileHeaderAvatar.setOnClickListener {
                 findNavController().navigate(ProfileFragmentDirections.toImageViewer(user.avatarFull))

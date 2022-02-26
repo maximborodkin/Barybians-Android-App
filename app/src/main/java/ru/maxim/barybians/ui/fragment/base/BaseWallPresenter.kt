@@ -4,7 +4,7 @@ import moxy.MvpPresenter
 import ru.maxim.barybians.data.repository.comment.CommentRepository
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.data.repository.user.UserRepository
-import ru.maxim.barybians.ui.fragment.feed.PostsListFragment
+import ru.maxim.barybians.ui.fragment.postsList.PostsListFragment
 
 abstract class BaseWallPresenter<T : BaseWallView>(
     private val postRepository: PostRepository,
