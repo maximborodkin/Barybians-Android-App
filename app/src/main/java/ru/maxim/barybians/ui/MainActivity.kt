@@ -40,17 +40,12 @@ class MainActivity : AppCompatActivity() {
         graph.setStartDestination(startDestination)
         navHostFragment.navController.graph = graph
 
-        // Hide BottomNavigationView on each fragment except the first three
+        // Hide BottomNavigationView for each fragment except Feed, Chats and Profile
         with(navHostFragment.navController) {
             addOnDestinationChangedListener { _, _, arguments ->
-                binding.mainNavigationBottom.isVisible =
-                    arguments != null && arguments.getBoolean(hasBottomNavigationKey, false)
+                binding.mainNavigationBottom.isVisible = arguments != null && arguments.getBoolean("isRoot", false)
             }
             binding.mainNavigationBottom.setupWithNavController(this)
         }
-    }
-
-    companion object {
-        const val hasBottomNavigationKey = "hasBottomNavigation"
     }
 }

@@ -15,6 +15,8 @@ import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.data.repository.like.LikeRepositoryImpl
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.data.repository.post.PostRepositoryImpl
+import ru.maxim.barybians.data.repository.sticker.StickerPackPackRepositoryImpl
+import ru.maxim.barybians.data.repository.sticker.StickerPackRepository
 import ru.maxim.barybians.data.repository.user.UserRepository
 import ru.maxim.barybians.data.repository.user.UserRepositoryImpl
 import ru.maxim.barybians.di.NetworkModule.RepositoryBindings
@@ -40,6 +42,10 @@ object NetworkModule {
 
     @Reusable
     @Provides
+    fun provideStickerPackService(retrofitClient: RetrofitClient) = retrofitClient.stickerPackService
+
+    @Reusable
+    @Provides
     fun provideCommentService(retrofitClient: RetrofitClient) = retrofitClient.commentService
 
     @Module
@@ -59,6 +65,9 @@ object NetworkModule {
 
         @Binds
         fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl): PostRepository
+
+        @Binds
+        fun bindStickerPackRepository(stickerPackPackRepositoryImpl: StickerPackPackRepositoryImpl): StickerPackRepository
 
         @Binds
         fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository

@@ -1,4 +1,4 @@
-package ru.maxim.barybians.ui.fragment.stickerPicker
+package ru.maxim.barybians.ui.dialog.stickerPicker
 
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import com.bumptech.glide.Glide
-import ru.maxim.barybians.ui.fragment.stickerPicker.StickerPickerRecyclerAdapter.StickerViewHolder
+import ru.maxim.barybians.ui.dialog.stickerPicker.StickerPickerRecyclerAdapter.StickerViewHolder
 
 class StickerPickerRecyclerAdapter(
     private val stickers: ArrayList<String>,

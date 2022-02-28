@@ -15,7 +15,7 @@ import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.domain.model.User
 
-class LikesListDialogViewModel private constructor(
+class LikesListViewModel private constructor(
     application: Application,
     likeRepository: LikeRepository,
     postId: Int
@@ -36,22 +36,23 @@ class LikesListDialogViewModel private constructor(
     private val _errorMessage: MutableLiveData<Int?> = MutableLiveData(null)
     val errorMessage: LiveData<Int?> = _errorMessage
 
-    class LikesListDialogViewModelFactory @AssistedInject constructor(
+    class LikesListViewModelFactory @AssistedInject constructor(
         private val application: Application,
         private val likeRepository: LikeRepository,
         @Assisted("postId") private val postId: Int
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
+
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(LikesListDialogViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return LikesListDialogViewModel(application, likeRepository, postId) as T
+            if (modelClass.isAssignableFrom(LikesListViewModel::class.java)) {
+                return LikesListViewModel(application, likeRepository, postId) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }
 
         @AssistedFactory
         interface Factory {
-            fun create(@Assisted("postId") postId: Int): LikesListDialogViewModelFactory
+            fun create(@Assisted("postId") postId: Int): LikesListViewModelFactory
         }
     }
 }

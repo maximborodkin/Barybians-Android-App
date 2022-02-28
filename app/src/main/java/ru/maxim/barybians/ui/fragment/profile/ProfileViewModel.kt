@@ -11,15 +11,11 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
-import ru.maxim.barybians.data.repository.like.LikeRepository
-import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.data.repository.user.UserRepository
 import ru.maxim.barybians.domain.model.User
 
 class ProfileViewModel(
     application: Application,
-    postRepository: PostRepository,
-    likeRepository: LikeRepository,
     private val userRepository: UserRepository,
     internal val userId: Int
 ) : AndroidViewModel(application) {
@@ -62,8 +58,6 @@ class ProfileViewModel(
 
     class ProfileViewModelFactory @AssistedInject constructor(
         private val application: Application,
-        private val postRepository: PostRepository,
-        private val likeRepository: LikeRepository,
         private val preferencesManager: PreferencesManager,
         private val userRepository: UserRepository,
         @Assisted("userId") private val userId: Int
@@ -74,8 +68,6 @@ class ProfileViewModel(
                 @Suppress("UNCHECKED_CAST")
                 return ProfileViewModel(
                     application = application,
-                    postRepository = postRepository,
-                    likeRepository = likeRepository,
                     userRepository = userRepository,
                     userId = if (userId <= 0) preferencesManager.userId else userId
                 ) as T

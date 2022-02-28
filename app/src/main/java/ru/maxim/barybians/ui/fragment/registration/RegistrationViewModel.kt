@@ -18,9 +18,7 @@ class RegistrationViewModel private constructor(
     application: Application,
     private val authRepository: AuthRepository
 ) : AndroidViewModel(application) {
-    // Turning to true when the registration button was pressed
-    // and to false when the user starts editing data in fields
-//    private val isErrorsShown = MutableLiveData(false)
+
     private val uiDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
@@ -31,7 +29,7 @@ class RegistrationViewModel private constructor(
     val isRegistrationSuccess: LiveData<Boolean> = _isRegistrationSuccess
 
     private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
 
     val today: Calendar = getInstance().apply {
         set(HOUR_OF_DAY, 0)
@@ -76,49 +74,54 @@ class RegistrationViewModel private constructor(
     val repeatPasswordMessage: LiveData<Int?> = _repeatPasswordMessage
 
     private fun validateFields(): Boolean {
-        if (firstName.value.isNullOrBlank()) {
-            _firstNameMessage.postValue(R.string.this_field_is_required)
-            return false
-        } else if (firstName.value?.length ?: 0 < 3) {
-            _firstNameMessage.postValue(R.string.must_be_at_least_3_characters)
-            return false
+        return when {
+            firstName.value.isNullOrBlank() -> {
+                _firstNameMessage.postValue(R.string.this_field_is_required); false
+            }
+            firstName.value?.length ?: 0 < 2 -> {
+                _firstNameMessage.postValue(R.string.must_be_at_least_2_characters); false
+            }
+            firstName.value?.length ?: 0 > 20 -> {
+                _firstNameMessage.postValue(R.string.must_be_not_longer_20_characters); false
+            }
+            lastName.value.isNullOrBlank() -> {
+                _lastNameMessage.postValue(R.string.this_field_is_required); false
+            }
+            lastName.value?.length ?: 0 < 2 -> {
+                _lastNameMessage.postValue(R.string.must_be_at_least_2_characters); false
+            }
+            lastName.value?.length ?: 0 > 20 -> {
+                _lastNameMessage.postValue(R.string.must_be_not_longer_20_characters); false
+            }
+            birthDate.value?.timeInMillis ?: 0L == 0L -> {
+                _birthDateMessage.postValue(R.string.this_field_is_required); false
+            }
+            login.value.isNullOrBlank() -> {
+                _loginMessage.postValue(R.string.this_field_is_required); false
+            }
+            login.value?.length ?: 0 < 4 -> {
+                _loginMessage.postValue(R.string.must_be_at_least_4_characters); false
+            }
+            login.value?.length ?: 0 > 20 -> {
+                _loginMessage.postValue(R.string.must_be_not_longer_20_characters); false
+            }
+            password.value.isNullOrBlank() -> {
+                _passwordMessage.postValue(R.string.this_field_is_required); false
+            }
+            password.value?.length ?: 0 < 4 -> {
+                _passwordMessage.postValue(R.string.must_be_at_least_4_characters); false
+            }
+            password.value?.length ?: 0 > 50 -> {
+                _passwordMessage.postValue(R.string.must_be_not_longer_50_characters); false
+            }
+            repeatPassword.value.isNullOrBlank() -> {
+                _repeatPasswordMessage.postValue(R.string.this_field_is_required); false
+            }
+            repeatPassword.value?.trim() != password.value?.trim() -> {
+                _repeatPasswordMessage.postValue(R.string.passwords_didn_t_match); false
+            }
+            else -> true
         }
-
-        if (lastName.value.isNullOrBlank()) {
-            _lastNameMessage.postValue(R.string.this_field_is_required)
-            return false
-        } else if (firstName.value?.length ?: 0 < 3) {
-            _lastNameMessage.postValue(R.string.must_be_at_least_3_characters)
-            return false
-        }
-
-        if (birthDate.value?.timeInMillis ?: 0L == 0L) {
-            _birthDateMessage.postValue(R.string.this_field_is_required)
-            return false
-        }
-
-        if (login.value.isNullOrBlank()) {
-            _loginMessage.postValue(R.string.this_field_is_required)
-            return false
-        } else if (login.value?.length ?: 0 < 4) {
-            _loginMessage.postValue(R.string.must_be_at_least_4_characters)
-            return false
-        }
-
-        if (password.value.isNullOrBlank()) {
-            _passwordMessage.postValue(R.string.this_field_is_required)
-            return false
-        }
-
-        if (repeatPassword.value.isNullOrBlank()) {
-            _repeatPasswordMessage.postValue(R.string.this_field_is_required)
-            return false
-        } else if (repeatPassword.value?.trim() != password.value?.trim()) {
-            _repeatPasswordMessage.postValue(R.string.passwords_didn_t_match)
-            return false
-        }
-
-        return true
     }
 
     fun register() = viewModelScope.launch {
@@ -154,9 +157,10 @@ class RegistrationViewModel private constructor(
         private val application: Application,
         private val authRepository: AuthRepository
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
+
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
                 return RegistrationViewModel(application, authRepository) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")

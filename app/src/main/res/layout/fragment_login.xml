@@ -5,6 +5,7 @@
     tools:context=".ui.fragment.login.LoginFragment">
 
     <data>
+
         <variable
             name="viewModel"
             type="ru.maxim.barybians.ui.fragment.login.LoginViewModel" />
@@ -34,10 +35,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="30dp"
-                app:bindText="@{viewModel.errorMessageRes}"
                 android:textAlignment="center"
                 android:textColor="@color/colorError"
                 android:textSize="18sp"
+                app:bindText="@{viewModel.errorMessageRes}"
                 tools:text="Network error" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -52,6 +53,7 @@
                     android:id="@+id/loginLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.isLoading}"
                     android:text="@={viewModel.login}" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -68,6 +70,7 @@
                     android:id="@+id/loginPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.isLoading}"
                     android:inputType="textPassword"
                     android:text="@={viewModel.password}" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -79,6 +82,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="48dp"
                 android:layout_marginBottom="48dp"
+                android:enabled="@{!viewModel.isLoading}"
                 android:text="@string/login"
                 android:textSize="14sp" />
 
@@ -92,7 +96,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="8dp"
+                android:enabled="@{!viewModel.isLoading}"
+                android:padding="16dp"
                 android:text="@string/haven_t_account_register_now"
                 android:textAlignment="center"
                 android:textSize="16sp" />

@@ -114,13 +114,10 @@ inline fun <reified T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
     return false
 }
 
-fun View?.show() {
-    if (this?.isGone == true) this.isVisible = true
-}
-
-fun View?.hide() {
-    if (this?.isVisible == true) this.isGone = true
-}
+fun View?.show() { if (this?.isGone == true) this.isVisible = true }
+fun View?.hide() { if (this?.isVisible == true) this.isGone = true }
+fun View?.enable() { if (this?.isEnabled == false) this.isEnabled = true }
+fun View?.disable() { if (this?.isEnabled == true) this.isEnabled = false }
 
 fun MutableLiveData<String>.isEmpty() = value?.isEmpty()
 

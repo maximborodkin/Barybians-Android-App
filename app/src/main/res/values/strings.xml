@@ -37,8 +37,10 @@
     <string name="passwords_didn_t_match">Passwords didn\'t match</string>
     <string name="unknown_error">Unknown error</string>
     <string name="invalid_login_or_password">Invalid login or password</string>
-    <string name="must_be_at_least_3_characters">Must be at least 3 characters</string>
+    <string name="must_be_at_least_2_characters">Must be at least 2 characters</string>
+    <string name="must_be_not_longer_20_characters">Must not longer 20 characters</string>
     <string name="must_be_at_least_4_characters">Must be at least 4 characters</string>
+    <string name="must_be_not_longer_50_characters">Must not longer 60 characters</string>
     <string name="invalid_registration_data">Invalid registration data</string>
     <string name="login_already_exists">Login already exists</string>
 
@@ -136,4 +138,5 @@
     <string name="status">Status</string>
     <string name="scroll_to_top">scroll to top</string>
     <string name="preferences">Preferences</string>
+    <string name="unable_to_load_stickers">Unable to load stickers</string>
 </resources>

@@ -14,6 +14,7 @@ import ru.maxim.barybians.data.database.model.*
         LikeEntity::class,
         MessageEntity.MessageEntityBody::class,
         PostEntity.PostEntityBody::class,
+        StickerPackEntity::class,
         UserEntity::class
     ],
     version = databaseVersion,
@@ -27,6 +28,7 @@ abstract class BarybiansDatabase : RoomDatabase() {
     abstract fun likeDao(): LikeDao
     abstract fun messageDao(): MessageDao
     abstract fun postDao(): PostDao
+    abstract fun stickerPackDao(): StickerPackDao
     abstract fun userDao(): UserDao
 
     companion object {

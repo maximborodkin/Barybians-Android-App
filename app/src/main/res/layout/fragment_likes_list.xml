@@ -8,7 +8,7 @@
 
         <variable
             name="viewModel"
-            type="ru.maxim.barybians.ui.dialog.likesList.LikesListDialogViewModel" />
+            type="ru.maxim.barybians.ui.dialog.likesList.LikesListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

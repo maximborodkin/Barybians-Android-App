@@ -10,7 +10,8 @@ interface UserService {
     suspend fun getUser(@Path("userId") userId: Int): Response<UserDto?>
 
     /**
-     * @return updated status*/
+     * @return updated status
+     **/
     @FormUrlEncoded
     @POST("/v2/status")
     suspend fun editStatus(@Field("text") newStatus: String): Response<String>

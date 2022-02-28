@@ -16,7 +16,7 @@ import ru.maxim.barybians.ui.fragment.login.LoginFragment
 import ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
 import ru.maxim.barybians.ui.fragment.registration.RegistrationFragment
-import ru.maxim.barybians.ui.fragment.stickerPicker.StickersPickerDialog
+import ru.maxim.barybians.ui.dialog.stickerPicker.StickersPickerDialog
 import javax.inject.Singleton
 
 @Singleton

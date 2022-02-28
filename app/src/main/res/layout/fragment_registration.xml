@@ -28,6 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
+                android:enabled="@{!viewModel.isLoading}"
                 android:padding="12dp"
                 app:srcCompat="@drawable/ic_back" />
 
@@ -46,6 +47,8 @@
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="48dp"
                 android:hint="@string/first_name"
+                app:counterEnabled="true"
+                app:counterMaxLength="20"
                 app:endIconMode="clear_text"
                 app:errorText="@{viewModel.firstNameMessage}">
 
@@ -53,6 +56,7 @@
                     android:id="@+id/registrationFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.isLoading}"
                     android:text="@={viewModel.firstName}" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -63,6 +67,8 @@
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/last_name"
+                app:counterEnabled="true"
+                app:counterMaxLength="20"
                 app:endIconMode="clear_text"
                 app:errorText="@{viewModel.lastNameMessage}">
 
@@ -70,6 +76,7 @@
                     android:id="@+id/registrationLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.isLoading}"
                     android:text="@={viewModel.lastName}" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -87,6 +94,7 @@
                     android:id="@+id/registrationBirthDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.isLoading}"
                     android:focusableInTouchMode="false"
                     android:text="@{viewModel.birthDateString}" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,8 +124,8 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:alpha="@{viewModel.gender ? 0.5F : 1F}"
-                    android:src="@drawable/ic_male"
-                    tools:src="@drawable/ic_male" />
+                    android:enabled="@{!viewModel.isLoading}"
+                    android:src="@drawable/ic_male" />
 
                 <Space
                     android:layout_width="wrap_content"
@@ -129,6 +137,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:alpha="@{viewModel.gender ? 1F : 0.5F}"
+                    android:enabled="@{!viewModel.isLoading}"
                     android:src="@drawable/ic_female"
                     tools:alpha="0.5" />
             </LinearLayout>
@@ -147,7 +156,10 @@
                     android:id="@+id/registrationLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={viewModel.login}" />
+                    android:enabled="@{!viewModel.isLoading}"
+                    android:text="@={viewModel.login}"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="20" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -158,12 +170,15 @@
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/password"
+                app:counterEnabled="true"
+                app:counterMaxLength="50"
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.isLoading}"
                     android:inputType="textPassword"
                     android:text="@={viewModel.password}" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -182,6 +197,7 @@
                     android:id="@+id/registrationPasswordRepeat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="@{!viewModel.isLoading}"
                     android:inputType="textPassword"
                     android:text="@={viewModel.repeatPassword}" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -194,6 +210,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="48dp"
+                android:enabled="@{!viewModel.isLoading}"
                 android:text="@string/registration" />
         </LinearLayout>
     </ScrollView>

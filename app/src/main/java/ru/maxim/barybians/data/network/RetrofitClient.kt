@@ -62,6 +62,7 @@ class RetrofitClient @Inject constructor(
     val userService: UserService = retrofit.create(UserService::class.java)
     val chatService: ChatService = retrofit.create(ChatService::class.java)
     val postService: PostService = retrofit.create(PostService::class.java)
+    val stickerPackService: StickerPackService = retrofit.create(StickerPackService::class.java)
     val commentService: CommentService = retrofit.create(CommentService::class.java)
 
     companion object {

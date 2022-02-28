@@ -19,7 +19,7 @@ import ru.maxim.barybians.domain.model.Message
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.fragment.chat.ChatRecyclerAdapter.OutgoingMessageViewHolder
 import ru.maxim.barybians.ui.fragment.chat.OutgoingMessage.MessageStatus.*
-import ru.maxim.barybians.ui.fragment.stickerPicker.StickersPickerDialog
+import ru.maxim.barybians.ui.dialog.stickerPicker.StickersPickerDialog
 import ru.maxim.barybians.utils.*
 import java.util.*
 import javax.inject.Inject
@@ -69,11 +69,11 @@ class ChatFragment : MvpAppCompatFragment(), ChatView {
             }
 
             chatMessageEmojiBtn.setOnClickListener {
-                val stickersPicker = StickersPickerDialog.newInstance {
-                    // TODO: Implement sticker sending
-                    context.toast(it)
-                }
-                stickersPicker.show(childFragmentManager, "StickersPicker")
+//                val stickersPicker = StickersPickerDialog.newInstance {
+//                    // TODO: Implement sticker sending
+//                    context.toast(it)
+//                }
+//                stickersPicker.show(childFragmentManager, "StickersPicker")
             }
 
             chatToolbarUser.root.setOnClickListener {

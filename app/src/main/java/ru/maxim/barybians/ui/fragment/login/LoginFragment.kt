@@ -13,9 +13,7 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentLoginBinding
 import ru.maxim.barybians.ui.fragment.login.LoginViewModel.LoginViewModelFactory
-import ru.maxim.barybians.utils.appComponent
-import ru.maxim.barybians.utils.clearDrawables
-import ru.maxim.barybians.utils.setDrawableStart
+import ru.maxim.barybians.utils.*
 import javax.inject.Inject
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
@@ -31,33 +29,28 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         super.onAttach(context)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = model
-        binding.loginBtn.setOnClickListener { model.login() }
+        loginBtn.setOnClickListener { model.login() }
 
         viewLifecycleOwner.lifecycleScope.launch {
             model.isLoginSuccess.observe(viewLifecycleOwner) { success ->
-                if (success) {
-                    findNavController().navigate(LoginFragmentDirections.loginToFeed())
-                }
+                if (success) { findNavController().navigate(LoginFragmentDirections.loginToFeed()) }
             }
 
             model.isLoading.observe(viewLifecycleOwner) { isLoading ->
                 if (isLoading) {
-                    binding.loginBtn.setDrawableStart(R.drawable.ic_timer_animated)
-                    binding.loginBtn.compoundDrawablesRelative.firstOrNull()?.let {
-                        it.setTint(binding.loginBtn.currentTextColor)
-                        (it as? Animatable)?.start()
-                    }
+                    loginBtn.setIconResource(R.drawable.ic_timer_animated)
+                    (loginBtn.icon as? Animatable)?.start()
                 } else {
-                    binding.loginBtn.clearDrawables()
+                    loginBtn.icon = null
                 }
             }
         }
 
-        binding.loginRegisterLink.setOnClickListener {
+        loginRegisterLink.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.loginToRegistration())
         }
     }

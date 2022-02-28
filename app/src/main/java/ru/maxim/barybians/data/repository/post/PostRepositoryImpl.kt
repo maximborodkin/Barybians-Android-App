@@ -1,6 +1,5 @@
 package ru.maxim.barybians.data.repository.post
 
-import androidx.lifecycle.LiveData
 import androidx.paging.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
@@ -42,11 +41,7 @@ class PostRepositoryImpl @Inject constructor(
         pagingSourceFactory = { postDao.feedPagingSource() }
     )
         .flow
-        .map { pagingData ->
-            pagingData.map { entityModel ->
-                postEntityMapper.toDomainModel(entityModel)
-            }
-        }
+        .map { pagingData -> pagingData.map { entityModel -> postEntityMapper.toDomainModel(entityModel) } }
 
     override fun getUserPostsPager(userId: Int) = Pager(
         config = PagingConfig(
@@ -59,11 +54,7 @@ class PostRepositoryImpl @Inject constructor(
         pagingSourceFactory = { postDao.userPostsPagingSource(userId) }
     )
         .flow
-        .map { pagingData ->
-            pagingData.map { entityModel ->
-                postEntityMapper.toDomainModel(entityModel)
-            }
-        }
+        .map { pagingData -> pagingData.map { entityModel -> postEntityMapper.toDomainModel(entityModel) } }
 
     override fun getPostsCount(userId: Int?): Flow<Int> =
         if (userId != null && userId > 0) postDao.userPostsCount(userId)

@@ -28,8 +28,8 @@ class LikesListDialog : BottomSheetDialogFragment() {
     lateinit var recyclerAdapter: LikesListRecyclerAdapter
 
     @Inject
-    lateinit var factory: LikesListDialogViewModel.LikesListDialogViewModelFactory.Factory
-    private val model: LikesListDialogViewModel by viewModels { factory.create(args.postId) }
+    lateinit var factory: LikesListViewModel.LikesListViewModelFactory.Factory
+    private val model: LikesListViewModel by viewModels { factory.create(args.postId) }
 
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)

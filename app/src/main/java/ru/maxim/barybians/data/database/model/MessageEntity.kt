@@ -10,7 +10,7 @@ data class MessageEntity(
     @Relation(
         entity = AttachmentEntity::class,
         entityColumn = AttachmentEntity.Contract.Columns.messageId,
-        parentColumn = MessageEntity.Contract.Columns.messageId
+        parentColumn = Columns.messageId
     )
     val attachments: List<AttachmentEntity>
 ) {

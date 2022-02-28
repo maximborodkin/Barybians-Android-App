@@ -25,7 +25,7 @@ class LoginViewModel private constructor(
     val isLoginSuccess: LiveData<Boolean> = _isLoginSuccess
 
     private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
 
     private val _loginMessage = MediatorLiveData<Int?>().apply {
         addSource(login) { postValue(null) }
@@ -79,9 +79,10 @@ class LoginViewModel private constructor(
         private val application: Application,
         private val authRepository: AuthRepository
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
+
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
                 return LoginViewModel(application, authRepository) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")

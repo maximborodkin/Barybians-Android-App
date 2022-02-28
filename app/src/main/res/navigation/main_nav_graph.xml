@@ -38,10 +38,17 @@
         tools:layout="@layout/fragment_posts_list">
 
         <argument
-            android:name="hasBottomNavigation"
+            android:name="isRoot"
             android:defaultValue="true"
             app:argType="boolean" />
 
+        <action
+            android:id="@+id/toLikesList"
+            app:destination="@id/likesListDialog" />
+
+        <action
+            android:id="@+id/toCommentsList"
+            app:destination="@id/commentsListDialog" />
     </fragment>
 
     <fragment
@@ -51,7 +58,7 @@
         tools:layout="@layout/fragment_chats_list">
 
         <argument
-            android:name="hasBottomNavigation"
+            android:name="isRoot"
             android:defaultValue="true"
             app:argType="boolean" />
     </fragment>
@@ -67,17 +74,17 @@
             android:defaultValue="-1"
             app:argType="integer" />
 
+        <argument
+            android:name="isRoot"
+            android:defaultValue="true"
+            app:argType="boolean" />
+
         <action
             android:id="@+id/profileToPreferences"
             app:destination="@id/preferencesFragment"
             app:launchSingleTop="false"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="false" />
-
-        <argument
-            android:name="hasBottomNavigation"
-            android:defaultValue="true"
-            app:argType="boolean" />
     </fragment>
 
     <action
@@ -90,7 +97,7 @@
             android:defaultValue="0" />
 
         <argument
-            android:name="hasBottomNavigation"
+            android:name="isRoot"
             android:defaultValue="false" />
     </action>
 
@@ -127,10 +134,6 @@
             app:argType="integer" />
     </dialog>
 
-    <action
-        android:id="@+id/toCommentsList"
-        app:destination="@id/commentsListDialog" />
-
     <dialog
         android:id="@+id/likesListDialog"
         android:name="ru.maxim.barybians.ui.dialog.likesList.LikesListDialog"
@@ -141,10 +144,6 @@
             android:name="postId"
             app:argType="integer" />
     </dialog>
-
-    <action
-        android:id="@+id/toLikesList"
-        app:destination="@id/likesListDialog" />
 
     <dialog
         android:id="@+id/imageViewerDialog"

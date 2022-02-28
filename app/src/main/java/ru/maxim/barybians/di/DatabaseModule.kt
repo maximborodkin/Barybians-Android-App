@@ -24,43 +24,33 @@ object DatabaseModule {
 
     @Provides
     @Reusable
-    fun provideAttachmentDao(database: BarybiansDatabase): AttachmentDao {
-        return database.attachmentDao()
-    }
+    fun provideAttachmentDao(database: BarybiansDatabase): AttachmentDao = database.attachmentDao()
 
     @Provides
     @Reusable
-    fun provideChatDao(database: BarybiansDatabase): ChatDao {
-        return database.chatDao()
-    }
+    fun provideChatDao(database: BarybiansDatabase): ChatDao = database.chatDao()
 
     @Provides
     @Reusable
-    fun provideCommentDao(database: BarybiansDatabase): CommentDao {
-        return database.commentDao()
-    }
+    fun provideCommentDao(database: BarybiansDatabase): CommentDao = database.commentDao()
 
     @Provides
     @Reusable
-    fun provideLikeDao(database: BarybiansDatabase): LikeDao {
-        return database.likeDao()
-    }
+    fun provideLikeDao(database: BarybiansDatabase): LikeDao = database.likeDao()
 
     @Provides
     @Reusable
-    fun provideMessageDao(database: BarybiansDatabase): MessageDao {
-        return database.messageDao()
-    }
+    fun provideMessageDao(database: BarybiansDatabase): MessageDao = database.messageDao()
 
     @Provides
     @Reusable
-    fun providePostDao(database: BarybiansDatabase): PostDao {
-        return database.postDao()
-    }
+    fun providePostDao(database: BarybiansDatabase): PostDao = database.postDao()
 
     @Provides
     @Reusable
-    fun provideUserDao(database: BarybiansDatabase): UserDao {
-        return database.userDao()
-    }
+    fun provideStickerPackDao(database: BarybiansDatabase): StickerPackDao = database.stickerPackDao()
+
+    @Provides
+    @Reusable
+    fun provideUserDao(database: BarybiansDatabase): UserDao = database.userDao()
 }

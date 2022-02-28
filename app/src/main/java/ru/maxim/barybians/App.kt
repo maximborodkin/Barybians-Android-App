@@ -16,14 +16,12 @@ class App : MultiDexApplication() {
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate() {
-
         appComponent = DaggerAppComponent.builder()
             .application(this)
             .applicationContext(applicationContext)
             .applicationScope(applicationScope)
             .build()
 
-        appComponent.preferencesManager.isDebug = true
         if (appComponent.preferencesManager.isDarkMode) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         } else {

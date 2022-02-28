@@ -97,11 +97,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             itemProfileHeaderStatus.text = null
             itemProfileHeaderChatButton.hide()
         } else {
+            itemProfileHeaderAge.show()
+            itemProfileHeaderPreferencesButton.show()
             binding.isDebug = preferencesManager.isDebug
             binding.isPersonal = preferencesManager.userId == model.userId
             binding.user = user
-
-            itemProfileHeaderAge.show()
 
             itemProfileHeaderAvatar.setOnClickListener {
                 findNavController().navigate(ProfileFragmentDirections.toImageViewer(user.avatarFull))
