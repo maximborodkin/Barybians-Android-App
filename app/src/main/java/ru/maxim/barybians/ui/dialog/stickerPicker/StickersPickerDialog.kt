@@ -24,6 +24,7 @@ import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.databinding.DialogStickerPickerBinding
 import ru.maxim.barybians.domain.model.StickerPack
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.dpToPx
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
@@ -74,7 +75,7 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
             tab.customView = ImageView(context).apply {
                 layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
                 Glide.with(this)
-                    .load("${RetrofitClient.BASE_URL}img/stickers-png/${stickerPack.pack}/${stickerPack.icon}")
+                    .load("${RetrofitClient.STICKERS_BASE_URL}img/stickers-png/${stickerPack.pack}/${stickerPack.icon}")
                     .apply(RequestOptions().override(100, 100))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(this)
@@ -82,7 +83,9 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
             stickerPickerTabLayout.addTab(tab)
         }
         stickerPickerTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) { (tab?.tag as? StickerPack)?.let(::renderStickerPack) }
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                (tab?.tag as? StickerPack)?.let(::renderStickerPack)
+            }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
@@ -96,12 +99,15 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
         stickerPickerHolder.removeAllViews()
         for (sticker in 1..pack.amount) {
             val imageView = ImageView(context).apply {
-                val imageSize = stickerPickerHolder.width / 4
+                val imageSize = dpToPx(context.resources, 82)
                 layoutParams = LinearLayoutCompat.LayoutParams(imageSize, imageSize)
                 setPadding(imageSize / 20)
-                val stickerUrl = "${RetrofitClient.BASE_URL}img/stickers-png/${pack.name}/$sticker.png"
+                val stickerUrl = "${RetrofitClient.STICKERS_BASE_URL}img/stickers-png/${pack.pack}/$sticker.png"
                 Glide.with(this).load(stickerUrl).into(this)
-                setOnClickListener { onPickSticker?.invoke(stickerUrl) }
+                setOnClickListener {
+                    onPickSticker?.invoke(stickerUrl)
+                    dismiss()
+                }
             }
             stickerPickerHolder.addView(imageView)
         }

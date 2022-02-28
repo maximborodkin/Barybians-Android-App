@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.LoadState.Error
 import androidx.paging.LoadState.Loading
-import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.FlowPreview
@@ -30,6 +29,7 @@ import ru.maxim.barybians.databinding.FragmentPostsListBinding
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.dialog.editPost.EditPostDialog
 import ru.maxim.barybians.ui.fragment.postsList.PostsListViewModel.PostsListViewModelFactory
+import ru.maxim.barybians.ui.fragment.profile.ProfileFragmentDirections
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.longToast
 import ru.maxim.barybians.utils.toast
@@ -179,7 +179,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
     }
 
     override fun onCommentsClick(postId: Int) {
-        findNavController().navigate(PostsListFragmentDirections.toCommentsList(postId))
+        findNavController().navigate(ProfileFragmentDirections.toCommentsList(postId))
     }
 
     override fun onLikeClick(postId: Int) {
@@ -187,7 +187,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
     }
 
     override fun onLikeLongClick(postId: Int) {
-        findNavController().navigate(PostsListFragmentDirections.toLikesList(postId))
+        findNavController().navigate(ProfileFragmentDirections.toLikesList(postId))
     }
 
     override fun onDestroyView() {

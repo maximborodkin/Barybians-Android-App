@@ -67,23 +67,25 @@ class CommentsListViewModel private constructor(
         }
     }
 
-    fun createComment() = viewModelScope.launch {
-        if (commentText.value.isNullOrBlank()) return@launch
-        _isSending.postValue(true)
-        try {
-            val uuid = UUID.randomUUID().toString()
-            commentRepository.createComment(uuid, postId, requireNotNull(commentText.value))
-            commentText.postValue(String())
-        } catch (e: Exception) {
-            Timber.e(e)
-            val error = when (e) {
-                is NoConnectionException -> R.string.no_internet_connection
-                is TimeoutException -> R.string.request_timeout
-                else -> R.string.unable_to_create_comment
+    fun createComment(message: String = commentText.value.toString()) {
+        viewModelScope.launch {
+            if (message.isBlank()) return@launch
+            _isSending.postValue(true)
+            try {
+                val uuid = UUID.randomUUID().toString()
+                commentRepository.createComment(uuid, postId, message)
+                commentText.postValue(String())
+            } catch (e: Exception) {
+                Timber.e(e)
+                val error = when (e) {
+                    is NoConnectionException -> R.string.no_internet_connection
+                    is TimeoutException -> R.string.request_timeout
+                    else -> R.string.unable_to_create_comment
+                }
+                _errorMessage.postValue(error)
+            } finally {
+                _isSending.postValue(false)
             }
-            _errorMessage.postValue(error)
-        } finally {
-            _isSending.postValue(false)
         }
     }
 

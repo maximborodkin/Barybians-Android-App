@@ -85,6 +85,14 @@
             app:launchSingleTop="false"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="false" />
+
+        <action
+            android:id="@+id/toLikesList"
+            app:destination="@id/likesListDialog" />
+
+        <action
+            android:id="@+id/toCommentsList"
+            app:destination="@id/commentsListDialog" />
     </fragment>
 
     <action

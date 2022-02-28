@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.viewModels
@@ -22,6 +21,7 @@ import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentCommentsListBinding
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
+import ru.maxim.barybians.ui.dialog.stickerPicker.StickersPickerDialog
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
@@ -82,6 +82,13 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
         commentsListSendBtn.setOnClickListener { model.createComment() }
         commentsListSortingDirectionButton.setOnClickListener {
             model.sortingDirection.postValue(model.sortingDirection.value?.not())
+        }
+        commentsListStickerBtn.setOnClickListener {
+            val stickerPicker = StickersPickerDialog()
+            stickerPicker.show(childFragmentManager, StickersPickerDialog::class.qualifiedName)
+            stickerPicker.setOnPickListener { stickerUrl ->
+                model.createComment(stickerUrl)
+            }
         }
     }
 

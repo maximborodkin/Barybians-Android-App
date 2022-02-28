@@ -74,7 +74,7 @@ class PostRemoteMediator private constructor(
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-//                    postDao.delete()
+                    postDao.delete()
                 }
                 postDao.save(entities, userDao, commentDao, likeDao)
             }
