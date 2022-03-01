@@ -6,8 +6,4 @@
         <attr name="blurRadius" format="float"/>
         <attr name="foregroundTransparency" format="integer"/>
     </declare-styleable>
-
-    <declare-styleable name="AvatarView">
-        <attr name="enableOnlineStatus" format="boolean" />
-    </declare-styleable>
 </resources>

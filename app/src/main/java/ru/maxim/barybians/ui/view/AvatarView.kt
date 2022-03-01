@@ -13,46 +13,29 @@ class AvatarView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
-    private var hasOnlineStatus: Boolean = true
     var isOnline: Boolean = false
 
     private var maskPath: Path? = null
-    private val maskPaint = Paint()
     private var cornerRadius = width / 2
-
-    init {
-        getContext().obtainStyledAttributes(attrs, R.styleable.AvatarView, defStyleAttr, 0).apply {
-            hasOnlineStatus = getBoolean(R.styleable.AvatarView_enableOnlineStatus, true)
-            recycle()
-        }
-
-        maskPaint.apply {
-            setLayerType(LAYER_TYPE_HARDWARE, null)
-            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-            maskPaint.color = Color.TRANSPARENT
-            isAntiAlias = true
-        }
+    private val maskPaint = Paint().apply {
+        setLayerType(LAYER_TYPE_HARDWARE, null)
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        color = Color.TRANSPARENT
+        isAntiAlias = true
     }
-
     private val onlineStatusPaint: Paint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.onlineStatus)
     }
 
     override fun onDraw(canvas: Canvas?) {
         if (canvas?.isOpaque != false) {
-            canvas?.saveLayerAlpha(
-                0F,
-                0F,
-                width.toFloat(),
-                height.toFloat(),
-                255
-            )
+            canvas?.saveLayerAlpha(0F, 0F, width.toFloat(), height.toFloat(), 255)
         }
         super.onDraw(canvas)
         if (maskPath != null) {
-            canvas?.drawPath(maskPath!!, maskPaint)
+            canvas?.drawPath(requireNotNull(maskPath), maskPaint)
         }
-        if (hasOnlineStatus and isOnline) {
+        if (isOnline) {
             val radius = width / 8.toFloat()
             canvas?.drawCircle(width - radius, height - radius, radius, onlineStatusPaint)
         }

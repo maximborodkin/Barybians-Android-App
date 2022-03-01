@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.dialog.stickerPicker
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +16,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.launch
@@ -25,10 +30,10 @@ import ru.maxim.barybians.databinding.DialogStickerPickerBinding
 import ru.maxim.barybians.domain.model.StickerPack
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.dpToPx
+import ru.maxim.barybians.utils.load
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
-
 
 class StickersPickerDialog : BottomSheetDialogFragment() {
 
@@ -69,23 +74,41 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
     private fun renderTabs(stickerPacks: List<StickerPack>) = with(binding) {
         stickerPickerTabLayout.removeAllTabs()
         stickerPickerTabLayout.tabGravity = TabLayout.GRAVITY_FILL
-        stickerPacks.forEach { stickerPack ->
+        stickerPacks.forEach { pack ->
             val tab = stickerPickerTabLayout.newTab()
-            tab.tag = stickerPack
+            tab.tag = pack
             tab.customView = ImageView(context).apply {
                 layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
                 Glide.with(this)
-                    .load("${RetrofitClient.STICKERS_BASE_URL}img/stickers-png/${stickerPack.pack}/${stickerPack.icon}")
+                    .load("${RetrofitClient.STICKERS_BASE_URL}img/stickers-png/${pack.pack}/${pack.icon}")
                     .apply(RequestOptions().override(100, 100))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            tab.customView = null
+                            tab.text = pack.name
+                            return true
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable?,
+                            model: Any?,
+                            target: Target<Drawable>?,
+                            dataSource: DataSource?,
+                            isFirstResource: Boolean
+                        ) = false
+                    })
                     .into(this)
             }
             stickerPickerTabLayout.addTab(tab)
         }
         stickerPickerTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                (tab?.tag as? StickerPack)?.let(::renderStickerPack)
-            }
+            override fun onTabSelected(tab: TabLayout.Tab?) { (tab?.tag as? StickerPack)?.let(::renderStickerPack) }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
@@ -99,11 +122,11 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
         stickerPickerHolder.removeAllViews()
         for (sticker in 1..pack.amount) {
             val imageView = ImageView(context).apply {
-                val imageSize = dpToPx(context.resources, 82)
+                val imageSize = dpToPx(context.resources, 100)
                 layoutParams = LinearLayoutCompat.LayoutParams(imageSize, imageSize)
                 setPadding(imageSize / 20)
                 val stickerUrl = "${RetrofitClient.STICKERS_BASE_URL}img/stickers-png/${pack.pack}/$sticker.png"
-                Glide.with(this).load(stickerUrl).into(this)
+                load(stickerUrl)
                 setOnClickListener {
                     onPickSticker?.invoke(stickerUrl)
                     dismiss()
@@ -116,58 +139,4 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
     fun setOnPickListener(listener: ((stickerUrl: String) -> Unit)?) {
         onPickSticker = listener
     }
-
-//    private fun loadTabs() {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val packs = chatService.getStickersPacks()
-//            CoroutineScope(Dispatchers.Main).launch {
-//                if (packs.isSuccessful && packs.body() != null) {
-//                    packs.body()?.forEach { pack ->
-//                        val imageUrl =
-//                            "${RetrofitClient.BASE_URL}img/stickers-png/${pack.pack}/${pack.icon}"
-//                        val tab = binding.stickersPickerTabLayout.newTab()
-//                            .setCustomView(createTabItemView(imageUrl))
-//                        tab.tag = pack.pack
-//                        binding.stickersPickerTabLayout.addTab(tab)
-//                    }
-//                    binding.stickersPickerTabLayout.tabGravity = TabLayout.GRAVITY_FILL
-//                    binding.stickersPickerTabLayout.addOnTabSelectedListener(object :
-//                        TabLayout.OnTabSelectedListener {
-//                        override fun onTabSelected(tab: TabLayout.Tab) {
-//                            loadStickerPack(tab.tag.toString())
-//                        }
-//
-//                        override fun onTabUnselected(tab: TabLayout.Tab?) {}
-//                        override fun onTabReselected(tab: TabLayout.Tab?) {}
-//                    })
-//                    loadStickerPack(binding.stickersPickerTabLayout.getTabAt(0)?.tag.toString())
-//                } else {
-//                    context.toast("Unable to load stickers")
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun loadStickerPack(packName: String) {
-//        val stickers = ArrayList<String>()
-//        for (i in 1..20) {
-//            stickers.add("${RetrofitClient.BASE_URL}img/stickers-png/${packName}/${i}.png")
-//        }
-//        binding.stickersPickerRecycler.layoutManager = GridLayoutManager(context, 4)
-//        binding.stickersPickerRecycler.adapter = StickerPickerRecyclerAdapter(stickers) { position ->
-//            onStickerClick("${RetrofitClient.BASE_URL}img/stickers-png/${packName}/${position + 1}.png")
-//        }
-//    }
-//
-//    private fun createTabItemView(imgUri: String): View {
-//        val imageView = ImageView(context)
-//        imageView.layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-//        Glide.with(this)
-//            .load(imgUri)
-//            .apply(RequestOptions().override(100, 100))
-//            .thumbnail(0.2F)
-//            .diskCacheStrategy(DiskCacheStrategy.ALL)
-//            .into(imageView)
-//        return imageView
-//    }
 }

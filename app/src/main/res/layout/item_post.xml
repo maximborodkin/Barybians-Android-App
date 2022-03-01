@@ -43,7 +43,6 @@
                 android:id="@+id/itemPostAvatar"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                app:enableOnlineStatus="true"
                 app:image="@{post.author.avatarMin}"
                 app:isOnline="@{post.author.isOnline}"
                 app:layout_constraintStart_toStartOf="parent"

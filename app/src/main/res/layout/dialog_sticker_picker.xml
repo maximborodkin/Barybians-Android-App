@@ -14,7 +14,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/stickerPickerHolder"
             android:layout_width="wrap_content"
-            android:layout_height="82dp"
+            android:layout_height="100dp"
             android:orientation="horizontal" />
     </HorizontalScrollView>
 

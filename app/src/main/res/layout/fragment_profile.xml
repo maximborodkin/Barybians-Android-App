@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
-
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
 
         <variable
@@ -25,11 +23,12 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/profileRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/profileAppBarLayout"
@@ -147,7 +146,6 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:elevation="8dp"
-                        app:enableOnlineStatus="true"
                         app:image="@{user.avatarMin}"
                         app:isOnline="@{user.online}"
                         app:layout_constraintBottom_toTopOf="@+id/itemProfileHeaderCardBackground"
