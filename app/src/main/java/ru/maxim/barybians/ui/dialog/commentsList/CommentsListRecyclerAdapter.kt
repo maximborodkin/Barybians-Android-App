@@ -25,8 +25,9 @@ class CommentsListRecyclerAdapter @Inject constructor(
 
     private var commentsAdapterListener: CommentsAdapterListener? = null
 
-    fun setAdapterListener(listener: CommentsAdapterListener?) {
+    fun setAdapterListener(listener: CommentsAdapterListener?): CommentsListRecyclerAdapter {
         commentsAdapterListener = listener
+        return this
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {

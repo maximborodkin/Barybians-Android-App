@@ -136,7 +136,8 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
         }
     }
 
-    fun setOnPickListener(listener: ((stickerUrl: String) -> Unit)?) {
+    fun setOnPickListener(listener: ((stickerUrl: String) -> Unit)?): StickersPickerDialog {
         onPickSticker = listener
+        return this
     }
 }

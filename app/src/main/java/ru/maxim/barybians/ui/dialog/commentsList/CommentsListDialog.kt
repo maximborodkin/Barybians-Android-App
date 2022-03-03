@@ -52,8 +52,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
         binding = FragmentCommentsListBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = model
-            commentsRecyclerAdapter.setAdapterListener(this@CommentsListDialog)
-            commentsListRecycler.adapter = commentsRecyclerAdapter
+            commentsListRecycler.adapter = commentsRecyclerAdapter.setAdapterListener(this@CommentsListDialog)
         }
         return binding.root
     }
@@ -84,11 +83,9 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
             model.sortingDirection.postValue(model.sortingDirection.value?.not())
         }
         commentsListStickerBtn.setOnClickListener {
-            val stickerPicker = StickersPickerDialog()
-            stickerPicker.show(childFragmentManager, StickersPickerDialog::class.qualifiedName)
-            stickerPicker.setOnPickListener { stickerUrl ->
-                model.createComment(stickerUrl)
-            }
+            StickersPickerDialog()
+                .setOnPickListener(model::createComment)
+                .show(childFragmentManager, StickersPickerDialog::class.qualifiedName)
         }
     }
 
@@ -107,7 +104,6 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
                 showEditDialog(comment.text) { text -> model.editComment(commentId = comment.commentId, text = text) }
                 true
             }
-
             menu.findItem(R.id.menuCommentDelete)?.setOnMenuItemClickListener {
                 showDeleteDialog { model.deleteComment(commentId = comment.commentId) }
                 true
@@ -135,7 +131,6 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
             setPositiveButton(android.R.string.ok) { _, _ -> onDelete() }
         }.show()
     }
-
 
     override fun onDestroyView() {
         commentsRecyclerAdapter.setAdapterListener(null)
