@@ -44,7 +44,7 @@
                     app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/itemProfileHeaderImage"
+                        android:id="@+id/profileBackgroundPicture"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:scaleType="centerCrop"
@@ -57,7 +57,7 @@
                         tools:src="@tools:sample/avatars" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/itemProfileHeaderPreferencesButton"
+                        android:id="@+id/profilePreferencesButton"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:padding="12dp"
@@ -67,7 +67,7 @@
                         app:srcCompat="@drawable/ic_preferences" />
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/itemProfileHeaderCardBackground"
+                        android:id="@+id/profileCardBackground"
                         style="@style/ProfileHeaderRoundedCard"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
@@ -81,10 +81,11 @@
                             android:layout_height="wrap_content">
 
                             <androidx.appcompat.widget.AppCompatTextView
-                                android:id="@+id/itemProfileHeaderName"
+                                android:id="@+id/profileName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
+                                android:layout_marginHorizontal="12dp"
                                 android:layout_marginTop="58dp"
                                 android:text="@{user.fullName}"
                                 android:textAlignment="center"
@@ -96,24 +97,38 @@
                                 tools:text="@tools:sample/full_names" />
 
                             <TextView
-                                android:id="@+id/itemProfileHeaderAge"
+                                android:id="@+id/profileOnlineStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="12dp"
                                 android:layout_marginTop="4dp"
-                                android:layout_marginBottom="4dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                android:text="@{user.online ? @string/online : @string/last_visit(ExtensionsKt.simpleDate(user.lastVisit, true))}"
+                                android:textColor="@{user.online ? @color/onlineStatus : @color/colorOnSurface}"
+                                app:layout_constraintTop_toBottomOf="@id/profileName"
+                                tools:text="Last seen 10 mar 22:55" />
+
+                            <TextView
+                                android:id="@+id/profileAge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="12dp"
+                                android:layout_marginTop="4dp"
                                 android:text="@{@plurals/age_plurals(ExtensionsKt.years(user.birthDate), ExtensionsKt.years(user.birthDate))}"
                                 android:textAlignment="center"
                                 android:textSize="18sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderName"
+                                app:layout_constraintTop_toBottomOf="@id/profileOnlineStatus"
                                 tools:text="22 года" />
 
                             <TextView
-                                android:id="@+id/itemProfileHeaderStatus"
+                                android:id="@+id/profileStatus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
+                                android:layout_marginHorizontal="12dp"
                                 android:gravity="center_vertical|center_horizontal"
                                 android:maxLines="2"
                                 android:paddingHorizontal="32dp"
@@ -122,11 +137,11 @@
                                 android:textSize="16sp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderAge"
-                                tools:text="Работа над приложением продолжается" />
+                                app:layout_constraintTop_toBottomOf="@id/profileAge"
+                                tools:text="Material You is piece of shit" />
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/itemProfileHeaderChatButton"
+                                android:id="@+id/profileOpenChatButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
@@ -137,21 +152,20 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/itemProfileHeaderStatus" />
+                                app:layout_constraintTop_toBottomOf="@id/profileStatus" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                     <ru.maxim.barybians.ui.view.AvatarView
-                        android:id="@+id/itemProfileHeaderAvatar"
+                        android:id="@+id/profileAvatar"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:elevation="8dp"
                         app:image="@{user.avatarMin}"
-                        app:isOnline="@{user.online}"
-                        app:layout_constraintBottom_toTopOf="@+id/itemProfileHeaderCardBackground"
+                        app:layout_constraintBottom_toTopOf="@id/profileCardBackground"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/itemProfileHeaderCardBackground"
+                        app:layout_constraintTop_toTopOf="@id/profileCardBackground"
                         tools:isOnline="true"
                         tools:src="@tools:sample/avatars" />
                 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -88,36 +88,36 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         profileRefreshLayout.isRefreshing = false
         if (user == null) {
             binding.isPersonal = true
-            itemProfileHeaderPreferencesButton.hide()
-            itemProfileHeaderImage.setImageDrawable(null)
-            itemProfileHeaderAvatar.setImageDrawable(ColorDrawable(itemProfileHeaderCardBackground.solidColor))
-            itemProfileHeaderAvatar.isOnline = false
-            itemProfileHeaderName.text = null
-            itemProfileHeaderAge.hide()
-            itemProfileHeaderStatus.text = null
-            itemProfileHeaderChatButton.hide()
+            profilePreferencesButton.hide()
+            profileBackgroundPicture.setImageDrawable(null)
+            profileAvatar.setImageDrawable(ColorDrawable(profileCardBackground.solidColor))
+            profileName.text = null
+            profileOnlineStatus.text = null
+            profileAge.hide()
+            profileStatus.text = null
+            profileOpenChatButton.hide()
         } else {
-            itemProfileHeaderAge.show()
-            itemProfileHeaderPreferencesButton.show()
+            profileAge.show()
+            profilePreferencesButton.show()
             binding.isDebug = preferencesManager.isDebug
             binding.isPersonal = preferencesManager.userId == model.userId
             binding.user = user
 
-            itemProfileHeaderAvatar.setOnClickListener {
+            profileAvatar.setOnClickListener {
                 findNavController().navigate(ProfileFragmentDirections.toImageViewer(user.avatarFull))
             }
 
-            itemProfileHeaderPreferencesButton.setOnClickListener {
+            profilePreferencesButton.setOnClickListener {
                 findNavController().navigate(ProfileFragmentDirections.profileToPreferences())
             }
 
-            itemProfileHeaderChatButton.setOnClickListener {
+            profileOpenChatButton.setOnClickListener {
                 findNavController().navigate(ProfileFragmentDirections.toChat(user.userId))
             }
-            itemProfileHeaderName.setOnClickListener { context.toast(user.role.stringResource) }
-            itemProfileHeaderStatus.text = htmlUtils.parseHtml(user.status ?: String()).first
+            profileName.setOnClickListener { context.toast(user.role.stringResource) }
+            profileStatus.text = htmlUtils.parseHtml(user.status ?: String()).first
             if (preferencesManager.userId == user.userId) {
-                itemProfileHeaderStatus.setOnClickListener {
+                profileStatus.setOnClickListener {
                     EditTextDialog(
                         context = context ?: return@setOnClickListener,
                         title = getString(R.string.edit_status),

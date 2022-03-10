@@ -89,7 +89,7 @@ fun ImageView.load(
         placeholder != null -> requestBuilder.placeholder(placeholder)
         else -> {
             requestBuilder.placeholder(CircularProgressDrawable(context).apply {
-                setColorSchemeColors(ContextCompat.getColor(context, R.color.colorOnPrimary))
+                setColorSchemeColors(ContextCompat.getColor(context, R.color.colorPrimary))
                 strokeWidth = 3F
                 centerRadius = 64F
                 start()
@@ -126,7 +126,8 @@ inline fun <reified T> List<T>.transform(action: (T) -> Unit): List<T> {
     return this
 }
 
-fun simpleDate(date: Date, hasTime: Boolean = true): String {
+fun simpleDate(date: Date?, hasTime: Boolean = true): String {
+    if (date == null) return String()
     val today = Calendar.getInstance()
     val calendar = Calendar.getInstance().also { it.timeInMillis = date.time }
     return when {

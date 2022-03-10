@@ -57,7 +57,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
 
     private var currentLoadingState: LoadState? = null
 
-
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)

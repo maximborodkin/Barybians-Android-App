@@ -55,6 +55,7 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        if (savedInstanceState != null) dismiss()
         binding = DialogStickerPickerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -119,6 +120,7 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
     }
 
     private fun renderStickerPack(pack: StickerPack) = with(binding) {
+        stickerPickerScrollView.fullScroll(View.FOCUS_LEFT)
         stickerPickerHolder.removeAllViews()
         for (sticker in 1..pack.amount) {
             val imageView = ImageView(context).apply {
