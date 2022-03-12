@@ -78,7 +78,7 @@ dependencies {
     def coroutines_version = '1.6.0-native-mt'
     def dagger_version = '2.40.5'
     def moxy_version = "2.2.2"
-    def paging_version = "3.1.0"
+    def paging_version = "3.1.1"
 
     // DI
     implementation "com.google.dagger:dagger:$dagger_version"
@@ -143,9 +143,6 @@ dependencies {
 
     // Permissions
     implementation 'com.karumi:dexter:6.2.3'
-
-    // Shimmer
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     // Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'

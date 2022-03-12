@@ -7,6 +7,7 @@ import ru.maxim.barybians.data.network.model.CommentDto
 interface CommentService {
 
     @FormUrlEncoded
+    @Headers("Parse-mode: html")
     @POST("/v2/comments")
     suspend fun addComment(
         @Header("request") uuid: String,
@@ -15,6 +16,7 @@ interface CommentService {
     ): Response<CommentDto>
 
     @FormUrlEncoded
+    @Headers("Parse-mode: html")
     @PUT("/v2/comments/{commentId}")
     suspend fun editComment(
         @Path("commentId") commentId: Int,

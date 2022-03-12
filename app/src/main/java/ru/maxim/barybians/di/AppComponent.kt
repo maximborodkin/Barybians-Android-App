@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.ui.MainActivity
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
+import ru.maxim.barybians.ui.dialog.imageViewer.ImageViewerDialog
 import ru.maxim.barybians.ui.dialog.likesList.LikesListDialog
 import ru.maxim.barybians.ui.fragment.chat.ChatFragment
 import ru.maxim.barybians.ui.fragment.chatsList.ChatsListFragment
@@ -48,6 +49,7 @@ interface AppComponent {
     fun inject(preferencesFragment: PreferencesFragment)
     fun inject(commentsListDialog: CommentsListDialog)
     fun inject(likesListDialog: LikesListDialog)
+    fun inject(imageViewerDialog: ImageViewerDialog)
 
     val preferencesManager: PreferencesManager
 }

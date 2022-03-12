@@ -82,11 +82,11 @@
             app:layout_constraintEnd_toStartOf="@id/chatMessageSendBtn"
             app:layout_constraintStart_toEndOf="@id/chatMessageEmojiBtn" />
 
+<!--            android:enabled="@{!ExtensionsKt.isEmpty(messageText)}"-->
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/chatMessageSendBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:enabled="@{!ExtensionsKt.isEmpty(messageText)}"
             android:padding="8dp"
             android:src="@drawable/ic_send"
             app:layout_constraintBottom_toBottomOf="parent"

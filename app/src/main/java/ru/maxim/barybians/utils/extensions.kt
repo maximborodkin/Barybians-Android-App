@@ -2,15 +2,12 @@ package ru.maxim.barybians.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toast.LENGTH_LONG
 import android.widget.Toast.LENGTH_SHORT
-import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
@@ -18,14 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.request.RequestOptions
-import jp.wasabeef.glide.transformations.BitmapTransformation
 import jp.wasabeef.glide.transformations.BlurTransformation
-import jp.wasabeef.glide.transformations.ColorFilterTransformation
 import ru.maxim.barybians.App
 import ru.maxim.barybians.R
 import ru.maxim.barybians.di.AppComponent
@@ -114,12 +107,10 @@ inline fun <reified T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
     return false
 }
 
-fun View?.show() { if (this?.isGone == true) this.isVisible = true }
-fun View?.hide() { if (this?.isVisible == true) this.isGone = true }
-fun View?.enable() { if (this?.isEnabled == false) this.isEnabled = true }
-fun View?.disable() { if (this?.isEnabled == true) this.isEnabled = false }
-
-fun MutableLiveData<String>.isEmpty() = value?.isEmpty()
+fun View?.show() { this?.isVisible = true }
+fun View?.hide() { this?.isGone = true }
+fun View?.enable() { this?.isEnabled = true }
+fun View?.disable() { this?.isEnabled = false }
 
 inline fun <reified T> List<T>.transform(action: (T) -> Unit): List<T> {
     this.forEach(action)

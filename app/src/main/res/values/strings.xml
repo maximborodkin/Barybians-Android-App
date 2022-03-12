@@ -134,4 +134,10 @@
     <string name="scroll_to_top">scroll to top</string>
     <string name="preferences">Preferences</string>
     <string name="unable_to_load_stickers">Unable to load stickers</string>
+    <string name="download">Download</string>
+    <string name="share">Share</string>
+    <string name="allow_media_access_to_download">Allow application access to media to download an image</string>
+    <string name="allow_media_access_to_share">Allow application access to media to share an image</string>
+    <string name="share_image_url">Share image URL</string>
+    <string name="unable_to_share_images_without_media">Unable to share images without access to media</string>
 </resources>

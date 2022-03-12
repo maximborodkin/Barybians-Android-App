@@ -155,8 +155,7 @@ class ScaleImageView @JvmOverloads constructor(
                 val yDistance = getYDistance(focusY, last.y)
                 currentMatrix.postTranslate(xDistance, yDistance)
                 currentMatrix.postScale(scaleBy, scaleBy, focusX, focusY)
-                currentScaleFactor =
-                    matrixValues[MSCALE_X] / startValues!![MSCALE_X]
+                currentScaleFactor = matrixValues[MSCALE_X] / startValues!![MSCALE_X]
                 imageMatrix = currentMatrix
                 last[focusX] = focusY
             }

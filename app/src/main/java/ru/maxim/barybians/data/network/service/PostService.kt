@@ -21,14 +21,16 @@ interface PostService {
     ): Response<List<PostDto>>
 
     @FormUrlEncoded
+    @Headers("Parse-mode: html")
     @POST("/v2/posts")
     suspend fun createPost(
-        @Header("request") uuid: String,
+        @Header("Request") uuid: String,
         @Field("title") title: String?,
         @Field("text") text: String
     ): Response<PostDto>
 
     @FormUrlEncoded
+    @Headers("Parse-mode: html")
     @PUT("/v2/posts/{postId}")
     suspend fun updatePost(
         @Path("postId") postId: Int,

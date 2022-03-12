@@ -67,7 +67,7 @@ class RetrofitClient @Inject constructor(
 
     companion object {
         const val BASE_URL = "https://api.barybians.ru"
-        const val STICKERS_BASE_URL = "https://barybians.ru/"
-        const val AVATARS_BASE_URL = "https://barybians.ru/avatars"
+        const val STICKERS_BASE_URL = "https://content.barybians.ru/stickers"
+        const val AVATARS_BASE_URL = "https://content.barybians.ru/avatars"
     }
 }
