@@ -108,9 +108,9 @@
     <string name="dark_mode">Dark mode</string>
     <string name="application">Application</string>
     <string name="clear_cache">Clear cache</string>
-    <string name="bytes">%1$d bytes</string>
-    <string name="kbytes">%1$d KBytes</string>
-    <string name="mbytes">%1$d MBytes</string>
+    <string name="bytes">%1$s B</string>
+    <string name="kbytes">%1$s KB</string>
+    <string name="mbytes">%1$s MB</string>
     <string name="cache_cleared">Cache cleared</string>
     <string name="logout">Logout</string>
     <string name="about">About</string>
@@ -137,4 +137,11 @@
     <string name="share_image_url">Share image URL</string>
     <string name="unable_to_share_images_without_media">Unable to share images without access to media</string>
     <string name="share_url">Share URL</string>
+    <string name="avatar">Avatar</string>
+    <string name="permission_required_for_get_image">Permission required for get image</string>
+    <string name="dash">—</string>
+    <string name="dimensions_placeholder">%1$dx%2$d</string>
+    <string name="default_avatar">Default avatar</string>
+    <string name="unable_to_load_image">Unable to load image</string>
+    <string name="clear">Clear</string>
 </resources>

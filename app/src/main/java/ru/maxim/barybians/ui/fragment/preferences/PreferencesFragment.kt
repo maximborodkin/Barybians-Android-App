@@ -67,9 +67,9 @@ class PreferencesFragment : PreferenceFragmentCompat() {
     private fun setClearCacheSummary() {
         val cacheSize = getDirSize(context?.cacheDir) + getDirSize(context?.externalCacheDir)
         findPreference<Preference>(clearCache)?.summary = when {
-            cacheSize >= 1_000_000 -> getString(R.string.mbytes, cacheSize.toInt() / 1_000_000)
-            cacheSize >= 1_000 -> getString(R.string.kbytes, cacheSize.toInt() / 1_000)
-            else -> getString(R.string.bytes, cacheSize.toInt())
+            cacheSize >= 1_000_000 -> getString(R.string.mbytes, (cacheSize / 1_000_000L).toString())
+            cacheSize >= 1_000 -> getString(R.string.kbytes, (cacheSize / 1_000L).toString())
+            else -> getString(R.string.bytes, cacheSize.toString())
         }
     }
 

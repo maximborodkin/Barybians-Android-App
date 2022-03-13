@@ -16,12 +16,9 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="0dp"
-            android:paddingEnd="48dp">
+            android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/registrationBackBtn"
@@ -30,27 +27,32 @@
                 android:layout_margin="4dp"
                 android:enabled="@{!viewModel.isLoading}"
                 android:padding="12dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_back" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/registrationTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
+                android:layout_marginHorizontal="48dp"
                 android:text="@string/registration"
                 android:textAlignment="center"
-                android:textSize="28sp" />
+                android:textSize="28sp"
+                app:layout_constraintTop_toBottomOf="@id/registrationBackBtn" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationFirstNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
+                android:layout_marginHorizontal="48dp"
                 android:layout_marginTop="48dp"
                 android:hint="@string/first_name"
                 app:counterEnabled="true"
                 app:counterMaxLength="20"
                 app:endIconMode="clear_text"
-                app:errorText="@{viewModel.firstNameMessage}">
+                app:errorText="@{viewModel.firstNameMessage}"
+                app:layout_constraintTop_toBottomOf="@id/registrationTitle">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationFirstName"
@@ -64,13 +66,14 @@
                 android:id="@+id/registrationLastNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
+                android:layout_marginHorizontal="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/last_name"
                 app:counterEnabled="true"
                 app:counterMaxLength="20"
                 app:endIconMode="clear_text"
-                app:errorText="@{viewModel.lastNameMessage}">
+                app:errorText="@{viewModel.lastNameMessage}"
+                app:layout_constraintTop_toBottomOf="@id/registrationFirstNameLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationLastName"
@@ -84,11 +87,12 @@
                 android:id="@+id/registrationBirthDateLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
+                android:layout_marginHorizontal="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/birth_date"
                 app:endIconMode="clear_text"
-                app:errorText="@{viewModel.birthDateMessage}">
+                app:errorText="@{viewModel.birthDateMessage}"
+                app:layout_constraintTop_toBottomOf="@id/registrationLastNameLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationBirthDate"
@@ -99,80 +103,136 @@
                     android:text="@{viewModel.birthDateString}" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/registrationGenderTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
+                android:text="@string/gender"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/registrationMaleBtn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/registrationMaleBtn" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/registrationMaleBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:weightSum="3">
+                android:alpha="@{viewModel.gender ? 0.5F : 1F}"
+                android:enabled="@{!viewModel.isLoading}"
+                android:src="@drawable/ic_male"
+                app:layout_constraintEnd_toStartOf="@id/registrationFemaleBtn"
+                app:layout_constraintStart_toEndOf="@id/registrationGenderTitle"
+                app:layout_constraintTop_toBottomOf="@id/registrationBirthDateLayout" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/gender"
-                    android:textSize="18sp" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/registrationFemaleBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:alpha="@{viewModel.gender ? 1F : 0.5F}"
+                android:enabled="@{!viewModel.isLoading}"
+                android:src="@drawable/ic_female"
+                app:layout_constraintBottom_toBottomOf="@id/registrationMaleBtn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/registrationMaleBtn"
+                app:layout_constraintTop_toTopOf="@id/registrationMaleBtn"
+                tools:alpha="0.5" />
 
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/registrationAvatarTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:text="@string/avatar"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/registrationAvatar" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/registrationMaleBtn"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:alpha="@{viewModel.gender ? 0.5F : 1F}"
-                    android:enabled="@{!viewModel.isLoading}"
-                    android:src="@drawable/ic_male" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/registrationAvatarDimensions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:lines="1"
+                android:textAlignment="viewEnd"
+                app:layout_constraintEnd_toStartOf="@id/registrationAvatar"
+                app:layout_constraintStart_toStartOf="@id/registrationAvatarTitle"
+                app:layout_constraintTop_toBottomOf="@id/registrationAvatarTitle"
+                tools:text="840x840" />
 
-                <Space
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/registrationAvatarSize"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:lines="1"
+                android:textAlignment="viewEnd"
+                app:layout_constraintEnd_toStartOf="@id/registrationAvatar"
+                app:layout_constraintStart_toStartOf="@id/registrationAvatarTitle"
+                app:layout_constraintTop_toBottomOf="@id/registrationAvatarDimensions"
+                tools:text="1.2 Mb" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/registrationFemaleBtn"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:alpha="@{viewModel.gender ? 1F : 0.5F}"
-                    android:enabled="@{!viewModel.isLoading}"
-                    android:src="@drawable/ic_female"
-                    tools:alpha="0.5" />
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/registrationAvatar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="48dp"
+                android:contentDescription="@string/avatar"
+                android:enabled="@{!viewModel.isLoading}"
+                android:scaleType="fitCenter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/registrationMaleBtn"
+                tools:src="@drawable/ic_camera" />
+
+            <ImageView
+                android:id="@+id/registrationAvatarClearButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/clear"
+                android:padding="12dp"
+                android:src="@drawable/clear_button"
+                app:layout_constraintBottom_toTopOf="@id/registrationAvatar"
+                app:layout_constraintEnd_toEndOf="@id/registrationAvatar"
+                app:layout_constraintStart_toEndOf="@id/registrationAvatar"
+                app:layout_constraintTop_toTopOf="@id/registrationAvatar" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationLoginLayout"
-                errorText="@{viewModel.loginMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
+                android:layout_marginHorizontal="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/login"
-                app:endIconMode="clear_text">
+                app:counterEnabled="true"
+                app:counterMaxLength="20"
+                app:endIconMode="clear_text"
+                app:errorText="@{viewModel.loginMessage}"
+                app:layout_constraintTop_toBottomOf="@id/registrationAvatar">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="@{!viewModel.isLoading}"
-                    android:text="@={viewModel.login}"
-                    app:counterEnabled="true"
-                    app:counterMaxLength="20" />
+                    android:text="@={viewModel.login}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationPasswordLayout"
-                errorText="@{viewModel.passwordMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
+                android:layout_marginHorizontal="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/password"
                 app:counterEnabled="true"
                 app:counterMaxLength="50"
-                app:endIconMode="password_toggle">
+                app:endIconMode="password_toggle"
+                app:errorText="@{viewModel.passwordMessage}"
+                app:layout_constraintTop_toBottomOf="@id/registrationLoginLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationPassword"
@@ -185,13 +245,14 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/registrationPasswordRepeatLayout"
-                errorText="@{viewModel.repeatPasswordMessage}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="48dp"
+                android:layout_marginHorizontal="48dp"
                 android:layout_marginTop="16dp"
                 android:hint="@string/repeat_password"
-                app:endIconMode="password_toggle">
+                app:endIconMode="password_toggle"
+                app:errorText="@{viewModel.repeatPasswordMessage}"
+                app:layout_constraintTop_toBottomOf="@id/registrationPasswordLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/registrationPasswordRepeat"
@@ -206,12 +267,15 @@
                 android:id="@+id/registrationBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="24dp"
+                android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="48dp"
                 android:enabled="@{!viewModel.isLoading}"
-                android:text="@string/registration" />
-        </LinearLayout>
+                android:text="@string/registration"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/registrationPasswordRepeatLayout" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

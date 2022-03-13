@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.fragment.registration
 
 import android.app.Application
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
@@ -48,8 +49,8 @@ class RegistrationViewModel private constructor(
         }
     }
     private val birthDateApiString = MutableLiveData(String())
-
     val gender = MutableLiveData(false) // true is female, false is male
+    var avatar: Drawable? = null
     val login = MutableLiveData(String())
     val password = MutableLiveData(String())
     val repeatPassword = MutableLiveData(String())
