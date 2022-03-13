@@ -41,7 +41,6 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
 
-
 class ImageViewerDialog : AppCompatDialogFragment() {
 
     private val args: ImageViewerDialogArgs by navArgs()
@@ -147,7 +146,7 @@ class ImageViewerDialog : AppCompatDialogFragment() {
                         if (response?.isPermanentlyDenied == true) {
                             Snackbar
                                 .make(binding.imageViewer, R.string.unable_to_share_images_without_media, LENGTH_LONG)
-                                .setAction("Share URL") { shareImageUrl() }
+                                .setAction(R.string.share_url) { shareImageUrl() }
                                 .show()
                         } else {
                             context.toast(getString(R.string.allow_media_access_to_share))
@@ -174,6 +173,7 @@ class ImageViewerDialog : AppCompatDialogFragment() {
             )
             val out = FileOutputStream(file)
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            out.flush()
             out.close()
 
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

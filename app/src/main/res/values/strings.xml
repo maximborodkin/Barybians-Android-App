@@ -19,12 +19,11 @@
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
     <string name="retry">Retry</string>
-    <string name="unable_to_load_image">Unable to load image</string>
     <string name="feed">Feed</string>
     <string name="dialogs">Dialogs</string>
     <string name="profile">Profile</string>
 
-    <!--  LoginActivity/RegistrationActivity  -->
+    <!--  Login/Registration  -->
     <string name="log_in">Log in</string>
     <string name="login">Login</string>
     <string name="password">Password</string>
@@ -37,7 +36,6 @@
     <string name="gender">Gender</string>
     <string name="repeat_password">Repeat password</string>
     <string name="passwords_didn_t_match">Passwords didn\'t match</string>
-    <string name="unknown_error">Unknown error</string>
     <string name="invalid_login_or_password">Invalid login or password</string>
     <string name="must_be_at_least_2_characters">Must be at least 2 characters</string>
     <string name="must_be_not_longer_20_characters">Must not longer 20 characters</string>
@@ -99,7 +97,6 @@
     <string name="unable_to_edit_comment">Unable to edit comment</string>
     <string name="unable_to_delete_comment">Unable to delete comment</string>
     <string name="delete_this_comment">Delete this comment?</string>
-    <string name="an_error_occurred_while_loading_comments">An error occurred while loading comments</string>
 
     <!--  LikesListFragment  -->
     <string name="likes">Likes</string>
@@ -120,7 +117,6 @@
     <string name="build_version">Build version</string>
 
     <!--  Notifications  -->
-    <string name="sticker">sticker</string>
     <string name="new_chat_label">There is no dialogs. Start new by clicking + button below</string>
     <string name="add_chat">Add dialog</string>
     <string name="send">Send</string>
@@ -131,13 +127,14 @@
     <string name="there_is_no_changes">There is no changes</string>
     <string name="edit_status">Edit status</string>
     <string name="status">Status</string>
-    <string name="scroll_to_top">scroll to top</string>
-    <string name="preferences">Preferences</string>
     <string name="unable_to_load_stickers">Unable to load stickers</string>
+
+    <!--  ImageViewer  -->
     <string name="download">Download</string>
     <string name="share">Share</string>
     <string name="allow_media_access_to_download">Allow application access to media to download an image</string>
     <string name="allow_media_access_to_share">Allow application access to media to share an image</string>
     <string name="share_image_url">Share image URL</string>
     <string name="unable_to_share_images_without_media">Unable to share images without access to media</string>
+    <string name="share_url">Share URL</string>
 </resources>
