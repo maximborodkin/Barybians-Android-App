@@ -3,6 +3,7 @@ package ru.maxim.barybians.ui.fragment.preferences
 import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
@@ -56,10 +57,10 @@ class PreferencesFragment : PreferenceFragmentCompat() {
                 setTitle(getString(R.string.are_you_sure))
                 setPositiveButton(R.string.yes) { _, _ ->
                     authRepository.logout()
-                    activity?.recreate()
+                    findNavController().navigate(PreferencesFragmentDirections.preferencesToLogin())
                 }
                 setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
-            }.create()
+            }.show()
             return@setOnPreferenceClickListener true
         }
     }
