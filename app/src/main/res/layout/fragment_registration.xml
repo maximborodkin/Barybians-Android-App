@@ -5,6 +5,7 @@
     tools:context=".ui.activity.auth.registration.RegistrationActivity">
 
     <data>
+        <import type="android.view.View" />
 
         <variable
             name="viewModel"
@@ -156,6 +157,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:lines="1"
+                android:text="@{viewModel.avatarDimensions}"
                 android:textAlignment="viewEnd"
                 app:layout_constraintEnd_toStartOf="@id/registrationAvatar"
                 app:layout_constraintStart_toStartOf="@id/registrationAvatarTitle"
@@ -169,6 +171,7 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:lines="1"
+                android:text="@{viewModel.avatarSize}"
                 android:textAlignment="viewEnd"
                 app:layout_constraintEnd_toStartOf="@id/registrationAvatar"
                 app:layout_constraintStart_toStartOf="@id/registrationAvatarTitle"
@@ -194,6 +197,8 @@
                 android:layout_height="48dp"
                 android:contentDescription="@string/clear"
                 android:padding="12dp"
+                android:enabled="@{!viewModel.isLoading}"
+                android:visibility="@{viewModel.avatar == null ? View.GONE : View.VISIBLE}"
                 android:src="@drawable/clear_button"
                 app:layout_constraintBottom_toTopOf="@id/registrationAvatar"
                 app:layout_constraintEnd_toEndOf="@id/registrationAvatar"

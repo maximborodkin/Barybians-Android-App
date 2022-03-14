@@ -1,5 +1,7 @@
 package ru.maxim.barybians.data.repository.auth
 
+import java.io.File
+
 interface AuthRepository {
     suspend fun authenticate(login: String, password: String)
 
@@ -7,7 +9,8 @@ interface AuthRepository {
         firstName: String,
         lastName: String,
         birthDate: String,
-        gender: Boolean,
+        gender: Int,
+        avatar: File?,
         login: String,
         password: String
     )

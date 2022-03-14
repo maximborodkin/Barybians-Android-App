@@ -35,7 +35,9 @@ import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.databinding.FragmentRegistrationBinding
 import ru.maxim.barybians.ui.fragment.registration.RegistrationViewModel.RegistrationViewModelFactory
-import ru.maxim.barybians.utils.*
+import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.longToast
+import ru.maxim.barybians.utils.toast
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.RoundingMode.UP
@@ -52,38 +54,37 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
     lateinit var preferencesManager: PreferencesManager
 
     private val binding by viewBinding(FragmentRegistrationBinding::bind)
-    private var getImageLauncher: ActivityResultLauncher<String>? = null
-
-    override fun onAttach(context: Context) {
-        context.appComponent.inject(this)
-        getImageLauncher = registerForActivityResult(GetContent()) { uri: Uri? ->
+    private var getImageLauncher: ActivityResultLauncher<String> =
+        registerForActivityResult(GetContent()) { uri: Uri? ->
             if (uri != null) {
                 try {
-                    val inputStream = context.contentResolver.openInputStream(uri) ?: throw IllegalStateException()
+                    val inputStream = context?.contentResolver?.openInputStream(uri) ?: throw IllegalStateException()
                     val bytes = inputStream.readBytes()
                     val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                    model.avatar.postValue(bitmap)
+
                     binding.registrationAvatar.setImageBitmap(bitmap)
-                    binding.registrationAvatarClearButton.show()
-
-                    binding.registrationAvatarDimensions.text =
+                    model.avatarDimensions.value =
                         getString(R.string.dimensions_placeholder, bitmap.width, bitmap.height)
-
                     val size = bytes.size.toDouble()
-                    binding.registrationAvatarSize.text = when {
+                    model.avatarSize.value = when {
                         size >= 1_000_000 ->
                             getString(R.string.mbytes, BigDecimal(size / 1_000_000.0).setScale(2, UP).toString())
-                        size >= 1_000 -> getString(R.string.kbytes, BigDecimal(size / 1_000.0).setScale(2, UP).toString())
+                        size >= 1_000 ->
+                            getString(R.string.kbytes, BigDecimal(size / 1_000.0).setScale(2, UP).toString())
                         else -> getString(R.string.bytes, size.toString())
                     }
                 } catch (e: Exception) {
                     Timber.e(e)
                     if (preferencesManager.isDebug) context.longToast(e.message)
                     else context.toast(getString(R.string.unable_to_load_image))
-
                     resetImage()
                 }
             }
         }
+
+    override fun onAttach(context: Context) {
+        context.appComponent.inject(this)
         super.onAttach(context)
     }
 
@@ -93,7 +94,6 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
         viewModel = model
         registrationBackBtn.setOnClickListener { findNavController().popBackStack() }
         registrationBirthDate.keyListener = null
-        registrationBirthDate
         registrationBirthDate.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
@@ -105,10 +105,10 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
             datePickerDialog.datePicker.maxDate = Date().time
             datePickerDialog.show()
         }
-        registrationMaleBtn.setOnClickListener { model.gender.postValue(false) }
-        registrationFemaleBtn.setOnClickListener { model.gender.postValue(true) }
+        registrationMaleBtn.setOnClickListener { model.gender.value = false }
+        registrationFemaleBtn.setOnClickListener { model.gender.value = true }
 
-        registrationBtn.setOnClickListener { model.register() }
+        registrationBtn.setOnClickListener { model.register(context?.cacheDir) }
         registrationAvatar.setOnClickListener { pickImage() }
         registrationAvatarClearButton.setOnClickListener { resetImage() }
 
@@ -130,7 +130,11 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
                 if (success) findNavController().navigate(RegistrationFragmentDirections.registrationToFeed())
             }
         }
-        resetImage()
+        if (model.avatar.value == null) {
+            resetImage()
+        } else {
+            registrationAvatar.setImageBitmap(model.avatar.value)
+        }
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -144,14 +148,14 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
 
     private fun pickImage() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getImageLauncher?.launch("image/*")
+            getImageLauncher.launch("image/*")
         } else {
             Dexter
                 .withContext(context)
                 .withPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 .withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-                        getImageLauncher?.launch("image/*")
+                        getImageLauncher.launch("image/*")
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse?) =
@@ -169,6 +173,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
     }
 
     private fun resetImage() {
+        model.avatar.value = null
         Glide
             .with(context ?: return)
             .load(RetrofitClient.DEFAULT_AVATAR_URL)
@@ -192,8 +197,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
                 ) = false
             })
             .into(binding.registrationAvatar)
-        binding.registrationAvatarDimensions.text = getString(R.string.default_avatar)
-        binding.registrationAvatarSize.text = null
-        binding.registrationAvatarClearButton.hide()
+        model.avatarDimensions.value = getString(R.string.default_avatar)
+        model.avatarSize.value = String()
     }
 }
