@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentLoginBinding
 import ru.maxim.barybians.ui.fragment.login.LoginViewModel.LoginViewModelFactory
 import ru.maxim.barybians.utils.*
@@ -21,6 +22,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     @Inject
     lateinit var viewModelFactory: LoginViewModelFactory
     private val model: LoginViewModel by viewModels { viewModelFactory }
+
+    @Inject
+    lateinit var preferencesManager: PreferencesManager
 
     private val binding by viewBinding(FragmentLoginBinding::bind)
 
@@ -53,5 +57,17 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         loginRegisterLink.setOnClickListener {
             findNavController().navigate(LoginFragmentDirections.loginToRegistration())
         }
+
+        loginDarkModeButton.setOnClickListener {
+            val isDarkMode = model.isDarkMode.value?.not() ?: false
+            model.isDarkMode.value = isDarkMode
+            preferencesManager.isDarkMode = isDarkMode
+            activity?.recreate()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        model.isDarkMode.value = preferencesManager.isDarkMode
     }
 }

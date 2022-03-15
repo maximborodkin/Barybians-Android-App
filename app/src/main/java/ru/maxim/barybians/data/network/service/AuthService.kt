@@ -1,6 +1,5 @@
 package ru.maxim.barybians.data.network.service
 
-import android.graphics.Bitmap
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
@@ -23,7 +22,7 @@ interface AuthService {
         @Part lastName: MultipartBody.Part,
         @Part birthDate: MultipartBody.Part,
         @Part gender: MultipartBody.Part,
-        @Part photo: MultipartBody.Part,
+        @Part photo: MultipartBody.Part?,
         @Part username: MultipartBody.Part,
         @Part password: MultipartBody.Part
     ): Response<RegistrationResponse>

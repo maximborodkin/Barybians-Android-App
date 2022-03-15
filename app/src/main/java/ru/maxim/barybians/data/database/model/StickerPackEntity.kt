@@ -16,7 +16,7 @@ class StickerPackEntity(
     val pack: String,
 
     @ColumnInfo(name = Columns.icon)
-    val icon: String,
+    val icon: Int,
 
     @ColumnInfo(name = Columns.amount)
     val amount: Int

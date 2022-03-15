@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.auth.registration.RegistrationActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <import type="android.view.View" />
@@ -31,6 +30,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_back" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/registrationDarkModeButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="24dp"
+                android:background="@drawable/round_button"
+                android:contentDescription="@string/theme"
+                android:padding="12dp"
+                android:src="@{viewModel.isDarkMode ? @drawable/ic_day : @drawable/ic_night}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/ic_day" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/registrationTitle"
@@ -191,15 +203,15 @@
                 app:layout_constraintTop_toBottomOf="@id/registrationMaleBtn"
                 tools:src="@drawable/ic_camera" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/registrationAvatarClearButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:contentDescription="@string/clear"
-                android:padding="12dp"
                 android:enabled="@{!viewModel.isLoading}"
-                android:visibility="@{viewModel.avatar == null ? View.GONE : View.VISIBLE}"
+                android:padding="12dp"
                 android:src="@drawable/clear_button"
+                android:visibility="@{viewModel.avatar == null ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toTopOf="@id/registrationAvatar"
                 app:layout_constraintEnd_toEndOf="@id/registrationAvatar"
                 app:layout_constraintStart_toEndOf="@id/registrationAvatar"

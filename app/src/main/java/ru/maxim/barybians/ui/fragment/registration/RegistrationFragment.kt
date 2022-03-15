@@ -93,6 +93,12 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
         binding.lifecycleOwner = viewLifecycleOwner
         viewModel = model
         registrationBackBtn.setOnClickListener { findNavController().popBackStack() }
+        registrationDarkModeButton.setOnClickListener {
+            val isDarkMode = model.isDarkMode.value?.not() ?: false
+            model.isDarkMode.value = isDarkMode
+            preferencesManager.isDarkMode = isDarkMode
+            activity?.recreate()
+        }
         registrationBirthDate.keyListener = null
         registrationBirthDate.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
@@ -135,6 +141,11 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
         } else {
             registrationAvatar.setImageBitmap(model.avatar.value)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        model.isDarkMode.value = preferencesManager.isDarkMode
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {

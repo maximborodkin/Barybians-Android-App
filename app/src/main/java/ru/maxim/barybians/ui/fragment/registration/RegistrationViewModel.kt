@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.AlreadyExistsException
 import ru.maxim.barybians.data.network.exception.BadRequestException
 import ru.maxim.barybians.data.network.exception.NoConnectionException
@@ -28,6 +29,8 @@ class RegistrationViewModel private constructor(
 
     private val uiDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    val isDarkMode = MutableLiveData<Boolean>()
 
     private val _errorMessageRes = MutableLiveData<Int?>()
     val errorMessageRes: LiveData<Int?> = _errorMessageRes
@@ -168,15 +171,13 @@ class RegistrationViewModel private constructor(
         val bitmap = avatar.value ?: return null
         return try {
             val file = File(cacheDir, "avatar_${System.currentTimeMillis()}.png")
-//            withContext(Dispatchers.IO) {
-                val byteOutputStream = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream)
-                val byteArray: ByteArray = byteOutputStream.toByteArray()
-                val fileOutputStream = FileOutputStream(file)
-                fileOutputStream.write(byteArray)
-                fileOutputStream.flush()
-                fileOutputStream.close()
-//            }
+            val byteOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream)
+            val byteArray: ByteArray = byteOutputStream.toByteArray()
+            val fileOutputStream = FileOutputStream(file)
+            fileOutputStream.write(byteArray)
+            fileOutputStream.flush()
+            fileOutputStream.close()
             file
         } catch (e: Exception) {
             Timber.e(e)

@@ -73,7 +73,7 @@ class AuthRepositoryImpl @Inject constructor(
             val avatarPart = if (avatar != null) {
                 val avatarBinary = avatar.asRequestBody("image/*".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("photo", "avatar", avatarBinary)
-            } else MultipartBody.Part.createFormData("photo", "min/j.png")
+            } else null
 
             val registerResponse = authService.register(
                 firstName = MultipartBody.Part.createFormData("firstName", firstName),
