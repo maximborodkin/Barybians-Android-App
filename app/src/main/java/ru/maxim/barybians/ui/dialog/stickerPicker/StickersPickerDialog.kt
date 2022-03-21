@@ -81,7 +81,7 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
             tab.customView = ImageView(context).apply {
                 layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
                 Glide.with(this)
-                    .load("${RetrofitClient.STICKERS_BASE_URL}/${pack.pack}/${pack.icon}")
+                    .load("${RetrofitClient.STICKERS_BASE_URL}/${pack.pack}/${pack.icon}.png")
                     .apply(RequestOptions().override(100, 100))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(object : RequestListener<Drawable> {

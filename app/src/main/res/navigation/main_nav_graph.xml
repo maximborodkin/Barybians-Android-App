@@ -113,7 +113,14 @@
         android:id="@+id/preferencesFragment"
         android:name="ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment"
         android:label="PreferencesFragment"
-        tools:layout="@xml/fragment_preferences" />
+        tools:layout="@xml/fragment_preferences">
+
+        <action
+            android:id="@+id/preferencesToLogin"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/main_nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/chatFragment"

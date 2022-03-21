@@ -1,14 +1,22 @@
 package ru.maxim.barybians.ui.fragment.registration
 
 import android.app.Application
+import android.graphics.Bitmap
 import androidx.lifecycle.*
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.AlreadyExistsException
 import ru.maxim.barybians.data.network.exception.BadRequestException
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.data.repository.auth.AuthRepository
+import timber.log.Timber
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
@@ -21,6 +29,8 @@ class RegistrationViewModel private constructor(
 
     private val uiDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
     private val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    val isDarkMode = MutableLiveData<Boolean>()
 
     private val _errorMessageRes = MutableLiveData<Int?>()
     val errorMessageRes: LiveData<Int?> = _errorMessageRes
@@ -48,8 +58,10 @@ class RegistrationViewModel private constructor(
         }
     }
     private val birthDateApiString = MutableLiveData(String())
-
-    val gender = MutableLiveData(false) // true is female, false is male
+    val gender = MutableLiveData(false) // false - male, true - female
+    var avatar = MutableLiveData<Bitmap?>(null)
+    val avatarDimensions = MutableLiveData(String())
+    val avatarSize = MutableLiveData(String())
     val login = MutableLiveData(String())
     val password = MutableLiveData(String())
     val repeatPassword = MutableLiveData(String())
@@ -124,7 +136,7 @@ class RegistrationViewModel private constructor(
         }
     }
 
-    fun register() = viewModelScope.launch {
+    fun register(cacheDir: File?) = viewModelScope.launch {
         try {
             if (validateFields() && isLoading.value != true) {
                 _isLoading.postValue(true)
@@ -134,7 +146,8 @@ class RegistrationViewModel private constructor(
                     firstName = requireNotNull(firstName.value).trim(),
                     lastName = requireNotNull(lastName.value).trim(),
                     birthDate = requireNotNull(birthDateApiString.value),
-                    gender = gender.value == true,
+                    gender = if (gender.value == true) 1 else 0,
+                    avatar = withContext(IO) { createFileFromBitmap(cacheDir) },
                     login = requireNotNull(login.value).trim(),
                     password = requireNotNull(password.value).trim()
                 )
@@ -150,6 +163,25 @@ class RegistrationViewModel private constructor(
             }
         } finally {
             _isLoading.postValue(false)
+        }
+    }
+
+    private fun createFileFromBitmap(cacheDir: File?): File? {
+        if (cacheDir == null) return null
+        val bitmap = avatar.value ?: return null
+        return try {
+            val file = File(cacheDir, "avatar_${System.currentTimeMillis()}.png")
+            val byteOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteOutputStream)
+            val byteArray: ByteArray = byteOutputStream.toByteArray()
+            val fileOutputStream = FileOutputStream(file)
+            fileOutputStream.write(byteArray)
+            fileOutputStream.flush()
+            fileOutputStream.close()
+            file
+        } catch (e: Exception) {
+            Timber.e(e)
+            null
         }
     }
 

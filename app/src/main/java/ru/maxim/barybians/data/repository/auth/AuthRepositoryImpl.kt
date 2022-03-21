@@ -4,6 +4,9 @@ import com.google.gson.Gson
 import dagger.Reusable
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.*
 import ru.maxim.barybians.data.network.model.response.ErrorResponse
@@ -12,7 +15,9 @@ import ru.maxim.barybians.data.network.service.AuthService
 import ru.maxim.barybians.utils.NetworkUtils
 import ru.maxim.barybians.utils.isNotNull
 import timber.log.Timber
+import java.io.File
 import java.net.HttpURLConnection.*
+import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 @Reusable
@@ -47,7 +52,8 @@ class AuthRepositoryImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Timber.tag("AuthRepository").w(e)
+            Timber.e(e)
+            if (e is SocketTimeoutException) throw TimeoutException()
             throw e
         }
     }
@@ -56,20 +62,27 @@ class AuthRepositoryImpl @Inject constructor(
         firstName: String,
         lastName: String,
         birthDate: String,
-        gender: Boolean,
+        gender: Int,
+        avatar: File?,
         login: String,
         password: String
     ) = withContext(IO) {
         try {
             if (!networkUtils.networkStateChangeListener.value) throw NoConnectionException()
+
+            val avatarPart = if (avatar != null) {
+                val avatarBinary = avatar.asRequestBody("image/*".toMediaTypeOrNull())
+                MultipartBody.Part.createFormData("photo", "avatar", avatarBinary)
+            } else null
+
             val registerResponse = authService.register(
-                firstName = firstName,
-                lastName = lastName,
-                birthDate = birthDate,
-                gender = gender,
-                photo = defaultAvatarUrl,
-                username = login,
-                password = password
+                firstName = MultipartBody.Part.createFormData("firstName", firstName),
+                lastName = MultipartBody.Part.createFormData("lastName", lastName),
+                birthDate = MultipartBody.Part.createFormData("birthDate", birthDate),
+                gender = MultipartBody.Part.createFormData("sex", gender.toString()),
+                photo = avatarPart,
+                username = MultipartBody.Part.createFormData("username", login),
+                password = MultipartBody.Part.createFormData("password", password)
             )
             val responseBody = registerResponse.body()
 
@@ -93,7 +106,8 @@ class AuthRepositoryImpl @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Timber.tag(logTag).w(e)
+            Timber.e(e)
+            if (e is SocketTimeoutException) throw TimeoutException()
             throw e
         }
     }
@@ -101,10 +115,5 @@ class AuthRepositoryImpl @Inject constructor(
     override fun logout() {
         preferencesManager.userId = 0
         preferencesManager.token = null
-    }
-
-    companion object {
-        private const val logTag = "AuthRepository"
-        private const val defaultAvatarUrl = "min/j.png"
     }
 }

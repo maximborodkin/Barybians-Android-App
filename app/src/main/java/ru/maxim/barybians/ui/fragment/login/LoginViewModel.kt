@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
+import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.InvalidCredentialsException
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
@@ -17,6 +18,8 @@ class LoginViewModel private constructor(
 
     val login = MutableLiveData(String())
     val password = MutableLiveData(String())
+
+    val isDarkMode = MutableLiveData<Boolean>()
 
     private val _errorMessageRes = MutableLiveData<Int?>()
     val errorMessageRes: LiveData<Int?> = _errorMessageRes
