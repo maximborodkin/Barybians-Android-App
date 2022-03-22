@@ -4,53 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View" />
+        <variable
+            name="userAvatar"
+            type="String" />
 
         <variable
-            name="user"
-            type="ru.maxim.barybians.domain.model.User" />
-
-        <variable
-            name="isDebug"
-            type="Boolean" />
+            name="userName"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="6dp">
+        android:orientation="horizontal">
 
         <ru.maxim.barybians.ui.view.AvatarView
-            android:id="@+id/itemUserAvatar"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            app:image="@{user.avatarMin}"
-            app:isOnline="@{user.isOnline}"
+            android:id="@+id/dialogInterlocutorAvatar"
+            image="@{userAvatar}"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:isOnline="truer"
             tools:src="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/itemUserName"
-            android:layout_width="0dp"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/dialogInterlocutorName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginHorizontal="12dp"
-            android:layout_weight="1"
-            android:text="@{user.fullName}"
+            android:layout_marginStart="8dp"
+            android:text="@{userName}"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/itemUserAvatar"
+            app:layout_constraintStart_toEndOf="@id/dialogInterlocutorAvatar"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/full_names" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/dialogInterlocutorOnlineStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{`userId: ` + String.valueOf(user.userId)}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_marginStart="8dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/dialogInterlocutorAvatar"
+            app:layout_constraintTop_toBottomOf="@id/dialogInterlocutorName"
+            tools:text="Last seen today at 5:43" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

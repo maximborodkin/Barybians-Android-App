@@ -34,7 +34,7 @@
 
             <include
                 android:id="@+id/chatToolbarUser"
-                layout="@layout/toolbar_user" />
+                layout="@layout/item_user" />
         </com.google.android.material.appbar.MaterialToolbar>
 
         <androidx.recyclerview.widget.RecyclerView

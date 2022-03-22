@@ -29,9 +29,9 @@ class ChatRecyclerAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: OutgoingMessage) = with(binding) {
-            itemOutgoingMessageLabel.background = null
+            outgoingMessageStatus.setImageDrawable(null)
             itemOutgoingMessageText.text = message.text
-            itemOutgoingMessageTime.text = message.time
+            outgoingMessageTime.text = message.time
             when (message.status) {
                 Sending -> setSendingProcessLabel()
                 Unread -> setUnreadLabel()
@@ -40,21 +40,21 @@ class ChatRecyclerAdapter(
             }
         }
 
-        private fun setSendingProcessLabel() = with(binding.itemOutgoingMessageLabel) {
-            setBackgroundResource(R.drawable.ic_timer_animated)
+        private fun setSendingProcessLabel() = with(binding.outgoingMessageStatus) {
+            setImageResource(R.drawable.ic_timer_animated)
             (background as? Animatable)?.start()
         }
 
-        fun setErrorLabel() = with(binding.itemOutgoingMessageLabel) {
-            setBackgroundResource(R.drawable.ic_error)
+        fun setErrorLabel() = with(binding.outgoingMessageStatus) {
+            setImageResource(R.drawable.ic_error)
         }
 
-        fun setUnreadLabel() = with(binding.itemOutgoingMessageLabel) {
-            setBackgroundResource(R.drawable.unread_circle)
+        fun setUnreadLabel() = with(binding.outgoingMessageStatus) {
+            setImageResource(R.drawable.unread_circle)
         }
 
-        private fun clearLabel() = with(binding.itemOutgoingMessageLabel) {
-            background = null
+        private fun clearLabel() = with(binding.outgoingMessageStatus) {
+            setImageDrawable(null)
         }
     }
 

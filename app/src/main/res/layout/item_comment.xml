@@ -69,7 +69,7 @@
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/itemCommentUserAvatar"
-            tools:text="Comment body" />
+            tools:text="@tools:sample/lorem[10]" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"

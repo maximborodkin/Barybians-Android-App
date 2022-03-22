@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.maxim.barybians.databinding.ItemUserBinding
+import ru.maxim.barybians.databinding.ItemLikeBinding
 import ru.maxim.barybians.domain.model.User
 import ru.maxim.barybians.ui.dialog.likesList.LikesListRecyclerAdapter.UserViewHolder
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class LikesListRecyclerAdapter @Inject constructor() : ListAdapter<User, UserVie
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemUserBinding.inflate(layoutInflater, parent, false)
+        val binding = ItemLikeBinding.inflate(layoutInflater, parent, false)
         return UserViewHolder(binding)
     }
 
@@ -28,7 +28,7 @@ class LikesListRecyclerAdapter @Inject constructor() : ListAdapter<User, UserVie
         holder.bind(getItem(position))
     }
 
-    inner class UserViewHolder(private val binding: ItemUserBinding) :
+    inner class UserViewHolder(private val binding: ItemLikeBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) = with(binding) {

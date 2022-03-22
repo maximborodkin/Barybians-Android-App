@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/likesListTitle"
             tools:itemCount="3"
-            tools:listitem="@layout/item_user" />
+            tools:listitem="@layout/item_like" />
 
         <TextView
             android:id="@+id/likesListEmptyMessage"
@@ -49,7 +49,6 @@
             app:layout_constraintEnd_toEndOf="@id/likesListRecycler"
             app:layout_constraintStart_toStartOf="@id/likesListRecycler"
             app:layout_constraintTop_toTopOf="@id/likesListRecycler"
-            tools:text="Unable to load likes. Please try later"
-            tools:visibility="gone" />
+            tools:text="Unable to load likes. Please try later" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toStartOf="@id/itemChatDate"
         app:layout_constraintStart_toEndOf="@id/itemChatUserAvatar"
         app:layout_constraintTop_toBottomOf="@id/itemChatUserName"
-        tools:text="Some message" />
+        tools:text="@tools:sample/lorem[5]" />
 
     <TextView
         android:id="@+id/itemChatDate"

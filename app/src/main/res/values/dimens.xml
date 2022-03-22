@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="message_corner_radius">6dp</dimen>
-    <dimen name="message_padding">6dp</dimen>
-    <dimen name="space_between_messages">6dp</dimen>
+    <dimen name="message_space">6dp</dimen>
 
     <dimen name="attachment_space">6dp</dimen>
     <dimen name="image_attachment_size">128dp</dimen>

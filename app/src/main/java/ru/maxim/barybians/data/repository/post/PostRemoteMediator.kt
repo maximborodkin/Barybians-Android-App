@@ -55,12 +55,14 @@ class PostRemoteMediator private constructor(
 
             val startIndex = page * state.config.pageSize
             val count = state.config.pageSize
-            val feedPageResponse = if (userId == null || userId <= 0) {
-                val postDto = repositoryBound.wrapRequest { postService.loadFeedPage(startIndex = startIndex, count = count) }
+            val feedPageResponse = if (userId != null && userId > 0) {
+                val postDto = repositoryBound.wrapRequest {
+                    postService.loadUserPostsPage(userId = userId, startIndex = startIndex, count = count)
+                }
                 postDtoMapper.toDomainModelList(postDto)
             } else {
                 val postDto = repositoryBound.wrapRequest {
-                    postService.loadUserPostsPage(userId = userId, startIndex = startIndex, count = count)
+                    postService.loadFeedPage(startIndex = startIndex, count = count)
                 }
                 postDtoMapper.toDomainModelList(postDto)
             }
