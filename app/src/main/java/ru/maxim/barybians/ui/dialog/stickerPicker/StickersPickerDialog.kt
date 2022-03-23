@@ -10,7 +10,9 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.setPadding
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -43,8 +45,6 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
     lateinit var factory: StickerPickerViewModel.StickerPickerViewModelFactory
     private val model: StickerPickerViewModel by viewModels { factory }
 
-    private var onPickSticker: ((stickerUrl: String) -> Unit)? = null
-
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
@@ -55,7 +55,6 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        if (savedInstanceState != null) dismiss()
         binding = DialogStickerPickerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -130,7 +129,10 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
                 val stickerUrl = "${RetrofitClient.STICKERS_BASE_URL}/${pack.pack}/$sticker.png"
                 load(stickerUrl)
                 setOnClickListener {
-                    onPickSticker?.invoke(stickerUrl)
+                    setFragmentResult(
+                        requestKey = stickerPickerResultKey,
+                        result = bundleOf(stickerPackKey to pack.pack, stickerKey to sticker.toString())
+                    )
                     dismiss()
                 }
             }
@@ -138,8 +140,9 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
         }
     }
 
-    fun setOnPickListener(listener: ((stickerUrl: String) -> Unit)?): StickersPickerDialog {
-        onPickSticker = listener
-        return this
+    companion object {
+        const val stickerPickerResultKey = "sticker_picker_result"
+        const val stickerPackKey = "sticker_pack"
+        const val stickerKey = "sticker"
     }
 }

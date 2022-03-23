@@ -83,9 +83,16 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
             model.sortingDirection.postValue(model.sortingDirection.value?.not())
         }
         commentsListStickerBtn.setOnClickListener {
-            StickersPickerDialog()
-                .setOnPickListener(model::createComment)
-                .show(childFragmentManager, StickersPickerDialog::class.qualifiedName)
+            StickersPickerDialog().show(childFragmentManager, StickersPickerDialog::class.qualifiedName)
+        }
+        childFragmentManager.setFragmentResultListener(
+            StickersPickerDialog.stickerPickerResultKey,
+            viewLifecycleOwner
+        ) { _, result: Bundle ->
+            model.sendSticker(
+                pack = result.getString(StickersPickerDialog.stickerPackKey),
+                sticker = result.getString(StickersPickerDialog.stickerKey)
+            )
         }
     }
 

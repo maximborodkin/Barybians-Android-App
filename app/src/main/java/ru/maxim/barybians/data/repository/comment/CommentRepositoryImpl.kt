@@ -7,6 +7,7 @@ import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.database.dao.CommentDao
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
+import ru.maxim.barybians.data.network.model.ParseMode
 import ru.maxim.barybians.data.network.model.mapper.CommentDtoMapper
 import ru.maxim.barybians.data.network.service.CommentService
 import ru.maxim.barybians.data.repository.RepositoryBound
@@ -27,14 +28,27 @@ class CommentRepositoryImpl @Inject constructor(
             .map { commentsList -> commentEntityMapper.toDomainModelList(commentsList) }
     }
 
-    override suspend fun createComment(uuid: String, postId: Int, text: String) = withContext(IO) {
-        val commentDto = repositoryBound.wrapRequest { commentService.addComment(uuid, postId, text) }
+    override suspend fun createComment(uuid: String, postId: Int, text: String, parseMode: ParseMode) = withContext(IO) {
+        val commentDto = repositoryBound.wrapRequest {
+            commentService.addComment(
+                uuid = uuid,
+                postId = postId,
+                text = text,
+                parseMode = parseMode.headerValue
+            )
+        }
         val comment = commentDtoMapper.toDomainModel(commentDto)
         commentDao.save(commentEntityMapper.fromDomainModel(comment), userDao)
     }
 
-    override suspend fun editComment(commentId: Int, text: String) = withContext(IO) {
-        val commentDto = repositoryBound.wrapRequest { commentService.editComment(commentId, text) }
+    override suspend fun editComment(commentId: Int, text: String, parseMode: ParseMode) = withContext(IO) {
+        val commentDto = repositoryBound.wrapRequest {
+            commentService.editComment(
+                commentId = commentId,
+                text = text,
+                parseMode = parseMode.headerValue
+            )
+        }
         val comment = commentDtoMapper.toDomainModel(commentDto)
         commentDao.save(commentEntityMapper.fromDomainModel(comment), userDao)
     }

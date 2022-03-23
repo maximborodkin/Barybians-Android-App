@@ -13,5 +13,6 @@ data class PostDto(
     val edited: Int,
     val author: UserDto,
     val likedUsers: List<UserDto>,
-    val comments: List<CommentDto>
+    val comments: List<CommentDto>,
+    val attachments: List<AttachmentDto>
 )

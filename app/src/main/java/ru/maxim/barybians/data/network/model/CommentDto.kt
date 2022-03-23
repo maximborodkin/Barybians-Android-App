@@ -10,5 +10,6 @@ data class CommentDto(
     val text: String,
     @SerializedName("utime")
     val date: Long,
-    val author: UserDto
+    val author: UserDto,
+    val attachments: List<AttachmentDto>
 )

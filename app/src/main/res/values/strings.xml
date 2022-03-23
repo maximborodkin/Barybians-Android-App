@@ -144,4 +144,5 @@
     <string name="default_avatar">Default avatar</string>
     <string name="unable_to_load_image">Unable to load image</string>
     <string name="clear">Clear</string>
+    <string name="type_text_here">Type text here</string>
 </resources>

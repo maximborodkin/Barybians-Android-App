@@ -7,20 +7,21 @@ import ru.maxim.barybians.data.network.model.CommentDto
 interface CommentService {
 
     @FormUrlEncoded
-    @Headers("Parse-mode: html")
     @POST("/v2/comments")
     suspend fun addComment(
         @Header("request") uuid: String,
         @Field("postId") postId: Int,
-        @Field("text") text: String
+        @Field("text") text: String,
+        @Header("Parse-mode") parseMode: String
     ): Response<CommentDto>
 
     @FormUrlEncoded
-    @Headers("Parse-mode: html")
+    @Headers("Parse-mode: md")
     @PUT("/v2/comments/{commentId}")
     suspend fun editComment(
         @Path("commentId") commentId: Int,
-        @Field("text") text: String
+        @Field("text") text: String,
+        @Header("Parse-mode") parseMode: String
     ): Response<CommentDto>
 
     @DELETE("/v2/comments/{commentId}")

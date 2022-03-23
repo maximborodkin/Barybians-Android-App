@@ -14,11 +14,18 @@ data class AttachmentDto(
 //    val favicon: String?,
 //    val timestamp: Long?
 ) {
-    enum class AttachmentType {
-        STYLED, LINK, IMAGE, VIDEO
+    enum class AttachmentType(val messageValue: String) {
+        STYLED("styled"),
+        LINK("link"),
+        IMAGE("image"),
+        VIDEO("video"),
+        STICKER("sticker")
     }
 
-    enum class StyledAttachmentType {
-        BOLD, ITALIC, UNDERLINE, STRIKE
+    enum class StyledAttachmentType(val messageValue: String) {
+        BOLD("bold"),
+        ITALIC("italic"),
+        UNDERLINE("underline"),
+        STRIKE("strike")
     }
 }
