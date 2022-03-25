@@ -27,6 +27,7 @@ class CommentDtoMapper @Inject constructor(
             userId = domainModel.userId,
             text = domainModel.text,
             date = domainModel.date.time / 1000,
-            author = userDtoMapper.fromDomainModel(domainModel.author)
+            author = userDtoMapper.fromDomainModel(domainModel.author),
+            attachments = listOf() // TODO: attachemnts
         )
 }

@@ -7,12 +7,12 @@ import androidx.room.ForeignKey.NO_ACTION
 data class MessageEntity(
     @Embedded val message: MessageEntityBody,
 
-    @Relation(
-        entity = AttachmentEntity::class,
-        entityColumn = AttachmentEntity.Contract.Columns.messageId,
-        parentColumn = Columns.messageId
-    )
-    val attachments: List<AttachmentEntity>
+//    @Relation(
+//        entity = AttachmentEntity::class,
+//        entityColumn = AttachmentEntity.Contract.Columns.messageId,
+//        parentColumn = Columns.messageId
+//    )
+//    val attachments: List<AttachmentEntity>
 ) {
     @Entity(
         tableName = tableName,

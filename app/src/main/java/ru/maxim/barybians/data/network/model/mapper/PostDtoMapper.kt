@@ -34,6 +34,7 @@ class PostDtoMapper @Inject constructor(
             edited = if (domainModel.isEdited) 1 else 0,
             author = userDtoMapper.fromDomainModel(domainModel.author),
             likedUsers = userDtoMapper.fromDomainModelList(domainModel.likedUsers),
-            comments = commentDtoMapper.fromDomainModelList(domainModel.comments)
+            comments = commentDtoMapper.fromDomainModelList(domainModel.comments),
+            attachments = listOf() // TODO: attachments
         )
 }

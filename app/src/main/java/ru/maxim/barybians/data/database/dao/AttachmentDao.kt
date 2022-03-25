@@ -1,14 +1,13 @@
 package ru.maxim.barybians.data.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import ru.maxim.barybians.data.database.model.AttachmentEntity
-import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.Columns
 
 @Dao
 interface AttachmentDao {
-
-    @Query("SELECT * FROM ${AttachmentEntity.tableName} WHERE ${Columns.messageId}=:messageId")
-    suspend fun getByMessageId(messageId: Int): List<AttachmentEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(attachmentEntity: AttachmentEntity)
