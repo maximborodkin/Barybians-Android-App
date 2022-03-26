@@ -9,6 +9,7 @@ data class Post(
     val text: String,
     val date: Date,
     val isEdited: Boolean,
+    val attachments: List<Attachment>,
     val author: User,
     val likedUsers: List<User>,
     val comments: List<Comment>

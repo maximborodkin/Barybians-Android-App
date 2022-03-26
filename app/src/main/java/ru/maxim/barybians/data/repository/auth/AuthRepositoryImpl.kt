@@ -47,6 +47,7 @@ class AuthRepositoryImpl @Inject constructor(
             } else {
                 throw when (authResponse.code()) {
                     HTTP_CLIENT_TIMEOUT, HTTP_GATEWAY_TIMEOUT -> TimeoutException()
+                    HTTP_FORBIDDEN -> InvalidCredentialsException()
                     in 500..599 -> ServerErrorException()
                     else -> NetworkException()
                 }

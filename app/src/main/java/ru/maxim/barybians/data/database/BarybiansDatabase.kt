@@ -9,6 +9,7 @@ import ru.maxim.barybians.data.database.model.*
 @Database(
     entities = [
         AttachmentEntity::class,
+        PostAttachmentEntity::class,
         ChatEntity::class,
         CommentEntity.CommentEntityBody::class,
         LikeEntity::class,
@@ -23,6 +24,7 @@ import ru.maxim.barybians.data.database.model.*
 abstract class BarybiansDatabase : RoomDatabase() {
 
     abstract fun attachmentDao(): AttachmentDao
+    abstract fun postAttachmentDao(): PostAttachmentDao
     abstract fun chatDao(): ChatDao
     abstract fun commentDao(): CommentDao
     abstract fun likeDao(): LikeDao

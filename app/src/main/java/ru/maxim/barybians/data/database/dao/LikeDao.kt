@@ -31,7 +31,7 @@ interface LikeDao {
     suspend fun delete(likeEntity: LikeEntity)
 
     @Query("DELETE FROM ${LikeEntity.tableName}")
-    suspend fun delete()
+    suspend fun clear()
 
     @Query("DELETE FROM ${Like.tableName} WHERE ${Like.Columns.postId}=:postId AND ${Like.Columns.userId}=:userId")
     suspend fun delete(postId: Int, userId: Int)

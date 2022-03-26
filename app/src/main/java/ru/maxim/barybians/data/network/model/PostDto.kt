@@ -11,8 +11,8 @@ data class PostDto(
     @SerializedName("utime")
     val date: Long,
     val edited: Int,
+    val attachments: List<AttachmentDto>?, // TODO: remove, when the field in server response be not null
     val author: UserDto,
     val likedUsers: List<UserDto>,
-    val comments: List<CommentDto>,
-    val attachments: List<AttachmentDto>
+    val comments: List<CommentDto>
 )

@@ -7,10 +7,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import dagger.Reusable
 import ru.maxim.barybians.data.database.BarybiansDatabase
-import ru.maxim.barybians.data.database.dao.CommentDao
-import ru.maxim.barybians.data.database.dao.LikeDao
-import ru.maxim.barybians.data.database.dao.PostDao
-import ru.maxim.barybians.data.database.dao.UserDao
+import ru.maxim.barybians.data.database.dao.*
 import ru.maxim.barybians.data.database.model.PostEntity
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.model.mapper.PostDtoMapper
@@ -29,6 +26,8 @@ class PostRemoteMediator private constructor(
     private val postEntityMapper: PostEntityMapper,
     private val postDtoMapper: PostDtoMapper,
     private val postService: PostService,
+    private val attachmentDao: AttachmentDao,
+    private val postAttachmentDao: PostAttachmentDao,
     private val postDao: PostDao,
     private val likeDao: LikeDao,
     private val userDao: UserDao,
@@ -76,9 +75,11 @@ class PostRemoteMediator private constructor(
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    postDao.delete()
+                    postDao.clear()
+                    commentDao.clear()
+                    likeDao.clear()
                 }
-                postDao.save(entities, userDao, commentDao, likeDao)
+                postDao.save(entities, attachmentDao, postAttachmentDao, userDao, commentDao, likeDao)
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {
@@ -93,6 +94,8 @@ class PostRemoteMediator private constructor(
         private val postEntityMapper: PostEntityMapper,
         private val postDtoMapper: PostDtoMapper,
         private val postService: PostService,
+        private val attachmentDao: AttachmentDao,
+        private val postAttachmentDao: PostAttachmentDao,
         private val postDao: PostDao,
         private val likeDao: LikeDao,
         private val userDao: UserDao,
@@ -105,6 +108,8 @@ class PostRemoteMediator private constructor(
             postDtoMapper = postDtoMapper,
             repositoryBound = repositoryBound,
             postService = postService,
+            attachmentDao = attachmentDao,
+            postAttachmentDao = postAttachmentDao,
             postDao = postDao,
             likeDao = likeDao,
             userDao = userDao,

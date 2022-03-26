@@ -8,7 +8,8 @@ import javax.inject.Inject
 
 class PostEntityMapper @Inject constructor(
     private val userEntityMapper: UserEntityMapper,
-    private val commentEntityMapper: CommentEntityMapper
+    private val commentEntityMapper: CommentEntityMapper,
+    private val attachmentEntityMapper: AttachmentEntityMapper
 ) : DomainMapper<PostEntity, Post>() {
 
     override fun toDomainModel(model: PostEntity): Post =
@@ -19,6 +20,7 @@ class PostEntityMapper @Inject constructor(
             text = model.post.text,
             date = Date(model.post.date),
             isEdited = model.post.edited == 1,
+            attachments = attachmentEntityMapper.toDomainModelList(model.attachments),
             author = userEntityMapper.toDomainModel(model.author),
             likedUsers = userEntityMapper.toDomainModelList(model.likes),
             comments = commentEntityMapper.toDomainModelList(model.comments)
@@ -41,6 +43,7 @@ class PostEntityMapper @Inject constructor(
                 date = domainModel.date.time,
                 edited = if (domainModel.isEdited) 1 else 0,
             ),
+            attachments = attachmentEntityMapper.fromDomainModelList(domainModel.attachments),
             author = userEntityMapper.fromDomainModel(domainModel.author),
             likes = userEntityMapper.fromDomainModelList(domainModel.likedUsers),
             comments = commentEntityMapper.fromDomainModelList(domainModel.comments)

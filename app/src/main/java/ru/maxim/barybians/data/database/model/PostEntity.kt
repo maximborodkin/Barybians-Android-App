@@ -15,6 +15,14 @@ data class PostEntity(
     val author: UserEntity,
 
     @Relation(
+        entity = AttachmentEntity::class,
+        parentColumn = PostAttachmentEntity.Contract.Columns.postId,
+        entityColumn = PostAttachmentEntity.Contract.Columns.attachmentId,
+        associateBy = Junction(PostAttachmentEntity::class)
+    )
+    val attachments: List<AttachmentEntity>,
+
+    @Relation(
         entity = UserEntity::class,
         parentColumn = LikeEntity.Contract.Columns.postId,
         entityColumn = LikeEntity.Contract.Columns.userId,

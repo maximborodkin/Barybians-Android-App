@@ -1,14 +1,14 @@
 package ru.maxim.barybians.data.repository.post
 
-import androidx.paging.*
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.map
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import ru.maxim.barybians.data.database.dao.CommentDao
-import ru.maxim.barybians.data.database.dao.LikeDao
-import ru.maxim.barybians.data.database.dao.PostDao
-import ru.maxim.barybians.data.database.dao.UserDao
+import ru.maxim.barybians.data.database.dao.*
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
 import ru.maxim.barybians.data.network.model.mapper.PostDtoMapper
 import ru.maxim.barybians.data.network.service.PostService
@@ -24,6 +24,8 @@ class PostRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val commentDao: CommentDao,
     private val likeDao: LikeDao,
+    private val attachmentDao: AttachmentDao,
+    private val postAttachmentDao: PostAttachmentDao,
     private val postEntityMapper: PostEntityMapper,
     private val postDtoMapper: PostDtoMapper,
     private val repositoryBound: RepositoryBound,
@@ -63,19 +65,33 @@ class PostRepositoryImpl @Inject constructor(
     override suspend fun createPost(uuid: String, title: String?, text: String) = withContext(IO) {
         val postDto = repositoryBound.wrapRequest { postService.createPost(uuid, title, text) }
         val post = postDtoMapper.toDomainModel(postDto)
-        postDao.save(postEntityMapper.fromDomainModel(post), userDao, commentDao, likeDao)
+        postDao.save(
+            postEntityMapper.fromDomainModel(post),
+            attachmentDao,
+            postAttachmentDao,
+            userDao,
+            commentDao,
+            likeDao
+        )
     }
 
     override suspend fun editPost(postId: Int, title: String?, text: String) = withContext(IO) {
         val postDto = repositoryBound.wrapRequest { postService.updatePost(postId, title, text) }
         val post = postDtoMapper.toDomainModel(postDto)
-        postDao.save(postEntityMapper.fromDomainModel(post), userDao, commentDao, likeDao)
+        postDao.save(
+            postEntityMapper.fromDomainModel(post),
+            attachmentDao,
+            postAttachmentDao,
+            userDao,
+            commentDao,
+            likeDao
+        )
     }
 
     override suspend fun deletePost(postId: Int) = withContext(IO) {
         val isDeleted = repositoryBound.wrapRequest { postService.deletePost(postId) }
         if (isDeleted) {
-            postDao.delete(postId)
+            postDao.clear(postId)
         }
     }
 }

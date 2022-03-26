@@ -28,6 +28,10 @@ object DatabaseModule {
 
     @Provides
     @Reusable
+    fun providePostAttachmentDao(database: BarybiansDatabase): PostAttachmentDao = database.postAttachmentDao()
+
+    @Provides
+    @Reusable
     fun provideChatDao(database: BarybiansDatabase): ChatDao = database.chatDao()
 
     @Provides

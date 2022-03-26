@@ -28,21 +28,36 @@ abstract class PostDao {
     @Query("SELECT COUNT(*) FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
     abstract fun checkPost(postId: Int): Int
 
-    suspend fun save(postEntity: PostEntity, userDao: UserDao, commentDao: CommentDao, likeDao: LikeDao) {
+    suspend fun save(
+        postEntity: PostEntity,
+        attachmentDao: AttachmentDao,
+        postAttachmentDao: PostAttachmentDao,
+        userDao: UserDao,
+        commentDao: CommentDao,
+        likeDao: LikeDao
+    ) {
         userDao.save(postEntity.likes + postEntity.author)
-        commentDao.save(postEntity.comments, userDao)
         if (checkPost(postEntity.post.postId) > 0) {
             update(postEntity.post)
         } else {
             insert(postEntity.post)
         }
+        commentDao.save(postEntity.comments, userDao)
+        postAttachmentDao.save(postEntity.attachments, postEntity.post.postId, attachmentDao)
         likeDao.insert(postEntity.likes.map { like ->
             LikeEntity(postId = postEntity.post.postId, userId = like.userId)
         })
     }
 
-    suspend fun save(postEntities: List<PostEntity>, userDao: UserDao, commentDao: CommentDao, likeDao: LikeDao) =
-        postEntities.forEach { post -> save(post, userDao, commentDao, likeDao) }
+    suspend fun save(
+        postEntities: List<PostEntity>,
+        attachmentDao: AttachmentDao,
+        postAttachmentDao: PostAttachmentDao,
+        userDao: UserDao,
+        commentDao: CommentDao,
+        likeDao: LikeDao
+    ) =
+        postEntities.forEach { post -> save(post, attachmentDao, postAttachmentDao, userDao, commentDao, likeDao) }
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun update(postEntity: PostEntityBody)
@@ -51,8 +66,8 @@ abstract class PostDao {
     abstract suspend fun insert(postEntity: PostEntityBody)
 
     @Query("DELETE FROM ${PostEntity.tableName}")
-    abstract suspend fun delete()
+    abstract suspend fun clear()
 
     @Query("DELETE FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
-    abstract suspend fun delete(postId: Int)
+    abstract suspend fun clear(postId: Int)
 }
