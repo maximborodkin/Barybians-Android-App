@@ -11,5 +11,5 @@ data class MessageDto(
     @SerializedName("utime")
     val date: Long,
     val unread: Int,
-    val attachments: List<AttachmentDto>? = listOf()
+    val attachments: List<AttachmentDto>?
 )

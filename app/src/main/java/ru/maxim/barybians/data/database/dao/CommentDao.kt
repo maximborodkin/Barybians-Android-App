@@ -24,17 +24,28 @@ abstract class CommentDao {
     @Query("SELECT COUNT(*) FROM ${CommentEntity.tableName} WHERE ${Columns.commentId}=:commentId")
     abstract fun checkComment(commentId: Int): Int
 
-    suspend fun save(commentEntity: CommentEntity, userDao: UserDao) {
+    suspend fun save(
+        commentEntity: CommentEntity,
+        attachmentDao: AttachmentDao,
+        commentAttachmentDao: CommentAttachmentDao,
+        userDao: UserDao
+    ) {
         userDao.save(commentEntity.author)
         if (checkComment(commentEntity.comment.commentId) > 0) {
             update(commentEntity.comment)
         } else {
             insert(commentEntity.comment)
         }
+        commentAttachmentDao.save(commentEntity.attachments, commentEntity.comment.commentId, attachmentDao)
     }
 
-    suspend fun save(commentEntities: List<CommentEntity>, userDao: UserDao) =
-        commentEntities.forEach { comment -> save(comment, userDao) }
+    suspend fun save(
+        commentEntities: List<CommentEntity>,
+        attachmentDao: AttachmentDao,
+        commentAttachmentDao: CommentAttachmentDao,
+        userDao: UserDao
+    ) =
+        commentEntities.forEach { comment -> save(comment, attachmentDao, commentAttachmentDao, userDao) }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(commentEntity: CommentEntityBody)

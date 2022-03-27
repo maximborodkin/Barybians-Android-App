@@ -77,7 +77,6 @@ dependencies {
     def livedata_version = "2.4.1"
     def coroutines_version = '1.6.0-native-mt'
     def dagger_version = '2.40.5'
-    def moxy_version = "2.2.2"
     def paging_version = "3.1.1"
 
     // DI
@@ -95,12 +94,6 @@ dependencies {
 
     // Paging 3
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-
-    // MVP
-    kapt "com.github.moxy-community:moxy-compiler:$moxy_version"
-    implementation "com.github.moxy-community:moxy:$moxy_version"
-    implementation "com.github.moxy-community:moxy-androidx:$moxy_version"
-    implementation "com.github.moxy-community:moxy-ktx:$moxy_version"
 
     // Adapter delegates
     implementation 'com.hannesdorfmann:adapterdelegates4:4.3.1'

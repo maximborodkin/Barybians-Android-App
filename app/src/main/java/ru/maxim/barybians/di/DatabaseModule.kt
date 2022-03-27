@@ -26,13 +26,14 @@ object DatabaseModule {
     @Reusable
     fun provideAttachmentDao(database: BarybiansDatabase): AttachmentDao = database.attachmentDao()
 
-    @Provides
-    @Reusable
-    fun providePostAttachmentDao(database: BarybiansDatabase): PostAttachmentDao = database.postAttachmentDao()
 
     @Provides
     @Reusable
     fun provideChatDao(database: BarybiansDatabase): ChatDao = database.chatDao()
+
+    @Provides
+    @Reusable
+    fun provideCommentAttachmentDao(database: BarybiansDatabase): CommentAttachmentDao = database.commentAttachmentDao()
 
     @Provides
     @Reusable
@@ -44,7 +45,15 @@ object DatabaseModule {
 
     @Provides
     @Reusable
+    fun provideMessageAttachmentDao(database: BarybiansDatabase): MessageAttachmentDao = database.messageAttachmentDao()
+
+    @Provides
+    @Reusable
     fun provideMessageDao(database: BarybiansDatabase): MessageDao = database.messageDao()
+
+    @Provides
+    @Reusable
+    fun providePostAttachmentDao(database: BarybiansDatabase): PostAttachmentDao = database.postAttachmentDao()
 
     @Provides
     @Reusable

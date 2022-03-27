@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
+import ru.maxim.barybians.data.database.dao.AttachmentDao
+import ru.maxim.barybians.data.database.dao.CommentAttachmentDao
 import ru.maxim.barybians.data.database.dao.CommentDao
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.mapper.CommentEntityMapper
@@ -16,6 +18,8 @@ import javax.inject.Inject
 
 class CommentRepositoryImpl @Inject constructor(
     private val commentService: CommentService,
+    private val attachmentDao: AttachmentDao,
+    private val commentAttachmentDao: CommentAttachmentDao,
     private val commentDao: CommentDao,
     private val userDao: UserDao,
     private val commentEntityMapper: CommentEntityMapper,
@@ -38,7 +42,7 @@ class CommentRepositoryImpl @Inject constructor(
             )
         }
         val comment = commentDtoMapper.toDomainModel(commentDto)
-        commentDao.save(commentEntityMapper.fromDomainModel(comment), userDao)
+        commentDao.save(commentEntityMapper.fromDomainModel(comment), attachmentDao, commentAttachmentDao, userDao)
     }
 
     override suspend fun editComment(commentId: Int, text: String, parseMode: ParseMode) = withContext(IO) {
@@ -50,7 +54,7 @@ class CommentRepositoryImpl @Inject constructor(
             )
         }
         val comment = commentDtoMapper.toDomainModel(commentDto)
-        commentDao.save(commentEntityMapper.fromDomainModel(comment), userDao)
+        commentDao.save(commentEntityMapper.fromDomainModel(comment), attachmentDao, commentAttachmentDao, userDao)
     }
 
     override suspend fun deleteComment(commentId: Int) = withContext(IO) {

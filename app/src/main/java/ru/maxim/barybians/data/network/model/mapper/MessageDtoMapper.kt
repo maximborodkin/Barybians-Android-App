@@ -29,5 +29,6 @@ class MessageDtoMapper @Inject constructor(
             text = domainModel.text,
             date = domainModel.date.time / 1000,
             unread = if (domainModel.isUnread) 1 else 0,
+            attachments = attachmentDtoMapper.fromDomainModelList(domainModel.attachments)
         )
 }

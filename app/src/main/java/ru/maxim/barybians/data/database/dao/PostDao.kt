@@ -32,6 +32,7 @@ abstract class PostDao {
         postEntity: PostEntity,
         attachmentDao: AttachmentDao,
         postAttachmentDao: PostAttachmentDao,
+        commentAttachmentDao: CommentAttachmentDao,
         userDao: UserDao,
         commentDao: CommentDao,
         likeDao: LikeDao
@@ -42,7 +43,7 @@ abstract class PostDao {
         } else {
             insert(postEntity.post)
         }
-        commentDao.save(postEntity.comments, userDao)
+        commentDao.save(postEntity.comments, attachmentDao, commentAttachmentDao, userDao)
         postAttachmentDao.save(postEntity.attachments, postEntity.post.postId, attachmentDao)
         likeDao.insert(postEntity.likes.map { like ->
             LikeEntity(postId = postEntity.post.postId, userId = like.userId)
@@ -53,11 +54,22 @@ abstract class PostDao {
         postEntities: List<PostEntity>,
         attachmentDao: AttachmentDao,
         postAttachmentDao: PostAttachmentDao,
+        commentAttachmentDao: CommentAttachmentDao,
         userDao: UserDao,
         commentDao: CommentDao,
         likeDao: LikeDao
     ) =
-        postEntities.forEach { post -> save(post, attachmentDao, postAttachmentDao, userDao, commentDao, likeDao) }
+        postEntities.forEach { post ->
+            save(
+                post,
+                attachmentDao,
+                postAttachmentDao,
+                commentAttachmentDao,
+                userDao,
+                commentDao,
+                likeDao
+            )
+        }
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun update(postEntity: PostEntityBody)

@@ -7,6 +7,7 @@ import java.util.*
 import javax.inject.Inject
 
 class CommentEntityMapper @Inject constructor(
+    private val attachmentEntityMapper: AttachmentEntityMapper,
     private val userEntityMapper: UserEntityMapper
 ) : DomainMapper<CommentEntity, Comment>() {
 
@@ -17,6 +18,7 @@ class CommentEntityMapper @Inject constructor(
             userId = model.comment.userId,
             text = model.comment.text,
             date = Date(model.comment.date),
+            attachments = attachmentEntityMapper.toDomainModelList(model.attachments),
             author = userEntityMapper.toDomainModel(model.author)
         )
 
@@ -30,6 +32,7 @@ class CommentEntityMapper @Inject constructor(
                 text = domainModel.text,
                 date = domainModel.date.time
             ),
+            attachments = attachmentEntityMapper.fromDomainModelList(domainModel.attachments ?: emptyList()),
             author = userEntityMapper.fromDomainModel(domainModel.author)
         )
 }

@@ -18,7 +18,7 @@ class MessageEntityMapper @Inject constructor(
             text = model.message.text,
             date = Date(model.message.date),
             isUnread = model.message.unread == 1,
-            attachments = listOf() //attachmentEntityMapper.toDomainModelList(model.attachments)
+            attachments = attachmentEntityMapper.toDomainModelList(model.attachments)
         )
 
     override fun fromDomainModel(domainModel: Message): MessageEntity =
@@ -31,6 +31,6 @@ class MessageEntityMapper @Inject constructor(
                 date = domainModel.date.time,
                 unread = if (domainModel.isUnread) 1 else 0,
             ),
-            //attachments = attachmentEntityMapper.fromDomainModelList(domainModel.attachments)
+            attachments = attachmentEntityMapper.fromDomainModelList(domainModel.attachments)
         )
 }

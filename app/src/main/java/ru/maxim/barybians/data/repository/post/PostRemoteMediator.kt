@@ -28,6 +28,7 @@ class PostRemoteMediator private constructor(
     private val postService: PostService,
     private val attachmentDao: AttachmentDao,
     private val postAttachmentDao: PostAttachmentDao,
+    private val commentAttachmentDao: CommentAttachmentDao,
     private val postDao: PostDao,
     private val likeDao: LikeDao,
     private val userDao: UserDao,
@@ -79,7 +80,15 @@ class PostRemoteMediator private constructor(
                     commentDao.clear()
                     likeDao.clear()
                 }
-                postDao.save(entities, attachmentDao, postAttachmentDao, userDao, commentDao, likeDao)
+                postDao.save(
+                    entities,
+                    attachmentDao,
+                    postAttachmentDao,
+                    commentAttachmentDao,
+                    userDao,
+                    commentDao,
+                    likeDao
+                )
             }
             MediatorResult.Success(endOfPaginationReached = feedPageResponse.size < state.config.pageSize)
         } catch (e: Exception) {
@@ -96,6 +105,7 @@ class PostRemoteMediator private constructor(
         private val postService: PostService,
         private val attachmentDao: AttachmentDao,
         private val postAttachmentDao: PostAttachmentDao,
+        private val commentAttachmentDao: CommentAttachmentDao,
         private val postDao: PostDao,
         private val likeDao: LikeDao,
         private val userDao: UserDao,
@@ -110,6 +120,7 @@ class PostRemoteMediator private constructor(
             postService = postService,
             attachmentDao = attachmentDao,
             postAttachmentDao = postAttachmentDao,
+            commentAttachmentDao = commentAttachmentDao,
             postDao = postDao,
             likeDao = likeDao,
             userDao = userDao,

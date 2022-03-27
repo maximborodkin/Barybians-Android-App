@@ -10,6 +10,6 @@ data class CommentDto(
     val text: String,
     @SerializedName("utime")
     val date: Long,
-    val author: UserDto,
-    val attachments: List<AttachmentDto>
+    val attachments: List<AttachmentDto>?, // TODO: remove ?, when the field in server response be not null
+    val author: UserDto
 )

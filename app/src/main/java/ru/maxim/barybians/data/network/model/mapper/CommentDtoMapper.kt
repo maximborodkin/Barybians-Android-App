@@ -7,6 +7,7 @@ import java.util.*
 import javax.inject.Inject
 
 class CommentDtoMapper @Inject constructor(
+    private val attachmentDtoMapper: AttachmentDtoMapper,
     private val userDtoMapper: UserDtoMapper
 ) : DomainMapper<CommentDto, Comment>() {
 
@@ -17,6 +18,7 @@ class CommentDtoMapper @Inject constructor(
             userId = model.userId,
             text = model.text,
             date = Date(model.date * 1000),
+            attachments = attachmentDtoMapper.toDomainModelList(model.attachments ?: emptyList()),
             author = userDtoMapper.toDomainModel(model.author)
         )
 
@@ -27,7 +29,7 @@ class CommentDtoMapper @Inject constructor(
             userId = domainModel.userId,
             text = domainModel.text,
             date = domainModel.date.time / 1000,
-            author = userDtoMapper.fromDomainModel(domainModel.author),
-            attachments = listOf() // TODO: attachemnts
+            attachments = attachmentDtoMapper.fromDomainModelList(domainModel.attachments),
+            author = userDtoMapper.fromDomainModel(domainModel.author)
         )
 }

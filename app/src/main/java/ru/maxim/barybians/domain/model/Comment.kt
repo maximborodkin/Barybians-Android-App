@@ -8,5 +8,6 @@ data class Comment(
     val userId: Int,
     val text: String,
     val date: Date,
+    val attachments: List<Attachment>,
     val author: User
 )

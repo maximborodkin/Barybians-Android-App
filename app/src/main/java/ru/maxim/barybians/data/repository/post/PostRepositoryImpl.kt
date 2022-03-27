@@ -26,6 +26,7 @@ class PostRepositoryImpl @Inject constructor(
     private val likeDao: LikeDao,
     private val attachmentDao: AttachmentDao,
     private val postAttachmentDao: PostAttachmentDao,
+    private val commentAttachmentDao: CommentAttachmentDao,
     private val postEntityMapper: PostEntityMapper,
     private val postDtoMapper: PostDtoMapper,
     private val repositoryBound: RepositoryBound,
@@ -69,6 +70,7 @@ class PostRepositoryImpl @Inject constructor(
             postEntityMapper.fromDomainModel(post),
             attachmentDao,
             postAttachmentDao,
+            commentAttachmentDao,
             userDao,
             commentDao,
             likeDao
@@ -82,6 +84,7 @@ class PostRepositoryImpl @Inject constructor(
             postEntityMapper.fromDomainModel(post),
             attachmentDao,
             postAttachmentDao,
+            commentAttachmentDao,
             userDao,
             commentDao,
             likeDao
