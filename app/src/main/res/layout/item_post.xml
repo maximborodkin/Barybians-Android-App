@@ -5,10 +5,7 @@
 
     <data>
         <import type="android.view.View" />
-        <import type="androidx.core.content.ContextCompat" />
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
-        <import type="kotlin.text.StringsKt" />
-        <import type="ru.maxim.barybians.R" />
 
         <variable
             name="post"
@@ -90,7 +87,6 @@
                 android:layout_marginTop="6dp"
                 android:text="@{post.title}"
                 android:textSize="18sp"
-                android:visibility="@{post.title == null || StringsKt.isBlank(post.title) ? View.GONE : View.VISIBLE}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/itemPostAvatar"
@@ -160,7 +156,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{`postId: ` + String.valueOf(post.postId)}"
+                android:text="@{`postId: ` + String.valueOf(post.postId) + `, a: ` + String.valueOf(post.attachments.size)}"
                 android:visibility="@{isDebug ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
