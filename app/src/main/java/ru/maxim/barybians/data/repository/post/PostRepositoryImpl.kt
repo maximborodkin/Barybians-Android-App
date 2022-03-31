@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.database.dao.*
 import ru.maxim.barybians.data.database.model.mapper.PostEntityMapper
+import ru.maxim.barybians.data.network.model.ParseMode
 import ru.maxim.barybians.data.network.model.mapper.PostDtoMapper
 import ru.maxim.barybians.data.network.service.PostService
 import ru.maxim.barybians.data.repository.RepositoryBound
@@ -63,8 +64,15 @@ class PostRepositoryImpl @Inject constructor(
         if (userId != null && userId > 0) postDao.userPostsCount(userId)
         else postDao.feedPostsCount()
 
-    override suspend fun createPost(uuid: String, title: String?, text: String) = withContext(IO) {
-        val postDto = repositoryBound.wrapRequest { postService.createPost(uuid, title, text) }
+    override suspend fun createPost(uuid: String, title: String?, text: String, parseMode: ParseMode) = withContext(IO) {
+        val postDto = repositoryBound.wrapRequest {
+            postService.createPost(
+                parseMode = parseMode.headerValue,
+                uuid = uuid,
+                title = title,
+                text = text
+            )
+        }
         val post = postDtoMapper.toDomainModel(postDto)
         postDao.save(
             postEntityMapper.fromDomainModel(post),
@@ -77,8 +85,15 @@ class PostRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun editPost(postId: Int, title: String?, text: String) = withContext(IO) {
-        val postDto = repositoryBound.wrapRequest { postService.updatePost(postId, title, text) }
+    override suspend fun editPost(postId: Int, title: String?, text: String, parseMode: ParseMode) = withContext(IO) {
+        val postDto = repositoryBound.wrapRequest {
+            postService.updatePost(
+                parseMode = parseMode.headerValue,
+                postId = postId,
+                title = title,
+                text = text
+            )
+        }
         val post = postDtoMapper.toDomainModel(postDto)
         postDao.save(
             postEntityMapper.fromDomainModel(post),

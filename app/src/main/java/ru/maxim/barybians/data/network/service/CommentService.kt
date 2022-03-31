@@ -9,19 +9,19 @@ interface CommentService {
     @FormUrlEncoded
     @POST("/v2/comments")
     suspend fun addComment(
+        @Header("Parse-mode") parseMode: String,
         @Header("request") uuid: String,
         @Field("postId") postId: Int,
-        @Field("text") text: String,
-        @Header("Parse-mode") parseMode: String
+        @Field("text") text: String
     ): Response<CommentDto>
 
     @FormUrlEncoded
     @Headers("Parse-mode: md")
     @PUT("/v2/comments/{commentId}")
     suspend fun editComment(
+        @Header("Parse-mode") parseMode: String,
         @Path("commentId") commentId: Int,
-        @Field("text") text: String,
-        @Header("Parse-mode") parseMode: String
+        @Field("text") text: String
     ): Response<CommentDto>
 
     @DELETE("/v2/comments/{commentId}")

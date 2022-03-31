@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
+import ru.maxim.barybians.data.network.model.ParseMode
 import ru.maxim.barybians.data.repository.like.LikeRepository
 import ru.maxim.barybians.data.repository.post.PostRepository
 import ru.maxim.barybians.domain.model.Post
@@ -44,7 +45,7 @@ open class PostsListViewModel constructor(
     fun createPost(title: String?, text: String) = viewModelScope.launch {
         try {
             val uuid = UUID.randomUUID().toString()
-            postRepository.createPost(uuid, title, text)
+            postRepository.createPost(parseMode = ParseMode.MD, uuid = uuid, title = title, text = text)
         } catch (e: Exception) {
             val errorMessageRes = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection
@@ -58,7 +59,7 @@ open class PostsListViewModel constructor(
 
     fun editPost(postId: Int, title: String?, text: String) = viewModelScope.launch {
         try {
-            postRepository.editPost(postId, title, text)
+            postRepository.editPost(parseMode = ParseMode.MD, postId = postId, title = title, text = text)
         } catch (e: Exception) {
             val errorMessageRes = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection

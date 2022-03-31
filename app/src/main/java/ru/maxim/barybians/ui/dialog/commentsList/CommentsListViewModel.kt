@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.network.exception.NoConnectionException
 import ru.maxim.barybians.data.network.exception.TimeoutException
+import ru.maxim.barybians.data.network.model.ParseMode
 import ru.maxim.barybians.data.repository.comment.CommentRepository
 import ru.maxim.barybians.domain.model.Comment
 import timber.log.Timber
@@ -54,7 +55,7 @@ class CommentsListViewModel private constructor(
     fun editComment(commentId: Int, text: String) = viewModelScope.launch {
         _isSending.postValue(true)
         try {
-            commentRepository.editComment(commentId, text)
+            commentRepository.editComment(parseMode = ParseMode.MD, commentId = commentId, text = text)
         } catch (e: Exception) {
             val error = when (e) {
                 is NoConnectionException -> R.string.no_internet_connection
@@ -68,12 +69,12 @@ class CommentsListViewModel private constructor(
     }
 
     fun createComment() = viewModelScope.launch {
-        val message = commentText.value.toString()
-        if (message.isBlank()) return@launch
+        val comment = commentText.value.toString()
+        if (comment.isBlank()) return@launch
         _isSending.postValue(true)
         try {
             val uuid = UUID.randomUUID().toString()
-            commentRepository.createComment(uuid, postId, message)
+            commentRepository.createComment(parseMode = ParseMode.MD, uuid = uuid, postId = postId, text = comment)
             commentText.postValue(String())
         } catch (e: Exception) {
             Timber.e(e)
@@ -94,7 +95,12 @@ class CommentsListViewModel private constructor(
         try {
             val uuid = UUID.randomUUID().toString()
             val stickerMessage = "\$[$pack]($sticker)"
-            commentRepository.createComment(uuid, postId, stickerMessage)
+            commentRepository.createComment(
+                parseMode = ParseMode.MD,
+                uuid = uuid,
+                postId = postId,
+                text = stickerMessage
+            )
             commentText.postValue(String())
         } catch (e: Exception) {
             Timber.e(e)

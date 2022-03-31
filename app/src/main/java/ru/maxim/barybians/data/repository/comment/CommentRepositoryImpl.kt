@@ -32,25 +32,25 @@ class CommentRepositoryImpl @Inject constructor(
             .map { commentsList -> commentEntityMapper.toDomainModelList(commentsList) }
     }
 
-    override suspend fun createComment(uuid: String, postId: Int, text: String, parseMode: ParseMode) = withContext(IO) {
+    override suspend fun createComment(parseMode: ParseMode, uuid: String, postId: Int, text: String) = withContext(IO) {
         val commentDto = repositoryBound.wrapRequest {
             commentService.addComment(
+                parseMode = parseMode.headerValue,
                 uuid = uuid,
                 postId = postId,
-                text = text,
-                parseMode = parseMode.headerValue
+                text = text
             )
         }
         val comment = commentDtoMapper.toDomainModel(commentDto)
         commentDao.save(commentEntityMapper.fromDomainModel(comment), attachmentDao, commentAttachmentDao, userDao)
     }
 
-    override suspend fun editComment(commentId: Int, text: String, parseMode: ParseMode) = withContext(IO) {
+    override suspend fun editComment(parseMode: ParseMode, commentId: Int, text: String) = withContext(IO) {
         val commentDto = repositoryBound.wrapRequest {
             commentService.editComment(
+                parseMode = parseMode.headerValue,
                 commentId = commentId,
-                text = text,
-                parseMode = parseMode.headerValue
+                text = text
             )
         }
         val comment = commentDtoMapper.toDomainModel(commentDto)
