@@ -1,5 +1,8 @@
 package ru.maxim.barybians.domain.model
 
+import android.os.Parcel
+import android.os.Parcelable
+
 /**
  * This class represents an attachment that may be in [Post], [Comment], [Message] in the **attachments** array.
  * There is five types of attachments described in the [AttachmentType] enum.
@@ -20,7 +23,7 @@ package ru.maxim.barybians.domain.model
  *
  * [AttachmentType.FILE] is a link to a file. **Fields**: *url*, *title*, *length*, *offset*, *fileSize*, *extension*.
  * */
-data class Attachment(
+data class Attachment constructor(
     val attachmentId: Int,
     val type: AttachmentType,
     val style: StyledAttachmentType? = null,
@@ -35,7 +38,54 @@ data class Attachment(
     val description: String? = null,
     val image: String? = null,
     val favicon: String? = null,
-) {
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        attachmentId = parcel.readInt(),
+        type = AttachmentType.values().firstOrNull { it.messageValue == parcel.readString() }
+            ?: throw IllegalArgumentException("Unable to parse attachment"),
+        style = StyledAttachmentType.values().firstOrNull { it.messageValue == parcel.readString() },
+        parcel.readString(),
+        sticker = parcel.readValue(Int::class.java.classLoader) as? Int,
+        length = parcel.readInt(),
+        offset = parcel.readInt(),
+        url = parcel.readString(),
+        title = parcel.readString(),
+        fileSize = parcel.readValue(Long::class.java.classLoader) as? Long,
+        extension = parcel.readString(),
+        description = parcel.readString(),
+        image = parcel.readString(),
+        favicon = parcel.readString()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(attachmentId)
+        parcel.writeString(type.messageValue)
+        parcel.writeString(style?.messageValue)
+        parcel.writeString(pack)
+        parcel.writeValue(sticker)
+        parcel.writeInt(length)
+        parcel.writeInt(offset)
+        parcel.writeString(url)
+        parcel.writeString(title)
+        parcel.writeValue(fileSize)
+        parcel.writeString(extension)
+        parcel.writeString(description)
+        parcel.writeString(image)
+        parcel.writeString(favicon)
+    }
+
+    override fun describeContents(): Int = 0
+
+    companion object CREATOR : Parcelable.Creator<Attachment> {
+        override fun createFromParcel(parcel: Parcel): Attachment {
+            return Attachment(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Attachment?> {
+            return arrayOfNulls(size)
+        }
+    }
 
     enum class AttachmentType(val messageValue: String) {
         STYLED("styled"),

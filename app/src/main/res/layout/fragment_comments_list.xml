@@ -56,7 +56,6 @@
                     android:id="@+id/commentsListRecycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
                     android:layout_marginTop="6dp"
                     android:clipToPadding="false"
                     android:minHeight="48dp"
@@ -80,14 +79,23 @@
                     app:layout_constraintTop_toTopOf="@id/commentsListRecycler" />
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/commentsListStickerBtn"
+                    android:id="@+id/commentsListStickerButton"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:padding="12dp"
                     android:src="@drawable/ic_emoji"
                     android:visibility="@{viewModel.commentText.empty || viewModel.isSending ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="@id/commentsListTextEditor"
+                    app:layout_constraintBottom_toBottomOf="@id/commentsListMarkupButton"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/commentsListMarkupButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_code"
+                    android:padding="12dp"
+                    app:layout_constraintStart_toEndOf="@id/commentsListStickerButton"
+                    app:layout_constraintBottom_toBottomOf="@id/commentsListTextEditor"/>
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/commentsListTextEditor"
@@ -98,8 +106,9 @@
                     android:minHeight="48dp"
                     android:text="@={viewModel.commentText}"
                     app:layout_constraintEnd_toStartOf="@id/commentsListSendBtn"
-                    app:layout_constraintStart_toEndOf="@id/commentsListStickerBtn"
+                    app:layout_constraintStart_toEndOf="@id/commentsListMarkupButton"
                     app:layout_constraintTop_toBottomOf="@id/commentsListRecycler"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_goneMarginStart="12dp" />
 
                 <ImageView

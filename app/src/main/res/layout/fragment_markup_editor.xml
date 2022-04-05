@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="ru.maxim.barybians.ui.dialog.markupEditor.MarkupEditorViewModel" />
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,14 +17,9 @@
         android:id="@+id/markupEditorToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/markupEditorBackButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="12dp"
-            android:src="@drawable/ic_back" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_back"
+        tools:title="Create comment">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/markupEditorDoneButton"
@@ -31,30 +34,129 @@
         android:id="@+id/markupEditorTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/markupEditorToolbar">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/ic_code" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/ic_image" />
-    </com.google.android.material.tabs.TabLayout>
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/markupEditorEditText"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:backgroundTint="@android:color/transparent"
-        android:gravity="top"
-        android:hint="@string/type_text_here"
-        android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/markupEditorTabLayout"
-        tools:text="@tools:sample/lorem/random[10]" />
+        app:layout_constraintTop_toBottomOf="@id/markupEditorToolbar" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/markupEditorPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/markupEditorAttachmentsScroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorTabLayout">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/markupEditorEditorPage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:backgroundTint="@android:color/transparent"
+            android:gravity="top"
+            android:hint="@string/type_text_here"
+            android:text="@={viewModel.text}"
+            android:padding="10dp"
+            android:scrollbarStyle="insideOverlay"
+            android:scrollbars="vertical" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/markupEditorPreviewPage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp" />
+    </androidx.viewpager.widget.ViewPager>
+
+    <HorizontalScrollView
+        android:id="@+id/markupEditorAttachmentsScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorPager">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/markupEditorAttachmentsHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </HorizontalScrollView>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/markupBoldAttachmentButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/markupItalicAttachmentButton"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorAttachmentsScroll" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/markupItalicAttachmentButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_italic"
+        app:layout_constraintEnd_toStartOf="@id/markupUnderlineAttachmentButton"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/markupBoldAttachmentButton"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorAttachmentsScroll" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/markupUnderlineAttachmentButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_underlined"
+        app:layout_constraintEnd_toStartOf="@id/markupStrikethroughAttachmentButton"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/markupItalicAttachmentButton"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorAttachmentsScroll" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/markupStrikethroughAttachmentButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_strikethrough"
+        app:layout_constraintEnd_toStartOf="@id/markupLinkAttachmentButton"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/markupUnderlineAttachmentButton"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorAttachmentsScroll" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/markupLinkAttachmentButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_link"
+        app:layout_constraintEnd_toStartOf="@id/markupImageAttachmentButton"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/markupStrikethroughAttachmentButton"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorAttachmentsScroll" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/markupImageAttachmentButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_image"
+        app:layout_constraintEnd_toStartOf="@id/markupFileAttachmentButton"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/markupLinkAttachmentButton"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorAttachmentsScroll" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/markupFileAttachmentButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@drawable/ic_file"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/markupImageAttachmentButton"
+        app:layout_constraintTop_toBottomOf="@id/markupEditorAttachmentsScroll" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -26,6 +26,7 @@
             android:id="@+id/itemCommentUserAvatar"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginStart="12dp"
             app:image="@{comment.author.avatarMin}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -65,6 +66,7 @@
             android:id="@+id/itemCommentText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             android:layout_marginTop="4dp"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,6 +76,7 @@
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
             android:layout_marginTop="4dp"
             android:scrollbarSize="2dp"
             android:scrollbarStyle="insideOverlay"
@@ -92,7 +95,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{`commentId: ` + String.valueOf(comment.commentId) + `, a: ` + String.valueOf(comment.attachments.size)}"
+            android:layout_marginEnd="12dp"
+            android:text="@{`id: ` + String.valueOf(comment.commentId) + `, a: ` + String.valueOf(comment.attachments.size)}"
             android:visibility="@{isDebug ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

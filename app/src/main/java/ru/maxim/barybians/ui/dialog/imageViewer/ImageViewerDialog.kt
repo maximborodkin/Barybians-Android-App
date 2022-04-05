@@ -15,13 +15,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment.DIRECTORY_PICTURES
 import android.provider.MediaStore
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.LENGTH_LONG
 import com.karumi.dexter.Dexter
@@ -39,12 +38,11 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
-import kotlin.properties.Delegates.notNull
 
-class ImageViewerDialog : AppCompatDialogFragment() {
+class ImageViewerDialog : AppCompatDialogFragment(R.layout.fragment_image_viewer) {
 
     private val args: ImageViewerDialogArgs by navArgs()
-    private var binding: FragmentImageViewerBinding by notNull()
+    private val binding by viewBinding(FragmentImageViewerBinding::bind)
 
     @Inject
     lateinit var preferencesManager: PreferencesManager
@@ -61,21 +59,11 @@ class ImageViewerDialog : AppCompatDialogFragment() {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.argb(180, 0, 0, 0)))
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentImageViewerBinding.inflate(inflater, container, false).apply {
-            lifecycleOwner = viewLifecycleOwner
-            imageUrl = args.imageUrl
-        }
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) = with(binding) {
         super.onViewCreated(view, savedInstanceState)
         if (preferencesManager.isDebug) context.longToast(args.imageUrl)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.imageUrl = args.imageUrl
         imageViewer.onDismissListener = ::dismiss
         imageViewerDownloadButton.setOnClickListener { downloadImage(args.imageUrl) }
         imageViewerShareButton.setOnClickListener { shareImage() }

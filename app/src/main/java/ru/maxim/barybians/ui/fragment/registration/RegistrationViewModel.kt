@@ -7,7 +7,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.maxim.barybians.R
-import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.network.exception.AlreadyExistsException
 import ru.maxim.barybians.data.network.exception.BadRequestException
 import ru.maxim.barybians.data.network.exception.NoConnectionException

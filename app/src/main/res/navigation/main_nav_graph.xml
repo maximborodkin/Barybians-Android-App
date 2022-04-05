@@ -174,4 +174,30 @@
     <action
         android:id="@+id/toImageViewer"
         app:destination="@id/imageViewerDialog" />
+
+    <dialog
+        android:id="@+id/markupEditorDialog"
+        android:name="ru.maxim.barybians.ui.dialog.markupEditor.MarkupEditorDialog"
+        android:label="MarkupEditorDialog"
+        tools:layout="@layout/fragment_markup_editor">
+
+        <argument
+            android:name="title"
+            app:argType="reference"
+            app:nullable="false" />
+
+        <argument
+            android:name="text"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="attachments"
+            app:argType="ru.maxim.barybians.domain.model.Attachment[]"
+            app:nullable="true" />
+    </dialog>
+
+    <action
+        android:id="@+id/toMarkupEditor"
+        app:destination="@id/markupEditorDialog" />
 </navigation>

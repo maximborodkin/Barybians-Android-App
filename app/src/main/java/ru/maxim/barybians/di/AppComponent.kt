@@ -18,6 +18,7 @@ import ru.maxim.barybians.ui.fragment.preferences.PreferencesFragment
 import ru.maxim.barybians.ui.fragment.profile.ProfileFragment
 import ru.maxim.barybians.ui.fragment.registration.RegistrationFragment
 import ru.maxim.barybians.ui.dialog.stickerPicker.StickersPickerDialog
+import ru.maxim.barybians.ui.dialog.markupEditor.MarkupEditorDialog
 import javax.inject.Singleton
 
 @Singleton
@@ -50,6 +51,7 @@ interface AppComponent {
     fun inject(commentsListDialog: CommentsListDialog)
     fun inject(likesListDialog: LikesListDialog)
     fun inject(imageViewerDialog: ImageViewerDialog)
+    fun inject(markupEditorDialog: MarkupEditorDialog)
 
     val preferencesManager: PreferencesManager
 }

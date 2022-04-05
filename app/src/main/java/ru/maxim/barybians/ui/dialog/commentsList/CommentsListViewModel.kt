@@ -135,7 +135,7 @@ class CommentsListViewModel private constructor(
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(CommentsListViewModel::class.java)) {
                 return CommentsListViewModel(application, commentRepository, postId) as T
             }
