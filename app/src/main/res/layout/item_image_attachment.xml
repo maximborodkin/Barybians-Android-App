@@ -3,26 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:clipChildren="false"
-    android:clipToOutline="false"
-    android:clipToPadding="false">
+    android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/imageAttachmentImage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/backgrounds/scenic" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageAttachmentDeleteButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@drawable/round_button"
         android:padding="12dp"
-        android:src="@drawable/ic_close"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/clear_button"
+        app:layout_constraintBottom_toTopOf="@id/imageAttachmentImage"
+        app:layout_constraintEnd_toEndOf="@id/imageAttachmentImage"
+        app:layout_constraintStart_toEndOf="@id/imageAttachmentImage"
+        app:layout_constraintTop_toTopOf="@id/imageAttachmentImage" />
 </androidx.constraintlayout.widget.ConstraintLayout>

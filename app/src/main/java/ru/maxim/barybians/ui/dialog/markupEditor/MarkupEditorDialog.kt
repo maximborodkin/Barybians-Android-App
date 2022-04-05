@@ -16,15 +16,21 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager.widget.PagerAdapter
 import by.kirich1409.viewbindingdelegate.viewBinding
+import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentMarkupEditorBinding
-import ru.maxim.barybians.domain.model.Attachment
-import ru.maxim.barybians.domain.model.Attachment.AttachmentType
+import ru.maxim.barybians.databinding.ItemImageAttachmentBinding
+import ru.maxim.barybians.domain.model.Attachment.AttachmentType.IMAGE
+import ru.maxim.barybians.domain.model.Attachment.AttachmentType.STYLED
+import ru.maxim.barybians.domain.model.Attachment.StyledAttachmentType.*
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.load
+import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
 class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_editor) {
@@ -66,6 +72,15 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
         markupEditorTabLayout.setupWithViewPager(binding.markupEditorPager)
         markupEditorTabLayout.getTabAt(0)?.setIcon(R.drawable.ic_code)
         markupEditorTabLayout.getTabAt(1)?.setIcon(R.drawable.ic_image)
+
+        markupImageAttachmentButton.setOnClickListener {
+            // TODO: add image attachment
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            model.attachments.observe(viewLifecycleOwner) { applyAttachments() }
+        }
+
         applyTextStyle()
         applyAttachments()
     }
@@ -73,10 +88,10 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
     private fun applyTextStyle() = with(binding) {
         val spannableString = SpannableStringBuilder(model.text.value)
 
-        model.attachments.value?.filter { it.type == AttachmentType.STYLED && it.style != null }?.forEach { attachment ->
+        model.attachments.value?.filter { it.type == STYLED && it.style != null }?.forEach { attachment ->
             if (attachment.style != null) {
                 when (attachment.style) {
-                    Attachment.StyledAttachmentType.BOLD -> {
+                    BOLD -> {
                         spannableString.setSpan(
                             StyleSpan(Typeface.BOLD),
                             attachment.offset,
@@ -84,14 +99,14 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
                             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                         )
                     }
-                    Attachment.StyledAttachmentType.ITALIC ->
+                    ITALIC ->
                         spannableString.setSpan(
                             StyleSpan(Typeface.ITALIC),
                             attachment.offset,
                             attachment.offset + attachment.length,
                             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                         )
-                    Attachment.StyledAttachmentType.UNDERLINE -> {
+                    UNDERLINE -> {
                         spannableString.setSpan(
                             UnderlineSpan(),
                             attachment.offset,
@@ -99,7 +114,7 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
                             Spannable.SPAN_INCLUSIVE_EXCLUSIVE
                         )
                     }
-                    Attachment.StyledAttachmentType.STRIKE -> {
+                    STRIKE -> {
                         spannableString.setSpan(
                             StrikethroughSpan(),
                             attachment.offset,
@@ -115,7 +130,19 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
     }
 
     private fun applyAttachments() = with(binding) {
-        model.attachments
+        markupEditorAttachmentsHolder.removeAllViews()
+        context.toast(model.attachments.value?.size.toString())
+        model.attachments.value?.filter { it.type == IMAGE && it.url != null }?.forEach { attachment ->
+            ItemImageAttachmentBinding.inflate(layoutInflater, markupEditorAttachmentsHolder, false).apply {
+                imageAttachmentImage.load(attachment.url)
+                imageAttachmentImage.setOnClickListener {
+                    val action = MarkupEditorDialogDirections.toImageViewer(attachment.url ?: return@setOnClickListener)
+                    findNavController().navigate(action)
+                }
+                imageAttachmentDeleteButton.setOnClickListener { model.removeAttachment(attachment) }
+                markupEditorAttachmentsHolder.addView(this.root)
+            }
+        }
     }
 
     private inner class MarkupEditorPagerAdapter : PagerAdapter() {
