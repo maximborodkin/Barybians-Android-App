@@ -74,6 +74,11 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
         markupEditorTabLayout.getTabAt(0)?.setIcon(R.drawable.ic_code)
         markupEditorTabLayout.getTabAt(1)?.setIcon(R.drawable.ic_image)
 
+        // TODO:
+        //  1. draw markup symbols from incoming attachments array to result string
+        //  2. clear attachments array
+        //  3. make preview by any library
+        //  4. send result string with markup symbols
         markupImageAttachmentButton.setOnClickListener {
             model.addAttachment(Attachment(attachmentId = 0, type = IMAGE, url = "https://i.imgflip.com/4lb05h.png", length = 32, offset = 0))
         }
