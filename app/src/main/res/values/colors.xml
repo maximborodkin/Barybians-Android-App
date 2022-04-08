@@ -13,6 +13,13 @@
     <color name="roleBarybian">#0077FF</color>
     <color name="roleVerified">#B3AD0B</color>
 
+    <color name="fileAttachmentArchive">#532828</color>
+    <color name="fileAttachmentPdf">#8E0505</color>
+    <color name="fileAttachmentExecutable">#0C551F</color>
+    <color name="fileAttachmentText">#162965</color>
+    <color name="fileAttachmentAudio">#4D1073</color>
+    <color name="fileAttachmentUnknown">#3E3E3E</color>
+
     <!--  Light Theme  -->
     <color name="colorPrimary">#5770CE</color>
     <color name="colorOnPrimary">#FFFFFF</color>

@@ -23,12 +23,12 @@ class MarkupEditorViewModel private constructor(
 
     fun addAttachment(attachment: Attachment) {
         val newValue = listOf(*attachments.value?.toTypedArray() ?: emptyArray(), attachment)
-        attachments.postValue(newValue)
+        attachments.value = newValue
     }
 
     fun removeAttachment(attachment: Attachment) {
         val newValue = attachments.value?.toMutableList()?.apply { remove(attachment) } ?: emptyList()
-        attachments.postValue(newValue)
+        attachments.value = newValue
     }
 
     class MarkupEditorViewModelFactory @AssistedInject constructor(

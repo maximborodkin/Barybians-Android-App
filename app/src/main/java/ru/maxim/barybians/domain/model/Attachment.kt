@@ -2,6 +2,12 @@ package ru.maxim.barybians.domain.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+import ru.maxim.barybians.R
+import ru.maxim.barybians.domain.model.Attachment.AttachmentType
+import ru.maxim.barybians.domain.model.Attachment.FileAttachmentType.*
+import ru.maxim.barybians.domain.model.Attachment.StyledAttachmentType
 
 /**
  * This class represents an attachment that may be in [Post], [Comment], [Message] in the **attachments** array.
@@ -77,14 +83,27 @@ data class Attachment constructor(
 
     override fun describeContents(): Int = 0
 
-    companion object CREATOR : Parcelable.Creator<Attachment> {
-        override fun createFromParcel(parcel: Parcel): Attachment {
-            return Attachment(parcel)
+    companion object {
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<Attachment> {
+            override fun createFromParcel(parcel: Parcel): Attachment {
+                return Attachment(parcel)
+            }
+
+            override fun newArray(size: Int): Array<Attachment?> {
+                return arrayOfNulls(size)
+            }
         }
 
-        override fun newArray(size: Int): Array<Attachment?> {
-            return arrayOfNulls(size)
-        }
+        fun resolveFileAttachmentType(extension: String?): FileAttachmentType =
+            when (extension?.lowercase()) {
+                in ARCHIVE.extensions.map { it.lowercase() } -> ARCHIVE
+                in AUDIO.extensions.map { it.lowercase() } -> AUDIO
+                in EXECUTABLE.extensions.map { it.lowercase() } -> EXECUTABLE
+                in PDF.extensions.map { it.lowercase() } -> PDF
+                in TEXT.extensions.map { it.lowercase() } -> TEXT
+                else -> UNKNOWN
+            }
     }
 
     enum class AttachmentType(val messageValue: String) {
@@ -100,5 +119,42 @@ data class Attachment constructor(
         ITALIC("italic"),
         UNDERLINE("underline"),
         STRIKE("strike")
+    }
+
+    enum class FileAttachmentType(
+        val extensions: List<String>,
+        @ColorRes val colorResource: Int,
+        @DrawableRes val drawableResource: Int
+    ) {
+        ARCHIVE(
+            extensions = listOf("rar", "zip", "iso", "tar", "gz", "7z"),
+            colorResource = R.color.fileAttachmentArchive,
+            drawableResource = R.drawable.ic_archive
+        ),
+        AUDIO(
+            extensions = listOf("mp3", "flac", "aac", "m4a", "ogg", "wav"),
+            colorResource = R.color.fileAttachmentAudio,
+            drawableResource = R.drawable.ic_audio
+        ),
+        EXECUTABLE(
+            extensions = listOf("exe", "apk", "bat", "jar", "msi", "py", "deb", "dmg"),
+            colorResource = R.color.fileAttachmentExecutable,
+            drawableResource = R.drawable.ic_application
+        ),
+        PDF(
+            extensions = listOf("pdf"),
+            colorResource = R.color.fileAttachmentPdf,
+            drawableResource = R.drawable.ic_pdf
+        ),
+        TEXT(
+            extensions = listOf("txt", "doc", "docx", "rtf", "tex", "wpd"),
+            colorResource = R.color.fileAttachmentText,
+            drawableResource = R.drawable.ic_text_snippet
+        ),
+        UNKNOWN(
+            extensions = emptyList(),
+            colorResource = R.color.fileAttachmentUnknown,
+            drawableResource = R.drawable.ic_file
+        )
     }
 }

@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.dialog.markupEditor
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -24,13 +25,13 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentMarkupEditorBinding
+import ru.maxim.barybians.databinding.ItemFileAttachmentBinding
 import ru.maxim.barybians.databinding.ItemImageAttachmentBinding
-import ru.maxim.barybians.domain.model.Attachment.AttachmentType.IMAGE
-import ru.maxim.barybians.domain.model.Attachment.AttachmentType.STYLED
+import ru.maxim.barybians.domain.model.Attachment
+import ru.maxim.barybians.domain.model.Attachment.AttachmentType.*
 import ru.maxim.barybians.domain.model.Attachment.StyledAttachmentType.*
 import ru.maxim.barybians.utils.appComponent
 import ru.maxim.barybians.utils.load
-import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
 class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_editor) {
@@ -57,7 +58,7 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
         setStyle(DialogFragment.STYLE_NO_TITLE, 0)
         dialog?.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         val backgroundColor = ContextCompat.getColor(context ?: return, R.color.colorBackground)
-        // Setting a background removes the margins from the dialog
+        // Setting a background removes margins from the dialog
         dialog?.window?.setBackgroundDrawable(ColorDrawable(backgroundColor))
     }
 
@@ -74,15 +75,21 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
         markupEditorTabLayout.getTabAt(1)?.setIcon(R.drawable.ic_image)
 
         markupImageAttachmentButton.setOnClickListener {
-            // TODO: add image attachment
+            model.addAttachment(Attachment(attachmentId = 0, type = IMAGE, url = "https://i.imgflip.com/4lb05h.png", length = 32, offset = 0))
+        }
+        markupFileAttachmentButton.setOnClickListener {
+            model.addAttachment(Attachment(attachmentId = 0, type = FILE, url = "zip", extension = "zip", length = 3, offset = 0))
+            model.addAttachment(Attachment(attachmentId = 1, type = FILE, url = "mp3", extension = "mp3", length = 3, offset = 0))
+            model.addAttachment(Attachment(attachmentId = 2, type = FILE, url = "apk", extension = "apk", length = 3, offset = 0))
+            model.addAttachment(Attachment(attachmentId = 3, type = FILE, url = "pdf", extension = "pdf", length = 3, offset = 0))
+            model.addAttachment(Attachment(attachmentId = 4, type = FILE, url = "txt", extension = "txt", length = 3, offset = 0))
+            model.addAttachment(Attachment(attachmentId = 5, type = FILE, url = "mp4", extension = "mp4", length = 3, offset = 0))
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
+            model.text.observe(viewLifecycleOwner) { applyTextStyle() }
             model.attachments.observe(viewLifecycleOwner) { applyAttachments() }
         }
-
-        applyTextStyle()
-        applyAttachments()
     }
 
     private fun applyTextStyle() = with(binding) {
@@ -131,18 +138,33 @@ class MarkupEditorDialog : AppCompatDialogFragment(R.layout.fragment_markup_edit
 
     private fun applyAttachments() = with(binding) {
         markupEditorAttachmentsHolder.removeAllViews()
-        context.toast(model.attachments.value?.size.toString())
-        model.attachments.value?.filter { it.type == IMAGE && it.url != null }?.forEach { attachment ->
-            ItemImageAttachmentBinding.inflate(layoutInflater, markupEditorAttachmentsHolder, false).apply {
-                imageAttachmentImage.load(attachment.url)
-                imageAttachmentImage.setOnClickListener {
-                    val action = MarkupEditorDialogDirections.toImageViewer(attachment.url ?: return@setOnClickListener)
-                    findNavController().navigate(action)
+
+        model.attachments.value
+            ?.filter { attachment -> attachment.type == IMAGE && attachment.url != null }
+            ?.forEach { attachment ->
+                ItemImageAttachmentBinding.inflate(layoutInflater, markupEditorAttachmentsHolder, true).apply {
+                    imageAttachmentImage.load(attachment.url)
+                    imageAttachmentImage.setOnClickListener {
+                        val action =
+                            MarkupEditorDialogDirections.toImageViewer(attachment.url ?: return@setOnClickListener)
+                        findNavController().navigate(action)
+                    }
+                    imageAttachmentDeleteButton.setOnClickListener { model.removeAttachment(attachment) }
                 }
-                imageAttachmentDeleteButton.setOnClickListener { model.removeAttachment(attachment) }
-                markupEditorAttachmentsHolder.addView(this.root)
             }
-        }
+
+        model.attachments.value
+            ?.filter { attachment -> attachment.type == FILE && attachment.url != null && attachment.extension != null }
+            ?.forEach { attachment ->
+                ItemFileAttachmentBinding.inflate(layoutInflater, markupEditorAttachmentsHolder, true).apply {
+                    val fileType = Attachment.resolveFileAttachmentType(attachment.extension)
+                    val backgroundColor = ContextCompat.getColor(root.context, fileType.colorResource)
+                    fileAttachmentBackground.backgroundTintList = ColorStateList.valueOf(backgroundColor)
+                    fileAttachmentIcon.setImageResource(fileType.drawableResource)
+                    fileAttachmentName.text = attachment.url
+                    fileAttachmentDeleteButton.setOnClickListener { model.removeAttachment(attachment) }
+                }
+            }
     }
 
     private inner class MarkupEditorPagerAdapter : PagerAdapter() {
