@@ -32,6 +32,7 @@ class ChatsListRecyclerAdapter @Inject constructor(
 
         fun bind(chat: Chat) = with(binding) {
             binding.chat = chat
+            binding.currentUserId = preferencesManager.userId
 
             val messageText = when {
                 chat.lastMessage.attachments.any { attachment -> attachment.type == STICKER } ->
@@ -77,7 +78,7 @@ class ChatsListRecyclerAdapter @Inject constructor(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ItemChatBinding.inflate(layoutInflater)
+        val binding = ItemChatBinding.inflate(layoutInflater, parent, false)
         return ChatViewHolder(binding)
     }
 
