@@ -8,23 +8,31 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import ru.maxim.barybians.data.PreferencesManager
+import ru.maxim.barybians.data.database.dao.UserDao
+import ru.maxim.barybians.data.database.model.mapper.UserEntityMapper
 import ru.maxim.barybians.data.network.exception.*
 import ru.maxim.barybians.data.network.model.response.ErrorResponse
 import ru.maxim.barybians.data.network.model.response.RegistrationResponse
 import ru.maxim.barybians.data.network.service.AuthService
+import ru.maxim.barybians.domain.model.Gender
+import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.domain.model.UserRole
 import ru.maxim.barybians.utils.NetworkUtils
 import ru.maxim.barybians.utils.isNotNull
 import timber.log.Timber
 import java.io.File
 import java.net.HttpURLConnection.*
 import java.net.SocketTimeoutException
+import java.util.*
 import javax.inject.Inject
 
 @Reusable
 class AuthRepositoryImpl @Inject constructor(
     private val authService: AuthService,
     private val networkUtils: NetworkUtils,
-    private val preferencesManager: PreferencesManager
+    private val preferencesManager: PreferencesManager,
+    private val userDao: UserDao,
+    private val userEntityMapper: UserEntityMapper
 ) : AuthRepository {
 
     override suspend fun authenticate(login: String, password: String) = withContext(IO) {
@@ -44,6 +52,20 @@ class AuthRepositoryImpl @Inject constructor(
                     userName = "${responseBody.user.firstName} ${responseBody.user.lastName}"
                     userAvatar = responseBody.user.photo.orEmpty()
                 }
+
+                val currentUser = User(
+                    userId = responseBody.user.userId,
+                    firstName = responseBody.user.firstName,
+                    lastName = responseBody.user.lastName,
+                    photo = responseBody.user.photo,
+                    status = responseBody.user.status,
+                    birthDate = Date(responseBody.user.birthDate),
+                    gender = Gender.values().firstOrNull { it.genderId == responseBody.user.sex } ?: Gender.Male,
+                    lastVisit = Date(responseBody.user.lastVisit),
+                    role = UserRole.values().firstOrNull { it.roleId == responseBody.user.role } ?: UserRole.Unverified
+                )
+                val userEntity = userEntityMapper.fromDomainModel(currentUser)
+                userDao.save(userEntity)
             } else {
                 throw when (authResponse.code()) {
                     HTTP_CLIENT_TIMEOUT, HTTP_GATEWAY_TIMEOUT -> TimeoutException()

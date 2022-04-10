@@ -2,7 +2,7 @@ package ru.maxim.barybians.data.database.dao
 
 import androidx.room.*
 import ru.maxim.barybians.data.database.model.AttachmentEntity
-import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.Columns
+import ru.maxim.barybians.data.database.model.AttachmentEntity.Contract.Columns as AttachmentColumns
 
 @Dao
 abstract class AttachmentDao {
@@ -18,7 +18,7 @@ abstract class AttachmentDao {
         }
     }
 
-    @Query("SELECT * FROM ${AttachmentEntity.tableName} WHERE ${Columns.attachmentId}=:attachmentId")
+    @Query("SELECT * FROM ${AttachmentEntity.tableName} WHERE ${AttachmentColumns.attachmentId}=:attachmentId")
     abstract fun getById(attachmentId: Int): AttachmentEntity?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -26,9 +26,6 @@ abstract class AttachmentDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(attachmentEntity: AttachmentEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(attachmentEntity: List<AttachmentEntity>)
 
     @Query("DELETE FROM ${AttachmentEntity.tableName}")
     abstract suspend fun clear()

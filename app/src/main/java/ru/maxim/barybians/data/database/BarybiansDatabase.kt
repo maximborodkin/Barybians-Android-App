@@ -9,7 +9,7 @@ import ru.maxim.barybians.data.database.model.*
 @Database(
     entities = [
         AttachmentEntity::class,
-        ChatEntity::class,
+        ChatEntity.ChatEntityBody::class,
         CommentAttachmentEntity::class,
         CommentEntity.CommentEntityBody::class,
         LikeEntity::class,

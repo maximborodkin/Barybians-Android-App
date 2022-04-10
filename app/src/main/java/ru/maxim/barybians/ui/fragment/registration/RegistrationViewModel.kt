@@ -190,7 +190,7 @@ class RegistrationViewModel private constructor(
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
                 return RegistrationViewModel(application, authRepository) as T
             }

@@ -28,8 +28,7 @@ class LikesListRecyclerAdapter @Inject constructor() : ListAdapter<User, UserVie
         holder.bind(getItem(position))
     }
 
-    inner class UserViewHolder(private val binding: ItemLikeBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class UserViewHolder(private val binding: ItemLikeBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User) = with(binding) {
             binding.user = user

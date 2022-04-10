@@ -4,21 +4,21 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.UserEntity
-import ru.maxim.barybians.data.database.model.LikeEntity.Contract as Like
-import ru.maxim.barybians.data.database.model.UserEntity.Contract as User
+import ru.maxim.barybians.data.database.model.LikeEntity.Contract.Columns as LikeColumns
+import ru.maxim.barybians.data.database.model.UserEntity.Contract.Columns as UserColumns
 
 @Dao
 interface LikeDao {
 
     @Query(
-        """SELECT ${User.tableName}.* 
-            FROM ${User.tableName} INNER JOIN ${Like.tableName}
-                ON ${User.tableName}.${User.Columns.userId}=${Like.tableName}.${Like.Columns.userId}
-            WHERE ${Like.Columns.postId}=:postId"""
+        """SELECT ${UserEntity.tableName}.* 
+            FROM ${UserEntity.tableName} INNER JOIN ${LikeEntity.tableName}
+                ON ${UserEntity.tableName}.${UserColumns.userId}=${LikeEntity.tableName}.${LikeColumns.userId}
+            WHERE ${LikeColumns.postId}=:postId"""
     )
     fun getByPostId(postId: Int): Flow<List<UserEntity>>
 
-    @Query("SELECT * FROM ${Like.tableName} WHERE ${Like.Columns.postId}=:postId AND ${Like.Columns.userId}=:userId")
+    @Query("SELECT * FROM ${LikeEntity.tableName} WHERE ${LikeColumns.postId}=:postId AND ${LikeColumns.userId}=:userId")
     suspend fun getLike(postId: Int, userId: Int): LikeEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -30,12 +30,12 @@ interface LikeDao {
     @Delete
     suspend fun delete(likeEntity: LikeEntity)
 
-    @Query("DELETE FROM ${LikeEntity.tableName}")
-    suspend fun clear()
-
-    @Query("DELETE FROM ${Like.tableName} WHERE ${Like.Columns.postId}=:postId AND ${Like.Columns.userId}=:userId")
+    @Query("DELETE FROM ${LikeEntity.tableName} WHERE ${LikeColumns.postId}=:postId AND ${LikeColumns.userId}=:userId")
     suspend fun delete(postId: Int, userId: Int)
 
-    @Query("DELETE FROM ${Like.tableName} WHERE ${Like.Columns.postId}=:postId")
+    @Query("DELETE FROM ${LikeEntity.tableName} WHERE ${LikeColumns.postId}=:postId")
     suspend fun deleteByPostId(postId: Int)
+
+    @Query("DELETE FROM ${LikeEntity.tableName}")
+    suspend fun clear()
 }

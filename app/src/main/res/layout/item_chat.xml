@@ -1,49 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="6dp">
+<layout>
 
-    <ru.maxim.barybians.ui.view.AvatarView
-        android:id="@+id/itemChatUserAvatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:isOnline="true"
-        tools:src="@tools:sample/avatars" />
+    <data>
+        <import type="android.view.View" />
+        <import type="ru.maxim.barybians.utils.ExtensionsKt" />
 
-    <TextView
-        android:id="@+id/itemChatUserName"
-        android:layout_width="0dp"
+        <variable
+            name="chat"
+            type="ru.maxim.barybians.domain.model.Chat" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:maxLines="1"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/itemChatUserAvatar"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/full_names" />
+        android:padding="6dp">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemChatMessage"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="12dp"
-        android:maxLines="1"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/itemChatDate"
-        app:layout_constraintStart_toEndOf="@id/itemChatUserAvatar"
-        app:layout_constraintTop_toBottomOf="@id/itemChatUserName"
-        tools:text="@tools:sample/lorem[5]" />
+        <ru.maxim.barybians.ui.view.AvatarView
+            android:id="@+id/itemChatUserAvatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:image="@{chat.secondUser.avatarMin}"
+            tools:isOnline="@{chat.secondUser.online}"
+            tools:src="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/itemChatDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBaseline_toBaselineOf="@id/itemChatMessage"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="@tools:sample/date/hhmm" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/itemChatUserName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:maxLines="1"
+            android:textSize="20sp"
+            android:text="@{chat.secondUser.fullName}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/itemChatUserAvatar"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemChatMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="28dp"
+            android:background="@{chat.unreadCount > 0 ? @drawable/unread_message_background : null}"
+            android:maxLines="1"
+            android:paddingHorizontal="3dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/itemChatDate"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/itemChatUserAvatar"
+            app:layout_constraintTop_toBottomOf="@id/itemChatUserName"
+            app:layout_constraintWidth_default="wrap"
+            tools:text="@tools:sample/lorem[4]"
+            tools:background="@drawable/unread_message_background"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemChatUnreadCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:textColor="@color/white"
+            android:paddingHorizontal="6dp"
+            android:minWidth="20dp"
+            android:textAlignment="center"
+            android:visibility="@{chat.unreadCount > 0 ? View.VISIBLE : View.GONE}"
+            android:background="@drawable/unread_circle"
+            app:layout_constraintBottom_toBottomOf="@id/itemChatMessage"
+            app:layout_constraintEnd_toStartOf="@id/itemChatDate"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintStart_toEndOf="@id/itemChatMessage"
+            app:layout_constraintTop_toTopOf="@id/itemChatMessage"
+            tools:text="3" />
+
+        <TextView
+            android:id="@+id/itemChatDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{ExtensionsKt.adaptiveDate(chat.lastMessage.date, false)}"
+            app:layout_constraintBaseline_toBaselineOf="@id/itemChatMessage"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="@tools:sample/date/hhmm" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -7,44 +7,63 @@ import ru.maxim.barybians.data.database.model.ChatEntity.Contract.Columns
 import ru.maxim.barybians.data.database.model.ChatEntity.Contract.tableName
 import ru.maxim.barybians.data.database.model.MessageEntity.MessageEntityBody
 
-@Entity(
-    tableName = tableName,
-    foreignKeys = [
-        ForeignKey(
-            entity = UserEntity::class,
-            parentColumns = [UserEntity.Contract.Columns.userId],
-            childColumns = [Columns.secondUserId],
-            onDelete = CASCADE, onUpdate = NO_ACTION
-        ),
-        ForeignKey(
-            entity = MessageEntityBody::class,
-            parentColumns = [MessageEntity.Contract.Columns.messageId],
-            childColumns = [Columns.lastMessageId],
-            onDelete = CASCADE, onUpdate = NO_ACTION
-        )
-    ],
-    indices = [
-        Index(
-            value = [Columns.secondUserId],
-            unique = false
-        ),
-        Index(
-            value = [Columns.lastMessageId],
-            unique = false
-        )
-    ]
-)
 data class ChatEntity(
-    @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = Columns.secondUserId)
-    val secondUser: Int,
+    @Embedded
+    val chat: ChatEntityBody,
 
-    @ColumnInfo(name = Columns.lastMessageId)
-    val lastMessage: Int,
+    @Relation(
+        entity = UserEntity::class,
+        parentColumn = Columns.secondUserId,
+        entityColumn = UserEntity.Contract.Columns.userId
+    )
+    val secondUser: UserEntity,
 
-    @ColumnInfo(name = Columns.unreadCount)
-    val unreadCount: Int
+    @Relation(
+        entity = MessageEntityBody::class,
+        parentColumn = Columns.lastMessageId,
+        entityColumn = MessageEntity.Contract.Columns.messageId
+    )
+    val lastMessage: MessageEntity
 ) {
+
+    @Entity(
+        tableName = tableName,
+        foreignKeys = [
+            ForeignKey(
+                entity = UserEntity::class,
+                parentColumns = [UserEntity.Contract.Columns.userId],
+                childColumns = [Columns.secondUserId],
+                onDelete = CASCADE, onUpdate = NO_ACTION
+            ),
+            ForeignKey(
+                entity = MessageEntityBody::class,
+                parentColumns = [MessageEntity.Contract.Columns.messageId],
+                childColumns = [Columns.lastMessageId],
+                onDelete = CASCADE, onUpdate = NO_ACTION
+            )
+        ],
+        indices = [
+            Index(
+                value = [Columns.secondUserId],
+                unique = false
+            ),
+            Index(
+                value = [Columns.lastMessageId],
+                unique = false
+            )
+        ]
+    )
+    data class ChatEntityBody(
+        @PrimaryKey(autoGenerate = false)
+        @ColumnInfo(name = Columns.secondUserId)
+        val secondUserId: Int,
+
+        @ColumnInfo(name = Columns.lastMessageId)
+        val lastMessageId: Int,
+
+        @ColumnInfo(name = Columns.unreadCount)
+        val unreadCount: Int
+    )
 
     companion object Contract {
         const val tableName = "chats"

@@ -9,6 +9,7 @@
     <color name="colorSurface">#1C1B1F</color>
     <color name="colorOnSurface">#E6E1E5</color>
 
+    <color name="unreadMessageBackground">#2A404A</color>
     <color name="incomingMessageBackground">#333333</color>
     <color name="outgoingMessageBackground">#656565</color>
     <color name="profileHeaderImageForeground">#B4000000</color>

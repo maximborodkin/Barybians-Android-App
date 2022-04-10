@@ -104,7 +104,7 @@
                                 android:layout_marginTop="4dp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                android:text="@{user.online ? @string/online : @string/last_visit(ExtensionsKt.simpleDate(user.lastVisit, true))}"
+                                android:text="@{user.online ? @string/online : @string/last_visit(ExtensionsKt.adaptiveDate(user.lastVisit, true))}"
                                 android:textColor="@{user.online ? @color/onlineStatus : @color/colorOnSurface}"
                                 app:layout_constraintTop_toBottomOf="@id/profileName"
                                 tools:text="Last seen 10 mar 22:55" />

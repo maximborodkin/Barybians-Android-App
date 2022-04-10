@@ -62,7 +62,7 @@ class ProfileViewModel(
         private val userRepository: UserRepository,
         @Assisted("userId") private val userId: Int
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
 
                 @Suppress("UNCHECKED_CAST")

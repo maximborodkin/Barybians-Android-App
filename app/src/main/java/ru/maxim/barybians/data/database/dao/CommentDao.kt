@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import ru.maxim.barybians.data.database.model.CommentEntity
 import ru.maxim.barybians.data.database.model.CommentEntity.CommentEntityBody
-import ru.maxim.barybians.data.database.model.CommentEntity.Contract.Columns
+import ru.maxim.barybians.data.database.model.CommentEntity.Contract.Columns as CommentColumns
 
 @Dao
 abstract class CommentDao {
@@ -13,15 +13,15 @@ abstract class CommentDao {
     @Query(
         """
         SELECT * FROM ${CommentEntity.tableName}
-        WHERE ${Columns.postId}=:postId 
+        WHERE ${CommentColumns.postId}=:postId 
         ORDER BY
-            CASE WHEN :sortingDirection = 1 THEN ${Columns.date} END ASC, 
-            CASE WHEN :sortingDirection = 0 THEN ${Columns.date} END DESC
+            CASE WHEN :sortingDirection = 1 THEN ${CommentColumns.date} END ASC, 
+            CASE WHEN :sortingDirection = 0 THEN ${CommentColumns.date} END DESC
     """
     )
     abstract fun getByPostId(postId: Int, sortingDirection: Boolean): LiveData<List<CommentEntity>>
 
-    @Query("SELECT COUNT(*) FROM ${CommentEntity.tableName} WHERE ${Columns.commentId}=:commentId")
+    @Query("SELECT COUNT(*) FROM ${CommentEntity.tableName} WHERE ${CommentColumns.commentId}=:commentId")
     abstract fun checkComment(commentId: Int): Int
 
     suspend fun save(
@@ -56,10 +56,10 @@ abstract class CommentDao {
     @Delete
     abstract suspend fun delete(commentEntity: CommentEntityBody)
 
-    @Query("DELETE FROM ${CommentEntity.tableName} WHERE ${Columns.commentId}=:commentId")
+    @Query("DELETE FROM ${CommentEntity.tableName} WHERE ${CommentColumns.commentId}=:commentId")
     abstract suspend fun delete(commentId: Int)
 
-    @Query("DELETE FROM ${CommentEntity.tableName} WHERE ${Columns.postId}=:postId")
+    @Query("DELETE FROM ${CommentEntity.tableName} WHERE ${CommentColumns.postId}=:postId")
     abstract suspend fun deleteByPostId(postId: Int)
 
     @Query("DELETE FROM ${CommentEntity.tableName}")

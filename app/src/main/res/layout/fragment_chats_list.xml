@@ -28,17 +28,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/chatsEmptyListLabel"
+            android:id="@+id/chatsEmptyListMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="32dp"
-            android:text="@string/new_chat_label"
             android:textAlignment="center"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/no_chats" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/chatsListAddNewBtn"

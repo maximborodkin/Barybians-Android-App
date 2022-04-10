@@ -32,7 +32,7 @@ class CommentEntityMapper @Inject constructor(
                 text = domainModel.text,
                 date = domainModel.date.time
             ),
-            attachments = attachmentEntityMapper.fromDomainModelList(domainModel.attachments ?: emptyList()),
+            attachments = attachmentEntityMapper.fromDomainModelList(domainModel.attachments),
             author = userEntityMapper.fromDomainModel(domainModel.author)
         )
 }

@@ -30,6 +30,7 @@
     <color name="colorError">#B3261E</color>
     <color name="colorOnError">#FFFFFF</color>
 
+    <color name="unreadMessageBackground">#BEDDEF</color>
     <color name="incomingMessageBackground">#E1DADA</color>
     <color name="outgoingMessageBackground">#A2CBE3</color>
     <color name="profileHeaderImageForeground">#74FFFFFF</color>

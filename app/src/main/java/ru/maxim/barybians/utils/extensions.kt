@@ -117,7 +117,7 @@ inline fun <reified T> List<T>.transform(action: (T) -> Unit): List<T> {
     return this
 }
 
-fun simpleDate(date: Date?, hasTime: Boolean = true): String {
+fun adaptiveDate(date: Date?, hasTime: Boolean = true): String {
     if (date == null) return String()
     val today = Calendar.getInstance()
     val calendar = Calendar.getInstance().also { it.timeInMillis = date.time }

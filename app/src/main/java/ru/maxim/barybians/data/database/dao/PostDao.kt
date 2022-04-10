@@ -5,28 +5,28 @@ import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.data.database.model.LikeEntity
 import ru.maxim.barybians.data.database.model.PostEntity
-import ru.maxim.barybians.data.database.model.PostEntity.Contract.Columns
+import ru.maxim.barybians.data.database.model.PostEntity.Contract.Columns as PostColumns
 import ru.maxim.barybians.data.database.model.PostEntity.PostEntityBody
 
 @Dao
 abstract class PostDao {
 
     @Transaction
-    @Query("SELECT * FROM ${PostEntity.tableName} ORDER BY ${Columns.date} DESC")
+    @Query("SELECT * FROM ${PostEntity.tableName} ORDER BY ${PostColumns.date} DESC")
     abstract fun feedPagingSource(): PagingSource<Int, PostEntity>
 
     @Transaction
-    @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${Columns.userId}=:userId ORDER BY ${Columns.date} DESC")
+    @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${PostColumns.userId}=:userId ORDER BY ${PostColumns.date} DESC")
     abstract fun userPostsPagingSource(userId: Int): PagingSource<Int, PostEntity>
 
     @Query("SELECT COUNT(*) FROM ${PostEntity.tableName}")
     abstract fun feedPostsCount(): Flow<Int>
 
-    @Query("SELECT COUNT(*) FROM ${PostEntity.tableName} WHERE ${Columns.userId}=:userId")
+    @Query("SELECT COUNT(*) FROM ${PostEntity.tableName} WHERE ${PostColumns.userId}=:userId")
     abstract fun userPostsCount(userId: Int): Flow<Int>
 
-    @Query("SELECT COUNT(*) FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
-    abstract fun checkPost(postId: Int): Int
+    @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${PostColumns.postId}=:postId")
+    abstract fun getById(postId: Int): PostEntity?
 
     suspend fun save(
         postEntity: PostEntity,
@@ -38,7 +38,7 @@ abstract class PostDao {
         likeDao: LikeDao
     ) {
         userDao.save(postEntity.likes + postEntity.author)
-        if (checkPost(postEntity.post.postId) > 0) {
+        if (getById(postEntity.post.postId) != null) {
             update(postEntity.post)
         } else {
             insert(postEntity.post)
@@ -61,13 +61,13 @@ abstract class PostDao {
     ) =
         postEntities.forEach { post ->
             save(
-                post,
-                attachmentDao,
-                postAttachmentDao,
-                commentAttachmentDao,
-                userDao,
-                commentDao,
-                likeDao
+                postEntity = post,
+                attachmentDao = attachmentDao,
+                postAttachmentDao = postAttachmentDao,
+                commentAttachmentDao = commentAttachmentDao,
+                userDao = userDao,
+                commentDao = commentDao,
+                likeDao = likeDao
             )
         }
 
@@ -77,9 +77,9 @@ abstract class PostDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(postEntity: PostEntityBody)
 
+    @Query("DELETE FROM ${PostEntity.tableName} WHERE ${PostColumns.postId}=:postId")
+    abstract suspend fun clear(postId: Int)
+
     @Query("DELETE FROM ${PostEntity.tableName}")
     abstract suspend fun clear()
-
-    @Query("DELETE FROM ${PostEntity.tableName} WHERE ${Columns.postId}=:postId")
-    abstract suspend fun clear(postId: Int)
 }

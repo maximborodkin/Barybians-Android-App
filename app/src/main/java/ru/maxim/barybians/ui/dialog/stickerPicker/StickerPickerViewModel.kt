@@ -39,7 +39,7 @@ class StickerPickerViewModel private constructor(
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(StickerPickerViewModel::class.java)) {
                 return StickerPickerViewModel(application, stickerPackRepository) as T
             }

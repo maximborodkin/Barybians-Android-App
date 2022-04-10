@@ -3,26 +3,53 @@ package ru.maxim.barybians.data.database.dao
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.data.database.model.MessageEntity
-import ru.maxim.barybians.data.database.model.MessageEntity.Contract.Columns
+import ru.maxim.barybians.data.database.model.MessageEntity.Contract.Columns as MessageColumns
+import ru.maxim.barybians.data.database.model.MessageEntity.MessageEntityBody
 
 @Dao
-interface MessageDao {
+abstract class MessageDao {
 
     @Transaction
     @Query(
         """SELECT * FROM ${MessageEntity.tableName} WHERE 
-        ${Columns.senderId}=:firsUserId AND ${Columns.receiverId}=:secondUserId OR
-        ${Columns.senderId}=:secondUserId AND ${Columns.receiverId}=:firsUserId
-        ORDER BY ${Columns.time}"""
+        ${MessageColumns.senderId}=:firsUserId AND ${MessageColumns.receiverId}=:secondUserId OR
+        ${MessageColumns.senderId}=:secondUserId AND ${MessageColumns.receiverId}=:firsUserId
+        ORDER BY ${MessageColumns.time}"""
     )
-    fun getChatMessages(firsUserId: Int, secondUserId: Int): Flow<List<MessageEntity>>
+    abstract fun getChatMessages(firsUserId: Int, secondUserId: Int): Flow<List<MessageEntity>>
+
+    @Query("SELECT * FROM ${MessageEntity.tableName} WHERE ${MessageColumns.messageId}=:messageId")
+    abstract fun getById(messageId: Int): MessageEntityBody?
+
+    suspend fun save(
+        messageEntity: MessageEntity,
+        attachmentDao: AttachmentDao,
+        messageAttachmentDao: MessageAttachmentDao
+    ) {
+        if (getById(messageEntity.message.messageId) != null) {
+            update(messageEntity.message)
+        } else {
+            insert(messageEntity.message)
+        }
+        messageAttachmentDao.save(messageEntity.attachments, messageEntity.message.messageId, attachmentDao)
+    }
+
+    suspend fun save(
+        messageEntities: List<MessageEntity>,
+        attachmentDao: AttachmentDao,
+        messageAttachmentDao: MessageAttachmentDao
+    ) =
+        messageEntities.forEach { message -> save(message, attachmentDao, messageAttachmentDao) }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(messageEntity: MessageEntity.MessageEntityBody)
+    abstract suspend fun insert(messageEntity: MessageEntityBody)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(messageEntities: List<MessageEntity.MessageEntityBody>)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun update(messageEntity: MessageEntityBody)
 
     @Delete
-    suspend fun delete(messageEntity: MessageEntity.MessageEntityBody)
+    abstract suspend fun delete(messageEntity: MessageEntityBody)
+
+    @Query("DELETE FROM ${MessageEntity.tableName}")
+    abstract suspend fun clear()
 }

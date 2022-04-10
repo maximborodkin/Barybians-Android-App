@@ -84,7 +84,7 @@ class LoginViewModel private constructor(
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
                 return LoginViewModel(application, authRepository) as T
             }
