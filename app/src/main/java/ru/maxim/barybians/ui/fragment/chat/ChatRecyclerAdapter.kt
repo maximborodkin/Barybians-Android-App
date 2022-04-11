@@ -3,25 +3,33 @@ package ru.maxim.barybians.ui.fragment.chat
 import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.ItemIncomingMessageBinding
 import ru.maxim.barybians.databinding.ItemOutgoingMessageBinding
+import ru.maxim.barybians.domain.model.Message
 import ru.maxim.barybians.ui.fragment.chat.OutgoingMessage.MessageStatus.*
+import javax.inject.Inject
 
-class ChatRecyclerAdapter(
-    private val messages: ArrayList<MessageItem>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatRecyclerAdapter @Inject constructor(
+) : PagingDataAdapter<Message, RecyclerView.ViewHolder>(MessageDiffUtils) {
 
-    init {
-        setHasStableIds(true)
+//    init {
+//        setHasStableIds(true)
+//    }
+
+    fun setAdapterListener(listener: (() -> Unit)?) : ChatRecyclerAdapter {
+
+        return this
     }
 
     class IncomingMessageViewHolder(private val binding: ItemIncomingMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: IncomingMessage) = with(binding) {
-            itemIncomingMessageText.text = message.text
-            itemIncomingMessageTime.text = message.time
+            incomingMessageText.text = message.text
+            incomingMessageTime.text = message.time
         }
     }
 
@@ -30,7 +38,7 @@ class ChatRecyclerAdapter(
 
         fun bind(message: OutgoingMessage) = with(binding) {
             outgoingMessageStatus.setImageDrawable(null)
-            itemOutgoingMessageText.text = message.text
+            outgoingMessageText.text = message.text
             outgoingMessageTime.text = message.time
             when (message.status) {
                 Sending -> setSendingProcessLabel()
@@ -58,8 +66,6 @@ class ChatRecyclerAdapter(
         }
     }
 
-    override fun getItemId(position: Int) = messages[position].viewId
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (viewType) {
@@ -74,28 +80,36 @@ class ChatRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val message = messages[position]
-        when (getItemViewType(position)) {
-            MessageType.IncomingMessage.viewType -> {
-                (holder as? IncomingMessageViewHolder)?.let {
-                    (message as? IncomingMessage)?.let {
-                        holder.bind(message)
-                    }
-                }
-            }
-            MessageType.OutgoingMessage.viewType -> {
-                (holder as? OutgoingMessageViewHolder)?.let {
-                    (message as? OutgoingMessage)?.let {
-                        holder.bind(message)
-                    }
-                }
-            }
-            else -> throw IllegalStateException("Unknown view type")
-        }
+//        val message = messages[position]
+//        when (getItemViewType(position)) {
+//            MessageType.IncomingMessage.viewType -> {
+//                (holder as? IncomingMessageViewHolder)?.let {
+//                    (message as? IncomingMessage)?.let {
+//                        holder.bind(message)
+//                    }
+//                }
+//            }
+//            MessageType.OutgoingMessage.viewType -> {
+//                (holder as? OutgoingMessageViewHolder)?.let {
+//                    (message as? OutgoingMessage)?.let {
+//                        holder.bind(message)
+//                    }
+//                }
+//            }
+//            else -> throw IllegalStateException("Unknown view type")
+//        }
     }
 
-    override fun getItemViewType(position: Int): Int = messages[position].getType()
+//    override fun getItemViewType(position: Int): Int = messages[position].getType()
 
-    override fun getItemCount(): Int = messages.size
+//    override fun getItemCount(): Int = messages.size
 
+    private object MessageDiffUtils : DiffUtil.ItemCallback<Message>() {
+
+        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean =
+            oldItem.messageId == newItem.messageId
+
+        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean =
+            oldItem == newItem
+    }
 }

@@ -69,7 +69,7 @@ class LikesListDialog : BottomSheetDialogFragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         recyclerAdapter.setOnUserClickListener(null)
+        super.onDestroyView()
     }
 }

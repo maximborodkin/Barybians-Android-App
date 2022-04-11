@@ -4,30 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="start"
-    android:layout_marginEnd="64dp"
-    android:layout_marginBottom="@dimen/message_space"
-    android:background="@drawable/incoming_message_background">
+    android:layout_marginBottom="@dimen/message_space">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemIncomingMessageText"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/incomingMessageGuideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="6dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/incoming_message_background"
+        app:layout_constraintBottom_toBottomOf="@id/incomingMessageTime"
+        app:layout_constraintEnd_toEndOf="@id/incomingMessageText"
+        app:layout_constraintStart_toStartOf="@id/incomingMessageText"
+        app:layout_constraintTop_toTopOf="@id/incomingMessageText" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/incomingMessageText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        app:layout_constraintEnd_toStartOf="@id/incomingMessageGuideline"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
         tools:text="@tools:sample/lorem[10]" />
 
     <TextView
-        android:id="@+id/itemIncomingMessageTime"
+        android:id="@+id/incomingMessageTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginBottom="4dp"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemIncomingMessageText"
+        app:layout_constraintTop_toBottomOf="@id/incomingMessageText"
         tools:text="@tools:sample/date/hhmm" />
 </androidx.constraintlayout.widget.ConstraintLayout>

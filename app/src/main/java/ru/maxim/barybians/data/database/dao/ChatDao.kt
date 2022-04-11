@@ -1,11 +1,6 @@
 package ru.maxim.barybians.data.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.data.database.model.ChatEntity
 import ru.maxim.barybians.data.database.model.ChatEntity.ChatEntityBody
@@ -14,9 +9,11 @@ import ru.maxim.barybians.data.database.model.ChatEntity.Contract.Columns as Cha
 @Dao
 abstract class ChatDao {
 
+    @Transaction
     @Query("SELECT * FROM ${ChatEntity.tableName}")
     abstract fun getChatsList(): Flow<List<ChatEntity>>
 
+    @Transaction
     @Query("SELECT * FROM ${ChatEntity.tableName} WHERE ${ChatColumns.secondUserId}=:userId")
     abstract fun getByInterlocutorId(userId: Int): ChatEntity?
 

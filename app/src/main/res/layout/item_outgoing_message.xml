@@ -2,12 +2,41 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="end"
-    android:layout_marginStart="64dp"
-    android:layout_marginBottom="@dimen/message_space"
-    android:background="@drawable/outgoing_message_background">
+    android:layout_marginBottom="@dimen/message_space">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/outgoingMessageGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/outgoing_message_background"
+        app:layout_constraintBottom_toBottomOf="@id/outgoingMessageTime"
+        app:layout_constraintEnd_toEndOf="@id/outgoingMessageText"
+        app:layout_constraintStart_toStartOf="@id/outgoingMessageText"
+        app:layout_constraintTop_toTopOf="@id/outgoingMessageText" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/outgoingMessageText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="@id/outgoingMessageGuideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="@tools:sample/lorem[50]" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/outgoingMessageStatus"
@@ -19,24 +48,13 @@
         app:layout_constraintEnd_toStartOf="@id/outgoingMessageTime"
         app:layout_constraintTop_toTopOf="@id/outgoingMessageTime" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/itemOutgoingMessageText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="a" />
-
     <HorizontalScrollView
         android:id="@+id/outgoingMessageAttachmentsScroll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="6dp"
-        app:layout_constraintEnd_toEndOf="@id/itemOutgoingMessageText"
-        app:layout_constraintTop_toBottomOf="@id/itemOutgoingMessageText">
+        app:layout_constraintEnd_toEndOf="@id/outgoingMessageText"
+        app:layout_constraintTop_toBottomOf="@id/outgoingMessageText">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/outgoingMessageAttachmentsHolder"
@@ -48,8 +66,8 @@
         android:id="@+id/outgoingMessageTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="4dp"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/outgoingMessageAttachmentsScroll"

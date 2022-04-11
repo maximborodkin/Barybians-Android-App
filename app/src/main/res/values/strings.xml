@@ -66,7 +66,7 @@
 
     <!--  Profile  -->
     <string name="online">Online</string>
-    <string name="last_visit">Last visit %s</string>
+    <string name="last_visit_placeholder">Last visit %s</string>
     <string name="age_plurals_zero">%1$d years</string>
     <string name="age_plurals_one">%1$d year</string>
     <string name="age_plurals_two">%1$d years</string>

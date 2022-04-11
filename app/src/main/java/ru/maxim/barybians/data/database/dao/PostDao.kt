@@ -25,6 +25,7 @@ abstract class PostDao {
     @Query("SELECT COUNT(*) FROM ${PostEntity.tableName} WHERE ${PostColumns.userId}=:userId")
     abstract fun userPostsCount(userId: Int): Flow<Int>
 
+    @Transaction
     @Query("SELECT * FROM ${PostEntity.tableName} WHERE ${PostColumns.postId}=:postId")
     abstract fun getById(postId: Int): PostEntity?
 

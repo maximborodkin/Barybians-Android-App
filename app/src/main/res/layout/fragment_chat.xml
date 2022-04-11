@@ -4,12 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
+
+        <import type="kotlin.text.StringsKt" />
+
         <import type="androidx.lifecycle.MutableLiveData" />
+
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
 
         <variable
-            name="messageText"
-            type="MutableLiveData&lt;String>" />
+            name="viewModel"
+            type="ru.maxim.barybians.ui.fragment.chat.ChatViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,17 +29,11 @@
             app:layout_constraintBottom_toTopOf="@id/chatRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/chatBackBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="12dp"
-                android:src="@drawable/ic_back" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_back">
 
             <include
-                android:id="@+id/chatToolbarUser"
+                android:id="@+id/chatToolbarInterlocutor"
                 layout="@layout/item_user" />
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -41,7 +41,6 @@
             android:id="@+id/chatRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingHorizontal="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/chatMessageInput"
             app:layout_constraintEnd_toEndOf="parent"
@@ -64,7 +63,8 @@
             android:id="@+id/chatMessageEmojiBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="8dp"
+            android:padding="12dp"
+            android:visibility="@{viewModel.messageText.empty || viewModel.isSending ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/chatMessageInput"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,17 +77,18 @@
             android:autofillHints="none"
             android:hint="@string/type_message"
             android:inputType="textAutoComplete"
-            android:text="@={messageText}"
+            android:text="@={viewModel.messageText}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/chatMessageSendBtn"
             app:layout_constraintStart_toEndOf="@id/chatMessageEmojiBtn" />
 
-<!--            android:enabled="@{!ExtensionsKt.isEmpty(messageText)}"-->
+        <!--            android:enabled="@{!ExtensionsKt.isEmpty(messageText)}"-->
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/chatMessageSendBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="8dp"
+            android:enabled="@{!StringsKt.isBlank(viewModel.messageText) &amp;&amp; !viewModel.isSending}"
+            android:padding="12dp"
             android:src="@drawable/ic_send"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

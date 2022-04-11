@@ -15,12 +15,8 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatsListBinding
-import ru.maxim.barybians.domain.model.Chat
-import ru.maxim.barybians.ui.dialog.likesList.LikesListViewModel
 import ru.maxim.barybians.ui.fragment.chatsList.ChatsListViewModel.ChatsListViewModelFactory
 import ru.maxim.barybians.utils.appComponent
-import ru.maxim.barybians.utils.hide
-import ru.maxim.barybians.utils.setErrorText
 import ru.maxim.barybians.utils.toast
 import javax.inject.Inject
 
@@ -45,6 +41,9 @@ class ChatsListFragment : Fragment(R.layout.fragment_chats_list) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
+        chatsListAdapter.setOnChatClickListener { userId ->
+            findNavController().navigate(ChatsListFragmentDirections.toChat(userId))
+        }
         chatsListRecyclerView.adapter = chatsListAdapter
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -66,7 +65,7 @@ class ChatsListFragment : Fragment(R.layout.fragment_chats_list) {
                 if (chatsListAdapter.itemCount > 0) {
                     context.toast(errorMessageId)
                 } else {
-                    chatsEmptyListMessage.setText(errorMessageId?.let { getString(it) })
+                    chatsEmptyListMessage.text = errorMessageId?.let { getString(it) }
                 }
             }
         }
@@ -74,6 +73,11 @@ class ChatsListFragment : Fragment(R.layout.fragment_chats_list) {
         chatsListAddNewBtn.setOnClickListener { context.toast("New chat") }
         chatsListRefreshLayout.setOnRefreshListener { model.refresh() }
         model.refresh()
+    }
+
+    override fun onDestroyView() {
+        chatsListAdapter.setOnChatClickListener(null)
+        super.onDestroyView()
     }
 }
 

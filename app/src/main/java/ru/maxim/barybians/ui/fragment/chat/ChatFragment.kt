@@ -4,86 +4,91 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import ru.maxim.barybians.R
+import kotlinx.coroutines.launch
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentChatBinding
-import ru.maxim.barybians.domain.model.Message
-import ru.maxim.barybians.domain.model.User
-import ru.maxim.barybians.ui.fragment.chat.ChatRecyclerAdapter.OutgoingMessageViewHolder
-import ru.maxim.barybians.ui.fragment.chat.OutgoingMessage.MessageStatus.*
 import ru.maxim.barybians.ui.dialog.stickerPicker.StickersPickerDialog
-import ru.maxim.barybians.utils.*
-import java.util.*
+import ru.maxim.barybians.ui.fragment.chat.ChatViewModel.ChatViewModelFactory
+import ru.maxim.barybians.utils.appComponent
 import javax.inject.Inject
-import javax.inject.Provider
+import kotlin.properties.Delegates.notNull
 
-class ChatFragment : Fragment()/*, ChatView*/ {
-
-//    @Inject
-//    lateinit var presenterProvider: Provider<ChatPresenter>
-//
-//    private val chatPresenter by moxyPresenter { presenterProvider.get() }
-
-    private lateinit var binding: FragmentChatBinding
+class ChatFragment : Fragment() {
 
     private val args by navArgs<ChatFragmentArgs>()
 
     @Inject
+    lateinit var factory: ChatViewModelFactory.Factory
+    private val model: ChatViewModel by viewModels { factory.create(args.userId) }
+
+    @Inject
+    lateinit var chatRecyclerAdapter: ChatRecyclerAdapter
+
+    private var binding: FragmentChatBinding by notNull()
+
+    @Inject
     lateinit var preferencesManager: PreferencesManager
 
-    private val interlocutorId by lazy { args.userId }
-    private val messageItems = ArrayList<MessageItem>()
-    private val message = MutableLiveData<String?>()
-
     override fun onAttach(context: Context) {
-        super.onAttach(context)
         context.appComponent.inject(this)
+        super.onAttach(context)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentChatBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentChatBinding.inflate(layoutInflater, container, false).apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = model
+            chatRecyclerView.adapter = chatRecyclerAdapter.setAdapterListener(null)
+        }
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(binding) {
-            messageText = message
-            lifecycleOwner = viewLifecycleOwner
+        // TODO: collect paging data loading state
 
-            chatMessageSendBtn.setOnClickListener {
-//                if (message.value.isNotNullOrBlank()) sendMessage(message.value!!)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                model.messages.collect(chatRecyclerAdapter::submitData)
             }
-
-            chatMessageEmojiBtn.setOnClickListener {
-//                val stickersPicker = StickersPickerDialog.newInstance {
-//                    // TODO: Implement sticker sending
-//                    context.toast(it)
-//                }
-//                stickersPicker.show(childFragmentManager, "StickersPicker")
-            }
-
-            chatToolbarUser.root.setOnClickListener {
-                findNavController().navigate(ChatFragmentDirections.toProfile(interlocutorId))
-            }
-            chatBackBtn.setOnClickListener { findNavController().popBackStack() }
         }
 
-        if (savedInstanceState.isNull()) {
-//            chatPresenter.loadMessages(interlocutorId)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                model.interlocutor.collect { user ->
+                    chatToolbarInterlocutor.user = user
+                }
+            }
         }
+        // TODO: apply different drawables for sendButton when model.isLoading true and false
+        chatMessageSendBtn.setOnClickListener { model.sendMessage() }
+
+        chatMessageEmojiBtn.setOnClickListener {
+            StickersPickerDialog().show(childFragmentManager, StickersPickerDialog::class.qualifiedName)
+        }
+        childFragmentManager.setFragmentResultListener(
+            StickersPickerDialog.stickerPickerResultKey,
+            viewLifecycleOwner
+        ) { _, result: Bundle ->
+            model.sendSticker(
+                pack = result.getString(StickersPickerDialog.stickerPackKey),
+                sticker = result.getString(StickersPickerDialog.stickerKey)
+            )
+        }
+
+        chatToolbarInterlocutor.root.setOnClickListener {
+            findNavController().navigate(ChatFragmentDirections.toProfile(args.userId))
+        }
+        chatToolbar.setNavigationOnClickListener { findNavController().popBackStack() }
     }
 
 //    override fun showMessages(messages: List<Message>, interlocutor: User) {

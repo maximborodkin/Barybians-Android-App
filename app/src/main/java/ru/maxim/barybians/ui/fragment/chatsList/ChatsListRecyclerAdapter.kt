@@ -24,7 +24,7 @@ class ChatsListRecyclerAdapter @Inject constructor(
 
     private var onChatClick: ((userId: Int) -> Unit)? = null
 
-    fun setAdapterListener(listener: ((userId: Int) -> Unit)?) {
+    fun setOnChatClickListener(listener: ((userId: Int) -> Unit)?) {
         onChatClick = listener
     }
 
