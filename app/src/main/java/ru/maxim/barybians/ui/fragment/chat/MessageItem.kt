@@ -1,20 +1,16 @@
 package ru.maxim.barybians.ui.fragment.chat
 
-import ru.maxim.barybians.ui.fragment.chat.MessageType.IncomingMessage
-import ru.maxim.barybians.ui.fragment.chat.MessageType.OutgoingMessage
 
-sealed class MessageItem(val viewId: Long, val text: String, val time: String) {
-    abstract fun getType(): Int
-}
+abstract class MessageItem(
+    val viewId: Long, val text: String, val time: String
+    )
 
 class IncomingMessage(
     viewId: Long,
     text: String,
     time: String,
     val senderId: Int
-) : MessageItem(viewId, text, time) {
-    override fun getType(): Int = IncomingMessage.viewType
-}
+) : MessageItem(viewId, text, time)
 
 class OutgoingMessage(
     viewId: Long,
@@ -22,7 +18,7 @@ class OutgoingMessage(
     time: String,
     var status: MessageStatus
 ) : MessageItem(viewId, text, time) {
-    override fun getType(): Int = OutgoingMessage.viewType
+
 
     enum class MessageStatus {
         Sending,
@@ -32,8 +28,5 @@ class OutgoingMessage(
     }
 }
 
-enum class MessageType(val viewType: Int) {
-    IncomingMessage(1),
-    OutgoingMessage(2)
-}
+
 

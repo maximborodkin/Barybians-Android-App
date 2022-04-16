@@ -6,6 +6,7 @@ import dagger.BindsInstance
 import dagger.Component
 import kotlinx.coroutines.CoroutineScope
 import ru.maxim.barybians.data.PreferencesManager
+import ru.maxim.barybians.service.MessageService
 import ru.maxim.barybians.ui.MainActivity
 import ru.maxim.barybians.ui.dialog.commentsList.CommentsListDialog
 import ru.maxim.barybians.ui.dialog.imageViewer.ImageViewerDialog
@@ -52,6 +53,7 @@ interface AppComponent {
     fun inject(likesListDialog: LikesListDialog)
     fun inject(imageViewerDialog: ImageViewerDialog)
     fun inject(markupEditorDialog: MarkupEditorDialog)
+    fun inject(messageService: MessageService)
 
     val preferencesManager: PreferencesManager
 }

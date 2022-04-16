@@ -1,5 +1,6 @@
 package ru.maxim.barybians
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import kotlinx.coroutines.CoroutineScope
@@ -8,6 +9,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import ru.maxim.barybians.di.AppComponent
 import ru.maxim.barybians.di.DaggerAppComponent
+import ru.maxim.barybians.service.MessageService
 import timber.log.Timber
 
 class App : MultiDexApplication() {
@@ -33,6 +35,9 @@ class App : MultiDexApplication() {
         }
 
         super.onCreate()
+
+//        val messageServiceIntent = Intent(this, MessageService::class.java)
+//        startService(messageServiceIntent)
     }
 
     override fun onLowMemory() {

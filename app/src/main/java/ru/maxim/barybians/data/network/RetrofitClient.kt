@@ -17,7 +17,7 @@ class RetrofitClient @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) {
 
-    private val connectionSpec: MutableList<ConnectionSpec> =
+    private val connectionSpec: List<ConnectionSpec> =
         Collections.singletonList(
             ConnectionSpec.Builder(ConnectionSpec.COMPATIBLE_TLS)
                 .tlsVersions(
@@ -67,6 +67,7 @@ class RetrofitClient @Inject constructor(
 
     companion object {
         const val BASE_URL = "https://api.barybians.ru"
+        const val WS_URL = "wss://barybians.ru:3000"
         const val STICKERS_BASE_URL = "https://content.barybians.ru/stickers"
         const val AVATARS_BASE_URL = "https://content.barybians.ru/avatars"
         const val DEFAULT_AVATAR_URL = "https://content.barybians.ru/avatars/j.png"
