@@ -21,7 +21,7 @@ import ru.maxim.barybians.data.database.dao.MessageAttachmentDao
 import ru.maxim.barybians.data.database.dao.MessageDao
 import ru.maxim.barybians.data.database.model.ChatEntity
 import ru.maxim.barybians.data.database.model.mapper.MessageEntityMapper
-import ru.maxim.barybians.data.network.RetrofitClient.Companion.WS_URL
+import ru.maxim.barybians.data.network.RetrofitClient.Companion.WS_BASE_URL
 import ru.maxim.barybians.data.network.model.MessageDto
 import ru.maxim.barybians.data.network.model.WebSocketEvent
 import ru.maxim.barybians.data.network.model.mapper.MessageDtoMapper
@@ -62,7 +62,7 @@ class MessageService : Service() {
         applicationContext.appComponent.inject(this)
         super.onCreate()
 
-        val request = Request.Builder().url(WS_URL).build()
+        val request = Request.Builder().url("$WS_BASE_URL?token=${preferencesManager.token}").build()
         val webSocketListener = MessageWebSocketListener()
         okHttpClient.newWebSocket(request, webSocketListener)
         okHttpClient.dispatcher.executorService.shutdown()
@@ -122,8 +122,8 @@ class MessageService : Service() {
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
             Timber.d("MessageWebSocketListener opened")
-            val tokenMessage = "token=${preferencesManager.token}"
-            webSocket.send(tokenMessage)
+//            val tokenMessage = "token=${preferencesManager.token}"
+//            webSocket.send(tokenMessage)
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {

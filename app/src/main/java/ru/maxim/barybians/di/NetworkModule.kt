@@ -30,11 +30,15 @@ object NetworkModule {
 
     @Reusable
     @Provides
-    fun provideUserService(retrofitClient: RetrofitClient) = retrofitClient.userService
+    fun provideChatService(retrofitClient: RetrofitClient) = retrofitClient.chatService
 
     @Reusable
     @Provides
-    fun provideChatService(retrofitClient: RetrofitClient) = retrofitClient.chatService
+    fun provideCommentService(retrofitClient: RetrofitClient) = retrofitClient.commentService
+
+    @Reusable
+    @Provides
+    fun provideMessageService(retrofitClient: RetrofitClient) = retrofitClient.messageService
 
     @Reusable
     @Provides
@@ -46,7 +50,7 @@ object NetworkModule {
 
     @Reusable
     @Provides
-    fun provideCommentService(retrofitClient: RetrofitClient) = retrofitClient.commentService
+    fun provideUserService(retrofitClient: RetrofitClient) = retrofitClient.userService
 
     @Module
     interface RepositoryBindings {

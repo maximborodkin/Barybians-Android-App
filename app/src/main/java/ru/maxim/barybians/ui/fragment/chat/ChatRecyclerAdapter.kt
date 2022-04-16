@@ -1,52 +1,53 @@
 package ru.maxim.barybians.ui.fragment.chat
 
-import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemIncomingMessageBinding
 import ru.maxim.barybians.databinding.ItemOutgoingMessageBinding
 import ru.maxim.barybians.domain.model.Message
-import ru.maxim.barybians.ui.fragment.chat.OutgoingMessage.MessageStatus.*
+import ru.maxim.barybians.utils.adaptiveDate
 import javax.inject.Inject
 
 class ChatRecyclerAdapter @Inject constructor(
     private val preferencesManager: PreferencesManager
 ) : PagingDataAdapter<Message, RecyclerView.ViewHolder>(MessageDiffUtils) {
 
-    fun setAdapterListener(listener: (() -> Unit)?) : ChatRecyclerAdapter {
+    private var chatAdapterListener: ChatAdapterListener? = null
 
+    fun setAdapterListener(listener: ChatAdapterListener?): ChatRecyclerAdapter {
+        chatAdapterListener = listener
         return this
     }
 
     class IncomingMessageViewHolder(private val binding: ItemIncomingMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(message: IncomingMessage) = with(binding) {
+        fun bind(message: Message) = with(binding) {
+            // TODO: apply attachments to message
             incomingMessageText.text = message.text
-            incomingMessageTime.text = message.time
+            incomingMessageTime.text = adaptiveDate(message.date, hasTime = true)
         }
     }
 
     class OutgoingMessageViewHolder(private val binding: ItemOutgoingMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: OutgoingMessage) = with(binding) {
-            outgoingMessageStatus.setImageDrawable(null)
+        fun bind(message: Message) = with(binding) {
+            // TODO: apply attachments to message
             outgoingMessageText.text = message.text
-            outgoingMessageTime.text = message.time
-            when (message.status) {
-                Sending -> {
-                    outgoingMessageStatus.setImageResource(R.drawable.ic_timer_animated)
-                    (outgoingMessageStatus.background as? Animatable)?.start()
-                }
-                Unread -> outgoingMessageStatus.setImageResource(R.drawable.unread_circle)
-                Read -> outgoingMessageStatus.setImageDrawable(null)
-                Error -> outgoingMessageStatus.setImageResource(R.drawable.ic_error)
-            }
+            outgoingMessageTime.text = adaptiveDate(message.date, hasTime = true)
+//            when (message.status) {
+//                Sending -> {
+//                    outgoingMessageStatus.setImageResource(R.drawable.ic_timer_animated)
+//                    (outgoingMessageStatus.background as? Animatable)?.start()
+//                }
+//                Unread -> outgoingMessageStatus.setImageResource(R.drawable.unread_circle)
+//                Read -> outgoingMessageStatus.setImageDrawable(null)
+//                Error -> outgoingMessageStatus.setImageResource(R.drawable.ic_error)
+//            }
         }
     }
 
@@ -68,21 +69,13 @@ class ChatRecyclerAdapter @Inject constructor(
         else MessageType.INCOMING.viewType
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val message = getItem(position)
+        val message = getItem(position) ?: return
         when (getItemViewType(position)) {
             MessageType.INCOMING.viewType -> {
-                (holder as? IncomingMessageViewHolder)?.let {
-                    (message as? IncomingMessage)?.let {
-                        holder.bind(message)
-                    }
-                }
+                (holder as? IncomingMessageViewHolder)?.bind(message)
             }
             MessageType.OUTGOING.viewType -> {
-                (holder as? OutgoingMessageViewHolder)?.let {
-                    (message as? OutgoingMessage)?.let {
-                        holder.bind(message)
-                    }
-                }
+                (holder as? OutgoingMessageViewHolder)?.bind(message)
             }
             else -> throw IllegalStateException("Unknown view type")
         }
