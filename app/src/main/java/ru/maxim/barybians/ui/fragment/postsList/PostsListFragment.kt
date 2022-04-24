@@ -12,13 +12,14 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.paging.LoadState
 import androidx.paging.LoadState.Error
 import androidx.paging.LoadState.Loading
+import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
@@ -55,8 +56,6 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
     @Inject
     lateinit var loadingStateAdapter: LoadingStateAdapter
 
-    private var currentLoadingState: LoadState? = null
-
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
@@ -72,6 +71,7 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
         postsListCreateButton.setOnClickListener { showEditDialog(R.string.new_post, onEdit = model::createPost) }
 
         loadingStateAdapter.setOnRetryListener(postsListRecyclerAdapter::retry)
+        postsListRecyclerAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         postsListRecyclerAdapter.setAdapterListener(this@PostsListFragment)
         postsListRecycler.adapter = postsListRecyclerAdapter.withLoadStateFooter(loadingStateAdapter)
 
@@ -79,10 +79,8 @@ class PostsListFragment : Fragment(R.layout.fragment_posts_list), PostsListAdapt
             viewLifecycleOwner.repeatOnLifecycle(STARTED) {
                 postsListRecyclerAdapter.loadStateFlow
                     .mapNotNull { loadState -> loadState.mediator?.refresh }
+                    .distinctUntilChanged()
                     .collectLatest { loadState ->
-                        if (loadState == currentLoadingState) return@collectLatest
-                        currentLoadingState = loadState
-
                         postsListRefreshLayout.isRefreshing = loadState is Loading
                         if (loadState is Error) {
                             var errorMessage = when (loadState.error) {

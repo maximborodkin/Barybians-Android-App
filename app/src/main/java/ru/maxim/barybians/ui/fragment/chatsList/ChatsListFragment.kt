@@ -48,14 +48,16 @@ class ChatsListFragment : Fragment(R.layout.fragment_chats_list) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                model.chats.collect(chatsListAdapter::submitList)
+                model.chats.collect { chats ->
+                    chatsListAdapter.submitList(chats)
+                    chatsEmptyListMessage.isVisible = chats.isEmpty()
+                }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
             model.isLoading.observe(viewLifecycleOwner) { isLoading ->
                 chatsListLoading.isVisible = isLoading
-                chatsEmptyListMessage.isVisible = isLoading
                 if (!isLoading) chatsListRefreshLayout.isRefreshing = false
             }
         }

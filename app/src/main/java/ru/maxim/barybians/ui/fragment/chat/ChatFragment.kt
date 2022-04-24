@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -12,12 +13,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.LoadState
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
+import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
+import ru.maxim.barybians.data.network.exception.NoConnectionException
+import ru.maxim.barybians.data.network.exception.TimeoutException
 import ru.maxim.barybians.databinding.FragmentChatBinding
 import ru.maxim.barybians.ui.dialog.stickerPicker.StickersPickerDialog
 import ru.maxim.barybians.ui.fragment.chat.ChatViewModel.ChatViewModelFactory
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.longToast
+import ru.maxim.barybians.utils.toast
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.properties.Delegates.notNull
 
@@ -37,6 +48,8 @@ class ChatFragment : Fragment() {
     @Inject
     lateinit var preferencesManager: PreferencesManager
 
+    private var currentLoadingState: LoadState? = null
+
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
@@ -54,21 +67,66 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?): Unit = with(binding) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: collect paging data loading state
-
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                model.messages.collect(chatRecyclerAdapter::submitData)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                chatRecyclerAdapter.loadStateFlow
+                    .mapNotNull { loadState -> loadState.mediator?.refresh }
+                    .collectLatest { loadState ->
+                        if (loadState == currentLoadingState) return@collectLatest
+                        currentLoadingState = loadState
+
+                        chatLoading.isVisible = loadState is LoadState.Loading
+                        (chatRecyclerView.layoutManager as? LinearLayoutManager)
+                            ?.scrollToPosition(chatRecyclerAdapter.itemCount - 1)
+//                        if (loadState is LoadState.NotLoading) {
+//                            (chatRecyclerView.layoutManager as? LinearLayoutManager)
+//                                ?.scrollToPosition(chatRecyclerAdapter.itemCount - 1)
+//                        }
+                        if (loadState is LoadState.Error) {
+                            var errorMessage = when (loadState.error) {
+                                is NoConnectionException -> getString(R.string.no_internet_connection)
+                                is TimeoutException -> getString(R.string.request_timeout)
+                                else -> getString(R.string.an_error_occurred_while_loading_messages)
+                            }
+                            if (preferencesManager.isDebug) {
+                                errorMessage += "\n${loadState.error}(${loadState.error.message})"
+                                context?.longToast(errorMessage)
+                            } else {
+                                context?.toast(errorMessage)
+                            }
+                            chatErrorMessage.text = errorMessage
+                        }
+                    }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                model.interlocutor.collect { user ->
-                    chatToolbarInterlocutor.user = user
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.messages.collect { messages ->
+                    (chatRecyclerView.layoutManager as? LinearLayoutManager)
+                        ?.scrollToPosition(chatRecyclerAdapter.itemCount - 1)
+                    chatRecyclerAdapter.submitData(messages)
+                    Timber.d("MessageRemoteMediator ChatRecycler position ${(chatRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()}")
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.interlocutor.collect { user -> chatToolbarInterlocutor.user = user }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                model.messagesCount.collect { messagesCount -> chatErrorMessage.isVisible = messagesCount == 0 }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            model.errorMessage.observe(viewLifecycleOwner) { messageRes -> context.toast(messageRes) }
+        }
+
         // TODO: apply different drawables for sendButton when model.isLoading true and false
         chatMessageSendBtn.setOnClickListener { model.sendMessage() }
 

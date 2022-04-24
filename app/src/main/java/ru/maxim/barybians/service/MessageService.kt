@@ -5,15 +5,12 @@ import android.content.Intent
 import android.os.IBinder
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.logging.HttpLoggingInterceptor.Level.BODY
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.database.dao.AttachmentDao
 import ru.maxim.barybians.data.database.dao.ChatDao
@@ -21,7 +18,7 @@ import ru.maxim.barybians.data.database.dao.MessageAttachmentDao
 import ru.maxim.barybians.data.database.dao.MessageDao
 import ru.maxim.barybians.data.database.model.ChatEntity
 import ru.maxim.barybians.data.database.model.mapper.MessageEntityMapper
-import ru.maxim.barybians.data.network.RetrofitClient.Companion.WS_BASE_URL
+import ru.maxim.barybians.data.network.NetworkManager.WS_BASE_URL
 import ru.maxim.barybians.data.network.model.MessageDto
 import ru.maxim.barybians.data.network.model.WebSocketEvent
 import ru.maxim.barybians.data.network.model.mapper.MessageDtoMapper
@@ -31,14 +28,14 @@ import javax.inject.Inject
 
 class MessageService : Service() {
 
-    private val job = SupervisorJob()
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
+
+    @Inject
+    lateinit var applicationScope: CoroutineScope
 
     @Inject
     lateinit var preferencesManager: PreferencesManager
-
-    private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().apply { level = BODY })
-        .build()
 
     @Inject
     lateinit var messageDao: MessageDao
@@ -72,7 +69,7 @@ class MessageService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
-    private fun proceedMessage(text: String) = CoroutineScope(job).launch {
+    private fun proceedMessage(text: String) = applicationScope.launch {
         try {
             val event = Gson().fromJson(text, WebSocketEvent::class.java)
             if (event.event == "message_sended") {
@@ -109,13 +106,8 @@ class MessageService : Service() {
                 }
             }
         } catch (e: Exception) {
-            Timber.w(e)
+            Timber.e(e)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
     }
 
     private inner class MessageWebSocketListener : WebSocketListener() {

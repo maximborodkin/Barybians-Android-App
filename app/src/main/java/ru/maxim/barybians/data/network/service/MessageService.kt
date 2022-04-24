@@ -9,10 +9,10 @@ import ru.maxim.barybians.data.network.model.response.ChatResponse
 
 interface MessageService {
 
-    @GET("/v2/messages/{user_id}?desc=true")
+    @GET("/v2/messages/{user_id}?desc=true&sum=true")
     suspend fun loadMessagesPage(
         @Path("user_id") userId: Int,
-        @Query("start") start: Int,
+        @Query("start") startIndex: Int,
         @Query("end") count: Int
     ): Response<ChatResponse>
 }

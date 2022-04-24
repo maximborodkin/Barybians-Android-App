@@ -28,14 +28,14 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/outgoingMessageText"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="6dp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toStartOf="@id/outgoingMessageGuideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="wrap"
         tools:text="@tools:sample/lorem[50]" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content" />
     </HorizontalScrollView>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/outgoingMessageTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,4 +72,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/outgoingMessageAttachmentsScroll"
         tools:text="@tools:sample/date/hhmm" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/outgoingMessageDebugInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/outgoingMessageStatus"
+        android:gravity="end"
+        app:layout_constraintTop_toTopOf="@id/outgoingMessageStatus"
+        tools:text="id: 6322, pos: 123" />
 </androidx.constraintlayout.widget.ConstraintLayout>

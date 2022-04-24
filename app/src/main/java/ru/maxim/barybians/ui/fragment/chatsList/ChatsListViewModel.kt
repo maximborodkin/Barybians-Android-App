@@ -27,13 +27,8 @@ class ChatsListViewModel private constructor(
 
     val chats: StateFlow<List<Chat>> =
         chatsRepository.getChatsList()
-            .catch { exception ->
-                val errorMessage = when (exception) {
-                    is NoConnectionException -> R.string.no_internet_connection
-                    is TimeoutException -> R.string.request_timeout
-                    else -> R.string.unable_to_load_chats
-                }
-                _errorMessage.postValue(errorMessage)
+            .catch {
+                _errorMessage.value = R.string.unable_to_load_chats
                 _isLoading.value = false
             }
             .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
@@ -47,8 +42,18 @@ class ChatsListViewModel private constructor(
     fun refresh() = viewModelScope.launch(IO) {
         _isLoading.postValue(true)
         _errorMessage.postValue(null)
-        chatsRepository.refreshChatsList()
-        _isLoading.postValue(false)
+        try {
+            chatsRepository.refreshChatsList()
+        } catch (e: Exception) {
+            val message = when (e) {
+                is NoConnectionException -> R.string.no_internet_connection
+                is TimeoutException -> R.string.request_timeout
+                else -> R.string.unable_to_load_chats
+            }
+            _errorMessage.postValue(message)
+        } finally {
+            _isLoading.postValue(false)
+        }
     }
 
     class ChatsListViewModelFactory @Inject constructor(

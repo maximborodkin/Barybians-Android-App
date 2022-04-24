@@ -27,7 +27,7 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.launch
-import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.NetworkManager
 import ru.maxim.barybians.databinding.DialogStickerPickerBinding
 import ru.maxim.barybians.domain.model.StickerPack
 import ru.maxim.barybians.utils.appComponent
@@ -80,7 +80,7 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
             tab.customView = ImageView(context).apply {
                 layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
                 Glide.with(this)
-                    .load("${RetrofitClient.STICKERS_BASE_URL}/${pack.pack}/${pack.icon}.png")
+                    .load("${NetworkManager.STICKERS_BASE_URL}/${pack.pack}/${pack.icon}.png")
                     .apply(RequestOptions().override(100, 100))
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .listener(object : RequestListener<Drawable> {
@@ -126,7 +126,7 @@ class StickersPickerDialog : BottomSheetDialogFragment() {
                 val imageSize = dpToPx(context.resources, 100)
                 layoutParams = LinearLayoutCompat.LayoutParams(imageSize, imageSize)
                 setPadding(imageSize / 20)
-                val stickerUrl = "${RetrofitClient.STICKERS_BASE_URL}/${pack.pack}/$sticker.png"
+                val stickerUrl = "${NetworkManager.STICKERS_BASE_URL}/${pack.pack}/$sticker.png"
                 load(stickerUrl)
                 setOnClickListener {
                     setFragmentResult(

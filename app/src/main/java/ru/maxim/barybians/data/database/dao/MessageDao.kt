@@ -1,5 +1,6 @@
 package ru.maxim.barybians.data.database.dao
 
+import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.data.database.model.MessageEntity
@@ -16,7 +17,14 @@ abstract class MessageDao {
         ${MessageColumns.senderId}=:secondUserId AND ${MessageColumns.receiverId}=:firsUserId
         ORDER BY ${MessageColumns.time}"""
     )
-    abstract fun getChatMessages(firsUserId: Int, secondUserId: Int): Flow<List<MessageEntity>>
+    abstract fun messagesPagingSource(firsUserId: Int, secondUserId: Int): PagingSource<Int, MessageEntity>
+
+    @Query(
+        """SELECT COUNT(*) FROM ${MessageEntity.tableName} WHERE 
+        ${MessageColumns.senderId}=:firsUserId AND ${MessageColumns.receiverId}=:secondUserId OR
+        ${MessageColumns.senderId}=:secondUserId AND ${MessageColumns.receiverId}=:firsUserId"""
+    )
+    abstract fun messagesCount(firsUserId: Int, secondUserId: Int): Flow<Int>
 
     @Query("SELECT * FROM ${MessageEntity.tableName} WHERE ${MessageColumns.messageId}=:messageId")
     abstract fun getById(messageId: Int): MessageEntityBody?
@@ -50,6 +58,10 @@ abstract class MessageDao {
     @Delete
     abstract suspend fun delete(messageEntity: MessageEntityBody)
 
-    @Query("DELETE FROM ${MessageEntity.tableName}")
-    abstract suspend fun clear()
+    @Query(
+        """DELETE FROM ${MessageEntity.tableName} WHERE 
+        ${MessageColumns.senderId}=:firsUserId AND ${MessageColumns.receiverId}=:secondUserId OR
+        ${MessageColumns.senderId}=:secondUserId AND ${MessageColumns.receiverId}=:firsUserId"""
+    )
+    abstract fun clear(firsUserId: Int, secondUserId: Int)
 }

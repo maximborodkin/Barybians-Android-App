@@ -3,7 +3,7 @@ package ru.maxim.barybians.utils
 import android.text.Spanned
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
-import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.NetworkManager
 import javax.inject.Inject
 
 class HtmlUtils @Inject constructor() {
@@ -21,7 +21,7 @@ class HtmlUtils @Inject constructor() {
             val images = mutableListOf<ImageAttachment>()
             matches.forEach { match ->
                 val isSticker = match.value.contains("class=\"sticker\"")
-                val url = (if (isSticker) "${RetrofitClient.STICKERS_BASE_URL}/" else "") + match.groupValues[1]
+                val url = (if (isSticker) "${NetworkManager.STICKERS_BASE_URL}/" else "") + match.groupValues[1]
                 images.add(ImageAttachment(url = url, isSticker = isSticker))
                 clearText = clearText.replace(match.value, "")
             }

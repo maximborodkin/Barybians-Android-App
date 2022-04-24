@@ -32,7 +32,7 @@ import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
-import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.NetworkManager
 import ru.maxim.barybians.databinding.FragmentRegistrationBinding
 import ru.maxim.barybians.ui.fragment.registration.RegistrationViewModel.RegistrationViewModelFactory
 import ru.maxim.barybians.utils.appComponent
@@ -187,7 +187,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration), DatePicke
         model.avatar.value = null
         Glide
             .with(context ?: return)
-            .load(RetrofitClient.DEFAULT_AVATAR_URL)
+            .load(NetworkManager.DEFAULT_AVATAR_URL)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,

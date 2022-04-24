@@ -7,8 +7,8 @@
         android:icon="@drawable/ic_feed"/>
 
     <item
-        android:id="@+id/dialogsListFragment"
-        android:title="@string/dialogs"
+        android:id="@+id/chatsListFragment"
+        android:title="@string/chats"
         android:icon="@drawable/ic_chats"/>
 
     <item

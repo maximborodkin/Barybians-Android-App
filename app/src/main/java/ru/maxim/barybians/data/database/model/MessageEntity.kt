@@ -62,6 +62,12 @@ data class MessageEntity(
 
         @ColumnInfo(name = Columns.unread)
         val unread: Int,
+
+        @ColumnInfo(name = Columns.prevPage)
+        var prevPage: Int? = null,
+
+        @ColumnInfo(name = Columns.nextPage)
+        var nextPage: Int? = null,
     )
 
     companion object Contract {
@@ -74,6 +80,8 @@ data class MessageEntity(
             const val text = "text"
             const val time = "date"
             const val unread = "unread"
+            const val prevPage = "prev_page"
+            const val nextPage = "next_page"
         }
     }
 }

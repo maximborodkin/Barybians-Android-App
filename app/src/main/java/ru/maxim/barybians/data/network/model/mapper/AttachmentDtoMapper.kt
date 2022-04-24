@@ -14,7 +14,7 @@ class AttachmentDtoMapper @Inject constructor() : DomainMapper<AttachmentDto, At
         return when (model.type) {
             AttachmentType.STYLED.messageValue -> {
                 val style =
-                    when (requireNotNull(model.style) { "Parameter style must not be null in STYLED attachment" }) {
+                    when (requireNotNull(model.style) { "Parameter style must not be null in STYLED attachment in $model" }) {
                         StyledAttachmentType.BOLD.messageValue -> StyledAttachmentType.BOLD
                         StyledAttachmentType.ITALIC.messageValue -> StyledAttachmentType.ITALIC
                         StyledAttachmentType.UNDERLINE.messageValue -> StyledAttachmentType.UNDERLINE
@@ -34,7 +34,7 @@ class AttachmentDtoMapper @Inject constructor() : DomainMapper<AttachmentDto, At
                 Attachment(
                     attachmentId = model.attachmentId,
                     type = AttachmentType.IMAGE,
-                    url = requireNotNull(model.url) { "Parameter url must not be null in IMAGE attachment" },
+                    url = requireNotNull(model.url) { "Parameter url must not be null in IMAGE attachment in $model" },
                     length = model.length,
                     offset = model.offset
                 )
@@ -43,9 +43,9 @@ class AttachmentDtoMapper @Inject constructor() : DomainMapper<AttachmentDto, At
                 Attachment(
                     attachmentId = model.attachmentId,
                     type = AttachmentType.STICKER,
-                    url = requireNotNull(model.url) { "Parameter url must not be null in STICKER attachment" },
-                    pack = requireNotNull(model.pack) { "Parameter pack must not be null in STICKER attachment" },
-                    sticker = requireNotNull(model.sticker) { "Parameter sticker must not be null in STICKER attachment" },
+                    url = requireNotNull(model.url) { "Parameter url must not be null in STICKER attachment in $model" },
+                    pack = requireNotNull(model.pack) { "Parameter pack must not be null in STICKER attachment in $model" },
+                    sticker = requireNotNull(model.sticker) { "Parameter sticker must not be null in STICKER attachment in $model" },
                     length = model.length,
                     offset = model.offset
                 )
@@ -54,7 +54,7 @@ class AttachmentDtoMapper @Inject constructor() : DomainMapper<AttachmentDto, At
                 Attachment(
                     attachmentId = model.attachmentId,
                     type = AttachmentType.LINK,
-                    url = requireNotNull(model.url) { "Parameter url must not be null in STICKER attachment" },
+                    url = requireNotNull(model.url) { "Parameter url must not be null in LINK attachment in $model" },
                     image = model.image,
                     title = model.title,
                     favicon = model.favicon,
@@ -67,7 +67,7 @@ class AttachmentDtoMapper @Inject constructor() : DomainMapper<AttachmentDto, At
                 Attachment(
                     attachmentId = model.attachmentId,
                     type = AttachmentType.LINK,
-                    url = requireNotNull(model.url) { "Parameter url must not be null in FILE attachment" },
+                    url = requireNotNull(model.url) { "Parameter url must not be null in FILE attachment in $model" },
                     title = model.title,
                     fileSize = model.fileSize,
                     extension = model.extension,
@@ -103,7 +103,7 @@ class AttachmentDtoMapper @Inject constructor() : DomainMapper<AttachmentDto, At
             try {
                 attachments.add(toDomainModel(attachment))
             } catch (e: IllegalArgumentException) {
-                Timber.e(e)
+//                Timber.e(e)
             }
         }
         return attachments

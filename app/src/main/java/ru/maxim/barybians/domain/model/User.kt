@@ -1,6 +1,6 @@
 package ru.maxim.barybians.domain.model
 
-import ru.maxim.barybians.data.network.RetrofitClient
+import ru.maxim.barybians.data.network.NetworkManager
 import java.util.*
 
 data class User(
@@ -18,10 +18,10 @@ data class User(
         get() = "$firstName $lastName"
 
     val avatarFull: String
-        get() = "${RetrofitClient.AVATARS_BASE_URL}/$photo"
+        get() = "${NetworkManager.AVATARS_BASE_URL}/$photo"
 
     val avatarMin: String
-        get() = "${RetrofitClient.AVATARS_BASE_URL}/min/$photo"
+        get() = "${NetworkManager.AVATARS_BASE_URL}/min/$photo"
 
     // User is online if the lastVisit less than five minutes ago
     val isOnline: Boolean

@@ -52,7 +52,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/dialogsListFragment"
+        android:id="@+id/chatsListFragment"
         android:name="ru.maxim.barybians.ui.fragment.chatsList.ChatsListFragment"
         android:label="DialogsListFragment"
         tools:layout="@layout/fragment_chats_list">

@@ -37,7 +37,7 @@ class RepositoryBound @Inject constructor(private val networkUtils: NetworkUtils
                 }
             }
         } catch (e: Exception) {
-            Timber.w(e)
+            Timber.e(e)
             if (e is UnknownHostException) throw NoConnectionException()
             if (e is SocketTimeoutException) throw TimeoutException()
             throw e

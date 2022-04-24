@@ -4,13 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
-
         <import type="kotlin.text.StringsKt" />
-
         <import type="androidx.lifecycle.MutableLiveData" />
-
         <import type="ru.maxim.barybians.utils.ExtensionsKt" />
 
         <variable
@@ -25,7 +21,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/chatToolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             app:layout_constraintBottom_toTopOf="@id/chatRecyclerView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +37,7 @@
             android:id="@+id/chatRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:paddingHorizontal="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/chatMessageInput"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,6 +45,18 @@
             app:layout_constraintTop_toBottomOf="@id/chatToolbar"
             tools:itemCount="20"
             tools:listitem="@layout/item_outgoing_message" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/chatErrorMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="24dp"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Unable to load messages. Try again" />
 
         <ProgressBar
             android:id="@+id/chatLoading"

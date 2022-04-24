@@ -4,7 +4,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.channels.Channel
 import retrofit2.Response
-import ru.maxim.barybians.data.network.RetrofitClient
 import ru.maxim.barybians.data.network.model.response.ChatResponse
 import ru.maxim.barybians.data.network.service.ChatService
 import ru.maxim.barybians.utils.isNotNull

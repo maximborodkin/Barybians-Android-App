@@ -8,24 +8,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import ru.maxim.barybians.data.repository.chat.ChatRepository
+import ru.maxim.barybians.data.repository.message.MessageRepository
 import ru.maxim.barybians.data.repository.user.UserRepository
 import ru.maxim.barybians.domain.model.Message
 import ru.maxim.barybians.domain.model.User
 
 class ChatViewModel private constructor(
     application: Application,
-    private val chatRepository: ChatRepository,
-    private val userRepository: UserRepository,
+    userRepository: UserRepository,
+    private val messageRepository: MessageRepository,
     private val userId: Int
 ) : AndroidViewModel(application) {
 
@@ -41,10 +41,12 @@ class ChatViewModel private constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     val messages: StateFlow<PagingData<Message>> =
-        flowOf<PagingData<Message>>().stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
-//        chatRepository.getMessagesPager(userId)
-//            .cachedIn(viewModelScope)
-//            .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+        messageRepository.getMessagesPager(userId)
+            .cachedIn(viewModelScope)
+            .stateIn(viewModelScope, SharingStarted.Lazily, PagingData.empty())
+
+    val messagesCount: StateFlow<Int> = messageRepository.getMessagesCount(userId)
+        .stateIn(viewModelScope, SharingStarted.Lazily, 0)
 
     fun sendMessage() = viewModelScope.launch {
 //        val message = messageText.value.toString()
@@ -95,15 +97,15 @@ class ChatViewModel private constructor(
 
     class ChatViewModelFactory @AssistedInject constructor(
         private val application: Application,
-        private val chatRepository: ChatRepository,
         private val userRepository: UserRepository,
+        private val messageRepository: MessageRepository,
         @Assisted("userId") private val userId: Int
     ) : ViewModelProvider.AndroidViewModelFactory(application) {
 
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ChatViewModel::class.java)) {
-                return ChatViewModel(application, chatRepository, userRepository, userId) as T
+                return ChatViewModel(application, userRepository, messageRepository, userId) as T
             }
             throw IllegalArgumentException("Inappropriate ViewModel class ${modelClass.simpleName}")
         }

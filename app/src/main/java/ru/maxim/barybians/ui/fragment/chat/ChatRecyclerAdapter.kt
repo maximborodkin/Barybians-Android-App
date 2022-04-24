@@ -29,6 +29,7 @@ class ChatRecyclerAdapter @Inject constructor(
             // TODO: apply attachments to message
             incomingMessageText.text = message.text
             incomingMessageTime.text = adaptiveDate(message.date, hasTime = true)
+            incomingMessageDebugInfo.text = "id: ${message.messageId}, pos: $bindingAdapterPosition"
         }
     }
 
@@ -39,6 +40,7 @@ class ChatRecyclerAdapter @Inject constructor(
             // TODO: apply attachments to message
             outgoingMessageText.text = message.text
             outgoingMessageTime.text = adaptiveDate(message.date, hasTime = true)
+            outgoingMessageDebugInfo.text = "id: ${message.messageId}, pos: $bindingAdapterPosition"
 //            when (message.status) {
 //                Sending -> {
 //                    outgoingMessageStatus.setImageResource(R.drawable.ic_timer_animated)

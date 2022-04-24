@@ -20,7 +20,7 @@
     <string name="descending">Descending</string>
     <string name="retry">Retry</string>
     <string name="feed">Feed</string>
-    <string name="dialogs">Dialogs</string>
+    <string name="chats">Chats</string>
     <string name="profile">Profile</string>
 
     <!--  Login/Registration  -->
