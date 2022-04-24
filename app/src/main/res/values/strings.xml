@@ -151,4 +151,6 @@
     <string name="link">Link</string>
     <string name="last_message_placeholder">%1$s: %2$s</string>
     <string name="unable_to_load_chats">Unable to load chats list</string>
+    <string name="an_error_occurred_while_sending_message">An error occurred while sending message</string>
+    <string name="an_error_occurred_while_sending_sticker">An error occurred while sending sticker</string>
 </resources>

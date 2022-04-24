@@ -1,14 +1,18 @@
 package ru.maxim.barybians.ui.fragment.chat
 
+import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ItemIncomingMessageBinding
 import ru.maxim.barybians.databinding.ItemOutgoingMessageBinding
 import ru.maxim.barybians.domain.model.Message
+import ru.maxim.barybians.domain.model.Message.MessageStatus.*
 import ru.maxim.barybians.utils.adaptiveDate
 import javax.inject.Inject
 
@@ -23,33 +27,36 @@ class ChatRecyclerAdapter @Inject constructor(
         return this
     }
 
-    class IncomingMessageViewHolder(private val binding: ItemIncomingMessageBinding) :
+    inner class IncomingMessageViewHolder(private val binding: ItemIncomingMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(message: Message) = with(binding) {
             // TODO: apply attachments to message
             incomingMessageText.text = message.text
             incomingMessageTime.text = adaptiveDate(message.date, hasTime = true)
+            incomingMessageDebugInfo.isVisible = preferencesManager.isDebug
             incomingMessageDebugInfo.text = "id: ${message.messageId}, pos: $bindingAdapterPosition"
         }
     }
 
-    class OutgoingMessageViewHolder(private val binding: ItemOutgoingMessageBinding) :
+    inner class OutgoingMessageViewHolder(private val binding: ItemOutgoingMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message) = with(binding) {
             // TODO: apply attachments to message
             outgoingMessageText.text = message.text
             outgoingMessageTime.text = adaptiveDate(message.date, hasTime = true)
+            outgoingMessageDebugInfo.isVisible = preferencesManager.isDebug
             outgoingMessageDebugInfo.text = "id: ${message.messageId}, pos: $bindingAdapterPosition"
-//            when (message.status) {
-//                Sending -> {
-//                    outgoingMessageStatus.setImageResource(R.drawable.ic_timer_animated)
-//                    (outgoingMessageStatus.background as? Animatable)?.start()
-//                }
-//                Unread -> outgoingMessageStatus.setImageResource(R.drawable.unread_circle)
-//                Read -> outgoingMessageStatus.setImageDrawable(null)
-//                Error -> outgoingMessageStatus.setImageResource(R.drawable.ic_error)
-//            }
+            when (message.status) {
+                Sending -> {
+                    outgoingMessageStatus.setImageResource(R.drawable.ic_timer_animated)
+                    (outgoingMessageStatus.drawable as? Animatable)?.start()
+                }
+                Unread -> outgoingMessageStatus.setImageResource(R.drawable.unread_circle)
+                Read -> outgoingMessageStatus.setImageDrawable(null)
+                Error -> outgoingMessageStatus.setImageResource(R.drawable.ic_error)
+            }
         }
     }
 

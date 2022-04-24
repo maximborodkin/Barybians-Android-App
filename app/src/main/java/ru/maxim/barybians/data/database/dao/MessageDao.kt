@@ -4,27 +4,25 @@ import androidx.paging.PagingSource
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 import ru.maxim.barybians.data.database.model.MessageEntity
-import ru.maxim.barybians.data.database.model.MessageEntity.Contract.Columns as MessageColumns
 import ru.maxim.barybians.data.database.model.MessageEntity.MessageEntityBody
+import ru.maxim.barybians.data.database.model.MessageEntity.Contract.Columns as MessageColumns
 
 @Dao
 abstract class MessageDao {
 
     @Transaction
     @Query(
-        """SELECT * FROM ${MessageEntity.tableName} WHERE 
-        ${MessageColumns.senderId}=:firsUserId AND ${MessageColumns.receiverId}=:secondUserId OR
-        ${MessageColumns.senderId}=:secondUserId AND ${MessageColumns.receiverId}=:firsUserId
-        ORDER BY ${MessageColumns.time}"""
+        "SELECT * FROM ${MessageEntity.tableName} " +
+        "WHERE ${MessageColumns.senderId}=:userId OR ${MessageColumns.receiverId}=:userId " +
+        "ORDER BY ${MessageColumns.time} DESC"
     )
-    abstract fun messagesPagingSource(firsUserId: Int, secondUserId: Int): PagingSource<Int, MessageEntity>
+    abstract fun messagesPagingSource(userId: Int): PagingSource<Int, MessageEntity>
 
     @Query(
-        """SELECT COUNT(*) FROM ${MessageEntity.tableName} WHERE 
-        ${MessageColumns.senderId}=:firsUserId AND ${MessageColumns.receiverId}=:secondUserId OR
-        ${MessageColumns.senderId}=:secondUserId AND ${MessageColumns.receiverId}=:firsUserId"""
+        "SELECT COUNT(*) FROM ${MessageEntity.tableName} "+
+        "WHERE ${MessageColumns.senderId}=:userId OR ${MessageColumns.receiverId}=:userId"
     )
-    abstract fun messagesCount(firsUserId: Int, secondUserId: Int): Flow<Int>
+    abstract fun messagesCount(userId: Int): Flow<Int>
 
     @Query("SELECT * FROM ${MessageEntity.tableName} WHERE ${MessageColumns.messageId}=:messageId")
     abstract fun getById(messageId: Int): MessageEntityBody?
@@ -59,9 +57,9 @@ abstract class MessageDao {
     abstract suspend fun delete(messageEntity: MessageEntityBody)
 
     @Query(
-        """DELETE FROM ${MessageEntity.tableName} WHERE 
-        ${MessageColumns.senderId}=:firsUserId AND ${MessageColumns.receiverId}=:secondUserId OR
-        ${MessageColumns.senderId}=:secondUserId AND ${MessageColumns.receiverId}=:firsUserId"""
+        "DELETE FROM ${MessageEntity.tableName} " +
+        "WHERE (${MessageColumns.senderId}=:userId OR ${MessageColumns.receiverId}=:userId) " +
+        "AND ${MessageColumns.status}<>0 AND ${MessageColumns.status}<>3"
     )
-    abstract fun clear(firsUserId: Int, secondUserId: Int)
+    abstract fun clear(userId: Int)
 }

@@ -1,6 +1,6 @@
 package ru.maxim.barybians.domain.model
 
-import java.util.*
+import java.util.Date
 
 data class Message(
     val messageId: Int,
@@ -8,6 +8,14 @@ data class Message(
     val receiverId: Int,
     val text: String,
     val date: Date,
-    val isUnread: Boolean,
-    val attachments: List<Attachment>
-)
+    val attachments: List<Attachment>,
+    val status: MessageStatus
+) {
+
+    enum class MessageStatus(val id: Int) {
+        Sending(0),
+        Unread(1),
+        Read(2),
+        Error(3)
+    }
+}

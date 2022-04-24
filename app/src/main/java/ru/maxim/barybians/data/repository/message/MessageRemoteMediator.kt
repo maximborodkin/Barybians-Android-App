@@ -36,15 +36,15 @@ class MessageRemoteMediator private constructor(
 ) : RemoteMediator<Int, MessageEntity>() {
 
     override suspend fun load(loadType: LoadType, state: PagingState<Int, MessageEntity>): MediatorResult {
-        Timber.d("MessageRemoteMediator load $loadType")
+        Timber.d("MessageRemoteMediator load $loadType, first ${state.firstItemOrNull()?.message?.messageId}, last ${state.lastItemOrNull()?.message?.messageId}")
         return try {
             val page: Int = when (loadType) {
                 LoadType.REFRESH -> 0
-                LoadType.PREPEND -> {
-                    val last = state.firstItemOrNull() ?: return MediatorResult.Success(endOfPaginationReached = false)
-                    last.message.prevPage ?: return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.APPEND -> {
+                    val last = state.lastItemOrNull() ?: return MediatorResult.Success(endOfPaginationReached = false)
+                    last.message.nextPage ?: return MediatorResult.Success(endOfPaginationReached = true)
                 }
-                LoadType.APPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             }
 
             val startIndex = page * state.config.pageSize
@@ -53,11 +53,11 @@ class MessageRemoteMediator private constructor(
             val messagesDto = repositoryBound.wrapRequest {
                 messageService.loadMessagesPage(userId = userId, startIndex = startIndex, count = count)
             }.messages
-            Timber.d("MessageRemoteMediator loaded ${messagesDto.size} first: ${messagesDto.first().messageId} last: ${messagesDto.last().messageId}")
+            Timber.d("MessageRemoteMediator loaded ${messagesDto.size}, ${messagesDto.map { it.messageId }.joinToString(", ")}")
             val messagesPageResponse = messageDtoMapper.toDomainModelList(messagesDto)
 
-            val prevPage = if (messagesPageResponse.size < state.config.pageSize) null else page + 1
-            val nextPage = if (page == 0) null else page - 1
+            val prevPage = if (page == 0) null else page - 1
+            val nextPage = if (messagesPageResponse.size < state.config.pageSize) null else page + 1
 
             val entities = messageEntityMapper.fromDomainModelList(messagesPageResponse).transform { message ->
                 message.message.prevPage = prevPage; message.message.nextPage = nextPage
@@ -65,7 +65,7 @@ class MessageRemoteMediator private constructor(
 
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    messageDao.clear(userId, preferencesManager.userId)
+                    messageDao.clear(userId)
                 }
                 messageDao.save(
                     messageEntities = entities,

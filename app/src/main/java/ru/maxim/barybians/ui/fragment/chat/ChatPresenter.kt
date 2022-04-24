@@ -28,8 +28,8 @@ import javax.inject.Inject
 //                if (loadMessagesResponse.isSuccessful) {
 //                    val messages = messages
 //                    lastMessageId = messages.last().messageId
-////                    val interlocutor = if (firstUser.id == userId) firstUser else secondUser
-////                    viewState.showMessages(messages, interlocutor)
+//                      val interlocutor = if (firstUser.id == userId) firstUser else secondUser
+//                      viewState.showMessages(messages, interlocutor)
 //                } else {
 //                    viewState.onLoadingMessagesError()
 //                }
@@ -77,7 +77,7 @@ import javax.inject.Inject
 //                            Timber.d("Messages received: $messages, lastMessageId: ${messages.last().messageId}")
 //                            lastMessageId = messages.last().messageId
 //                            CoroutineScope(Dispatchers.Main).launch {
-////                                viewState.onMessagesReceived(messages)
+//                                 viewState.onMessagesReceived(messages)
 //                            }
 //                        }
 //                    }

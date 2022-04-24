@@ -60,8 +60,8 @@ data class MessageEntity(
         @ColumnInfo(name = Columns.time)
         val date: Long,
 
-        @ColumnInfo(name = Columns.unread)
-        val unread: Int,
+        @ColumnInfo(name = Columns.status)
+        val status: Int,
 
         @ColumnInfo(name = Columns.prevPage)
         var prevPage: Int? = null,
@@ -79,7 +79,7 @@ data class MessageEntity(
             const val receiverId = "receiver_id"
             const val text = "text"
             const val time = "date"
-            const val unread = "unread"
+            const val status = "status"
             const val prevPage = "prev_page"
             const val nextPage = "next_page"
         }

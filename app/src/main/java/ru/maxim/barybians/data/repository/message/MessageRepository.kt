@@ -8,10 +8,10 @@ import ru.maxim.barybians.domain.model.Message
 interface MessageRepository {
     fun getMessagesPager(userId: Int): Flow<PagingData<Message>>
     fun getMessagesCount(userId: Int): Flow<Int>
-    suspend fun sendMessage(uuid: String, text: String, parseMode: ParseMode)
+    suspend fun sendMessage(uuid: String, userId: Int, text: String, parseMode: ParseMode? = null)
 
     companion object {
-        const val pageSize = 100
-        const val prefetchDistance = 20
+        const val pageSize = 20
+        const val prefetchDistance = 5
     }
 }

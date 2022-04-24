@@ -15,7 +15,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
@@ -48,8 +50,6 @@ class ChatFragment : Fragment() {
     @Inject
     lateinit var preferencesManager: PreferencesManager
 
-    private var currentLoadingState: LoadState? = null
-
     override fun onAttach(context: Context) {
         context.appComponent.inject(this)
         super.onAttach(context)
@@ -60,6 +60,7 @@ class ChatFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = model
             chatRecyclerView.adapter = chatRecyclerAdapter.setAdapterListener(null)
+            (chatRecyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
         }
         return binding.root
     }
@@ -71,17 +72,10 @@ class ChatFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 chatRecyclerAdapter.loadStateFlow
                     .mapNotNull { loadState -> loadState.mediator?.refresh }
+                    .distinctUntilChanged()
                     .collectLatest { loadState ->
-                        if (loadState == currentLoadingState) return@collectLatest
-                        currentLoadingState = loadState
-
                         chatLoading.isVisible = loadState is LoadState.Loading
-                        (chatRecyclerView.layoutManager as? LinearLayoutManager)
-                            ?.scrollToPosition(chatRecyclerAdapter.itemCount - 1)
-//                        if (loadState is LoadState.NotLoading) {
-//                            (chatRecyclerView.layoutManager as? LinearLayoutManager)
-//                                ?.scrollToPosition(chatRecyclerAdapter.itemCount - 1)
-//                        }
+
                         if (loadState is LoadState.Error) {
                             var errorMessage = when (loadState.error) {
                                 is NoConnectionException -> getString(R.string.no_internet_connection)
@@ -103,8 +97,6 @@ class ChatFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 model.messages.collect { messages ->
-                    (chatRecyclerView.layoutManager as? LinearLayoutManager)
-                        ?.scrollToPosition(chatRecyclerAdapter.itemCount - 1)
                     chatRecyclerAdapter.submitData(messages)
                     Timber.d("MessageRemoteMediator ChatRecycler position ${(chatRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()}")
                 }

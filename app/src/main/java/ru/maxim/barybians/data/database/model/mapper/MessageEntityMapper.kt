@@ -3,6 +3,7 @@ package ru.maxim.barybians.data.database.model.mapper
 import ru.maxim.barybians.data.database.model.MessageEntity
 import ru.maxim.barybians.domain.DomainMapper
 import ru.maxim.barybians.domain.model.Message
+import ru.maxim.barybians.domain.model.Message.MessageStatus
 import java.util.*
 import javax.inject.Inject
 
@@ -17,8 +18,8 @@ class MessageEntityMapper @Inject constructor(
             receiverId = model.message.receiverId,
             text = model.message.text,
             date = Date(model.message.date),
-            isUnread = model.message.unread == 1,
-            attachments = attachmentEntityMapper.toDomainModelList(model.attachments)
+            status = MessageStatus.values().firstOrNull { it.id == model.message.status} ?: MessageStatus.Read,
+            attachments = attachmentEntityMapper.toDomainModelList(model.attachments),
         )
 
     override fun fromDomainModel(domainModel: Message): MessageEntity =
@@ -29,7 +30,7 @@ class MessageEntityMapper @Inject constructor(
                 receiverId = domainModel.receiverId,
                 text = domainModel.text,
                 date = domainModel.date.time,
-                unread = if (domainModel.isUnread) 1 else 0,
+                status = domainModel.status.id
             ),
             attachments = attachmentEntityMapper.fromDomainModelList(domainModel.attachments)
         )

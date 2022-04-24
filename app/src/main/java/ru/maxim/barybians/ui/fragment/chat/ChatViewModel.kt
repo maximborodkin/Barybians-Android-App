@@ -17,10 +17,16 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import ru.maxim.barybians.R
+import ru.maxim.barybians.data.network.exception.NoConnectionException
+import ru.maxim.barybians.data.network.exception.TimeoutException
+import ru.maxim.barybians.data.network.model.ParseMode
 import ru.maxim.barybians.data.repository.message.MessageRepository
 import ru.maxim.barybians.data.repository.user.UserRepository
 import ru.maxim.barybians.domain.model.Message
 import ru.maxim.barybians.domain.model.User
+import timber.log.Timber
+import java.util.*
 
 class ChatViewModel private constructor(
     application: Application,
@@ -49,50 +55,44 @@ class ChatViewModel private constructor(
         .stateIn(viewModelScope, SharingStarted.Lazily, 0)
 
     fun sendMessage() = viewModelScope.launch {
-//        val message = messageText.value.toString()
-//        if (message.isBlank()) return@launch
-//        _isSending.postValue(true)
-//        try {
-//            val uuid = UUID.randomUUID().toString()
-//            commentRepository.createComment(parseMode = ParseMode.MD, uuid = uuid, postId = postId, text = comment)
-//            commentText.postValue(String())
-//        } catch (e: Exception) {
-//            Timber.e(e)
-//            val error = when (e) {
-//                is NoConnectionException -> R.string.no_internet_connection
-//                is TimeoutException -> R.string.request_timeout
-//                else -> R.string.unable_to_create_comment
-//            }
-//            _errorMessage.postValue(error)
-//        } finally {
-//            _isSending.postValue(false)
-//        }
+        val message = messageText.value.toString()
+        if (message.isBlank()) return@launch
+        _isSending.postValue(true)
+        try {
+            val uuid = UUID.randomUUID().toString()
+            messageRepository.sendMessage(uuid = uuid, userId = userId, text = message, parseMode = ParseMode.BB)
+            messageText.postValue(String())
+        } catch (e: Exception) {
+            Timber.e(e)
+            val error = when (e) {
+                is NoConnectionException -> R.string.no_internet_connection
+                is TimeoutException -> R.string.request_timeout
+                else -> R.string.an_error_occurred_while_sending_message
+            }
+            _errorMessage.postValue(error)
+        } finally {
+            _isSending.postValue(false)
+        }
     }
 
     fun sendSticker(pack: String?, sticker: String?) = viewModelScope.launch {
-//        if (pack.isNullOrBlank() || sticker.isNullOrBlank()) return@launch
-//        _isSending.postValue(true)
-//        try {
-//            val uuid = UUID.randomUUID().toString()
-//            val stickerMessage = "\$[$pack]($sticker)"
-//            commentRepository.createComment(
-//                parseMode = ParseMode.MD,
-//                uuid = uuid,
-//                postId = postId,
-//                text = stickerMessage
-//            )
-//            commentText.postValue(String())
-//        } catch (e: Exception) {
-//            Timber.e(e)
-//            val error = when (e) {
-//                is NoConnectionException -> R.string.no_internet_connection
-//                is TimeoutException -> R.string.request_timeout
-//                else -> R.string.unable_to_create_comment
-//            }
-//            _errorMessage.postValue(error)
-//        } finally {
-//            _isSending.postValue(false)
-//        }
+        if (pack.isNullOrBlank() || sticker.isNullOrBlank()) return@launch
+        _isSending.postValue(true)
+        try {
+            val uuid = UUID.randomUUID().toString()
+            val stickerMessage = "\$[$pack]($sticker)"
+            messageRepository.sendMessage(uuid = uuid, userId = userId, text = stickerMessage, parseMode = ParseMode.MD)
+        } catch (e: Exception) {
+            Timber.e(e)
+            val error = when (e) {
+                is NoConnectionException -> R.string.no_internet_connection
+                is TimeoutException -> R.string.request_timeout
+                else -> R.string.an_error_occurred_while_sending_sticker
+            }
+            _errorMessage.postValue(error)
+        } finally {
+            _isSending.postValue(false)
+        }
     }
 
     class ChatViewModelFactory @AssistedInject constructor(
