@@ -36,8 +36,8 @@ class App : MultiDexApplication() {
 
         super.onCreate()
 
-//        val messageServiceIntent = Intent(this, MessageService::class.java)
-//        startService(messageServiceIntent)
+        val messageServiceIntent = Intent(this, MessageService::class.java)
+        startService(messageServiceIntent)
     }
 
     override fun onLowMemory() {
