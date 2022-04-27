@@ -29,6 +29,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.MessageService" android:exported="false" />
+        <service android:name=".service.WebSocketService" android:exported="false" />
     </application>
 </manifest>

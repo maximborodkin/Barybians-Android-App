@@ -6,12 +6,15 @@ import androidx.paging.PagingConfig
 import androidx.paging.map
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.database.dao.AttachmentDao
+import ru.maxim.barybians.data.database.dao.ChatDao
 import ru.maxim.barybians.data.database.dao.MessageAttachmentDao
 import ru.maxim.barybians.data.database.dao.MessageDao
+import ru.maxim.barybians.data.database.model.ChatEntity
 import ru.maxim.barybians.data.database.model.MessageEntity.MessageEntityBody
 import ru.maxim.barybians.data.database.model.mapper.MessageEntityMapper
 import ru.maxim.barybians.data.network.model.AttachmentDto
@@ -21,6 +24,7 @@ import ru.maxim.barybians.data.network.model.mapper.MessageDtoMapper
 import ru.maxim.barybians.data.network.service.MessageService
 import ru.maxim.barybians.data.repository.RepositoryBound
 import ru.maxim.barybians.data.repository.message.MessageRemoteMediator.MessageRemoteMediatorFactory
+import ru.maxim.barybians.data.repository.user.UserRepository
 import ru.maxim.barybians.domain.model.Message.MessageStatus
 import java.util.*
 import javax.inject.Inject
@@ -29,7 +33,9 @@ import javax.inject.Inject
 class MessageRepositoryImpl @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val messageDao: MessageDao,
+    private val chatDao: ChatDao,
     private val attachmentDao: AttachmentDao,
+    private val userRepository: UserRepository,
     private val messageAttachmentDao: MessageAttachmentDao,
     private val messageService: MessageService,
     private val messageDtoMapper: MessageDtoMapper,
@@ -90,6 +96,55 @@ class MessageRepositoryImpl @Inject constructor(
             messageDao.save(messageEntity, attachmentDao, messageAttachmentDao)
         } catch (e: Exception) {
             messageDao.update(temporaryMessage.copy(status = MessageStatus.Error.id))
+        }
+    }
+
+    override suspend fun receiveMessage(messageDto: MessageDto) = withContext(IO) {
+        val message = messageDtoMapper.toDomainModel(messageDto)
+        val entityModel = messageEntityMapper.fromDomainModel(message)
+
+        val interlocutorId =
+            if (messageDto.senderId == preferencesManager.userId) messageDto.receiverId
+            else messageDto.senderId
+        if (userRepository.getUserById(interlocutorId).firstOrNull() == null) {
+            userRepository.refreshUser(interlocutorId)
+        }
+
+        messageDao.save(entityModel, attachmentDao, messageAttachmentDao)
+
+        val chat = chatDao.getByInterlocutorId(interlocutorId)
+        if (chat != null) {
+            val newChat = chat.chat.copy(
+                lastMessageId = messageDto.messageId,
+                unreadCount = chat.chat.unreadCount + if (message.status == MessageStatus.Unread) 1 else 0
+            )
+            chatDao.update(newChat)
+        } else {
+            val newChat = ChatEntity.ChatEntityBody(
+                secondUserId = interlocutorId,
+                lastMessageId = messageDto.messageId,
+                unreadCount = if (message.status == MessageStatus.Unread) 1 else 0
+            )
+            chatDao.insert(newChat)
+        }
+    }
+
+    override suspend fun markAsRead(messageDto: MessageDto) = withContext(IO) {
+        val message = messageDtoMapper.toDomainModel(messageDto)
+        val entityModel = messageEntityMapper.fromDomainModel(message)
+        messageDao.save(entityModel, attachmentDao, messageAttachmentDao)
+
+        val interlocutorId =
+            if (messageDto.senderId == preferencesManager.userId) messageDto.receiverId
+            else messageDto.senderId
+
+        val chat = chatDao.getByInterlocutorId(interlocutorId)
+        if (chat != null) {
+            val newChat = chat.chat.copy(
+                lastMessageId = messageDto.messageId,
+                unreadCount = (chat.chat.unreadCount - 1).coerceAtLeast(0)
+            )
+            chatDao.update(newChat)
         }
     }
 
