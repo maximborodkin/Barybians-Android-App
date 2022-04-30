@@ -40,10 +40,6 @@ class WebSocketService : Service() {
     override fun onCreate() {
         applicationContext.appComponent.inject(this)
         super.onCreate()
-
-        val request = Request.Builder().url("$WS_BASE_URL?token=${preferencesManager.token}").build()
-        val webSocketListener = MessageWebSocketListener()
-        okHttpClient.newWebSocket(request, webSocketListener)
     }
 
     override fun onDestroy() {
@@ -53,7 +49,13 @@ class WebSocketService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val request = Request.Builder().url("$WS_BASE_URL?token=${preferencesManager.token}").build()
+        val webSocketListener = MessageWebSocketListener()
+        okHttpClient.newWebSocket(request, webSocketListener)
+
+        return START_STICKY
+    }
 
     private fun proceedMessage(text: String) = applicationScope.launch(Default) {
         try {

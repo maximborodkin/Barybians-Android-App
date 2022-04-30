@@ -1,6 +1,7 @@
 package ru.maxim.barybians.ui.fragment.login
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.view.View
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.FragmentLoginBinding
+import ru.maxim.barybians.service.WebSocketService
 import ru.maxim.barybians.ui.fragment.login.LoginViewModel.LoginViewModelFactory
 import ru.maxim.barybians.utils.*
 import javax.inject.Inject
@@ -41,7 +43,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             model.isLoginSuccess.observe(viewLifecycleOwner) { success ->
-                if (success) { findNavController().navigate(LoginFragmentDirections.loginToFeed()) }
+                if (success) {
+                    findNavController().navigate(LoginFragmentDirections.loginToFeed())
+                    val messageServiceIntent = Intent(context, WebSocketService::class.java)
+                    activity?.startService(messageServiceIntent)
+                }
             }
 
             model.isLoading.observe(viewLifecycleOwner) { isLoading ->

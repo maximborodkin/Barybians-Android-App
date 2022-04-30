@@ -36,10 +36,13 @@ class MainActivity : AppCompatActivity() {
         // Open login screen if the token or userId is invalid
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.mainFragmentHost) as NavHostFragment
         val graph = navHostFragment.navController.navInflater.inflate(R.navigation.main_nav_graph)
-        val startDestination =
-            if (preferencesManager.token.isNullOrBlank() || preferencesManager.userId <= 0) R.id.loginFragment
-            else R.id.chatsListFragment
-        graph.setStartDestination(startDestination)
+        if (preferencesManager.token.isNullOrBlank() || preferencesManager.userId <= 0) {
+            graph.setStartDestination(R.id.loginFragment)
+        } else {
+            graph.setStartDestination(R.id.chatsListFragment)
+            val messageServiceIntent = Intent(this, WebSocketService::class.java)
+            startService(messageServiceIntent)
+        }
         navHostFragment.navController.graph = graph
 
         // Hide BottomNavigationView for each fragment except Feed, Chats and Profile
@@ -49,8 +52,5 @@ class MainActivity : AppCompatActivity() {
             }
             binding.mainNavigationBottom.setupWithNavController(this)
         }
-
-        val messageServiceIntent = Intent(this, WebSocketService::class.java)
-        startService(messageServiceIntent)
     }
 }
