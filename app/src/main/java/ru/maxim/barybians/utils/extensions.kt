@@ -107,10 +107,10 @@ inline fun <reified T> List<T>.contains(predicate: (T) -> Boolean): Boolean {
     return false
 }
 
-fun View?.show() { this?.isVisible = true }
-fun View?.hide() { this?.isGone = true }
-fun View?.enable() { this?.isEnabled = true }
-fun View?.disable() { this?.isEnabled = false }
+fun View?.show() { if (this?.visibility != View.VISIBLE) this?.isVisible = true }
+fun View?.hide() { if (this?.visibility != View.GONE) this?.isGone = true }
+fun View?.enable() { if (this?.isEnabled != true) this?.isEnabled = true }
+fun View?.disable() { if (this?.isEnabled != false) this?.isEnabled = false }
 
 inline fun <reified T> List<T>.transform(action: (T) -> Unit): List<T> {
     this.forEach(action)

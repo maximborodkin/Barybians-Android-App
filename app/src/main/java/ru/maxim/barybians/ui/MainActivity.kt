@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import ru.maxim.barybians.R
@@ -12,6 +11,8 @@ import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ActivityMainBinding
 import ru.maxim.barybians.service.WebSocketService
 import ru.maxim.barybians.utils.appComponent
+import ru.maxim.barybians.utils.hide
+import ru.maxim.barybians.utils.show
 import javax.inject.Inject
 
 // Hihi hehe haha
@@ -45,10 +46,17 @@ class MainActivity : AppCompatActivity() {
         }
         navHostFragment.navController.graph = graph
 
-        // Hide BottomNavigationView for each fragment except Feed, Chats and Profile
+        // Hide BottomNavigationView for specific fragments
         with(navHostFragment.navController) {
-            addOnDestinationChangedListener { _, _, arguments ->
-                binding.mainNavigationBottom.isVisible = arguments != null && arguments.getBoolean("isRoot", false)
+            addOnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.loginFragment, R.id.registrationFragment, R.id.chatFragment -> {
+                        binding.mainNavigationBottom.hide()
+                    }
+                    else -> {
+                        binding.mainNavigationBottom.show()
+                    }
+                }
             }
             binding.mainNavigationBottom.setupWithNavController(this)
         }
