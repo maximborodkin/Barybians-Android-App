@@ -56,7 +56,6 @@ open class PostsListViewModel constructor(
         }
     }
 
-
     fun editPost(postId: Int, title: String?, text: String) = viewModelScope.launch {
         try {
             postRepository.editPost(parseMode = ParseMode.MD, postId = postId, title = title, text = text)

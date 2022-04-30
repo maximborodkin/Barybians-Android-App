@@ -1,8 +1,8 @@
 package ru.maxim.barybians
 
+import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.multidex.MultiDexApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -12,7 +12,7 @@ import ru.maxim.barybians.di.DaggerAppComponent
 import ru.maxim.barybians.service.WebSocketService
 import timber.log.Timber
 
-class App : MultiDexApplication() {
+class App : Application() {
 
     lateinit var appComponent: AppComponent
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
