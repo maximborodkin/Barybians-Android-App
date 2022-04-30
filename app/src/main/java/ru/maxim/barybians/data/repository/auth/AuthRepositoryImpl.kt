@@ -11,16 +11,19 @@ import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.data.database.dao.UserDao
 import ru.maxim.barybians.data.database.model.mapper.UserEntityMapper
 import ru.maxim.barybians.data.network.exception.*
-import ru.maxim.barybians.data.network.model.mapper.UserDtoMapper
 import ru.maxim.barybians.data.network.model.response.ErrorResponse
 import ru.maxim.barybians.data.network.model.response.RegistrationResponse
 import ru.maxim.barybians.data.network.service.AuthService
+import ru.maxim.barybians.domain.model.Gender
+import ru.maxim.barybians.domain.model.User
+import ru.maxim.barybians.domain.model.UserRole
 import ru.maxim.barybians.utils.NetworkUtils
 import ru.maxim.barybians.utils.isNotNull
 import timber.log.Timber
 import java.io.File
 import java.net.HttpURLConnection.*
 import java.net.SocketTimeoutException
+import java.util.*
 import javax.inject.Inject
 
 @Reusable
@@ -29,7 +32,6 @@ class AuthRepositoryImpl @Inject constructor(
     private val networkUtils: NetworkUtils,
     private val preferencesManager: PreferencesManager,
     private val userDao: UserDao,
-    private val userDtoMapper: UserDtoMapper,
     private val userEntityMapper: UserEntityMapper
 ) : AuthRepository {
 
@@ -49,8 +51,18 @@ class AuthRepositoryImpl @Inject constructor(
                     userId = responseBody.user.userId
                 }
 
-                val user = userDtoMapper.toDomainModel(responseBody.user)
-                val userEntity = userEntityMapper.fromDomainModel(user)
+                val currentUser = User(
+                    userId = responseBody.user.userId,
+                    firstName = responseBody.user.firstName,
+                    lastName = responseBody.user.lastName,
+                    photo = responseBody.user.photo,
+                    status = responseBody.user.status,
+                    birthDate = Date(responseBody.user.birthDate),
+                    gender = Gender.values().firstOrNull { it.genderId == responseBody.user.sex } ?: Gender.Male,
+                    lastVisit = Date(responseBody.user.lastVisit),
+                    role = UserRole.values().firstOrNull { it.roleId == responseBody.user.roleId } ?: UserRole.Unverified
+                )
+                val userEntity = userEntityMapper.fromDomainModel(currentUser)
                 userDao.save(userEntity)
             } else {
                 throw when (authResponse.code()) {

@@ -25,6 +25,7 @@ import ru.maxim.barybians.domain.model.Attachment
 import ru.maxim.barybians.domain.model.Post
 import ru.maxim.barybians.ui.fragment.postsList.PostsListRecyclerAdapter.PostViewHolder
 import ru.maxim.barybians.utils.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class PostsListRecyclerAdapter @Inject constructor(
@@ -62,7 +63,8 @@ class PostsListRecyclerAdapter @Inject constructor(
             binding.post = post ?: return@with
             binding.isDebug = preferencesManager.isDebug
             binding.isPersonal = post.userId == preferencesManager.userId
-            binding.hasPersonalLike = post.likedUsers.contains { it.userId == preferencesManager.userId }
+            binding.hasPersonalLike = post.likedUsers.contains { like -> like.userId == preferencesManager.userId }
+            Timber.d("XXX ${post.postId} - $hasPersonalLike")
             itemPostTitle.isVisible = post.title.isNotNullOrBlank()
 
             // If there is no attachments, try to parse comment text as html

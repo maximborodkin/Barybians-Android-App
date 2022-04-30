@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         if (preferencesManager.token.isNullOrBlank() || preferencesManager.userId <= 0) {
             graph.setStartDestination(R.id.loginFragment)
         } else {
-            graph.setStartDestination(R.id.chatsListFragment)
+            graph.setStartDestination(R.id.postsListFragment)
             val messageServiceIntent = Intent(this, WebSocketService::class.java)
             startService(messageServiceIntent)
         }

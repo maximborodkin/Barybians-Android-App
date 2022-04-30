@@ -1,8 +1,22 @@
 package ru.maxim.barybians.data.network.model.response
 
-import ru.maxim.barybians.data.network.model.UserDto
+import com.google.gson.annotations.SerializedName
 
 data class AuthResponse(
-    val user: UserDto?,
+    val user: AuthUser?,
     val token: String?
-)
+) {
+    data class AuthUser(
+        val userId: Int,
+        val firstName: String,
+        val lastName: String,
+        val photo: String?,
+        val status: String?,
+        @SerializedName("ubirthDate")
+        val birthDate: Long,
+        val sex: Int,
+        @SerializedName("ulastVisit")
+        val lastVisit: Long,
+        val roleId: Int
+    )
+}
