@@ -79,19 +79,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/ic_emoji" />
 
-        <EditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/chatMessageInput"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:autofillHints="none"
+            android:layout_height="wrap_content"
             android:hint="@string/type_message"
-            android:inputType="textAutoComplete"
+            android:maxLines="8"
+            android:minHeight="48dp"
             android:text="@={viewModel.messageText}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/chatMessageSendBtn"
-            app:layout_constraintStart_toEndOf="@id/chatMessageEmojiBtn" />
+            app:layout_constraintStart_toEndOf="@id/chatMessageEmojiBtn"
+            app:layout_goneMarginStart="8dp" />
 
-        <!--            android:enabled="@{!ExtensionsKt.isEmpty(messageText)}"-->
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/chatMessageSendBtn"
             android:layout_width="48dp"

@@ -1,5 +1,6 @@
 package ru.maxim.barybians.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -9,6 +10,7 @@ import androidx.navigation.ui.setupWithNavController
 import ru.maxim.barybians.R
 import ru.maxim.barybians.data.PreferencesManager
 import ru.maxim.barybians.databinding.ActivityMainBinding
+import ru.maxim.barybians.service.WebSocketService
 import ru.maxim.barybians.utils.appComponent
 import javax.inject.Inject
 
@@ -47,5 +49,8 @@ class MainActivity : AppCompatActivity() {
             }
             binding.mainNavigationBottom.setupWithNavController(this)
         }
+
+        val messageServiceIntent = Intent(this, WebSocketService::class.java)
+        startService(messageServiceIntent)
     }
 }
