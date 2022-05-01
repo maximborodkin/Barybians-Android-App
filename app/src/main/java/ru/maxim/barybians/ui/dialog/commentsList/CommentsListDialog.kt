@@ -19,7 +19,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import ru.maxim.barybians.R
 import ru.maxim.barybians.databinding.FragmentCommentsListBinding
-import ru.maxim.barybians.domain.model.Attachment
 import ru.maxim.barybians.domain.model.Comment
 import ru.maxim.barybians.ui.dialog.editText.EditTextDialog
 import ru.maxim.barybians.ui.dialog.stickerPicker.StickersPickerDialog
@@ -87,21 +86,7 @@ class CommentsListDialog : BottomSheetDialogFragment(), CommentsAdapterListener 
             StickersPickerDialog().show(childFragmentManager, StickersPickerDialog::class.qualifiedName)
         }
         commentsListMarkupButton.setOnClickListener {
-            findNavController().navigate(
-                CommentsListDialogDirections.toMarkupEditor(
-                    title = R.string.add_comment,
-                    text = "12345",
-                    attachments = arrayOf(
-                        Attachment(
-                            attachmentId = 0,
-                            type = Attachment.AttachmentType.STYLED,
-                            style = Attachment.StyledAttachmentType.BOLD,
-                            length = 4,
-                            offset = 0,
-                        )
-                    )
-                )
-            )
+            //TODO: open Markup editor fragment
         }
         childFragmentManager.setFragmentResultListener(
             StickersPickerDialog.stickerPickerResultKey,
