@@ -3,6 +3,7 @@ package ru.maxim.barybians.ui.fragment.chat
 import android.graphics.drawable.Animatable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -14,6 +15,7 @@ import ru.maxim.barybians.databinding.ItemOutgoingMessageBinding
 import ru.maxim.barybians.domain.model.Message
 import ru.maxim.barybians.domain.model.Message.MessageStatus.*
 import ru.maxim.barybians.utils.adaptiveDate
+import timber.log.Timber
 import javax.inject.Inject
 
 class ChatRecyclerAdapter @Inject constructor(
@@ -86,14 +88,15 @@ class ChatRecyclerAdapter @Inject constructor(
             MessageType.OUTGOING.viewType -> {
                 (holder as? OutgoingMessageViewHolder)?.bind(message)
             }
-            else -> throw IllegalStateException("Unknown view type")
         }
     }
 
     private object MessageDiffUtils : DiffUtil.ItemCallback<Message>() {
 
         override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean =
-            oldItem.messageId == newItem.messageId
+            oldItem.senderId == newItem.senderId &&
+            oldItem.receiverId == oldItem.receiverId &&
+            oldItem.text == oldItem.text
 
         override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean =
             oldItem == newItem
